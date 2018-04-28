@@ -51,3 +51,11 @@ php bin/migrate --install
 
 ## Notes
 If you do not use Apache, or the Apache `.htaccess` is not enabled, set your web server so that the `static/` folder is the only one accessible from the outside, otherwise even private uploads and logs will be accessible!
+
+## Built with
++ FlightPHP (http://flightphp.com/)
++ Bootstrap 4 (https://getbootstrap.com/)
++ Font Awesome 5 (http://fontawesome.com)
++ ClipboardJS (https://clipboardjs.com/)
++ HighlightJS (https://highlightjs.org/)
++ JQuery (https://jquery.com/)
