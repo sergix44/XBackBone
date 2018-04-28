@@ -1,0 +1,89 @@
+#!/usr/bin/env php
+<?php
+
+use App\Database\DB;
+
+require 'vendor/autoload.php';
+
+if (php_sapi_name() !== 'cli') {
+	die();
+}
+
+$config = include 'config.php';
+
+if (!$config) {
+	die('config.php not found. Please create a new one.');
+}
+
+DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
+
+$firstMigrate = false;
+if (!file_exists($config['db']['dsn']) && DB::driver() === 'sqlite') {
+	touch($config['db']['dsn']);
+	$firstMigrate = true;
+}
+
+try {
+    DB::query('SELECT 1 FROM `migrations` LIMIT 1');
+} catch (PDOException $exception){
+    $firstMigrate = true;
+}
+
+echo 'Connected.' . PHP_EOL;
+
+if ($firstMigrate) {
+	echo 'Creating migrations table...' . PHP_EOL;
+	DB::raw()->exec(file_get_contents('resources/schemas/migrations.sql'));
+}
+
+$files = glob('resources/schemas/' . DB::driver() . '/*.sql');
+
+$names = array_map(function ($path) {
+	return basename($path);
+}, $files);
+
+$in = str_repeat('?, ', count($names) - 1) . '?';
+
+$inMigrationsTable = DB::query("SELECT * FROM `migrations` WHERE `name` IN ($in)", $names)->fetchAll();
+
+
+foreach ($files as $file) {
+
+	$continue = false;
+	$exists = false;
+
+	foreach ($inMigrationsTable as $migration) {
+		if (basename($file) === $migration->name && $migration->migrated) {
+			$continue = true;
+			break;
+		} elseif (basename($file) === $migration->name && !$migration->migrated) {
+			$exists = true;
+			break;
+		}
+	}
+	if ($continue) continue;
+
+	$sql = file_get_contents($file);
+	try {
+		DB::raw()->exec($sql);
+		if (!$exists) {
+			DB::query('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 1]);
+		} else {
+			DB::query('UPDATE `migrations` SET `migrated`=? WHERE `name`=?', [1, basename($file)]);
+		}
+		echo "Migrated '$file'" . PHP_EOL;
+	} catch (PDOException $exception) {
+		if (!$exists) {
+			DB::query('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 0]);
+		}
+		echo "Error migrating '$file' (" . $exception->getMessage() . ')' . PHP_EOL;
+		echo $exception->getTraceAsString() . PHP_EOL;
+
+	}
+}
+
+if (isset($argv[1]) && $argv[1] === '--install') {
+    DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`) VALUES ('admin@example.com', 'admin', '$2y$10$bd.G9pr4C.CnX6T5GItV9OAvylOAhBgZor8YsrCdAnqfcK6aHdGhC', 1);");
+}
+
+echo 'Done.' . PHP_EOL;

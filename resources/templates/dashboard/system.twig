@@ -1,0 +1,71 @@
+{% extends 'base.twig' %}
+
+{% block title %}System Info{% endblock %}
+
+{% block content %}
+
+    {% include 'comp/navbar.twig' %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body bg-success">
+                        <div class="rotate">
+                            <i class="fas fa-users fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">Users</h6>
+                        <h1 class="display-4">{{ usersCount }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-danger text-white h-100">
+                    <div class="card-body bg-danger">
+                        <div class="rotate">
+                            <i class="fas fa-weight fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">Size</h6>
+                        <h1 class="display-4">{{ totalSize }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body bg-warning">
+                        <div class="rotate">
+                            <i class="fas fa-upload fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">Files</h6>
+                        <h1 class="display-4">{{ mediasCount }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-dark text-white h-100">
+                    <div class="card-body bg-dark">
+                        <div class="rotate">
+                            <i class="fas fa-unlink fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">Orphaned files</h6>
+                        <h1 class="display-4">{{ orphanFilesCount }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-cog fa-fw"></i> System Information</div>
+                    <div class="card-body">
+                        <p>
+                            <strong>Max upload size (<code>max_post_size/upload_max_filesize</code>):</strong>
+                            {{ max_filesize }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'comp/footer.twig' %}
+{% endblock %}

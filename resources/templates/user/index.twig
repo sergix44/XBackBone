@@ -1,0 +1,111 @@
+{% extends 'base.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="text-right">
+            <a href="{{ config.base_url }}/user/add" class="btn btn-outline-success mb-3"><i class="fas fa-plus"></i>
+                Add User</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>User Code</th>
+                    <th>Token</th>
+                    <th>Active</th>
+                    <th>Admin</th>
+                    <th>Registration Date</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>#{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            <pre>{{ user.user_code|default('None') }}</pre>
+                        </td>
+                        <td>
+                            <pre>{{ user.token|default('None') }}</pre>
+                        </td>
+                        <td>
+                            {% if user.active %}
+                                <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                            {% else %}
+                                <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_admin %}
+                                <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                            {% else %}
+                                <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ user.registration_date|date("d/m/Y H:i:s") }}
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <a href="{{ config.base_url }}/user/{{ user.id }}/edit" class="btn btn-outline-warning" data-toggle="tooltip" title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                                <a href="#" class="btn btn-outline-danger user-delete" data-link="{{ config.base_url }}/user/{{ user.id }}/delete" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ config.base_url }}/users/page/{{ current_page-1 }}"><i class="fas fa-angle-left fa-fw"></i>
+                            Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#"><i class="fas fa-angle-left fa-fw"></i>
+                            Previous</a></li>
+                {% endif %}
+
+                {% if next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ config.base_url }}/users/page/{{ current_page+1 }}">Next
+                            <i class="fas fa-angle-right fa-fw"></i></a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#">Next
+                            <i class="fas fa-angle-right fa-fw"></i></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure?</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="modalDelete-link"><i class="fas fa-trash fa-fw"></i> Delete</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'comp/footer.twig' %}
+{% endblock %}

@@ -1,0 +1,37 @@
+<nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="{{ config.base_url }}">{{ config.app_name }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="{{ config.base_url }}/home" class="nav-link {{ request.url starts with '/home' ? 'active' }}"><i class="fas fa-fw fa-home"></i>
+                        Home</a>
+                </li>
+                {% if session.admin %}
+                    <li class="nav-item">
+                        <a href="{{ config.base_url }}/users" class="nav-link {{ request.url starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                            Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ config.base_url }}/system" class="nav-link {{ request.url starts with '/system' ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
+                            System</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-fw fa-user"></i> {{ session.username }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{{ config.base_url }}/profile"><i class="fas fa-fw fa-user"></i> Profile</a>
+                        <a class="dropdown-item" href="{{ config.base_url }}/logout"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,79 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ media.filename }}{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ config.base_url }}">{{ config.app_name }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="ml-auto">
+                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
+                    <a href="https://telegram.me/share/url?url={{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}&text={{ media.filename }}" class="btn btn-info my-2 my-sm-0" data-toggle="tooltip" title="Telegram" target="_blank"><i class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
+                    <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" class="btn btn-light my-2 my-sm-0" data-toggle="tooltip" title="Show raw"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="Download"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row ml-auto mr-auto">
+            <div class="col-md-12 justify-content-center">
+                {% if type starts with 'image' %}
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <img src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            {{ media.filename }}
+                        </div>
+                    </div>
+                {% elseif type starts with 'text' %}
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <pre><code>{{ media.text }}</code></pre>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            {{ media.filename }}
+                        </div>
+                    </div>
+                {% elseif type starts with 'video' %}
+                    <video width="100%" controls>
+                        <source src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" type="{{ type }}">
+                        Your browser does not support HTML5 video.
+                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i>
+                            Download</a>
+                    </video>
+                {% else %}
+                    <div class="text-center">
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <i class="far fa-file-archive fa-10x"></i>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                {{ media.filename }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i>
+                                    Download</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% include 'comp/footer.twig' %}
+{% endblock %}

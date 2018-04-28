@@ -1,0 +1,8 @@
+.idea/
+vendor/
+storage/
+!resources/cache/.gitkeep
+resources/database/*.db
+resources/sessions/sess_*
+logs/log-*.txt
+config.php

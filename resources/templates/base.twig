@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>{% block title %}Default{% endblock %} | {{ config.app_name }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A lightweight PHP backend for ShareX">
+    <meta name="author" content="sergix44">
+    <link href="{{ config.base_url }}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ config.base_url }}/static/highlightjs/styles/monokai.css" rel="stylesheet">
+    <link href="{{ config.base_url }}/static/app/app.css" rel="stylesheet">
+    <script src="{{ config.base_url }}/static/jquery/jquery-3.3.1.min.js"></script>
+    <script src="{{ config.base_url }}/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ config.base_url }}/static/fontawesome/js/fontawesome-all.min.js"></script>
+    <script src="{{ config.base_url }}/static/highlightjs/highlight.pack.js"></script>
+    <script src="{{ config.base_url }}/static/clipboardjs/clipboard.min.js"></script>
+    <script src="{{ config.base_url }}/static/app/app.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+        window.AppConfig = {
+            'base_url': '{{ config.base_url }}'
+        }
+    </script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
