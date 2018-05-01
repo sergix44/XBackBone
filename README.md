@@ -49,6 +49,9 @@ php bin/migrate --install
 ```
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
+## ShareX Configuration
+Once you are logged in, just go in your profile settings and download the ShareX config file for your account.
+
 ## Notes
 If you do not use Apache, or the Apache `.htaccess` is not enabled, set your web server so that the `static/` folder is the only one accessible from the outside, otherwise even private uploads and logs will be accessible!
 
