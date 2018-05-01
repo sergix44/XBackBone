@@ -37,7 +37,6 @@ class DashboardController extends Controller
 		}
 
 		$filesystem = $this->getStorage();
-		$base_url = Flight::get('config')['base_url'];
 
 		foreach ($medias as $media) {
 			$extension = pathinfo($media->filename, PATHINFO_EXTENSION);
@@ -50,10 +49,6 @@ class DashboardController extends Controller
 			$media->mimetype = $mime;
 			$media->extension = $extension;
 			$media->size = $this->humanFilesize($size);
-
-			if ($type = explode('/', $mime)[0] === 'image') {
-				$this->http2push("$base_url/$media->user_code/$media->code.$extension/raw");
-			}
 		}
 
 		Flight::render(
