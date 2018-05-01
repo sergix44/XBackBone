@@ -58,6 +58,46 @@ Once you are logged in, just go in your profile settings and download the ShareX
 
 ## Notes
 If you do not use Apache, or the Apache `.htaccess` is not enabled, set your web server so that the `static/` folder is the only one accessible from the outside, otherwise even private uploads and logs will be accessible!
+The NGINX configuration should be something like this:
+```
+# nginx configuration
+
+location /app {
+  return 403;
+}
+
+location /bin {
+  return 403;
+}
+
+location /bootstrap {
+  return 403;
+}
+
+location /resources {
+  return 403;
+}
+
+location /storage {
+  return 403;
+}
+
+location /vendor {
+  return 403;
+}
+
+location /logs {
+  return 403;
+}
+
+autoindex off;
+
+location / {
+  if (!-e $request_filename){
+    rewrite ^(.*)$ /index.php break;
+  }
+}
+```
 
 ## Built with
 + FlightPHP (http://flightphp.com/)
