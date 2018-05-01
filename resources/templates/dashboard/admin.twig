@@ -18,6 +18,7 @@
                             <tr>
                                 <th>Preview</th>
                                 <th>Filename</th>
+                                <th>Size</th>
                                 <th>Public</th>
                                 <th>Owner</th>
                                 <th>Date</th>
@@ -40,6 +41,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ media.filename }}</td>
+                                    <td>{{ media.size }}</td>
                                     <td id="published_{{ media.id }}">
                                         {% if media.published %}
                                             <span class="badge badge-success"><i class="fas fa-check"></i></span>

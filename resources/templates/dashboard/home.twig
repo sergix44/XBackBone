@@ -24,7 +24,7 @@
                                 </a>
                             {% endif %}
                             <div class="card-body">
-                                <p class="card-text">{{ media.filename }}</p>
+                                <p class="card-text">{{ media.filename }}<small class="float-right">{{ media.size }}</small></p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-sm btn-outline-success btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}">

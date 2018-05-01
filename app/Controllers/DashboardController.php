@@ -43,11 +43,13 @@ class DashboardController extends Controller
 			$extension = pathinfo($media->filename, PATHINFO_EXTENSION);
 			try {
 				$mime = $filesystem->getMimetype($media->storage_path);
+				$size = $filesystem->getSize($media->storage_path);
 			} catch (FileNotFoundException $e) {
 				$mime = null;
 			}
 			$media->mimetype = $mime;
 			$media->extension = $extension;
+			$media->size = $this->humanFilesize($size);
 
 			if ($type = explode('/', $mime)[0] === 'image') {
 				$this->http2push("$base_url/$media->user_code/$media->code.$extension/raw");

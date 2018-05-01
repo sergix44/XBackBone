@@ -17,6 +17,7 @@ Flight::route('GET /user/@id/delete', [\App\Controllers\UserController::instance
 Flight::route('GET /profile', [\App\Controllers\UserController::instance(), 'profile']);
 Flight::route('POST /profile/@id/edit', [\App\Controllers\UserController::instance(), 'profileEdit']);
 Flight::route('POST /user/@id/refreshToken', [\App\Controllers\UserController::instance(), 'refreshToken']);
+Flight::route('GET /user/@id/config/sharex', [\App\Controllers\UserController::instance(), 'getShareXconfigFile']);
 
 Flight::route('POST /upload', [\App\Controllers\UploadController::instance(), 'upload']);
 Flight::route('POST /upload/@id/publish', [\App\Controllers\UploadController::instance(), 'togglePublish']);

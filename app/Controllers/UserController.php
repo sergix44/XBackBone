@@ -282,6 +282,43 @@ class UserController extends Controller
 		echo $token;
 	}
 
+	public function getShareXconfigFile($id): void
+	{
+		$this->checkLogin();
+
+		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+
+		if (!$user) {
+			Flight::halt(404);
+			return;
+		}
+
+		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+			Flight::halt(403);
+			return;
+		}
+
+		$base_url = Flight::get('config')['base_url'];
+		$json = [
+			'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
+			'RequestURL' => "$base_url/upload",
+			'FileFormName' => 'upload',
+			'Arguments' => [
+				'file' => '$filename$',
+				'text' => '$input$',
+				'token' => $user->token,
+			],
+			'URL' => '$json:url$',
+			'ThumbnailURL' => '$json:url$/raw',
+		];
+
+		Flight::response()->header('Content-Type', 'application/json');
+		Flight::response()->header('Content-Disposition', 'attachment;filename="' . $user->username . '-ShareX.sxcu"');
+		Flight::response()->sendHeaders();
+
+		echo json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+	}
+
 	protected function generateNewToken(): string
 	{
 		do {
