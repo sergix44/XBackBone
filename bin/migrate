@@ -24,9 +24,9 @@ if (!file_exists($config['db']['dsn']) && DB::driver() === 'sqlite') {
 }
 
 try {
-    DB::query('SELECT 1 FROM `migrations` LIMIT 1');
-} catch (PDOException $exception){
-    $firstMigrate = true;
+	DB::query('SELECT 1 FROM `migrations` LIMIT 1');
+} catch (PDOException $exception) {
+	$firstMigrate = true;
 }
 
 echo 'Connected.' . PHP_EOL;
@@ -83,7 +83,7 @@ foreach ($files as $file) {
 }
 
 if (isset($argv[1]) && $argv[1] === '--install') {
-    DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`) VALUES ('admin@example.com', 'admin', '$2y$10$bd.G9pr4C.CnX6T5GItV9OAvylOAhBgZor8YsrCdAnqfcK6aHdGhC', 1);");
+	DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`) VALUES ('admin@example.com', 'admin', ?, 1)", password_hash('admin', PASSWORD_DEFAULT));
 }
 
 echo 'Done.' . PHP_EOL;

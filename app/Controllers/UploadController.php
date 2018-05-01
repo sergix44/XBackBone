@@ -214,14 +214,31 @@ class UploadController extends Controller
 	protected function streamMedia(Filesystem $storage, $media, string $disposition = 'inline'): void
 	{
 		try {
-			Flight::response()->header('Content-Type', $storage->getMimetype($media->storage_path));
-			Flight::response()->header('Content-Disposition', $disposition . ';filename="' . $media->filename . '"');
-			Flight::response()->header('Content-Length', $storage->getSize($media->storage_path));
+			$mime = $storage->getMimetype($media->storage_path);
+			$query = Flight::request()->query;
 
-			Flight::response()->sendHeaders();
-			ob_end_clean();
+			if ($query['width'] !== null && explode('/', $mime)[0] === 'image') {
+				Flight::response()->header('Content-Type', 'image/png');
+				Flight::response()->header('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"');
+				Flight::response()->sendHeaders();
+				ob_clean();
 
-			fpassthru($storage->readStream($media->storage_path));
+				$image = imagecreatefromstring($storage->read($media->storage_path));
+				$scaled = imagescale($image, $query['width'], $query['height'] !== null ? $query['height'] : -1);
+
+				imagedestroy($image);
+
+				imagepng($scaled, null, 9);
+				imagedestroy($scaled);
+			} else {
+				Flight::response()->header('Content-Type', $mime);
+				Flight::response()->header('Content-Disposition', $disposition . ';filename="' . $media->filename . '"');
+				Flight::response()->header('Content-Length', $storage->getSize($media->storage_path));
+				Flight::response()->sendHeaders();
+				ob_end_clean();
+
+				fpassthru($storage->readStream($media->storage_path));
+			}
 		} catch (FileNotFoundException $e) {
 			Flight::error($e);
 		}

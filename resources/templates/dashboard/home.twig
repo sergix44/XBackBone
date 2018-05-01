@@ -16,7 +16,7 @@
                         <div class="card mb-4 box-shadow">
                             {% if media.mimetype starts with 'image' %}
                                 <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}" target="_blank">
-                                    <img class="card-img-top user-img" src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw" alt="{{ media.filename }}">
+                                    <img class="card-img-top user-img" src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw?width=348&height=192" alt="{{ media.filename }}">
                                 </a>
                             {% else %}
                                 <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}" target="_blank">
@@ -44,7 +44,6 @@
                             </div>
                         </div>
                     </div>
-                    {% flush %}
                 {% endfor %}
             </div>
             {% include 'dashboard/pager.twig' %}

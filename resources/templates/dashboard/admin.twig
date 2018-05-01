@@ -30,7 +30,7 @@
                                     <td>
                                         {% if media.mimetype starts with 'image' %}
                                             {% if media.username is not null %}
-                                                <img src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw"
+                                                <img src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw?width=128"
                                                      class="img-fluid rounded admin-img">
                                             {% else %}
                                                 <img src="{{ config.base_url }}/upload/{{ media.id }}/raw" class="img-fluid rounded admin-img">
@@ -67,7 +67,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                {% flush %}
                             {% endfor %}
                             </tbody>
                         </table>
