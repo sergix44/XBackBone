@@ -3,6 +3,7 @@
 + Added auto config generator for ShareX.
 + Show upload file size on the dashboard.
 + Fixed insert for admin user (running `php bin\migrate --install`).
++ Removed HTTP2 push from the dashboard to improve loading time.
 
 ## v1.1
 + Added logging.

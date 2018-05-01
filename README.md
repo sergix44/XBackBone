@@ -8,11 +8,15 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Public and private uploads.
 + Web UI for each user.
 + Logging system.
++ Auto config generator for ShareX.
 
 ## How to Install
 XBackBone require PHP >= `7.1`, the composer package manager and writable storage path:
 
-+ Clone this repository in your web root folder:
++ **[release, stable]** Download latest release from GitHub:
+ [https://github.com/SergiX44/XBackBone/releases/latest](https://github.com/SergiX44/XBackBone/releases/latest)
+
++ **[master, unstable]** Clone this repository in your web root folder:
 
 ```sh
 git clone http://github.com/SergiX44/XBackBone .
