@@ -129,8 +129,11 @@ fabric.properties
 
 # Repo file
 storage/
+static/
 !resources/cache/.gitkeep
+resources/cache/*
 resources/database/*.db
 resources/sessions/sess_*
 logs/log-*.txt
 config.php
+release.zip
