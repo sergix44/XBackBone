@@ -1,19 +1,25 @@
-language: php
-php:
-  - '7.1'
-  - '7.2'
-
-# Remove comment on if unit test ready
-#before_script:
-#  - if find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \; | grep "Fatal error"; then exit 1; fi
-#  - composer self-update
-#  - composer install --prefer-source --no-interaction --dev
-
-
-script:
-  # Remove on if unit test ready
-  - if find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \; | grep "Fatal error"; then exit 1; fi
-
 notifications:
   on_success: never
   on_failure: always
+
+matrix:
+  include:
+    - language: php
+      php:
+      - '7.1'
+      - '7.2'
+      # Remove comment on if unit test ready
+      #before_script:
+      #  - if find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \; | grep "Fatal error"; then exit 1; fi
+      #  - composer self-update
+      #  - composer install --prefer-source --no-interaction --dev
+      script:
+        # Remove on if unit test ready
+        - if find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \; | grep "Fatal error"; then exit 1; fi
+    - language: node_js
+      node_js:
+        - "lts/*"
+      before_script:
+        - npm install grunt-cli -g
+      script:
+        - grunt test

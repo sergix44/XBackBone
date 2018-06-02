@@ -67,6 +67,7 @@ module.exports = function(grunt) {
 
 	require('load-grunt-tasks')(grunt);
 	grunt.registerTask('default', ['jshint', 'cssmin', 'uglify', 'copy']);
+	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('build-release', ['default', 'zip']);
 
 };
