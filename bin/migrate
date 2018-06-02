@@ -83,7 +83,7 @@ foreach ($files as $file) {
 }
 
 if (isset($argv[1]) && $argv[1] === '--install') {
-	DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`) VALUES ('admin@example.com', 'admin', ?, 1)", password_hash('admin', PASSWORD_DEFAULT));
+	DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT),substr(hash('sha256', microtime()), random_int(0, 26), 5)]);
 }
 
 echo 'Done.' . PHP_EOL;
