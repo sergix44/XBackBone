@@ -15,12 +15,7 @@ XBackBone require PHP >= `7.1`, the composer package manager and writable storag
 
 + **[release, stable]** Download latest release from GitHub:
  [https://github.com/SergiX44/XBackBone/releases/latest](https://github.com/SergiX44/XBackBone/releases/latest)
-
-+ **[master, unstable]** Clone this repository in your web root folder:
-
-```sh
-git clone http://github.com/SergiX44/XBackBone .
-```
+ 
 + Run a composer from your shell:
 
 ```sh
