@@ -13,5 +13,12 @@
     "psr-4": {
       "App\\": "app/"
     }
+  },
+  "extra": {
+    "violinist": {
+      "allow_updates_beyond_constraint": 1,
+      "blacklist": [],
+      "update_with_dependencies": 1
+    }
   }
 }
