@@ -72,7 +72,7 @@ class UserController extends Controller
 		}
 
 		do {
-			$userCode = substr(hash('sha256', microtime()), random_int(0, 26), 5);
+			$userCode = substr(bin2hex(random_bytes(3)), 5);
 		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
 		$token = $this->generateNewToken();
