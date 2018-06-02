@@ -1,4 +1,4 @@
-# XBackBone 📤 [![Violinist enabled](https://img.shields.io/badge/violinist-enabled-brightgreen.svg)](https://violinist.io) [![Build Status](https://travis-ci.org/Pe46dro/XBackBone.svg?branch=master)](https://travis-ci.org/Pe46dro/XBackBone)
+# XBackBone 📤 [![Violinist enabled](https://img.shields.io/badge/violinist-enabled-brightgreen.svg)](https://violinist.io) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone)
 XBackBone is a simple, self-hosted, lightweight PHP backend for the instant sharing tool ShareX. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management and past uploads history.
 
 ## Features
