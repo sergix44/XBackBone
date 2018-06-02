@@ -7,6 +7,7 @@ use App\Exceptions\AuthenticationException;
 use App\Exceptions\UnauthorizedException;
 use App\Web\Session;
 use Flight;
+use App\Database\DB;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
@@ -22,6 +23,14 @@ abstract class Controller
 			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			throw new AuthenticationException();
 		}
+
+		if (!DB::query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', [Session::get('user_id')])->fetch()->active) {
+			Session::alert('Your account is not active anymore.', 'danger');
+			Session::set('logged', false);
+			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+			throw new AuthenticationException();
+		}
+
 	}
 
 	/**
@@ -31,7 +40,11 @@ abstract class Controller
 	protected function checkAdmin(): void
 	{
 		$this->checkLogin();
-		if (!Session::get('admin', false)) {
+
+		if (!DB::query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [Session::get('user_id')])->fetch()->is_admin) {
+			Session::alert('Your account is not admin anymore.', 'danger');
+			Session::set('admin', false);
+			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			throw new UnauthorizedException();
 		}
 	}

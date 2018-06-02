@@ -72,7 +72,7 @@ class UserController extends Controller
 		}
 
 		do {
-			$userCode = substr(md5(microtime()), rand(0, 26), 5);
+			$userCode = substr(bin2hex(random_bytes(3)), 5);
 		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
 		$token = $this->generateNewToken();
@@ -140,6 +140,12 @@ class UserController extends Controller
 			return;
 		}
 
+		if ($user->id === Session::get('user_id') && !isset($form->is_admin)) {
+			Session::alert('You cannot demote yourself.', 'danger');
+			Flight::redirectBack();
+			return;
+		}
+
 		if (isset($form->password) && !empty($form->password)) {
 			DB::query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
 				$form->email,
@@ -163,6 +169,7 @@ class UserController extends Controller
 		Log::info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($form->getData(), ['password'])]);
 
 		Flight::redirect('/users');
+
 	}
 
 	public function delete($id): void
@@ -322,7 +329,7 @@ class UserController extends Controller
 	protected function generateNewToken(): string
 	{
 		do {
-			$token = 'token_' . md5(uniqid('', true));
+			$token = 'token_' . hash('sha256', microtime().random_bytes(256).uniqid('', true));
 		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
 
 		return $token;

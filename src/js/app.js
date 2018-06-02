@@ -13,7 +13,7 @@ var app = {
 
         new ClipboardJS('.btn-clipboard');
 
-        console.log('Application is ready.')
+        console.log('Application is ready.');
     },
     modalDelete: function () {
         $('#modalDelete-link').attr('href', $(this).data('link'));
