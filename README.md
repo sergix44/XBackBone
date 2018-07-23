@@ -1,4 +1,4 @@
-# XBackBone 📤 [![Violinist enabled](https://img.shields.io/badge/violinist-enabled-brightgreen.svg)](https://violinist.io) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone)
+# XBackBone 📤 (https://violinist.io) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone)
 XBackBone is a simple, self-hosted, lightweight PHP backend for the instant sharing tool ShareX. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management and past uploads history.
 
 ## Features
@@ -11,12 +11,12 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Auto config generator for ShareX.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, the composer package manager and writable storage path:
+XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the needed extensions (ex. `php-sqlite3` for SQLite):
 
 + **[release, stable]** Download latest release from GitHub:
  [https://github.com/SergiX44/XBackBone/releases/latest](https://github.com/SergiX44/XBackBone/releases/latest)
  
-+ Run a composer from your shell:
++ Run composer from your shell:
 
 ```sh
 composer install --no-dev
