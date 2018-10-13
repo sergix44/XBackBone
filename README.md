@@ -1,3 +1,4 @@
+
 # XBackBone 📤 [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone)
 XBackBone is a simple, self-hosted, lightweight PHP backend for the instant sharing tool ShareX. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management and past uploads history.
 
@@ -47,6 +48,9 @@ return [
 php bin/migrate --install
 ```
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
+
+#### Other deployment method
++ [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
 
 ## ShareX Configuration
 Once you are logged in, just go in your profile settings and download the ShareX config file for your account.
