@@ -60,7 +60,24 @@ module.exports = function (grunt) {
         },
 
         zip: {
-            'release.zip': ['app/**/*', 'bin/**/*', 'bootstrap/**/*', 'logs/**/*', 'resources/**/', 'static/**/*', '.htaccess', 'config.example.php', 'index.php', 'vendor']
+            'release.zip': [
+                'app/**/*',
+                'bin/**/*',
+                'bootstrap/**/*',
+                'logs/**/',
+                'resources/cache',
+                'resources/sessions',
+                'resources/database',
+                'resources/templates/**/*',
+                'resources/schemas/**/*',
+                'static/**/*',
+                'vendor/**/*',
+                '.htaccess',
+                'config.example.php',
+                'index.php',
+                'composer.json',
+                'composer.lock'
+            ]
         }
 
     });

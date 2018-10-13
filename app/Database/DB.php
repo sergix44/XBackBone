@@ -116,7 +116,7 @@ class DB
 	 * @param string|null $username
 	 * @param string|null $password
 	 */
-	public static function setDsn(string $dsn, string $username = null, string $password = null): void
+	public static function setDsn(string $dsn, string $username = null, string $password = null)
 	{
 		self::$dsn = $dsn;
 		self::$username = $username;
