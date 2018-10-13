@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+
+require 'vendor/autoload.php';
+
+if (php_sapi_name() !== 'cli') {
+	die();
+}
+
+$json = json_decode(file_get_contents('https://bootswatch.com/api/4.json'));
+
+if (!isset($argv[1])) {
+	echo 'Usage: php bin\\theme <theme-name>' . PHP_EOL;
+	echo 'Here a list of available Bootswatch themes:' . PHP_EOL;
+}
+
+foreach ($json->themes as $theme) {
+	if (isset($argv[1]) && $argv[1] === mb_strtolower($theme->name)) {
+        file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($theme->cssMin));
+		echo "Installed theme {$theme->name}." . PHP_EOL;
+		break;
+	}
+
+	if (!isset($argv[1])) {
+		echo "  - {$theme->name} ({$theme->description})[Preview: {$theme->preview}]" . PHP_EOL;
+	}
+}
+
+exit(0);

@@ -8,7 +8,9 @@
     "league/flysystem": "^1.0.45",
     "twig/twig": "~2.0",
     "monolog/monolog": "^1.23",
-    "php": ">=7.1"
+    "php": ">=7.1",
+    "ext-json": "*",
+    "ext-gd": "*"
   },
   "autoload": {
     "psr-4": {
