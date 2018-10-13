@@ -8,16 +8,19 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a href="{{ config.base_url }}/home" class="nav-link {{ request.url starts with '/home' ? 'active' }}"><i class="fas fa-fw fa-home"></i>
-                        Home</a>
+                        Home
+                    </a>
                 </li>
                 {% if session.admin %}
                     <li class="nav-item">
                         <a href="{{ config.base_url }}/users" class="nav-link {{ request.url starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
-                            Users</a>
+                            Users
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ config.base_url }}/system" class="nav-link {{ request.url starts with '/system' ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
-                            System</a>
+                            System
+                        </a>
                     </li>
                 {% endif %}
             </ul>

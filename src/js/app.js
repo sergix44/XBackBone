@@ -1,6 +1,7 @@
 var app = {
     run: function () {
         $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="popover"]').popover();
 
         $('.user-delete').click(app.modalDelete);
         $('.media-delete').click(app.mediaDelete);

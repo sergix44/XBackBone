@@ -72,7 +72,7 @@ class UserController extends Controller
 		}
 
 		do {
-			$userCode = substr(bin2hex(random_bytes(3)), 5);
+			$userCode = substr(md5(microtime()), rand(0, 26), 5);
 		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
 		$token = $this->generateNewToken();
@@ -329,7 +329,7 @@ class UserController extends Controller
 	protected function generateNewToken(): string
 	{
 		do {
-			$token = 'token_' . hash('sha256', microtime().random_bytes(256).uniqid('', true));
+			$token = 'token_' . md5(uniqid('', true));
 		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
 
 		return $token;

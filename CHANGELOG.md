@@ -1,3 +1,9 @@
+## v1.3 [dev]
++ Added popever to write the telegram message when sharing.
++ Packaging improvements.
++ Updated some dependencies.
++ Allow Facebook bots to display the preview.
+
 ## v1.2
 + Previews are now scaled for better page load.
 + Added auto config generator for ShareX.

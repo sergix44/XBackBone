@@ -92,7 +92,9 @@ class UploadController extends Controller
 
 		$filesystem = $this->getStorage();
 
-		if (stristr(Flight::request()->user_agent, 'TelegramBot')) {
+		if (stristr(Flight::request()->user_agent, 'TelegramBot') ||
+			stristr(Flight::request()->user_agent, 'facebookexternalhit/') ||
+			stristr(Flight::request()->user_agent, 'Facebot')) {
 			$this->streamMedia($filesystem, $media);
 		} else {
 
