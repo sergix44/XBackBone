@@ -1,4 +1,5 @@
 ## v1.3 [dev]
++ Added command to switch between bootswatch.com themes.
 + Added popever to write the telegram message when sharing.
 + Packaging improvements.
 + Updated some dependencies.
