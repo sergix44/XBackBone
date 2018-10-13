@@ -50,6 +50,7 @@ class DB
 	}
 
 	/**
+	 * Get the PDO instance
 	 * @return PDO
 	 */
 	public function getPdo(): PDO
@@ -58,6 +59,7 @@ class DB
 	}
 
 	/**
+	 * Get the current PDO driver
 	 * @return string
 	 */
 	public function getCurrentDriver(): string
@@ -65,6 +67,12 @@ class DB
 		return $this->currentDriver;
 	}
 
+	/**
+	 * Perform a query
+	 * @param string $query
+	 * @param array $parameters
+	 * @return bool|\PDOStatement|string
+	 */
 	public static function query(string $query, $parameters = [])
 	{
 
@@ -75,6 +83,10 @@ class DB
 		return self::$instance->doQuery($query, $parameters);
 	}
 
+	/**
+	 * Static method to get the current driver name
+	 * @return string
+	 */
 	public static function driver(): string
 	{
 
@@ -85,6 +97,10 @@ class DB
 		return self::$instance->getCurrentDriver();
 	}
 
+	/**
+	 * Get directly the PDO instance
+	 * @return PDO
+	 */
 	public static function raw(): PDO
 	{
 		if (self::$instance === null) {
@@ -95,6 +111,7 @@ class DB
 	}
 
 	/**
+	 * Set the PDO connection string
 	 * @param string $dsn
 	 * @param string|null $username
 	 * @param string|null $password

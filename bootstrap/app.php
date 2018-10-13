@@ -2,6 +2,7 @@
 
 use App\Database\DB;
 
+// Load the config
 $config = array_replace_recursive([
 	'app_name' => 'XBackBone',
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
@@ -15,12 +16,15 @@ $config = array_replace_recursive([
 	],
 ], require 'config.php');
 
+// Set flight parameters
 Flight::set('flight.base_url', $config['base_url']);
 Flight::set('flight.log_errors', false);
 Flight::set('config', $config);
 
+// Set the database dsn
 DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
 
+// Register the Twig instance
 Flight::register('view', 'Twig_Environment',
 	[new Twig_Loader_Filesystem('resources/templates'),
 		[
@@ -32,10 +36,12 @@ Flight::register('view', 'Twig_Environment',
 	]
 );
 
+// Redirect back helper
 Flight::register('redirectBack', function () {
 	Flight::redirect(Flight::request()->referrer);
 });
 
+// Map the render call to the Twig view instance
 Flight::map('render', function (string $template, array $data = []) use (&$config) {
 	Flight::view()->addGlobal('config', $config);
 	Flight::view()->addGlobal('request', Flight::request());
@@ -45,6 +51,7 @@ Flight::map('render', function (string $template, array $data = []) use (&$confi
 	Flight::view()->display($template, $data);
 });
 
+// The application error handler
 Flight::map('error', function (Exception $exception) {
 	if ($exception instanceof \App\Exceptions\AuthenticationException) {
 		Flight::redirect('/login');
@@ -72,4 +79,5 @@ Flight::map('notFound', function () {
 	Flight::render('errors/404.twig');
 });
 
+// Load the application routes
 require 'app/routes.php';

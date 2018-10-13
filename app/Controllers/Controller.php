@@ -15,6 +15,7 @@ abstract class Controller
 {
 
 	/**
+	 * Check if the current user is logged in
 	 * @throws AuthenticationException
 	 */
 	protected function checkLogin(): void
@@ -34,6 +35,7 @@ abstract class Controller
 	}
 
 	/**
+	 * Check if the current user is an admin
 	 * @throws AuthenticationException
 	 * @throws UnauthorizedException
 	 */
@@ -50,6 +52,12 @@ abstract class Controller
 	}
 
 
+	/**
+	 * Generate a human readable file size
+	 * @param $size
+	 * @param int $precision
+	 * @return string
+	 */
 	protected function humanFilesize($size, $precision = 2): string
 	{
 		for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
@@ -57,11 +65,20 @@ abstract class Controller
 		return round($size, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
 	}
 
+	/**
+	 * Get a filesystem instance
+	 * @return Filesystem
+	 */
 	protected function getStorage(): Filesystem
 	{
 		return new Filesystem(new Local(Flight::get('config')['storage_dir']));
 	}
 
+	/**
+	 * Set http2 header for a resource if is supported
+	 * @param string $url
+	 * @param string $as
+	 */
 	protected function http2push(string $url, string $as = 'image'): void
 	{
 		if (Flight::request()->scheme === 'HTTP/2.0') {

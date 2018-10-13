@@ -10,7 +10,8 @@
     "monolog/monolog": "^1.23",
     "php": ">=7.1",
     "ext-json": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {

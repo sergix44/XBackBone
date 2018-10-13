@@ -9,6 +9,10 @@ trait SingletonController
 {
 	protected static $instance;
 
+	/**
+	 * Return the controller instance
+	 * @return Controller
+	 */
 	public static function instance(): Controller
 	{
 		if (static::$instance === null) {
