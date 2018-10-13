@@ -15,7 +15,7 @@ if (!isset($argv[1])) {
 }
 
 foreach ($json->themes as $theme) {
-	if (isset($argv[1]) && $argv[1] === mb_strtolower($theme->name)) {
+	if (isset($argv[1]) && strtolower($argv[1]) === strtolower($theme->name)) {
         file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($theme->cssMin));
 		echo "Installed theme {$theme->name}." . PHP_EOL;
 		break;
