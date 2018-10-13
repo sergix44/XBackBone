@@ -12,7 +12,7 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Auto config generator for ShareX.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the needed extensions (ex. `php-sqlite3` for SQLite):
+XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`):
 
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
 + Extract the release zip to your document root.
