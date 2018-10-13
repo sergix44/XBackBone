@@ -44,8 +44,9 @@ php bin/migrate --install
 
 #### Changing themes
 XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes:
-+ Run the command `php bin\theme` to see the available themes.
-+ Use the same command with the argument name (`php bin\theme <THEME-NAME>`) to choose a theme.
++ Run the command `php bin/theme` to see the available themes.
++ Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
++ If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
 
 #### Docker deployment
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
