@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5cfcc3867055505cdbf9eaf2829f6a8a",
+    "content-hash": "b2d12fd3c7627ea2da10cbb0bc3cc35d",
     "packages": [
         {
             "name": "league/flysystem",
@@ -260,25 +260,28 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.8.0",
+            "version": "v1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "7cc359f1b7b80fc25ed7796be7d96adc9b354bae"
+                "reference": "e3d826245268269cd66f8326bd8bc066687b4a19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/7cc359f1b7b80fc25ed7796be7d96adc9b354bae",
-                "reference": "7cc359f1b7b80fc25ed7796be7d96adc9b354bae",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e3d826245268269cd66f8326bd8bc066687b4a19",
+                "reference": "e3d826245268269cd66f8326bd8bc066687b4a19",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "suggest": {
+                "ext-ctype": "For best performance"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8-dev"
+                    "dev-master": "1.9-dev"
                 }
             },
             "autoload": {
@@ -311,20 +314,20 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2018-04-30T19:57:29+00:00"
+            "time": "2018-08-06T14:22:27+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.8.0",
+            "version": "v1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "3296adf6a6454a050679cde90f95350ad604b171"
+                "reference": "d0cd638f4634c16d8df4508e847f14e9e43168b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/3296adf6a6454a050679cde90f95350ad604b171",
-                "reference": "3296adf6a6454a050679cde90f95350ad604b171",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d0cd638f4634c16d8df4508e847f14e9e43168b8",
+                "reference": "d0cd638f4634c16d8df4508e847f14e9e43168b8",
                 "shasum": ""
             },
             "require": {
@@ -336,7 +339,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8-dev"
+                    "dev-master": "1.9-dev"
                 }
             },
             "autoload": {
@@ -370,7 +373,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-04-26T10:06:28+00:00"
+            "time": "2018-08-06T14:22:27+00:00"
         },
         {
             "name": "twig/twig",
@@ -447,7 +450,10 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "ext-json": "*",
+        "ext-gd": "*",
+        "ext-pdo": "*"
     },
     "platform-dev": []
 }
