@@ -17,11 +17,6 @@ XBackBone require PHP >= `7.1`, the composer package manager, writable storage p
 + **[release, stable]** Download latest release from GitHub:
  [https://github.com/SergiX44/XBackBone/releases/latest](https://github.com/SergiX44/XBackBone/releases/latest)
  
-+ Run composer from your shell:
-
-```sh
-composer install --no-dev
-```
 + Setup the config file:
 
 ```sh
@@ -49,7 +44,12 @@ php bin/migrate --install
 ```
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
-#### Other deployment method
+#### Changing themes
+XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes:
++ Run the command `php bin\theme` to see the available themes.
++ Use the same command with the argument name (`php bin\theme <THEME-NAME>`) to choose a theme.
+
+#### Docker deployment
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
 
 ## ShareX Configuration
