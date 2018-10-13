@@ -14,11 +14,9 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 ## How to Install
 XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the needed extensions (ex. `php-sqlite3` for SQLite):
 
-+ **[release, stable]** Download latest release from GitHub:
- [https://github.com/SergiX44/XBackBone/releases/latest](https://github.com/SergiX44/XBackBone/releases/latest)
- 
-+ Setup the config file:
-
++ **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
++ Extract the realease zip to your document root.
++ Edit the config file:
 ```sh
 cp config.example.php config.php
 ```
