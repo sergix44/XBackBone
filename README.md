@@ -5,11 +5,15 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 ## Features
 
 + Supports every upload type from ShareX.
-+ User management, multi user features.
++ Code uploads syntax highlighting.
++ Video uploads player.
++ Files upload download page.
++ User management, multi user features and roles.
 + Public and private uploads.
 + Web UI for each user.
 + Logging system.
 + Auto config generator for ShareX.
++ Share to Telegram.
 
 ## How to Install
 XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`):
@@ -21,7 +25,7 @@ XBackBone require PHP >= `7.1`, the composer package manager, writable storage p
 cp config.example.php config.php
 ```
 By default, XBackBone will use Sqlite as DB engine, and a `storage` dir in the current directory. You can leave these settings unchanged for a simple personal installation.
-You must set the `base_url`, or remove it for get dynamically the url from request (not raccomanded).
+You must set the `base_url`, or remove it for get dynamically the url from request (not recommended).
 
 ```php
 return [
