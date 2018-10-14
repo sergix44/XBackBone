@@ -16,7 +16,7 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Share to Telegram.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`):
+XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`):
 
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
 + Extract the release zip to your document root.
@@ -24,7 +24,7 @@ XBackBone require PHP >= `7.1`, the composer package manager, writable storage p
 ```sh
 cp config.example.php config.php
 ```
-By default, XBackBone will use Sqlite as DB engine, and a `storage` dir in the current directory. You can leave these settings unchanged for a simple personal installation.
+By default, XBackBone will use Sqlite3 as DB engine, and a `storage` dir in the main directory. You can leave these settings unchanged for a simple personal installation.
 You must set the `base_url`, or remove it for get dynamically the url from request (not recommended).
 
 ```php
