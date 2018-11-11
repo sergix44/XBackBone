@@ -64,6 +64,7 @@ module.exports = function (grunt) {
                 'app/**/*',
                 'bin/**/*',
                 'bootstrap/**/*',
+                'install/**/*',
                 'logs/**/',
                 'resources/cache',
                 'resources/sessions',

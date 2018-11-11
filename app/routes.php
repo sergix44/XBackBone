@@ -1,7 +1,6 @@
 <?php
 // Auth routes
 $app->group('', function () {
-	$this->get('/', \App\Controllers\DashboardController::class . ':redirects');
 	$this->get('/home[/page/{page}]', \App\Controllers\DashboardController::class . ':home');
 	$this->get('/system', \App\Controllers\DashboardController::class . ':system')->add(\App\Middleware\AdminMiddleware::class);
 
@@ -26,6 +25,7 @@ $app->group('', function () {
 
 })->add(\App\Middleware\AuthMiddleware::class);
 
+$app->get('/', \App\Controllers\DashboardController::class . ':redirects');
 $app->get('/login', \App\Controllers\LoginController::class . ':show');
 $app->post('/login', \App\Controllers\LoginController::class . ':login');
 $app->map(['GET', 'POST'], '/logout', \App\Controllers\LoginController::class . ':logout');

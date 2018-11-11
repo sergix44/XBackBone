@@ -55,4 +55,17 @@ abstract class Controller
 	{
 		return new Filesystem(new Local($this->settings['storage_dir']));
 	}
+
+	/**
+	 * @param $path
+	 */
+	public function removeDirectory($path)
+	{
+		$files = glob($path . '/*');
+		foreach ($files as $file) {
+			is_dir($file) ? $this->removeDirectory($file) : unlink($file);
+		}
+		rmdir($path);
+		return;
+	}
 }

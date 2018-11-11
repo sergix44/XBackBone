@@ -14,7 +14,7 @@ $config = [
 	'app_name' => 'XBackBone',
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
 	'storage_dir' => 'storage',
-	'displayErrorDetails' => false,
+	'displayErrorDetails' => true,
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => 'resources/database/xbackbone.db',
@@ -57,6 +57,7 @@ $app->get('/', function (Request $request, Response $response) {
 $app->post('/', function (Request $request, Response $response) use (&$config) {
 	$config['base_url'] = $request->getParam('base_url');
 	$config['storage_dir'] = $request->getParam('storage_dir');
+	$config['displayErrorDetails'] = false;
 	$config['db']['connection'] = $request->getParam('connection');
 	$config['db']['dsn'] = $request->getParam('dsn');
 	$config['db']['username'] = null;
@@ -66,11 +67,11 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 	file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 
 
-	DB::setDsn($config['db']['connection'] . ':' . __DIR__ . '../' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
+	DB::setDsn($config['db']['connection'] . ':' . __DIR__ . '/../' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
 
 	$firstMigrate = false;
-	if (!file_exists(__DIR__ . '../' . $config['db']['dsn']) && DB::driver() === 'sqlite') {
-		touch(__DIR__ . '../' . $config['db']['dsn']);
+	if (!file_exists(__DIR__ . '/../' . $config['db']['dsn']) && DB::driver() === 'sqlite') {
+		touch(__DIR__ . '/../' . $config['db']['dsn']);
 		$firstMigrate = true;
 	}
 
@@ -80,14 +81,11 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		$firstMigrate = true;
 	}
 
-	echo 'Connected.' . PHP_EOL;
-
 	if ($firstMigrate) {
-		echo 'Creating migrations table...' . PHP_EOL;
-		DB::raw()->exec(file_get_contents(__DIR__ . '../resources/schemas/migrations.sql'));
+		DB::raw()->exec(file_get_contents(__DIR__ . '/../resources/schemas/migrations.sql'));
 	}
 
-	$files = glob(__DIR__ . '../resources/schemas/' . DB::driver() . '/*.sql');
+	$files = glob(__DIR__ . '/../resources/schemas/' . DB::driver() . '/*.sql');
 
 	$names = array_map(function ($path) {
 		return basename($path);
