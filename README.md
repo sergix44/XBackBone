@@ -5,25 +5,27 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 ## Features
 
 + Supports every upload type from ShareX.
-+ User management, multi user features.
++ Code uploads syntax highlighting.
++ Video uploads player.
++ Files upload download page.
++ User management, multi user features and roles.
 + Public and private uploads.
 + Web UI for each user.
 + Logging system.
 + Auto config generator for ShareX.
++ Share to Telegram.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, the composer package manager, writable storage path and PDO, with installed the needed extensions (ex. `php-sqlite3` for SQLite):
+XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`):
 
-+ **[release, stable]** Download latest release from GitHub:
- [https://github.com/SergiX44/XBackBone/releases/latest](https://github.com/SergiX44/XBackBone/releases/latest)
- 
-+ Setup the config file:
-
++ **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
++ Extract the release zip to your document root.
++ Edit the config file:
 ```sh
 cp config.example.php config.php
 ```
-By default, XBackBone will use Sqlite as DB engine, and a `storage` dir in the current directory. You can leave these settings unchanged for a simple personal installation.
-You must set the `base_url`, or remove it for get dynamically the url from request (not raccomanded).
+By default, XBackBone will use Sqlite3 as DB engine, and a `storage` dir in the main directory. You can leave these settings unchanged for a simple personal installation.
+You must set the `base_url`, or remove it for get dynamically the url from request (not recommended).
 
 ```php
 return [
@@ -46,8 +48,9 @@ php bin/migrate --install
 
 #### Changing themes
 XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes:
-+ Run the command `php bin\theme` to see the available themes.
-+ Use the same command with the argument name (`php bin\theme <THEME-NAME>`) to choose a theme.
++ Run the command `php bin/theme` to see the available themes.
++ Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
++ If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
 
 #### Docker deployment
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
