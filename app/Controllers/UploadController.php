@@ -93,6 +93,7 @@ class UploadController extends Controller
 
 		if (stristr($request->getHeaderLine('User-Agent'), 'TelegramBot') ||
 			stristr($request->getHeaderLine('User-Agent'), 'facebookexternalhit/') ||
+			stristr($request->getHeaderLine('User-Agent'), 'Discordbot/') ||
 			stristr($request->getHeaderLine('User-Agent'), 'Facebot')) {
 			return $this->streamMedia($request, $response, $filesystem, $media);
 		} else {

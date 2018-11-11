@@ -1,3 +1,9 @@
+## v2.0 [WIP]
++ Migrated from Flight to Slim 3 framework.
++ Added install wizard (using the CLI is no longer required).
++ Allow discord bot to display the preview.
++ Improvements under the hood.
+
 ## v1.3
 + Added command to switch between bootswatch.com themes.
 + Added popever to write the telegram message when sharing.
