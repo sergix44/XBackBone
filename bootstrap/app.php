@@ -35,6 +35,8 @@ $container['logger'] = function ($container) {
 	return $logger;
 };
 
+// Session init
+Session::init('xbackbone_session', 'resources/sessions');
 
 // Set the database dsn
 DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
@@ -76,6 +78,7 @@ $container['errorHandler'] = function ($container) {
 		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $exception]);
 	};
 };
+
 $container['notFoundHandler'] = function ($container) {
 	return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use (&$container) {
 		$response->withStatus(404)->withHeader('Content-Type', 'text/html');

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Installing XBackBone | {{ config.app_name }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A lightweight PHP backend for ShareX">
+
+    <link href="{{ config.base_url }}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ config.base_url }}/static/highlightjs/styles/monokai.css" rel="stylesheet">
+    <link href="{{ config.base_url }}/static/app/app.css" rel="stylesheet">
+
+    <script src="{{ config.base_url }}/static/jquery/jquery.min.js"></script>
+    <script src="{{ config.base_url }}/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ config.base_url }}/static/fontawesome/js/all.min.js"></script>
+    <script src="{{ config.base_url }}/static/highlightjs/highlight.pack.min.js"></script>
+    <script src="{{ config.base_url }}/static/clipboardjs/clipboard.min.js"></script>
+    <script src="{{ config.base_url }}/static/app/app.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: -webkit-box;
+            display: flex;
+            -ms-flex-align: center;
+            -ms-flex-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    {% include 'alert.twig' %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-3">
+                <div class="card-header">Install XBackBone</div>
+                <div class="card-body">
+                    <form method="post" action="">
+
+                        <div class="form-group row">
+                            <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="base_url" name="base_url" value="{{ config.base_url }}" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-group row">
+                            <label for="connection" class="col-sm-3 col-form-label">SQL Engine</label>
+                            <div class="col-sm-9">
+                                <select name="connection" id="connection" required class="form-control">
+                                    <option value="sqlite" selected>SQLite</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="dsn" class="col-sm-3 col-form-label">Database Source Name (DSN)</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="dsn" name="dsn" value="{{ config.db.dsn }}" autocomplete="off" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="db_user" class="col-sm-3 col-form-label">Database Username</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="db_user" name="db_user" autocomplete="off" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="db_password" class="col-sm-3 col-form-label">Database Password</label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="db_password" name="db_password" autocomplete="off" disabled>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-group row">
+                            <label for="storage_dir" class="col-sm-3 col-form-label">Storage Directory</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="storage_dir" name="storage_dir" value="{{ config.storage_dir }}" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-group row">
+                            <label for="email" class="col-sm-3 col-form-label">Admin email</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" autocomplete="off" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="password" class="col-sm-3 col-form-label">Admin password</label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="password" placeholder="Password" name="password" autocomplete="off" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row justify-content-md-end">
+                            <div class="col-sm-9">
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="fas fa-save fa-fw"></i> Configure & Install
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.twig' %}
+</body>
+</html>

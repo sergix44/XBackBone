@@ -8,13 +8,15 @@ class Session
 
 	/**
 	 * Start a session if is not already started in the current context
+	 * @param string $name
+	 * @param string $path
 	 */
-	public static function init(): void
+	public static function init(string $name, $path = ''): void
 	{
 		if (session_status() === PHP_SESSION_NONE) {
 			session_start([
-				'name' => 'xbackbone_session',
-				'save_path' => 'resources/sessions'
+				'name' => $name,
+				'save_path' => $path
 			]);
 		}
 	}
@@ -33,7 +35,6 @@ class Session
 	 */
 	public static function clear(): void
 	{
-		self::init();
 		$_SESSION = [];
 	}
 
@@ -44,7 +45,6 @@ class Session
 	 */
 	public static function has($key): bool
 	{
-		self::init();
 		return isset($_SESSION[$key]);
 	}
 
@@ -54,7 +54,6 @@ class Session
 	 */
 	public static function all(): array
 	{
-		self::init();
 		return $_SESSION;
 	}
 
@@ -66,7 +65,6 @@ class Session
 	 */
 	public static function get($key, $default = null)
 	{
-		self::init();
 		return self::has($key) ? $_SESSION[$key] : $default;
 	}
 
@@ -77,7 +75,6 @@ class Session
 	 */
 	public static function set($key, $value): void
 	{
-		self::init();
 		$_SESSION[$key] = $value;
 	}
 
@@ -88,7 +85,6 @@ class Session
 	 */
 	public static function alert($message, string $type = 'info'): void
 	{
-		self::init();
 		$_SESSION['_flash'] = [$type => $message];
 	}
 

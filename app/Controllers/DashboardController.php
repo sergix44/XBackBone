@@ -91,9 +91,7 @@ class DashboardController extends Controller
 			$totalSize += $filesystem->getSize($media->storage_path);
 		}
 
-		return $this->view->render(
-			$response,
-			'dashboard/system.twig', [
+		return $this->view->render($response, 'dashboard/system.twig', [
 			'usersCount' => $usersCount,
 			'mediasCount' => $mediasCount,
 			'orphanFilesCount' => $orphanFilesCount,
