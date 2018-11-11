@@ -1,29 +1,37 @@
 <?php
+// Auth routes
+$app->group('', function () {
+	$this->get('/', \App\Controllers\DashboardController::class . ':redirects');
+	$this->get('/home[/page/{page}]', \App\Controllers\DashboardController::class . ':home');
+	$this->get('/system', \App\Controllers\DashboardController::class . ':system')->add(\App\Middleware\AdminMiddleware::class);
 
-Flight::route('GET /login', [\App\Controllers\LoginController::instance(), 'show']);
-Flight::route('POST /login', [\App\Controllers\LoginController::instance(), 'login']);
-Flight::route('GET|POST /logout', [\App\Controllers\LoginController::instance(), 'logout']);
+	$this->group('', function () {
+		$this->get('/users[/page/{page}]', \App\Controllers\UserController::class . ':index');
+		$this->get('/user/create', \App\Controllers\UserController::class . ':create');
+		$this->post('/user/create', \App\Controllers\UserController::class . ':store');
+		$this->get('/user/{id}/edit', \App\Controllers\UserController::class . ':edit');
+		$this->post('/user/{id}', \App\Controllers\UserController::class . ':update');
+		$this->get('/user/{id}/delete', \App\Controllers\UserController::class . ':delete');
+	})->add(\App\Middleware\AdminMiddleware::class);
 
-Flight::route('GET /', [\App\Controllers\DashboardController::instance(), 'redirects']);
-Flight::route('GET /home(/page/@page)', [\App\Controllers\DashboardController::instance(), 'home']);
-Flight::route('GET /system', [\App\Controllers\DashboardController::instance(), 'system']);
+	$this->get('/profile', \App\Controllers\UserController::class . ':profile');
+	$this->post('/profile/{id}/edit', \App\Controllers\UserController::class . ':profileEdit');
+	$this->post('/user/{id}/refreshToken', \App\Controllers\UserController::class . ':refreshToken');
+	$this->get('/user/{id}/config/sharex', \App\Controllers\UserController::class . ':getShareXconfigFile');
 
-Flight::route('GET /users(/page/@page)', [\App\Controllers\UserController::instance(), 'index']);
-Flight::route('GET /user/add', [\App\Controllers\UserController::instance(), 'create']);
-Flight::route('POST /user/add', [\App\Controllers\UserController::instance(), 'store']);
-Flight::route('GET /user/@id/edit', [\App\Controllers\UserController::instance(), 'edit']);
-Flight::route('POST /user/@id', [\App\Controllers\UserController::instance(), 'update']);
-Flight::route('GET /user/@id/delete', [\App\Controllers\UserController::instance(), 'delete']);
-Flight::route('GET /profile', [\App\Controllers\UserController::instance(), 'profile']);
-Flight::route('POST /profile/@id/edit', [\App\Controllers\UserController::instance(), 'profileEdit']);
-Flight::route('POST /user/@id/refreshToken', [\App\Controllers\UserController::instance(), 'refreshToken']);
-Flight::route('GET /user/@id/config/sharex', [\App\Controllers\UserController::instance(), 'getShareXconfigFile']);
+	$this->post('/upload/{id}/publish', \App\Controllers\UploadController::class . ':togglePublish');
+	$this->post('/upload/{id}/unpublish', \App\Controllers\UploadController::class . ':togglePublish');
+	$this->get('/upload/{id}/raw', \App\Controllers\UploadController::class . ':getRawById')->add(\App\Middleware\AdminMiddleware::class);
+	$this->post('/upload/{id}/delete', \App\Controllers\UploadController::class . ':delete');
 
-Flight::route('POST /upload', [\App\Controllers\UploadController::instance(), 'upload']);
-Flight::route('POST /upload/@id/publish', [\App\Controllers\UploadController::instance(), 'togglePublish']);
-Flight::route('POST /upload/@id/unpublish', [\App\Controllers\UploadController::instance(), 'togglePublish']);
-Flight::route('GET /upload/@id/raw', [\App\Controllers\UploadController::instance(), 'getRawById']);
-Flight::route('POST /upload/@id/delete', [\App\Controllers\UploadController::instance(), 'delete']);
-Flight::route('GET /@userCode/@filename', [\App\Controllers\UploadController::instance(), 'show']);
-Flight::route('GET /@userCode/@filename/raw', [\App\Controllers\UploadController::instance(), 'showRaw']);
-Flight::route('GET /@userCode/@filename/download', [\App\Controllers\UploadController::instance(), 'download']);
+})->add(\App\Middleware\AuthMiddleware::class);
+
+$app->get('/login', \App\Controllers\LoginController::class . ':show');
+$app->post('/login', \App\Controllers\LoginController::class . ':login');
+$app->map(['GET', 'POST'], '/logout', \App\Controllers\LoginController::class . ':logout');
+
+$app->post('/upload', \App\Controllers\UploadController::class . ':upload');
+
+$app->get('/{userCode}/{mediaCode}', \App\Controllers\UploadController::class . ':show');
+$app->get('/{userCode}/{mediaCode}/raw', \App\Controllers\UploadController::class . ':showRaw');
+$app->get('/{userCode}/{mediaCode}/download', \App\Controllers\UploadController::class . ':download');

@@ -4,40 +4,44 @@ namespace App\Controllers;
 
 
 use App\Database\DB;
-use App\Traits\SingletonController;
-use App\Web\Log;
 use App\Web\Session;
-use Flight;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class LoginController extends Controller
 {
-	use SingletonController;
 
-	public function show(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function show(Request $request, Response $response): Response
 	{
 		if (Session::get('logged', false)) {
-			Flight::redirect('/home');
-			return;
+			return $response->withRedirect('/home');
 		}
-		Flight::render('auth/login.twig');
+		return $this->view->render($response, 'auth/login.twig');
 	}
 
-	public function login(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function login(Request $request, Response $response): Response
 	{
-		$form = Flight::request()->data;
 
-		$result = DB::query('SELECT `id`,`username`, `password`,`is_admin`, `active` FROM `users` WHERE `username` = ? LIMIT 1', $form->username)->fetch();
+		$result = DB::query('SELECT `id`,`username`, `password`,`is_admin`, `active` FROM `users` WHERE `username` = ? LIMIT 1', $request->getParam('username'))->fetch();
 
-		if (!$result || !password_verify($form->password, $result->password)) {
-			Flight::redirect('login');
+		if (!$result || !password_verify($request->getParam('password'), $result->password)) {
 			Session::alert('Wrong credentials', 'danger');
-			return;
+			return $response->withRedirect('/login');
 		}
 
 		if (!$result->active) {
-			Flight::redirect('login');
 			Session::alert('Your account is disabled.', 'danger');
-			return;
+			return $response->withRedirect('/login');
 		}
 
 		Session::set('logged', true);
@@ -46,23 +50,26 @@ class LoginController extends Controller
 		Session::set('admin', $result->is_admin);
 
 		Session::alert("Welcome, $result->username!", 'info');
-		Log::info("User $result->username logged in.");
+		$this->logger->info("User $result->username logged in.");
 
 		if (Session::has('redirectTo')) {
-			Flight::redirect(Session::get('redirectTo'));
-			return;
+			return $response->withRedirect(Session::get('redirectTo'));
 		}
 
-		Flight::redirect('/home');
+		return $response->withRedirect('/home');
 	}
 
-	public function logout(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function logout(Request $request, Response $response): Response
 	{
-		$this->checkLogin();
 		Session::clear();
 		Session::set('logged', false);
 		Session::alert('Goodbye!', 'warning');
-		Flight::redirect('/login');
+		return $response->withRedirect('/login');
 	}
 
 }

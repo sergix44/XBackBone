@@ -1,13 +1,19 @@
 <?php
 
 use App\Database\DB;
+use App\Web\Session;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
+use Slim\App;
+use Slim\Container;
 
 // Load the config
 $config = array_replace_recursive([
 	'app_name' => 'XBackBone',
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
 	'storage_dir' => 'storage',
-	'debug' => false,
+	'displayErrorDetails' => false,
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => 'resources/database/xbackbone.db',
@@ -16,68 +22,68 @@ $config = array_replace_recursive([
 	],
 ], require 'config.php');
 
-// Set flight parameters
-Flight::set('flight.base_url', $config['base_url']);
-Flight::set('flight.log_errors', false);
-Flight::set('config', $config);
+$container = new Container(['settings' => $config]);
+
+$container['logger'] = function ($container) {
+	$logger = new Logger('app');
+
+	$streamHandler = new RotatingFileHandler(__DIR__ . '/../logs/log.txt', 10, Logger::DEBUG);
+	$streamHandler->setFormatter(new LineFormatter("[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n", "Y-m-d H:i:s", true));
+
+	$logger->pushHandler($streamHandler);
+
+	return $logger;
+};
+
 
 // Set the database dsn
 DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
 
-// Register the Twig instance
-Flight::register('view', 'Twig_Environment',
-	[new Twig_Loader_Filesystem('resources/templates'),
-		[
-			'cache' => 'resources/cache',
-			'autoescape' => 'html',
-			'debug' => $config['debug'],
-			'auto_reload' => $config['debug'],
-		]
-	]
-);
+$container['database'] = function ($container) use (&$config) {
+	return DB::getInstance();
+};
 
-// Redirect back helper
-Flight::register('redirectBack', function () {
-	Flight::redirect(Flight::request()->referrer);
-});
 
-// Map the render call to the Twig view instance
-Flight::map('render', function (string $template, array $data = []) use (&$config) {
-	Flight::view()->addGlobal('config', $config);
-	Flight::view()->addGlobal('request', Flight::request());
-	Flight::view()->addGlobal('alerts', App\Web\Session::getAlert());
-	Flight::view()->addGlobal('session', App\Web\Session::all());
-	Flight::view()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
-	Flight::view()->display($template, $data);
-});
+$container['view'] = function ($container) use (&$config) {
+	$view = new \Slim\Views\Twig('resources/templates', [
+		'cache' => 'resources/cache',
+		'autoescape' => 'html',
+		'debug' => $config['displayErrorDetails'],
+		'auto_reload' => $config['displayErrorDetails'],
+	]);
 
-// The application error handler
-Flight::map('error', function (Exception $exception) {
-	if ($exception instanceof \App\Exceptions\AuthenticationException) {
-		Flight::redirect('/login');
-		return;
-	}
+	// Instantiate and add Slim specific extension
+	$router = $container->get('router');
+	$uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
+	$view->addExtension(new Slim\Views\TwigExtension($router, $uri));
 
-	if ($exception instanceof \App\Exceptions\UnauthorizedException) {
-		Flight::response()->status(403);
-		Flight::render('errors/403.twig');
-		return;
-	}
+	$view->getEnvironment()->addGlobal('config', $config);
+	$view->getEnvironment()->addGlobal('request', $container->get('request'));
+	$view->getEnvironment()->addGlobal('alerts', Session::getAlert());
+	$view->getEnvironment()->addGlobal('session', Session::all());
+	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
+	return $view;
+};
 
-	if ($exception instanceof \App\Exceptions\NotFoundException) {
-		Flight::response()->status(404);
-		Flight::render('errors/404.twig');
-		return;
-	}
+$container['errorHandler'] = function ($container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use (&$container) {
 
-	Flight::response()->status(500);
-	\App\Web\Log::critical('Fatal error during app execution', [$exception->getTraceAsString()]);
-	Flight::render('errors/500.twig', ['exception' => $exception]);
-});
+		if ($exception instanceof \App\Exceptions\UnauthorizedException) {
+			return $container->view->render($response->withStatus(403), 'errors/403.twig');
+		}
 
-Flight::map('notFound', function () {
-	Flight::render('errors/404.twig');
-});
+		$container->logger->critical('Fatal error during app execution', [$exception, $exception->getTraceAsString()]);
+		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $exception]);
+	};
+};
+$container['notFoundHandler'] = function ($container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use (&$container) {
+		$response->withStatus(404)->withHeader('Content-Type', 'text/html');
+		return $container->view->render($response, 'errors/404.twig');
+	};
+};
+
+$app = new App($container);
 
 // Load the application routes
 require 'app/routes.php';

@@ -3,37 +3,44 @@
 namespace App\Controllers;
 
 
-use App\Database\DB;
-use App\Traits\SingletonController;
 use App\Web\Session;
-use Flight;
 use League\Flysystem\FileNotFoundException;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class DashboardController extends Controller
 {
-	use SingletonController;
 
 	const PER_PAGE = 21;
-	const PER_PAGE_ADMIN = 50;
+	const PER_PAGE_ADMIN = 25;
 
-	public function redirects(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function redirects(Request $request, Response $response): Response
 	{
-		$this->checkLogin();
-		Flight::redirect('/home');
+		return $response->withRedirect('/home');
 	}
 
-	public function home($page = 1): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 */
+	public function home(Request $request, Response $response, $args): Response
 	{
-		$this->checkLogin();
-
+		$page = isset($args['page']) ? (int)$args['page'] : 0;
 		$page = max(0, --$page);
 
 		if (Session::get('admin', false)) {
-			$medias = DB::query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` ORDER BY `timestamp` DESC LIMIT ? OFFSET ?', [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN])->fetchAll();
-			$pages = DB::query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count / self::PER_PAGE_ADMIN;
+			$medias = $this->database->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` ORDER BY `timestamp` DESC LIMIT ? OFFSET ?', [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN])->fetchAll();
+			$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count / self::PER_PAGE_ADMIN;
 		} else {
-			$medias = DB::query('SELECT `uploads`.*,`users`.`user_code`, `users`.`username` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? ORDER BY `timestamp` DESC LIMIT ? OFFSET ?', [Session::get('user_id'), self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
-			$pages = DB::query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` = ?', Session::get('user_id'))->fetch()->count / self::PER_PAGE;
+			$medias = $this->database->query('SELECT `uploads`.*,`users`.`user_code`, `users`.`username` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? ORDER BY `timestamp` DESC LIMIT ? OFFSET ?', [Session::get('user_id'), self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
+			$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` = ?', Session::get('user_id'))->fetch()->count / self::PER_PAGE;
 		}
 
 		$filesystem = $this->getStorage();
@@ -51,7 +58,8 @@ class DashboardController extends Controller
 			$media->size = $this->humanFilesize($size);
 		}
 
-		Flight::render(
+		return $this->view->render(
+			$response,
 			Session::get('admin', false) ? 'dashboard/admin.twig' : 'dashboard/home.twig',
 			[
 				'medias' => $medias,
@@ -62,15 +70,19 @@ class DashboardController extends Controller
 		);
 	}
 
-	public function system()
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws FileNotFoundException
+	 */
+	public function system(Request $request, Response $response): Response
 	{
-		$this->checkAdmin();
+		$usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count;
+		$mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
+		$orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count;
 
-		$usersCount = DB::query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count;
-		$mediasCount = DB::query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
-		$orphanFilesCount = DB::query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count;
-
-		$medias = DB::query('SELECT `users`.`user_code`, `uploads`.`code`, `uploads`.`storage_path` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id`')->fetchAll();
+		$medias = $this->database->query('SELECT `users`.`user_code`, `uploads`.`code`, `uploads`.`storage_path` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id`')->fetchAll();
 
 		$totalSize = 0;
 
@@ -79,7 +91,9 @@ class DashboardController extends Controller
 			$totalSize += $filesystem->getSize($media->storage_path);
 		}
 
-		Flight::render('dashboard/system.twig', [
+		return $this->view->render(
+			$response,
+			'dashboard/system.twig', [
 			'usersCount' => $usersCount,
 			'mediasCount' => $mediasCount,
 			'orphanFilesCount' => $orphanFilesCount,

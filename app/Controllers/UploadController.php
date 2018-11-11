@@ -3,99 +3,98 @@
 namespace App\Controllers;
 
 
-use App\Database\DB;
-use App\Exceptions\NotFoundException;
-use App\Traits\SingletonController;
-use App\Web\Log;
+use App\Exceptions\UnauthorizedException;
 use App\Web\Session;
-use Flight;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
+use Slim\Exception\NotFoundException;
+use Slim\Http\Request;
+use Slim\Http\Response;
+use Slim\Http\Stream;
 
 class UploadController extends Controller
 {
-	use SingletonController;
 
-	public function upload(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws FileExistsException
+	 */
+	public function upload(Request $request, Response $response): Response
 	{
-		$requestData = Flight::request()->data;
 
-		$response = [
-			'message' => null,
-		];
+		$json = ['message' => null];
 
-		if (!isset($requestData->token)) {
-			$response['message'] = 'Token not specified.';
-			Flight::json($response, 400);
-			return;
+		if ($request->getParam('token') === null) {
+			$json['message'] = 'Token not specified.';
+			return $response->withJson($json, 400);
 		}
 
-		$user = DB::query('SELECT * FROM `users` WHERE `token` = ? LIMIT 1', $requestData->token)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `token` = ? LIMIT 1', $request->getParam('token'))->fetch();
 
 		if (!$user) {
-			$response['message'] = 'Token specified not found.';
-			Flight::json($response, 404);
-			return;
+			$json['message'] = 'Token specified not found.';
+			return $response->withJson($json, 404);
 		}
 
 		if (!$user->active) {
-			$response['message'] = 'Account disabled.';
-			Flight::json($response, 401);
-			return;
+			$json['message'] = 'Account disabled.';
+			return $response->withJson($json, 401);
 		}
 
 		do {
 			$code = uniqid();
-		} while (DB::query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
+		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
-		$file = Flight::request()->files->current();
-		$fileInfo = pathinfo($file['name']);
+		/** @var \Psr\Http\Message\UploadedFileInterface $file */
+		$file = $request->getUploadedFiles()['upload'];
+
+		$fileInfo = pathinfo($file->getClientFilename());
 		$storagePath = "$user->user_code/$code.$fileInfo[extension]";
 
-		$stream = fopen($file['tmp_name'], 'r+');
+		$this->getStorage()->writeStream($storagePath, $file->getStream()->detach());
 
-		$filesystem = $this->getStorage();
-		try {
-			$filesystem->writeStream($storagePath, $stream);
-		} catch (FileExistsException $e) {
-			Flight::halt(500);
-			return;
-		} finally {
-			fclose($stream);
-		}
-
-		DB::query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', [
+		$this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', [
 			$user->id,
 			$code,
-			$file['name'],
+			$file->getClientFilename(),
 			$storagePath
 		]);
 
-		$base_url = Flight::get('config')['base_url'];
+		$base_url = $this->settings['base_url'];
 
-		$response['message'] = 'OK.';
-		$response['url'] = "$base_url/$user->user_code/$code.$fileInfo[extension]";
-		Flight::json($response, 201);
+		$json['message'] = 'OK.';
+		$json['url'] = "$base_url/$user->user_code/$code.$fileInfo[extension]";
 
-		Log::info("User $user->username uploaded new media.", [DB::raw()->lastInsertId()]);
+		$this->logger->info("User $user->username uploaded new media.", [$this->database->raw()->lastInsertId()]);
+
+		return $response->withJson($json, 201);
 	}
 
-	public function show($userCode, $mediaCode): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws FileNotFoundException
+	 * @throws NotFoundException
+	 */
+	public function show(Request $request, Response $response, $args): Response
 	{
-		$media = $this->getMedia($userCode, $mediaCode);
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
 		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
 		$filesystem = $this->getStorage();
 
-		if (stristr(Flight::request()->user_agent, 'TelegramBot') ||
-			stristr(Flight::request()->user_agent, 'facebookexternalhit/') ||
-			stristr(Flight::request()->user_agent, 'Facebot')) {
-			$this->streamMedia($filesystem, $media);
+		if (stristr($request->getHeaderLine('User-Agent'), 'TelegramBot') ||
+			stristr($request->getHeaderLine('User-Agent'), 'facebookexternalhit/') ||
+			stristr($request->getHeaderLine('User-Agent'), 'Facebot')) {
+			return $this->streamMedia($request, $response, $filesystem, $media);
 		} else {
 
 			try {
@@ -104,16 +103,15 @@ class UploadController extends Controller
 				$type = explode('/', $mime)[0];
 				if ($type === 'text') {
 					$media->text = $filesystem->read($media->storage_path);
-				} elseif (in_array($type, ['image', 'video'])) {
-					$this->http2push(Flight::get('config')['base_url'] . "/$userCode/$mediaCode/raw");
+				} elseif (in_array($type, ['image', 'video']) && $request->getHeaderLine('Scheme') === 'HTTP/2.0') {
+					$response = $response->withHeader('Link', "<{$this->settings['base_url']}/$args[userCode]/$args[mediaCode]/raw>; rel=preload; as={$type}");
 				}
 
 			} catch (FileNotFoundException $e) {
-				Flight::error($e);
-				return;
+				throw $e;
 			}
 
-			Flight::render('upload/public.twig', [
+			return $this->view->render($response, 'upload/public.twig', [
 				'media' => $media,
 				'type' => $mime,
 				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION)
@@ -121,68 +119,98 @@ class UploadController extends Controller
 		}
 	}
 
-	public function getRawById($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws FileNotFoundException
+	 */
+	public function getRawById(Request $request, Response $response, $args): Response
 	{
-		$this->checkAdmin();
 
-		$media = DB::query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$media) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
-		$this->streamMedia($this->getStorage(), $media);
+		return $this->streamMedia($request, $response, $this->getStorage(), $media);
 	}
 
-	public function showRaw($userCode, $mediaCode): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws FileNotFoundException
+	 */
+	public function showRaw(Request $request, Response $response, $args): Response
 	{
-		$media = $this->getMedia($userCode, $mediaCode);
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
 		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
-
-		$this->streamMedia($this->getStorage(), $media);
+		return $this->streamMedia($request, $response, $this->getStorage(), $media);
 	}
 
 
-	public function download($userCode, $mediaCode): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws FileNotFoundException
+	 */
+	public function download(Request $request, Response $response, $args): Response
 	{
-		$media = $this->getMedia($userCode, $mediaCode);
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
 		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
-
-		$this->streamMedia($this->getStorage(), $media, 'attachment');
+		return $this->streamMedia($request, $response, $this->getStorage(), $media, 'attachment');
 	}
 
-	public function togglePublish($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function togglePublish(Request $request, Response $response, $args): Response
 	{
-		$this->checkLogin();
-
 		if (Session::get('admin')) {
-			$media = DB::query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
+			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 		} else {
-			$media = DB::query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$id, Session::get('user_id')])->fetch();
+			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$args['id'], Session::get('user_id')])->fetch();
 		}
 
 		if (!$media) {
-			Flight::halt(404);
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
-		DB::query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [!$media->published, $media->id]);
+		$this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [!$media->published, $media->id]);
+
+		return $response->withStatus(200);
 	}
 
-	public function delete($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function delete(Request $request, Response $response, $args): Response
 	{
-		$this->checkLogin();
-
-		$media = DB::query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (Session::get('admin', false) || $media->user_id === Session::get('user_id')) {
 
@@ -190,22 +218,28 @@ class UploadController extends Controller
 			try {
 				$filesystem->delete($media->storage_path);
 			} catch (FileNotFoundException $e) {
-				Flight::halt(404);
-				return;
+				throw new NotFoundException($request, $response);
 			} finally {
-				DB::query('DELETE FROM `uploads` WHERE `id` = ?', $id);
-				Log::info('User ' . Session::get('username') . " deleted media $id");
+				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $args['id']);
+				$this->logger->info('User ' . Session::get('username') . ' deleted a media.', [$args['id']]);
 			}
 		} else {
-			Flight::halt(403);
+			throw new UnauthorizedException();
 		}
+
+		return $response->withStatus(200);
 	}
 
+	/**
+	 * @param $userCode
+	 * @param $mediaCode
+	 * @return mixed
+	 */
 	protected function getMedia($userCode, $mediaCode)
 	{
 		$mediaCode = pathinfo($mediaCode)['filename'];
 
-		$media = DB::query('SELECT * FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
+		$media = $this->database->query('SELECT * FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
 			$userCode,
 			$mediaCode
 		])->fetch();
@@ -213,36 +247,43 @@ class UploadController extends Controller
 		return $media;
 	}
 
-	protected function streamMedia(Filesystem $storage, $media, string $disposition = 'inline'): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param Filesystem $storage
+	 * @param $media
+	 * @param string $disposition
+	 * @return Response
+	 * @throws FileNotFoundException
+	 */
+	protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
 	{
-		try {
-			$mime = $storage->getMimetype($media->storage_path);
-			$query = Flight::request()->query;
+		$mime = $storage->getMimetype($media->storage_path);
 
-			if ($query['width'] !== null && explode('/', $mime)[0] === 'image') {
-				Flight::response()->header('Content-Type', 'image/png');
-				Flight::response()->header('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"');
-				Flight::response()->sendHeaders();
-				ob_clean();
+		if ($request->getParam('width') !== null && explode('/', $mime)[0] === 'image') {
 
-				$image = imagecreatefromstring($storage->read($media->storage_path));
-				$scaled = imagescale($image, $query['width'], $query['height'] !== null ? $query['height'] : -1);
+			$image = imagecreatefromstring($storage->read($media->storage_path));
+			$scaled = imagescale($image, $request->getParam('width'), $request->getParam('height') !== null ? $request->getParam('height') : -1);
+			imagedestroy($image);
 
-				imagedestroy($image);
+			ob_start();
+			imagepng($scaled, null, 9);
 
-				imagepng($scaled, null, 9);
-				imagedestroy($scaled);
-			} else {
-				Flight::response()->header('Content-Type', $mime);
-				Flight::response()->header('Content-Disposition', $disposition . ';filename="' . $media->filename . '"');
-				Flight::response()->header('Content-Length', $storage->getSize($media->storage_path));
-				Flight::response()->sendHeaders();
-				ob_end_clean();
+			$imagedata = ob_get_contents();
+			ob_end_clean();
+			imagedestroy($scaled);
 
-				fpassthru($storage->readStream($media->storage_path));
-			}
-		} catch (FileNotFoundException $e) {
-			Flight::error($e);
+			return $response
+				->withHeader('Content-Type', 'image/png')
+				->withHeader('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"')
+				->write($imagedata);
+		} else {
+			ob_end_clean();
+			return $response
+				->withHeader('Content-Type', $mime)
+				->withHeader('Content-Disposition', $disposition . ';filename="' . $media->filename . '"')
+				->withHeader('Content-Length', $storage->getSize($media->storage_path))
+				->withBody(new Stream($storage->readStream($media->storage_path)));
 		}
 	}
 }

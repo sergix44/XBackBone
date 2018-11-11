@@ -5,4 +5,4 @@ define('PLATFORM_VERSION', json_decode(file_get_contents('composer.json'))->vers
 
 require 'bootstrap/app.php';
 
-Flight::start();
+$app->run();

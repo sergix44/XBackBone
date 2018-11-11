@@ -3,309 +3,333 @@
 namespace App\Controllers;
 
 
-use App\Database\DB;
-use App\Exceptions\NotFoundException;
 use App\Exceptions\UnauthorizedException;
-use App\Traits\SingletonController;
-use App\Web\Log;
 use App\Web\Session;
-use Flight;
+use Slim\Exception\NotFoundException;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class UserController extends Controller
 {
-	use SingletonController;
-
 	const PER_PAGE = 15;
 
-	public function index($page = 1): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 */
+	public function index(Request $request, Response $response, $args): Response
 	{
-		$this->checkAdmin();
-
+		$page = isset($args['page']) ? (int)$args['page'] : 0;
 		$page = max(0, --$page);
 
-		$users = DB::query('SELECT * FROM `users` LIMIT ? OFFSET ?', [self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
+		$users = $this->database->query('SELECT * FROM `users` LIMIT ? OFFSET ?', [self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
 
-		$pages = DB::query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count / self::PER_PAGE;
+		$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count / self::PER_PAGE;
 
-		Flight::render('user/index.twig', [
-			'users' => $users,
-			'next' => $page < floor($pages),
-			'previous' => $page >= 1,
-			'current_page' => ++$page,
-		]);
+		return $this->view->render($response,
+			'user/index.twig',
+			[
+				'users' => $users,
+				'next' => $page < floor($pages),
+				'previous' => $page >= 1,
+				'current_page' => ++$page,
+			]
+		);
 	}
 
-	public function create(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function create(Request $request, Response $response): Response
 	{
-		$this->checkAdmin();
-		Flight::render('user/create.twig');
+		return $this->view->render($response, 'user/create.twig');
 	}
 
-	public function store(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function store(Request $request, Response $response): Response
 	{
-		$this->checkAdmin();
-
-		$form = Flight::request()->data;
-
-		if (!isset($form->email) || empty($form->email)) {
+		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/create');
 		}
 
-		if (!isset($form->username) || empty($form->username)) {
+		if ($request->getParam('username') === null) {
 			Session::alert('The username is required.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/create');
 		}
 
-		if (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $form->username)->fetch()->count > 0) {
-			Session::alert('The username already taken.', 'danger');
-			Flight::redirectBack();
-			return;
-		}
-
-		if (!isset($form->password) || empty($form->password)) {
+		if ($request->getParam('password') === null) {
 			Session::alert('The password is required.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/create');
+		}
+
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $request->getParam('username'))->fetch()->count > 0) {
+			Session::alert('The username already taken.', 'danger');
+			return $response->withRedirect('/user/create');
 		}
 
 		do {
 			$userCode = substr(md5(microtime()), rand(0, 26), 5);
-		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
+		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
 		$token = $this->generateNewToken();
 
-		DB::query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', [
-			$form->email,
-			$form->username,
-			password_hash($form->password, PASSWORD_DEFAULT),
-			isset($form->is_admin),
-			isset($form->is_active),
+		$this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+			$request->getParam('email'),
+			$request->getParam('username'),
+			password_hash($request->getParam('password'), PASSWORD_DEFAULT),
+			$request->getParam('is_admin') !== null,
+			$request->getParam('is_active') !== null,
 			$userCode,
 			$token
 		]);
 
-		Session::alert("User '$form->username' created!", 'success');
-		Log::info('User ' . Session::get('username') . ' created a new user.', [array_diff($form->getData(), ['password'])]);
+		Session::alert("User '{$request->getParam('username')}' created!", 'success');
+		$this->logger->info('User ' . Session::get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
 
-		Flight::redirect('/users');
+		return $response->withRedirect('/users');
 	}
 
-	public function edit($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function edit(Request $request, Response $response, $args): Response
 	{
-		$this->checkAdmin();
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$user) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
-		Flight::render('user/edit.twig', [
+		return $this->view->render($response, 'user/edit.twig', [
 			'user' => $user
 		]);
 	}
 
-	public function update($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function update(Request $request, Response $response, $args): Response
 	{
-		$this->checkAdmin();
-
-		$form = Flight::request()->data;
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$user) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
-		if (!isset($form->email) || empty($form->email)) {
+		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/' . $args['id'] . '/edit');
 		}
 
-		if (!isset($form->username) || empty($form->username)) {
+		if ($request->getParam('username') === null) {
 			Session::alert('The username is required.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/' . $args['id'] . '/edit');
 		}
 
-		if (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$form->username, $user->username])->fetch()->count > 0) {
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$request->getParam('username'), $user->username])->fetch()->count > 0) {
 			Session::alert('The username already taken.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/' . $args['id'] . '/edit');
 		}
 
-		if ($user->id === Session::get('user_id') && !isset($form->is_admin)) {
+		if ($user->id === Session::get('user_id') && $request->getParam('is_admin') === null) {
 			Session::alert('You cannot demote yourself.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/user/' . $args['id'] . '/edit');
 		}
 
-		if (isset($form->password) && !empty($form->password)) {
-			DB::query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
-				$form->email,
-				$form->username,
-				password_hash($form->password, PASSWORD_DEFAULT),
-				isset($form->is_admin),
-				isset($form->is_active),
+		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
+			$this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				$request->getParam('username'),
+				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
+				$request->getParam('is_admin') !== null,
+				$request->getParam('is_active') !== null,
 				$user->id
 			]);
 		} else {
-			DB::query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
-				$form->email,
-				$form->username,
-				isset($form->is_admin),
-				isset($form->is_active),
+			$this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				$request->getParam('username'),
+				$request->getParam('is_admin') !== null,
+				$request->getParam('is_active') !== null,
 				$user->id
 			]);
 		}
 
-		Session::alert("User '$form->username' updated!", 'success');
-		Log::info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($form->getData(), ['password'])]);
+		Session::alert("User '{$request->getParam('username')}' updated!", 'success');
+		$this->logger->info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
 
-		Flight::redirect('/users');
+		return $response->withRedirect('/users');
 
 	}
 
-	public function delete($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function delete(Request $request, Response $response, $args): Response
 	{
-		$this->checkAdmin();
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$user) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
 		if ($user->id === Session::get('user_id')) {
 			Session::alert('You cannot delete yourself.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/users');
 		}
 
-		DB::query('DELETE FROM `users` WHERE `id` = ?', $user->id);
+		$this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
 
 		Session::alert('User deleted.', 'success');
-		Log::info('User ' . Session::get('username') . " deleted $user->id.");
+		$this->logger->info('User ' . Session::get('username') . " deleted $user->id.");
 
-		Flight::redirect('/users');
+		return $response->withRedirect('/users');
 	}
 
-	public function profile(): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function profile(Request $request, Response $response): Response
 	{
-		$this->checkLogin();
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', Session::get('user_id'))->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', Session::get('user_id'))->fetch();
 
 		if (!$user) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
 		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
-			Flight::error(new UnauthorizedException());
-			return;
+			throw new UnauthorizedException();
 		}
 
-		Flight::render('user/profile.twig', [
+		return $this->view->render($response, 'user/profile.twig', [
 			'user' => $user
 		]);
 	}
 
-	public function profileEdit($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function profileEdit(Request $request, Response $response, $args): Response
 	{
-		$this->checkLogin();
-
-		$form = Flight::request()->data;
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$user) {
-			Flight::error(new NotFoundException());
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
 		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
-			Flight::error(new UnauthorizedException());
-			return;
+			throw new UnauthorizedException();
 		}
 
-		if (!isset($form->email) || empty($form->email)) {
+		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			Flight::redirectBack();
-			return;
+			return $response->withRedirect('/profile');
 		}
 
-		if (isset($form->password) && !empty($form->password)) {
-			DB::query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', [
-				$form->email,
-				password_hash($form->password, PASSWORD_DEFAULT),
+		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
+			$this->database->query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
 				$user->id
 			]);
 		} else {
-			DB::query('UPDATE `users` SET `email`=? WHERE `id` = ?', [
-				$form->email,
+			$this->database->query('UPDATE `users` SET `email`=? WHERE `id` = ?', [
+				$request->getParam('email'),
 				$user->id
 			]);
 		}
 
 		Session::alert('Profile updated successfully!', 'success');
-		Log::info('User ' . Session::get('username') . " updated profile of $user->id.");
+		$this->logger->info('User ' . Session::get('username') . " updated profile of $user->id.");
 
-		Flight::redirectBack();
+		return $response->withRedirect('/profile');
 	}
 
-	public function refreshToken($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function refreshToken(Request $request, Response $response, $args): Response
 	{
-		$this->checkLogin();
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$user) {
-			Flight::halt(404);
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
 		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
-			Flight::halt(403);
-			return;
+			throw new UnauthorizedException();
 		}
 
 		$token = $this->generateNewToken();
 
-		DB::query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
+		$this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
 			$token,
 			$user->id
 		]);
 
-		Log::info('User ' . Session::get('username') . " refreshed token of user $user->id.");
+		$this->logger->info('User ' . Session::get('username') . " refreshed token of user $user->id.");
 
-		echo $token;
+		$response->getBody()->write($token);
+
+		return $response;
 	}
 
-	public function getShareXconfigFile($id): void
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function getShareXconfigFile(Request $request, Response $response, $args): Response
 	{
-		$this->checkLogin();
-
-		$user = DB::query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
 		if (!$user) {
-			Flight::halt(404);
-			return;
+			throw new NotFoundException($request, $response);
 		}
 
 		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
-			Flight::halt(403);
-			return;
+			throw new UnauthorizedException();
 		}
 
-		$base_url = Flight::get('config')['base_url'];
+		$base_url = $this->settings['base_url'];
 		$json = [
 			'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
 			'RequestURL' => "$base_url/upload",
@@ -319,18 +343,19 @@ class UserController extends Controller
 			'ThumbnailURL' => '$json:url$/raw',
 		];
 
-		Flight::response()->header('Content-Type', 'application/json');
-		Flight::response()->header('Content-Disposition', 'attachment;filename="' . $user->username . '-ShareX.sxcu"');
-		Flight::response()->sendHeaders();
-
-		echo json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+		return $response
+			->withHeader('Content-Disposition', 'attachment;filename="' . $user->username . '-ShareX.sxcu"')
+			->withJson($json, 200, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function generateNewToken(): string
 	{
 		do {
 			$token = 'token_' . md5(uniqid('', true));
-		} while (DB::query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
+		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
 
 		return $token;
 	}

@@ -21,7 +21,7 @@ class DB
 	protected $pdo;
 
 	/** @var string */
-	protected static $dsn = 'database.db';
+	protected static $dsn = 'sqlite:database.db';
 
 	/** @var string */
 	protected $currentDriver;
@@ -67,6 +67,15 @@ class DB
 		return $this->currentDriver;
 	}
 
+	public static function getInstance(): DB
+	{
+		if (self::$instance === null) {
+			self::$instance = new self(self::$dsn, self::$username, self::$password);
+		}
+
+		return self::$instance;
+	}
+
 	/**
 	 * Perform a query
 	 * @param string $query
@@ -76,11 +85,7 @@ class DB
 	public static function query(string $query, $parameters = [])
 	{
 
-		if (self::$instance === null) {
-			self::$instance = new self(self::$dsn, self::$username, self::$password);
-		}
-
-		return self::$instance->doQuery($query, $parameters);
+		return self::getInstance()->doQuery($query, $parameters);
 	}
 
 	/**
@@ -90,11 +95,7 @@ class DB
 	public static function driver(): string
 	{
 
-		if (self::$instance === null) {
-			self::$instance = new self(self::$dsn, self::$username, self::$password);
-		}
-
-		return self::$instance->getCurrentDriver();
+		return self::getInstance()->getCurrentDriver();
 	}
 
 	/**
@@ -103,11 +104,8 @@ class DB
 	 */
 	public static function raw(): PDO
 	{
-		if (self::$instance === null) {
-			self::$instance = new self(self::$dsn, self::$username, self::$password);
-		}
 
-		return self::$instance->getPdo();
+		return self::getInstance()->getPdo();
 	}
 
 	/**
