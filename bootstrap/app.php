@@ -8,6 +8,13 @@ use Monolog\Logger;
 use Slim\App;
 use Slim\Container;
 
+if (!file_exists('config.php') && is_dir('install/')) {
+	header('Location: /install/');
+	exit();
+} else if (!file_exists('config.php') && !is_dir('install/')) {
+	die('Cannot find the config file.');
+}
+
 // Load the config
 $config = array_replace_recursive([
 	'app_name' => 'XBackBone',

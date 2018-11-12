@@ -51,7 +51,8 @@
                         <div class="form-group row">
                             <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="base_url" name="base_url" value="{{ config.base_url }}" autocomplete="off" required>
+                                <input type="text" class="form-control" id="base_url" name="base_url"
+                                       value="{{ config.base_url }}" autocomplete="off" required>
                             </div>
                         </div>
                         <hr>
@@ -60,6 +61,7 @@
                             <div class="col-sm-9">
                                 <select name="connection" id="connection" required class="form-control">
                                     <option value="sqlite" selected>SQLite</option>
+                                    <option value="mysql">MySQL</option>
                                 </select>
                             </div>
                         </div>
@@ -67,7 +69,8 @@
                         <div class="form-group row">
                             <label for="dsn" class="col-sm-3 col-form-label">Database Source Name (DSN)</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="dsn" name="dsn" value="{{ config.db.dsn }}" autocomplete="off" required>
+                                <input type="text" class="form-control" id="dsn" name="dsn" value="{{ config.db.dsn }}"
+                                       autocomplete="off" required>
                             </div>
                         </div>
 
@@ -81,28 +84,33 @@
                         <div class="form-group row">
                             <label for="db_password" class="col-sm-3 col-form-label">Database Password</label>
                             <div class="col-sm-9">
-                                <input type="password" class="form-control" id="db_password" name="db_password" autocomplete="off" disabled>
+                                <input type="password" class="form-control" id="db_password" name="db_password"
+                                       autocomplete="off" disabled>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group row">
                             <label for="storage_dir" class="col-sm-3 col-form-label">Storage Directory</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="storage_dir" name="storage_dir" value="{{ config.storage_dir }}" autocomplete="off" required>
+                                <input type="text" class="form-control" id="storage_dir" name="storage_dir"
+                                       value="{{ config.storage_dir }}" autocomplete="off" required>
+                                <small>Must be a writable directory</small>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group row">
                             <label for="email" class="col-sm-3 col-form-label">Admin email</label>
                             <div class="col-sm-9">
-                                <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" autocomplete="off" required>
+                                <input type="email" class="form-control" id="email" placeholder="email@example.com"
+                                       name="email" autocomplete="off" required>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="password" class="col-sm-3 col-form-label">Admin password</label>
                             <div class="col-sm-9">
-                                <input type="password" class="form-control" id="password" placeholder="Password" name="password" autocomplete="off" required>
+                                <input type="password" class="form-control" id="password" placeholder="Password"
+                                       name="password" autocomplete="off" required>
                             </div>
                         </div>
 
@@ -119,6 +127,24 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#connection').change(function () {
+            switch ($(this).val()) {
+                case 'sqlite':
+                    $('#dsn').val('resources/database/xbackbone.db');
+                    $('#db_user').val('').prop('disabled', 'disabled');
+                    $('#db_password').val('').prop('disabled', 'disabled');
+                    break;
+                case 'mysql':
+                    $('#dsn').val('host=localhost;port=3306;dbname=xbackbone');
+                    $('#db_user').val('db_user').prop('disabled', '');
+                    $('#db_password').val('').prop('disabled', '');
+                    break;
+            }
+        });
+    })
+</script>
 {% include 'footer.twig' %}
 </body>
 </html>

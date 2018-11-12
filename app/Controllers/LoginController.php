@@ -48,6 +48,7 @@ class LoginController extends Controller
 		Session::set('user_id', $result->id);
 		Session::set('username', $result->username);
 		Session::set('admin', $result->is_admin);
+		Session::set('used_space', $this->humanFilesize($this->getUsedSpaceByUser($result->id)));
 
 		Session::alert("Welcome, $result->username!", 'info');
 		$this->logger->info("User $result->username logged in.");

@@ -23,6 +23,7 @@ class DashboardController extends Controller
 	{
 
 		if ($request->getParam('afterInstall') !== null && is_dir('install')) {
+			Session::alert('Installation completed successfully!', 'success');
 			$this->removeDirectory('install');
 		}
 
@@ -101,7 +102,33 @@ class DashboardController extends Controller
 			'mediasCount' => $mediasCount,
 			'orphanFilesCount' => $orphanFilesCount,
 			'totalSize' => $this->humanFilesize($totalSize),
-			'max_filesize' => ini_get('post_max_size') . '/' . ini_get('upload_max_filesize'),
+			'post_max_size' => ini_get('post_max_size'),
+			'upload_max_filesize' => ini_get('upload_max_filesize'),
 		]);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function getThemes(Request $request, Response $response): Response
+	{
+		$apiJson = json_decode(file_get_contents('https://bootswatch.com/api/4.json'));
+
+		$out = [];
+
+		foreach ($apiJson->themes as $theme) {
+			$out["{$theme->name} - {$theme->description}"] = $theme->cssMin;
+		}
+
+		return $response->withJson($out);
+	}
+
+
+	public function applyTheme(Request $request, Response $response): Response
+	{
+		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
+		return $response->withRedirect('/system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
 	}
 }

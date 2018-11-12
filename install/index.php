@@ -60,8 +60,8 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 	$config['displayErrorDetails'] = false;
 	$config['db']['connection'] = $request->getParam('connection');
 	$config['db']['dsn'] = $request->getParam('dsn');
-	$config['db']['username'] = null;
-	$config['db']['password'] = null;
+	$config['db']['username'] = $request->getParam('db_user');
+	$config['db']['password'] = $request->getParam('db_password');
 
 
 	file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
@@ -130,7 +130,6 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 	DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
 
-	Session::alert('Installation completed successfully!', 'success');
 	return $response->withRedirect('../?afterInstall=true');
 });
 

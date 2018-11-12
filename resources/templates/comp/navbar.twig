@@ -30,6 +30,8 @@
                         <i class="fas fa-fw fa-user"></i> {{ session.username }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userDropdown">
+                        <a class="dropdown-item disabled" href="javascript:void(0)">Used: {{ session.used_space }}</a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ config.base_url }}/profile"><i class="fas fa-fw fa-user"></i> Profile</a>
                         <a class="dropdown-item" href="{{ config.base_url }}/logout"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
                     </div>

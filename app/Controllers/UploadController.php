@@ -60,7 +60,7 @@ class UploadController extends Controller
 			$user->id,
 			$code,
 			$file->getClientFilename(),
-			$storagePath
+			$storagePath,
 		]);
 
 		$base_url = $this->settings['base_url'];
@@ -104,7 +104,7 @@ class UploadController extends Controller
 				$type = explode('/', $mime)[0];
 				if ($type === 'text') {
 					$media->text = $filesystem->read($media->storage_path);
-				} elseif (in_array($type, ['image', 'video']) && $request->getHeaderLine('Scheme') === 'HTTP/2.0') {
+				} else if (in_array($type, ['image', 'video']) && $request->getHeaderLine('Scheme') === 'HTTP/2.0') {
 					$response = $response->withHeader('Link', "<{$this->settings['base_url']}/$args[userCode]/$args[mediaCode]/raw>; rel=preload; as={$type}");
 				}
 
@@ -115,7 +115,7 @@ class UploadController extends Controller
 			return $this->view->render($response, 'upload/public.twig', [
 				'media' => $media,
 				'type' => $mime,
-				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION)
+				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
 			]);
 		}
 	}
@@ -196,7 +196,7 @@ class UploadController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		$this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [!$media->published, $media->id]);
+		$this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [$media->published ? 0 : 1, $media->id]);
 
 		return $response->withStatus(200);
 	}
@@ -223,6 +223,7 @@ class UploadController extends Controller
 			} finally {
 				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $args['id']);
 				$this->logger->info('User ' . Session::get('username') . ' deleted a media.', [$args['id']]);
+				Session::set('used_space', $this->humanFilesize($this->getUsedSpaceByUser(Session::get('user_id'))));
 			}
 		} else {
 			throw new UnauthorizedException();
@@ -242,7 +243,7 @@ class UploadController extends Controller
 
 		$media = $this->database->query('SELECT * FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
 			$userCode,
-			$mediaCode
+			$mediaCode,
 		])->fetch();
 
 		return $media;

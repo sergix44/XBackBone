@@ -54,14 +54,38 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 offset-md-3">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-paint-brush fa-fw"></i> Theme</div>
+                    <div class="card-body">
+                        <form method="post" action="{{ config.base_url }}/system/theme/apply">
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <select class="form-control" id="themes" name="css">
+                                        <option id="theme-load" selected disabled hidden>Click to load...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-outline-success" id="themes-apply" disabled>
+                                        <i class="fas fa-save fa-fw"></i> Apply
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-header"><i class="fas fa-cog fa-fw"></i> System Information</div>
                     <div class="card-body">
-                        <p>
-                            <strong>Max upload size (<code>max_post_size/upload_max_filesize</code>):</strong>
-                            {{ max_filesize }}
-                        </p>
+                        <strong>Max upload size:</strong>
+                        <ul>
+                            <li><code>post_max_size</code>: {{ post_max_size }}</li>
+                            <li><code>upload_max_filesize</code>: {{ upload_max_filesize }}</li>
+                        </ul>
                     </div>
                 </div>
             </div>

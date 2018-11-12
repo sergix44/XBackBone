@@ -1,7 +1,10 @@
-## v2.0 [WIP]
+## v2.0
 + Migrated from Flight to Slim 3 framework.
 + Added install wizard (using the CLI is no longer required).
 + Allow discord bot to display the preview.
++ Theme switcher on the web UI.
++ Added used space indicator per user.
++ MySQL support.
 + Improvements under the hood.
 
 ## v1.3

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Slim\Container;
 use Slim\Http\Request;
@@ -59,7 +60,7 @@ abstract class Controller
 	/**
 	 * @param $path
 	 */
-	public function removeDirectory($path)
+	protected function removeDirectory($path)
 	{
 		$files = glob($path . '/*');
 		foreach ($files as $file) {
@@ -67,5 +68,26 @@ abstract class Controller
 		}
 		rmdir($path);
 		return;
+	}
+
+	/**
+	 * @param $id
+	 * @return int
+	 */
+	protected function getUsedSpaceByUser($id): int
+	{
+		$medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $id)->fetchAll();
+
+		$totalSize = 0;
+
+		$filesystem = $this->getStorage();
+		foreach ($medias as $media) {
+			try {
+				$totalSize += $filesystem->getSize($media->storage_path);
+			} catch (FileNotFoundException $e) {
+			}
+		}
+
+		return $totalSize;
 	}
 }

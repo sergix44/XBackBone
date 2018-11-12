@@ -7,6 +7,7 @@ var app = {
         $('.media-delete').click(app.mediaDelete);
         $('.publish-toggle').click(app.publishToggle);
         $('.refresh-token').click(app.refreshToken);
+        $('#themes').mousedown(app.loadThemes);
 
         $('.alert').fadeTo(2000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
@@ -64,6 +65,21 @@ var app = {
         $.post(window.AppConfig.base_url + '/user/' + id + '/refreshToken', function (data) {
             $('#token').val(data);
         });
+    },
+    loadThemes: function (e) {
+        e.preventDefault();
+        var $themes = $('#themes');
+        $.get(window.AppConfig.base_url + '/system/themes', function (data) {
+            $themes.empty();
+            Object.keys(data).forEach(function (key) {
+                var opt = document.createElement('option');
+                opt.value = data[key];
+                opt.innerHTML = key;
+                $themes.append(opt);
+            });
+            $('#themes-apply').prop('disabled', false);
+        });
+        $themes.unbind('mousedown');
     }
 };
 

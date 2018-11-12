@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 if (php_sapi_name() !== 'cli') {
 	die();
@@ -22,14 +22,14 @@ $action = isset($argv[1]) ? $argv[1] : 'all';
 
 switch ($action) {
 	case 'cache':
-		cleanDir('resources/cache');
+		cleanDir(__DIR__ . '/../resources/cache');
 		break;
 	case 'sessions':
-		cleanDir('resources/sessions');
+		cleanDir(__DIR__ . '/../resources/sessions');
 		break;
 	case 'all':
-		cleanDir('resources/cache');
-		cleanDir('resources/sessions');
+		cleanDir(__DIR__ . '/../resources/cache');
+		cleanDir(__DIR__ . '/../resources/sessions');
 		break;
 	case 'help':
 	default:

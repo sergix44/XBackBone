@@ -3,6 +3,8 @@
 $app->group('', function () {
 	$this->get('/home[/page/{page}]', \App\Controllers\DashboardController::class . ':home');
 	$this->get('/system', \App\Controllers\DashboardController::class . ':system')->add(\App\Middleware\AdminMiddleware::class);
+	$this->get('/system/themes', \App\Controllers\DashboardController::class . ':getThemes')->add(\App\Middleware\AdminMiddleware::class);
+	$this->post('/system/theme/apply', \App\Controllers\DashboardController::class . ':applyTheme')->add(\App\Middleware\AdminMiddleware::class);
 
 	$this->group('', function () {
 		$this->get('/users[/page/{page}]', \App\Controllers\UserController::class . ':index');

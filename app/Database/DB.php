@@ -45,7 +45,12 @@ class DB
 			$parameters = [$parameters];
 		}
 		$query = $this->pdo->prepare($query);
-		$query->execute($parameters);
+
+		foreach ($parameters as $index => $parameter) {
+			$query->bindValue($index + 1, $parameter, is_int($parameter) ? PDO::PARAM_INT : PDO::PARAM_STR);
+		}
+
+		$query->execute();
 		return $query;
 	}
 
