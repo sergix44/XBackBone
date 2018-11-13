@@ -7,7 +7,6 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Slim\Container;
-use Slim\Http\Request;
 use Slim\Http\Response;
 
 abstract class Controller
@@ -34,20 +33,6 @@ abstract class Controller
 		return null;
 	}
 
-
-	/**
-	 * Generate a human readable file size
-	 * @param $size
-	 * @param int $precision
-	 * @return string
-	 */
-	protected function humanFilesize($size, $precision = 2): string
-	{
-		for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
-		}
-		return round($size, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
-	}
-
 	/**
 	 * Get a filesystem instance
 	 * @return Filesystem
@@ -55,19 +40,6 @@ abstract class Controller
 	protected function getStorage(): Filesystem
 	{
 		return new Filesystem(new Local($this->settings['storage_dir']));
-	}
-
-	/**
-	 * @param $path
-	 */
-	protected function removeDirectory($path)
-	{
-		$files = glob($path . '/*');
-		foreach ($files as $file) {
-			is_dir($file) ? $this->removeDirectory($file) : unlink($file);
-		}
-		rmdir($path);
-		return;
 	}
 
 	/**
@@ -89,5 +61,15 @@ abstract class Controller
 		}
 
 		return $totalSize;
+	}
+
+	/**
+	 * @param Response $response
+	 * @param string $path
+	 * @return Response
+	 */
+	function redirectTo(Response $response, string $path): Response
+	{
+		return $response->withRedirect($this->settings['base_url'] . $path);
 	}
 }

@@ -9,7 +9,7 @@ use Slim\App;
 use Slim\Container;
 
 if (!file_exists('config.php') && is_dir('install/')) {
-	header('Location: /install/');
+	header('Location: ./install/');
 	exit();
 } else if (!file_exists('config.php') && !is_dir('install/')) {
 	die('Cannot find the config file.');
@@ -23,11 +23,12 @@ $config = array_replace_recursive([
 	'displayErrorDetails' => false,
 	'db' => [
 		'connection' => 'sqlite',
-		'dsn' => 'resources/database/xbackbone.db',
+		'dsn' => __DIR__ . '/../resources/database/xbackbone.db',
 		'username' => null,
 		'password' => null,
 	],
-], require 'config.php');
+	'routerCacheFile' => __DIR__ . '/../resources/cache/routes.cache.php',
+], require __DIR__ . '/../config.php');
 
 $container = new Container(['settings' => $config]);
 
@@ -43,10 +44,11 @@ $container['logger'] = function ($container) {
 };
 
 // Session init
-Session::init('xbackbone_session', 'resources/sessions');
+Session::init('xbackbone_session', __DIR__ . '/../resources/sessions');
 
 // Set the database dsn
-DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
+$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
+DB::setDsn($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
 
 $container['database'] = function ($container) use (&$config) {
 	return DB::getInstance();
@@ -54,8 +56,8 @@ $container['database'] = function ($container) use (&$config) {
 
 
 $container['view'] = function ($container) use (&$config) {
-	$view = new \Slim\Views\Twig('resources/templates', [
-		'cache' => 'resources/cache',
+	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/templates', [
+		'cache' => __DIR__ . '/../resources/cache',
 		'autoescape' => 'html',
 		'debug' => $config['displayErrorDetails'],
 		'auto_reload' => $config['displayErrorDetails'],
@@ -94,6 +96,24 @@ $container['notFoundHandler'] = function ($container) {
 };
 
 $app = new App($container);
+
+// Permanently redirect paths with a trailing slash to their non-trailing counterpart
+$app->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
+	$uri = $request->getUri();
+	$path = $uri->getPath();
+
+	if ($path !== '/' && substr($path, -1) === '/') {
+		$uri = $uri->withPath(substr($path, 0, -1));
+
+		if ($request->getMethod() === 'GET') {
+			return $response->withRedirect((string)$uri, 301);
+		} else {
+			return $next($request->withUri($uri), $response);
+		}
+	}
+
+	return $next($request, $response);
+});
 
 // Load the application routes
 require 'app/routes.php';

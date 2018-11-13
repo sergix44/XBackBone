@@ -223,7 +223,7 @@ class UploadController extends Controller
 			} finally {
 				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $args['id']);
 				$this->logger->info('User ' . Session::get('username') . ' deleted a media.', [$args['id']]);
-				Session::set('used_space', $this->humanFilesize($this->getUsedSpaceByUser(Session::get('user_id'))));
+				Session::set('used_space', humanFileSize($this->getUsedSpaceByUser(Session::get('user_id'))));
 			}
 		} else {
 			throw new UnauthorizedException();

@@ -19,7 +19,7 @@ class LoginController extends Controller
 	public function show(Request $request, Response $response): Response
 	{
 		if (Session::get('logged', false)) {
-			return $response->withRedirect('/home');
+			return $this->redirectTo($response, '/home');
 		}
 		return $this->view->render($response, 'auth/login.twig');
 	}
@@ -36,19 +36,19 @@ class LoginController extends Controller
 
 		if (!$result || !password_verify($request->getParam('password'), $result->password)) {
 			Session::alert('Wrong credentials', 'danger');
-			return $response->withRedirect('/login');
+			return $this->redirectTo($response, '/login');
 		}
 
 		if (!$result->active) {
 			Session::alert('Your account is disabled.', 'danger');
-			return $response->withRedirect('/login');
+			return $this->redirectTo($response, '/login');
 		}
 
 		Session::set('logged', true);
 		Session::set('user_id', $result->id);
 		Session::set('username', $result->username);
 		Session::set('admin', $result->is_admin);
-		Session::set('used_space', $this->humanFilesize($this->getUsedSpaceByUser($result->id)));
+		Session::set('used_space', humanFileSize($this->getUsedSpaceByUser($result->id)));
 
 		Session::alert("Welcome, $result->username!", 'info');
 		$this->logger->info("User $result->username logged in.");
@@ -57,7 +57,7 @@ class LoginController extends Controller
 			return $response->withRedirect(Session::get('redirectTo'));
 		}
 
-		return $response->withRedirect('/home');
+		return $this->redirectTo($response,'/home');
 	}
 
 	/**
@@ -70,7 +70,7 @@ class LoginController extends Controller
 		Session::clear();
 		Session::set('logged', false);
 		Session::alert('Goodbye!', 'warning');
-		return $response->withRedirect('/login');
+		return $this->redirectTo($response,'/login');
 	}
 
 }

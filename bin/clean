@@ -7,29 +7,18 @@ if (php_sapi_name() !== 'cli') {
 	die();
 }
 
-function cleanDir($path)
-{
-	$directoryIterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
-	$iteratorIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
-	foreach ($iteratorIterator as $file) {
-		if ($file->getFilename() !== '.gitkeep') {
-			$file->isDir() ? rmdir($file) : unlink($file);
-		}
-	}
-}
-
 $action = isset($argv[1]) ? $argv[1] : 'all';
 
 switch ($action) {
 	case 'cache':
-		cleanDir(__DIR__ . '/../resources/cache');
+		cleanDirectory(__DIR__ . '/../resources/cache');
 		break;
 	case 'sessions':
-		cleanDir(__DIR__ . '/../resources/sessions');
+		cleanDirectory(__DIR__ . '/../resources/sessions');
 		break;
 	case 'all':
-		cleanDir(__DIR__ . '/../resources/cache');
-		cleanDir(__DIR__ . '/../resources/sessions');
+		cleanDirectory(__DIR__ . '/../resources/cache');
+		cleanDirectory(__DIR__ . '/../resources/sessions');
 		break;
 	case 'help':
 	default:

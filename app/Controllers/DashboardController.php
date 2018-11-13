@@ -24,10 +24,10 @@ class DashboardController extends Controller
 
 		if ($request->getParam('afterInstall') !== null && is_dir('install')) {
 			Session::alert('Installation completed successfully!', 'success');
-			$this->removeDirectory('install');
+			removeDirectory('install');
 		}
 
-		return $response->withRedirect('/home');
+		return $this->redirectTo($response,'/home');
 	}
 
 	/**
@@ -61,7 +61,7 @@ class DashboardController extends Controller
 			}
 			$media->mimetype = $mime;
 			$media->extension = $extension;
-			$media->size = $this->humanFilesize($size);
+			$media->size = humanFileSize($size);
 		}
 
 		return $this->view->render(
@@ -101,7 +101,7 @@ class DashboardController extends Controller
 			'usersCount' => $usersCount,
 			'mediasCount' => $mediasCount,
 			'orphanFilesCount' => $orphanFilesCount,
-			'totalSize' => $this->humanFilesize($totalSize),
+			'totalSize' => humanFileSize($totalSize),
 			'post_max_size' => ini_get('post_max_size'),
 			'upload_max_filesize' => ini_get('upload_max_filesize'),
 		]);
@@ -129,6 +129,6 @@ class DashboardController extends Controller
 	public function applyTheme(Request $request, Response $response): Response
 	{
 		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
-		return $response->withRedirect('/system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
+		return $this->redirectTo($response,'/system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
 	}
 }

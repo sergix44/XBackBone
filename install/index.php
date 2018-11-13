@@ -11,7 +11,6 @@ use Slim\Http\Response;
 define('PLATFORM_VERSION', json_decode(file_get_contents(__DIR__ . '/../composer.json'))->version);
 
 $config = [
-	'app_name' => 'XBackBone',
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
 	'storage_dir' => 'storage',
 	'displayErrorDetails' => true,
@@ -28,7 +27,7 @@ $container = new Container(['settings' => $config]);
 Session::init('xbackbone_session');
 
 $container['view'] = function ($container) use (&$config) {
-	$view = new \Slim\Views\Twig('templates', [
+	$view = new \Slim\Views\Twig(__DIR__ . '/templates', [
 		'cache' => false,
 		'autoescape' => 'html',
 		'debug' => $config['displayErrorDetails'],
@@ -51,7 +50,7 @@ $container['view'] = function ($container) use (&$config) {
 function migrate($config)
 {
 	$firstMigrate = false;
-	if (!file_exists(__DIR__ . '/../' . $config['db']['dsn']) && DB::driver() === 'sqlite') {
+	if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__ . '/../' . $config['db']['dsn'])) {
 		touch(__DIR__ . '/../' . $config['db']['dsn']);
 		$firstMigrate = true;
 	}
@@ -110,17 +109,6 @@ function migrate($config)
 	}
 }
 
-function cleanDir($path)
-{
-	$directoryIterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
-	$iteratorIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
-	foreach ($iteratorIterator as $file) {
-		if ($file->getFilename() !== '.gitkeep') {
-			$file->isDir() ? rmdir($file) : unlink($file);
-		}
-	}
-}
-
 $app = new App($container);
 
 $app->get('/', function (Request $request, Response $response) {
@@ -131,7 +119,10 @@ $app->get('/', function (Request $request, Response $response) {
 });
 
 $app->post('/', function (Request $request, Response $response) use (&$config) {
+	$installed = true;
 	if (!file_exists(__DIR__ . '/../config.php')) {
+		$installed = false;
+
 		$config['base_url'] = $request->getParam('base_url');
 		$config['storage_dir'] = $request->getParam('storage_dir');
 		$config['displayErrorDetails'] = false;
@@ -144,14 +135,18 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 	}
 
-	DB::setDsn($config['db']['connection'] . ':' . __DIR__ . '/../' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
+	$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
+
+	DB::setDsn($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
 
 	migrate($config);
 
-	DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
+	if (!$installed) {
+		DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
+	}
 
-	cleanDir(__DIR__ . '/../resources/cache');
-	cleanDir(__DIR__ . '/../resources/sessions');
+	cleanDirectory(__DIR__ . '/../resources/cache');
+	cleanDirectory(__DIR__ . '/../resources/sessions');
 
 	return $response->withRedirect('../?afterInstall=true');
 });
