@@ -2,7 +2,6 @@
 
 namespace App\Middleware;
 
-use App\Exceptions\AuthenticationException;
 use App\Web\Session;
 use Slim\Http\Request;
 use Slim\Http\Response;

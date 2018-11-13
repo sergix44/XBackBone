@@ -54,14 +54,13 @@ class DashboardController extends Controller
 		foreach ($medias as $media) {
 			$extension = pathinfo($media->filename, PATHINFO_EXTENSION);
 			try {
+				$media->size = humanFileSize($filesystem->getSize($media->storage_path));
 				$mime = $filesystem->getMimetype($media->storage_path);
-				$size = $filesystem->getSize($media->storage_path);
 			} catch (FileNotFoundException $e) {
 				$mime = null;
 			}
-			$media->mimetype = $mime;
 			$media->extension = $extension;
-			$media->size = humanFileSize($size);
+			$media->mimetype = $mime;
 		}
 
 		return $this->view->render(
