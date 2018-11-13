@@ -48,27 +48,8 @@ $container['view'] = function ($container) use (&$config) {
 	return $view;
 };
 
-$app = new App($container);
-
-$app->get('/', function (Request $request, Response $response) {
-	return $this->view->render($response, 'install.twig');
-});
-
-$app->post('/', function (Request $request, Response $response) use (&$config) {
-	$config['base_url'] = $request->getParam('base_url');
-	$config['storage_dir'] = $request->getParam('storage_dir');
-	$config['displayErrorDetails'] = false;
-	$config['db']['connection'] = $request->getParam('connection');
-	$config['db']['dsn'] = $request->getParam('dsn');
-	$config['db']['username'] = $request->getParam('db_user');
-	$config['db']['password'] = $request->getParam('db_password');
-
-
-	file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
-
-
-	DB::setDsn($config['db']['connection'] . ':' . __DIR__ . '/../' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
-
+function migrate($config)
+{
 	$firstMigrate = false;
 	if (!file_exists(__DIR__ . '/../' . $config['db']['dsn']) && DB::driver() === 'sqlite') {
 		touch(__DIR__ . '/../' . $config['db']['dsn']);
@@ -105,7 +86,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 			if (basename($file) === $migration->name && $migration->migrated) {
 				$continue = true;
 				break;
-			} elseif (basename($file) === $migration->name && !$migration->migrated) {
+			} else if (basename($file) === $migration->name && !$migration->migrated) {
 				$exists = true;
 				break;
 			}
@@ -127,8 +108,50 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 			throw $exception;
 		}
 	}
+}
+
+function cleanDir($path)
+{
+	$directoryIterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
+	$iteratorIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
+	foreach ($iteratorIterator as $file) {
+		if ($file->getFilename() !== '.gitkeep') {
+			$file->isDir() ? rmdir($file) : unlink($file);
+		}
+	}
+}
+
+$app = new App($container);
+
+$app->get('/', function (Request $request, Response $response) {
+
+	$installed = file_exists(__DIR__ . '/../config.php');
+
+	return $this->view->render($response, 'install.twig', ['installed' => $installed]);
+});
+
+$app->post('/', function (Request $request, Response $response) use (&$config) {
+	if (!file_exists(__DIR__ . '/../config.php')) {
+		$config['base_url'] = $request->getParam('base_url');
+		$config['storage_dir'] = $request->getParam('storage_dir');
+		$config['displayErrorDetails'] = false;
+		$config['db']['connection'] = $request->getParam('connection');
+		$config['db']['dsn'] = $request->getParam('dsn');
+		$config['db']['username'] = $request->getParam('db_user');
+		$config['db']['password'] = $request->getParam('db_password');
+
+
+		file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+	}
+
+	DB::setDsn($config['db']['connection'] . ':' . __DIR__ . '/../' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
+
+	migrate($config);
 
 	DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
+
+	cleanDir(__DIR__ . '/../resources/cache');
+	cleanDir(__DIR__ . '/../resources/sessions');
 
 	return $response->withRedirect('../?afterInstall=true');
 });
