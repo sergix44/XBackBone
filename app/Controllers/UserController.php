@@ -114,6 +114,7 @@ class UserController extends Controller
 		}
 
 		return $this->view->render($response, 'user/edit.twig', [
+			'profile' => false,
 			'user' => $user
 		]);
 	}
@@ -226,7 +227,8 @@ class UserController extends Controller
 			throw new UnauthorizedException();
 		}
 
-		return $this->view->render($response, 'user/profile.twig', [
+		return $this->view->render($response, 'user/edit.twig', [
+			'profile' => true,
 			'user' => $user
 		]);
 	}

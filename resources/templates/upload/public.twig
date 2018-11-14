@@ -12,8 +12,10 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="ml-auto">
                     <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
-                    <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-html="true" title="Telegram Message" data-toggle="popover" data-placement="bottom" data-content='<input type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()" value="{{ media.filename }}">
-<button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="telegramShare()" data-url="https://telegram.me/share/url?url={{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> Send</button>'><i class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-html="true" title="Telegram Message" data-toggle="popover" data-placement="bottom"
+                       data-content='<input type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()" value="{{ media.filename }}">
+<button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> Send</button>'><i
+                                class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
                     <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" class="btn btn-light my-2 my-sm-0" data-toggle="tooltip" title="Show raw"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
                     <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="Download"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                 </div>
@@ -75,10 +77,5 @@
             </div>
         </div>
     </div>
-    <script>
-        function telegramShare() {
-            $("<a>").attr("href", $('#telegram-share-button').data('url') + $('#telegram-share-text').val()).attr("target", "_blank")[0].click();
-        }
-    </script>
     {% include 'comp/footer.twig' %}
 {% endblock %}

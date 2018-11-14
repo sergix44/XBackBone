@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}{{ profile ? 'Your Profile' : 'Edit User' }}{% endblock %}
 
 {% block content %}
     {% include 'comp/navbar.twig' %}
@@ -10,9 +10,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Edit User</div>
+                    {% if not profile %}
+                        <div class="card-header">Edit User</div>
+                    {% endif %}
                     <div class="card-body">
-                        <form method="post" action="{{ config.base_url }}/user/{{ user.id }}">
+                        <form method="post" action="{{ config.base_url }}/{{ profile ? 'profile' : 'user' }}/{{ user.id }}">
                             <div class="form-group row">
                                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
@@ -20,9 +22,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="email" class="col-sm-2 col-form-label">Username</label>
+                                <label for="username" class="col-sm-2 col-form-label">Username</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{ user.username }}" autocomplete="off" required>
+                                    {% if profile %}
+                                        <input type="text" class="form-control disabled" id="username" value="{{ user.username }}" readonly>
+                                    {% else %}
+                                        <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{ user.username }}" autocomplete="off" required>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -49,28 +55,30 @@
                                     <a href="{{ config.base_url }}/user/{{ user.id }}/config/sharex" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX Config File</a>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2"></div>
-                                <div class="col-sm-10">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin" {{ user.is_admin ? 'checked' }}>
-                                        <label class="form-check-label" for="is_admin">
-                                            Is admin
-                                        </label>
+                            {% if not profile %}
+                                <div class="form-group row">
+                                    <div class="col-sm-2"></div>
+                                    <div class="col-sm-10">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin" {{ user.is_admin ? 'checked' }}>
+                                            <label class="form-check-label" for="is_admin">
+                                                Is admin
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2"></div>
-                                <div class="col-sm-10">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {{ user.active ? 'checked' }}>
-                                        <label class="form-check-label" for="is_active">
-                                            Is active
-                                        </label>
+                                <div class="form-group row">
+                                    <div class="col-sm-2"></div>
+                                    <div class="col-sm-10">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {{ user.active ? 'checked' }}>
+                                            <label class="form-check-label" for="is_active">
+                                                Is active
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            {% endif %}
                             <div class="form-group row justify-content-md-end">
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-outline-info">

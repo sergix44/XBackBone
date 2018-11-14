@@ -80,6 +80,9 @@ var app = {
             $('#themes-apply').prop('disabled', false);
         });
         $themes.unbind('mousedown');
+    },
+    telegramShare: function () {
+        $("<a>").attr("href", $('#telegram-share-button').data('url') + $('#telegram-share-text').val()).attr("target", "_blank")[0].click();
     }
 };
 

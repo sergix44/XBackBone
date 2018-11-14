@@ -16,7 +16,7 @@ $app->group('', function () {
 	})->add(\App\Middleware\AdminMiddleware::class);
 
 	$this->get('/profile', \App\Controllers\UserController::class . ':profile');
-	$this->post('/profile/{id}/edit', \App\Controllers\UserController::class . ':profileEdit');
+	$this->post('/profile/{id}', \App\Controllers\UserController::class . ':profileEdit');
 	$this->post('/user/{id}/refreshToken', \App\Controllers\UserController::class . ':refreshToken');
 	$this->get('/user/{id}/config/sharex', \App\Controllers\UserController::class . ':getShareXconfigFile');
 
