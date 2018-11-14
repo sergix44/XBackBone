@@ -104,8 +104,9 @@ class UploadController extends Controller
 				$type = explode('/', $mime)[0];
 				if ($type === 'text') {
 					$media->text = $filesystem->read($media->storage_path);
-				} else if (in_array($type, ['image', 'video']) && $request->getHeaderLine('Scheme') === 'HTTP/2.0') {
-					$response = $response->withHeader('Link', "<{$this->settings['base_url']}/$args[userCode]/$args[mediaCode]/raw>; rel=preload; as={$type}");
+				} else if (in_array($type, ['image', 'video'])) {
+					$url = urlFor("/$args[userCode]/$args[mediaCode]/raw");
+					$response = $response->withHeader('Link', "<{$url}>; rel=preload; as={$type}");
 				}
 
 			} catch (FileNotFoundException $e) {
