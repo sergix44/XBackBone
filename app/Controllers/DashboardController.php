@@ -27,7 +27,7 @@ class DashboardController extends Controller
 			removeDirectory('install');
 		}
 
-		return $this->redirectTo($response,'/home');
+		return redirect($response, '/home');
 	}
 
 	/**
@@ -128,6 +128,6 @@ class DashboardController extends Controller
 	public function applyTheme(Request $request, Response $response): Response
 	{
 		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
-		return $this->redirectTo($response,'/system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
+		return redirect($response, '/system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
 	}
 }

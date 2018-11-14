@@ -58,22 +58,22 @@ class UserController extends Controller
 	{
 		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			return $this->redirectTo($response,'/user/create');
+			return redirect($response,'/user/create');
 		}
 
 		if ($request->getParam('username') === null) {
 			Session::alert('The username is required.', 'danger');
-			return $this->redirectTo($response,'/user/create');
+			return redirect($response,'/user/create');
 		}
 
 		if ($request->getParam('password') === null) {
 			Session::alert('The password is required.', 'danger');
-			return $this->redirectTo($response,'/user/create');
+			return redirect($response,'/user/create');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $request->getParam('username'))->fetch()->count > 0) {
 			Session::alert('The username already taken.', 'danger');
-			return $this->redirectTo($response,'/user/create');
+			return redirect($response,'/user/create');
 		}
 
 		do {
@@ -95,7 +95,7 @@ class UserController extends Controller
 		Session::alert("User '{$request->getParam('username')}' created!", 'success');
 		$this->logger->info('User ' . Session::get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
 
-		return $this->redirectTo($response,'/users');
+		return redirect($response,'/users');
 	}
 
 	/**
@@ -136,22 +136,22 @@ class UserController extends Controller
 
 		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			return $this->redirectTo($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response,'/user/' . $args['id'] . '/edit');
 		}
 
 		if ($request->getParam('username') === null) {
 			Session::alert('The username is required.', 'danger');
-			return $this->redirectTo($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response,'/user/' . $args['id'] . '/edit');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$request->getParam('username'), $user->username])->fetch()->count > 0) {
 			Session::alert('The username already taken.', 'danger');
-			return $this->redirectTo($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response,'/user/' . $args['id'] . '/edit');
 		}
 
 		if ($user->id === Session::get('user_id') && $request->getParam('is_admin') === null) {
 			Session::alert('You cannot demote yourself.', 'danger');
-			return $this->redirectTo($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response,'/user/' . $args['id'] . '/edit');
 		}
 
 		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
@@ -176,7 +176,7 @@ class UserController extends Controller
 		Session::alert("User '{$request->getParam('username')}' updated!", 'success');
 		$this->logger->info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
 
-		return $this->redirectTo($response,'/users');
+		return redirect($response,'/users');
 
 	}
 
@@ -197,7 +197,7 @@ class UserController extends Controller
 
 		if ($user->id === Session::get('user_id')) {
 			Session::alert('You cannot delete yourself.', 'danger');
-			return $this->redirectTo($response,'/users');
+			return redirect($response,'/users');
 		}
 
 		$this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
@@ -205,7 +205,7 @@ class UserController extends Controller
 		Session::alert('User deleted.', 'success');
 		$this->logger->info('User ' . Session::get('username') . " deleted $user->id.");
 
-		return $this->redirectTo($response,'/users');
+		return redirect($response,'/users');
 	}
 
 	/**
@@ -255,7 +255,7 @@ class UserController extends Controller
 
 		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			return $this->redirectTo($response,'/profile');
+			return redirect($response,'/profile');
 		}
 
 		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
@@ -274,7 +274,7 @@ class UserController extends Controller
 		Session::alert('Profile updated successfully!', 'success');
 		$this->logger->info('User ' . Session::get('username') . " updated profile of $user->id.");
 
-		return $this->redirectTo($response,'/profile');
+		return redirect($response,'/profile');
 	}
 
 	/**

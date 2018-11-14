@@ -19,7 +19,7 @@ class LoginController extends Controller
 	public function show(Request $request, Response $response): Response
 	{
 		if (Session::get('logged', false)) {
-			return $this->redirectTo($response, '/home');
+			return redirect($response, '/home');
 		}
 		return $this->view->render($response, 'auth/login.twig');
 	}
@@ -36,12 +36,12 @@ class LoginController extends Controller
 
 		if (!$result || !password_verify($request->getParam('password'), $result->password)) {
 			Session::alert('Wrong credentials', 'danger');
-			return $this->redirectTo($response, '/login');
+			return redirect($response, '/login');
 		}
 
 		if (!$result->active) {
 			Session::alert('Your account is disabled.', 'danger');
-			return $this->redirectTo($response, '/login');
+			return redirect($response, '/login');
 		}
 
 		Session::set('logged', true);
@@ -57,7 +57,7 @@ class LoginController extends Controller
 			return $response->withRedirect(Session::get('redirectTo'));
 		}
 
-		return $this->redirectTo($response,'/home');
+		return redirect($response,'/home');
 	}
 
 	/**
@@ -70,7 +70,7 @@ class LoginController extends Controller
 		Session::clear();
 		Session::set('logged', false);
 		Session::alert('Goodbye!', 'warning');
-		return $this->redirectTo($response,'/login');
+		return redirect($response,'/login');
 	}
 
 }

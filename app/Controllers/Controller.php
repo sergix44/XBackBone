@@ -62,14 +62,4 @@ abstract class Controller
 
 		return $totalSize;
 	}
-
-	/**
-	 * @param Response $response
-	 * @param string $path
-	 * @return Response
-	 */
-	function redirectTo(Response $response, string $path): Response
-	{
-		return $response->withRedirect($this->settings['base_url'] . $path);
-	}
 }
