@@ -16,20 +16,27 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Share to Telegram.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`):
+XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`).
 
+### Web installation
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
 + Extract the release zip to your document root.
-+ Edit the config file:
++ Navigate to the webspace root (ex. `http://example.com/xbackbone`, this should auto redirect your browser to the install page `http://example.com/xbackbone/install/`)
++ Follow the instructions.
+
+### Manual installation
++ **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
++ Extract the release zip to your document root.
++ Copy and edit the config file:
 ```sh
-cp config.example.php config.php
+cp config.example.php config.php && nano config.php
 ```
 By default, XBackBone will use Sqlite3 as DB engine, and a `storage` dir in the main directory. You can leave these settings unchanged for a simple personal installation.
 You must set the `base_url`, or remove it for get dynamically the url from request (not recommended).
 
 ```php
 return [
-	'base_url' => 'https://myaswesomedomain.com', // no trailing slash
+	'base_url' => 'https://example.com', // no trailing slash
 	'storage_dir' => 'storage',
 	'db' => [
 		'connection' => 'sqlite',
@@ -47,10 +54,17 @@ php bin/migrate --install
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
 #### Changing themes
-XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes:
+XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
+
+From the web UI:
++ Navigate to the web interface as admin -> System Menu -> Choose a theme from the dropdown.
+
+From the CLI:
 + Run the command `php bin/theme` to see the available themes.
 + Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
 + If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
+
+**Clear the browser cache once you have applied.**
 
 #### Docker deployment
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
@@ -102,7 +116,8 @@ location / {
 ```
 
 ## Built with
-+ FlightPHP (http://flightphp.com/)
++ Slim 3 since `v2.0` (https://www.slimframework.com/)
++ FlightPHP up to `v1.x` (http://flightphp.com/)]
 + Bootstrap 4 (https://getbootstrap.com/)
 + Font Awesome 5 (http://fontawesome.com)
 + ClipboardJS (https://clipboardjs.com/)
