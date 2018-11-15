@@ -48,11 +48,10 @@
                         </div>
                     </div>
                 {% elseif type starts with 'video' %}
-                    <video width="100%" controls>
+                    <video width="100%"  class="video-js" controls preload="auto">
                         <source src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" type="{{ type }}">
                         Your browser does not support HTML5 video.
-                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i>
-                            Download</a>
+                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                     </video>
                 {% else %}
                     <div class="text-center">
@@ -68,8 +67,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i>
-                                    Download</a>
+                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                             </div>
                         </div>
                     </div>

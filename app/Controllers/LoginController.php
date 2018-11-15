@@ -32,7 +32,7 @@ class LoginController extends Controller
 	public function login(Request $request, Response $response): Response
 	{
 
-		$result = DB::query('SELECT `id`,`username`, `password`,`is_admin`, `active` FROM `users` WHERE `username` = ? LIMIT 1', $request->getParam('username'))->fetch();
+		$result = DB::query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$request->getParam('username'), $request->getParam('username')])->fetch();
 
 		if (!$result || !password_verify($request->getParam('password'), $result->password)) {
 			Session::alert('Wrong credentials', 'danger');

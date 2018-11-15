@@ -4,7 +4,11 @@
 
 {% block head %}
     <style>
+        html {
+            height: 100%;
+        }
         body {
+            height: 100%;
             display: -ms-flexbox;
             display: -webkit-box;
             display: flex;
@@ -32,8 +36,8 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <label for="inputEmail" class="sr-only">Username</label>
-                    <input type="text" id="username" class="form-control" placeholder="Username" name="username" required autofocus>
+                    <label for="inputEmail" class="sr-only">Username or E-Mail</label>
+                    <input type="text" id="username" class="form-control" placeholder="Username or E-Mail" name="username" required autofocus>
                     <label for="password" class="sr-only">Password</label>
                     <input type="password" id="password" class="form-control" placeholder="Password" name="password" required>
                 </div>

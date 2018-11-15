@@ -53,6 +53,7 @@ module.exports = function (grunt) {
                     {expand: true, cwd: 'node_modules/@fortawesome/fontawesome-free', src: ['css/**', 'js/**'], dest: 'static/fontawesome'},
                     {expand: true, cwd: 'node_modules/bootstrap/dist', src: ['**'], dest: 'static/bootstrap'},
                     {expand: true, cwd: 'node_modules/clipboard/dist', src: ['**'], dest: 'static/clipboardjs'},
+                    {expand: true, cwd: 'node_modules/video.js/dist', src: ['video.min.js', 'video-js.min.css'], dest: 'static/videojs'},
                     {expand: true, cwd: 'node_modules/highlightjs', src: ['styles/**/*', 'highlight.pack.min.js'], dest: 'static/highlightjs'},
                     {expand: true, cwd: 'node_modules/jquery/dist', src: ['jquery.min.js'], dest: 'static/jquery'}
                 ],

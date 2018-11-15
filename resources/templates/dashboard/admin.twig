@@ -9,71 +9,75 @@
     <div class="container">
         {% include 'comp/alert.twig' %}
         {% if medias|length > 0 %}
-            {% include 'dashboard/pager.twig' %}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Preview</th>
-                                <th>Filename</th>
-                                <th>Size</th>
-                                <th>Public</th>
-                                <th>Owner</th>
-                                <th>Date</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for media in medias %}
-                                <tr id="media_{{ media.id }}">
-                                    <td>
-                                        {% if media.mimetype starts with 'image' %}
-                                            {% if media.username is not null %}
-                                                <img src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw?width=128"
-                                                     class="img-fluid rounded admin-img">
-                                            {% else %}
-                                                <img src="{{ config.base_url }}/upload/{{ media.id }}/raw" class="img-fluid rounded admin-img">
-                                            {% endif %}
-                                        {% else %}
-                                            <i class="far fa-file fa-2x"></i>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ media.filename }}</td>
-                                    <td>{{ media.size }}</td>
-                                    <td id="published_{{ media.id }}">
-                                        {% if media.published %}
-                                            <span class="badge badge-success"><i class="fas fa-check"></i></span>
-                                        {% else %}
-                                            <span class="badge badge-danger"><i class="fas fa-times"></i></span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ media.username|default('<None>') }}</td>
-                                    <td>{{ media.timestamp|date("d/m/Y H:i:s") }}</td>
-                                    <td class="text-right">
-                                        <div class="btn-group">
-                                            {% if media.username is not null %}
-                                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}" class="btn btn-outline-dark" data-toggle="tooltip" title="Open" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                                <a href="javascript:void(0)" class="btn btn-outline-success btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}"><i class="fas fa-link"></i></a>
-                                            {% else %}
-                                                <a href="{{ config.base_url }}/upload/{{ media.id }}/raw" class="btn btn-outline-dark" data-toggle="tooltip" title="Raw" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                            {% endif %}
+            <div class="card box-shadow">
+                <div class="card-body">
+                    {% include 'comp/pager.twig' with {'path': 'home'} %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Preview</th>
+                                        <th>Filename</th>
+                                        <th>Size</th>
+                                        <th>Public</th>
+                                        <th>Owner</th>
+                                        <th>Date</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for media in medias %}
+                                        <tr id="media_{{ media.id }}">
+                                            <td>
+                                                {% if media.mimetype starts with 'image' %}
+                                                    {% if media.username is not null %}
+                                                        <img src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw?width=128"
+                                                             class="img-fluid rounded admin-img">
+                                                    {% else %}
+                                                        <img src="{{ config.base_url }}/upload/{{ media.id }}/raw" class="img-fluid rounded admin-img">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <i class="far fa-file fa-2x"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ media.filename }}</td>
+                                            <td>{{ media.size }}</td>
+                                            <td id="published_{{ media.id }}">
+                                                {% if media.published %}
+                                                    <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                                                {% else %}
+                                                    <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ media.username|default('<None>') }}</td>
+                                            <td>{{ media.timestamp|date("d/m/Y H:i:s") }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group">
+                                                    {% if media.username is not null %}
+                                                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}" class="btn btn-outline-dark" data-toggle="tooltip" title="Open" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                                                        <a href="javascript:void(0)" class="btn btn-outline-success btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}"><i class="fas fa-link"></i></a>
+                                                    {% else %}
+                                                        <a href="{{ config.base_url }}/upload/{{ media.id }}/raw" class="btn btn-outline-dark" data-toggle="tooltip" title="Raw" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                                                    {% endif %}
 
-                                            {% if media.published %}
-                                                <a href="javascript:void(0)" class="btn btn-outline-warning publish-toggle" data-toggle="tooltip" title="Unpublish" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
-                                            {% else %}
-                                                <a href="javascript:void(0)" class="btn btn-outline-info publish-toggle" data-toggle="tooltip" title="Publish" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
-                                            {% endif %}
-                                            <a href="javascript:void(0)" class="btn btn-outline-danger media-delete" data-link="{{ config.base_url }}/upload/{{ media.id }}/delete" data-id="{{ media.id }}" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                                    {% if media.published %}
+                                                        <a href="javascript:void(0)" class="btn btn-outline-warning publish-toggle" data-toggle="tooltip" title="Unpublish" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
+                                                    {% else %}
+                                                        <a href="javascript:void(0)" class="btn btn-outline-info publish-toggle" data-toggle="tooltip" title="Publish" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
+                                                    {% endif %}
+                                                    <a href="javascript:void(0)" class="btn btn-outline-danger media-delete" data-link="{{ config.base_url }}/upload/{{ media.id }}/delete" data-id="{{ media.id }}" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% include 'comp/pager.twig' with {'path': 'home'} %}
+                        </div>
                     </div>
-                    {% include 'dashboard/pager.twig' %}
                 </div>
             </div>
         {% else %}

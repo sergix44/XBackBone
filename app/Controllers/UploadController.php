@@ -63,10 +63,8 @@ class UploadController extends Controller
 			$storagePath,
 		]);
 
-		$base_url = $this->settings['base_url'];
-
 		$json['message'] = 'OK.';
-		$json['url'] = "$base_url/$user->user_code/$code.$fileInfo[extension]";
+		$json['url'] = urlFor("/$user->user_code/$code.$fileInfo[extension]");
 
 		$this->logger->info("User $user->username uploaded new media.", [$this->database->raw()->lastInsertId()]);
 

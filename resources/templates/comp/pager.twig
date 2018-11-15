@@ -3,7 +3,7 @@
         <ul class="pagination justify-content-center">
             {% if previous %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ config.base_url }}/home/page/{{ current_page-1 }}"><i class="fas fa-angle-left fa-fw"></i>
+                    <a class="page-link" href="{{ config.base_url }}/{{ path }}/page/{{ current_page-1 }}"><i class="fas fa-angle-left fa-fw"></i>
                         Previous</a>
                 </li>
             {% else %}
@@ -13,7 +13,7 @@
 
             {% if next %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ config.base_url }}/home/page/{{ current_page+1 }}">Next
+                    <a class="page-link" href="{{ config.base_url }}/{{ path }}/page/{{ current_page+1 }}">Next
                         <i class="fas fa-angle-right fa-fw"></i></a>
                 </li>
             {% else %}
