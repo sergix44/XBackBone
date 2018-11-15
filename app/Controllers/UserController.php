@@ -58,22 +58,22 @@ class UserController extends Controller
 	{
 		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			return redirect($response,'/user/create');
+			return redirect($response, '/user/create');
 		}
 
 		if ($request->getParam('username') === null) {
 			Session::alert('The username is required.', 'danger');
-			return redirect($response,'/user/create');
+			return redirect($response, '/user/create');
 		}
 
 		if ($request->getParam('password') === null) {
 			Session::alert('The password is required.', 'danger');
-			return redirect($response,'/user/create');
+			return redirect($response, '/user/create');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $request->getParam('username'))->fetch()->count > 0) {
 			Session::alert('The username already taken.', 'danger');
-			return redirect($response,'/user/create');
+			return redirect($response, '/user/create');
 		}
 
 		do {
@@ -89,13 +89,13 @@ class UserController extends Controller
 			$request->getParam('is_admin') !== null,
 			$request->getParam('is_active') !== null,
 			$userCode,
-			$token
+			$token,
 		]);
 
 		Session::alert("User '{$request->getParam('username')}' created!", 'success');
 		$this->logger->info('User ' . Session::get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
 
-		return redirect($response,'/users');
+		return redirect($response, '/users');
 	}
 
 	/**
@@ -115,7 +115,7 @@ class UserController extends Controller
 
 		return $this->view->render($response, 'user/edit.twig', [
 			'profile' => false,
-			'user' => $user
+			'user' => $user,
 		]);
 	}
 
@@ -136,22 +136,22 @@ class UserController extends Controller
 
 		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			return redirect($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response, '/user/' . $args['id'] . '/edit');
 		}
 
 		if ($request->getParam('username') === null) {
 			Session::alert('The username is required.', 'danger');
-			return redirect($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response, '/user/' . $args['id'] . '/edit');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$request->getParam('username'), $user->username])->fetch()->count > 0) {
 			Session::alert('The username already taken.', 'danger');
-			return redirect($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response, '/user/' . $args['id'] . '/edit');
 		}
 
 		if ($user->id === Session::get('user_id') && $request->getParam('is_admin') === null) {
 			Session::alert('You cannot demote yourself.', 'danger');
-			return redirect($response,'/user/' . $args['id'] . '/edit');
+			return redirect($response, '/user/' . $args['id'] . '/edit');
 		}
 
 		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
@@ -161,7 +161,7 @@ class UserController extends Controller
 				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
 				$request->getParam('is_admin') !== null,
 				$request->getParam('is_active') !== null,
-				$user->id
+				$user->id,
 			]);
 		} else {
 			$this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
@@ -169,14 +169,14 @@ class UserController extends Controller
 				$request->getParam('username'),
 				$request->getParam('is_admin') !== null,
 				$request->getParam('is_active') !== null,
-				$user->id
+				$user->id,
 			]);
 		}
 
 		Session::alert("User '{$request->getParam('username')}' updated!", 'success');
 		$this->logger->info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
 
-		return redirect($response,'/users');
+		return redirect($response, '/users');
 
 	}
 
@@ -197,7 +197,7 @@ class UserController extends Controller
 
 		if ($user->id === Session::get('user_id')) {
 			Session::alert('You cannot delete yourself.', 'danger');
-			return redirect($response,'/users');
+			return redirect($response, '/users');
 		}
 
 		$this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
@@ -205,7 +205,7 @@ class UserController extends Controller
 		Session::alert('User deleted.', 'success');
 		$this->logger->info('User ' . Session::get('username') . " deleted $user->id.");
 
-		return redirect($response,'/users');
+		return redirect($response, '/users');
 	}
 
 	/**
@@ -229,7 +229,7 @@ class UserController extends Controller
 
 		return $this->view->render($response, 'user/edit.twig', [
 			'profile' => true,
-			'user' => $user
+			'user' => $user,
 		]);
 	}
 
@@ -255,26 +255,26 @@ class UserController extends Controller
 
 		if ($request->getParam('email') === null) {
 			Session::alert('The email is required.', 'danger');
-			return redirect($response,'/profile');
+			return redirect($response, '/profile');
 		}
 
 		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
 			$this->database->query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', [
 				$request->getParam('email'),
 				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
-				$user->id
+				$user->id,
 			]);
 		} else {
 			$this->database->query('UPDATE `users` SET `email`=? WHERE `id` = ?', [
 				$request->getParam('email'),
-				$user->id
+				$user->id,
 			]);
 		}
 
 		Session::alert('Profile updated successfully!', 'success');
 		$this->logger->info('User ' . Session::get('username') . " updated profile of $user->id.");
 
-		return redirect($response,'/profile');
+		return redirect($response, '/profile');
 	}
 
 	/**
@@ -301,7 +301,7 @@ class UserController extends Controller
 
 		$this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
 			$token,
-			$user->id
+			$user->id,
 		]);
 
 		$this->logger->info('User ' . Session::get('username') . " refreshed token of user $user->id.");
@@ -331,6 +331,11 @@ class UserController extends Controller
 			throw new UnauthorizedException();
 		}
 
+		if ($user->token === null || $user->token === '') {
+			Session::alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
+
 		$base_url = $this->settings['base_url'];
 		$json = [
 			'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
@@ -343,6 +348,7 @@ class UserController extends Controller
 			],
 			'URL' => '$json:url$',
 			'ThumbnailURL' => '$json:url$/raw',
+			'DeletionURL' => '$json:url$/delete',
 		];
 
 		return $response

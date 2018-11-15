@@ -9,7 +9,7 @@ var app = {
         $('.refresh-token').click(app.refreshToken);
         $('#themes').mousedown(app.loadThemes);
 
-        $('.alert').fadeTo(2000, 500).slideUp(500, function () {
+        $('.alert').fadeTo(4000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
         });
 
@@ -82,7 +82,7 @@ var app = {
         $themes.unbind('mousedown');
     },
     telegramShare: function () {
-        $("<a>").attr("href", $('#telegram-share-button').data('url') + $('#telegram-share-text').val()).attr("target", "_blank")[0].click();
+        window.open($('#telegram-share-button').data('url') + $('#telegram-share-text').val(), '_blank');
     }
 };
 

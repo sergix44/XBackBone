@@ -57,7 +57,7 @@ class LoginController extends Controller
 			return $response->withRedirect(Session::get('redirectTo'));
 		}
 
-		return redirect($response,'/home');
+		return redirect($response, '/home');
 	}
 
 	/**
@@ -70,7 +70,7 @@ class LoginController extends Controller
 		Session::clear();
 		Session::set('logged', false);
 		Session::alert('Goodbye!', 'warning');
-		return redirect($response,'/login');
+		return redirect($response, '/login');
 	}
 
 }

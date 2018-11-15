@@ -7,7 +7,6 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Slim\Container;
-use Slim\Http\Response;
 
 abstract class Controller
 {
@@ -57,6 +56,7 @@ abstract class Controller
 			try {
 				$totalSize += $filesystem->getSize($media->storage_path);
 			} catch (FileNotFoundException $e) {
+				$this->logger->error('Error calculating file size', [$e->getTraceAsString()]);
 			}
 		}
 
