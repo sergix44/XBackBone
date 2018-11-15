@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Installing XBackBone | XBackBone</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A lightweight PHP backend for ShareX">
+
+    <link href="{{ request.uri }}../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ request.uri }}../static/highlightjs/styles/monokai.css" rel="stylesheet">
+    <link href="{{ request.uri }}../static/app/app.css" rel="stylesheet">
+
+    <script src="{{ request.uri }}../static/jquery/jquery.min.js"></script>
+    <script src="{{ request.uri }}../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ request.uri }}../static/fontawesome/js/all.min.js"></script>
+    <script src="{{ request.uri }}../static/highlightjs/highlight.pack.min.js"></script>
+    <script src="{{ request.uri }}../static/clipboardjs/clipboard.min.js"></script>
+    <script src="{{ request.uri }}../static/app/app.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: -webkit-box;
+            display: flex;
+            -ms-flex-align: center;
+            -ms-flex-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-3">
+                <div class="card-header">Install XBackBone</div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        {% if not installed %}
+                            <div class="form-group row">
+                                <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="base_url" name="base_url" value="{{ config.base_url }}" autocomplete="off" required>
+                                    <small>No trailing slash.</small>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="connection" class="col-sm-3 col-form-label">SQL Engine</label>
+                                <div class="col-sm-9">
+                                    <select name="connection" id="connection" required class="form-control">
+                                        <option value="sqlite" selected>SQLite</option>
+                                        <option value="mysql">MySQL</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="dsn" class="col-sm-3 col-form-label">Database Source Name (DSN)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="dsn" name="dsn" value="{{ config.db.dsn }}" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="db_user" class="col-sm-3 col-form-label">Database Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="db_user" name="db_user" autocomplete="off" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="db_password" class="col-sm-3 col-form-label">Database Password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="db_password" name="db_password" autocomplete="off" disabled>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="storage_dir" class="col-sm-3 col-form-label">Storage Directory</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_dir" name="storage_dir" value="{{ config.storage_dir }}" autocomplete="off" required>
+                                    <small>Must be a writable directory</small>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label">Admin email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-3 col-form-label">Admin password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="password" placeholder="Password" name="password" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row justify-content-md-end">
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="fas fa-save fa-fw"></i> Configure & Install
+                                    </button>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="form-group row">
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-lg btn-outline-primary">
+                                        <i class="fas fa-sync fa-fw"></i> Update database
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#connection').change(function () {
+            switch ($(this).val()) {
+                case 'sqlite':
+                    $('#dsn').val('resources/database/xbackbone.db');
+                    $('#db_user').val('').prop('disabled', 'disabled');
+                    $('#db_password').val('').prop('disabled', 'disabled');
+                    break;
+                case 'mysql':
+                    $('#dsn').val('host=localhost;port=3306;dbname=xbackbone');
+                    $('#db_user').val('db_user').prop('disabled', '');
+                    $('#db_password').val('').prop('disabled', '');
+                    break;
+            }
+        });
+    })
+</script>
+</body>
+</html>
