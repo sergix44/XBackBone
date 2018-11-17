@@ -64,7 +64,23 @@ From the CLI:
 + Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
 + If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
 
-**Clear the browser cache once you have applied.**
+*Clear the browser cache once you have applied.*
+
+#### Change app install name
+Add to the `config.php` file an array element like this:
+```php
+return array(
+    'app_name' => 'This line will overwrite "XBackBone"',
+    ...
+);
+```
+
+## How to update
++ Download and extract the release zip to your document root, overwriting any file.
++ Navigate to the `/install` path (es: `http://example.com/` -> `http://example.com/install/`)
++ Click the update button.
++ Done.
+
 
 #### Docker deployment
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
