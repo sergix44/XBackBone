@@ -23,8 +23,20 @@
         </div>
     </nav>
     <div class="container-fluid">
+        {% include 'comp/alert.twig' %}
         <div class="row ml-auto mr-auto">
             <div class="col-md-12 justify-content-center">
+                {% if delete_token is not null %}
+                    <form method="post" action="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/delete/{{ delete_token }}">
+                        <div class="text-center mb-4">
+                            <p>Are you sure you want to delete this item? It will be gone <b>forever</b>!</p>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Yes</button>
+                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}" class="btn btn-secondary">No</a>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
                 {% if type starts with 'image' %}
                     <div class="row mb-2">
                         <div class="col-md-12">
@@ -48,11 +60,13 @@
                         </div>
                     </div>
                 {% elseif type starts with 'video' %}
-                    <video width="100%"  class="video-js" controls preload="auto">
-                        <source src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" type="{{ type }}">
-                        Your browser does not support HTML5 video.
-                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
-                    </video>
+                    <div class="video-content">
+                        <video class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto"}'>
+                            <source src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" type="{{ type }}">
+                            Your browser does not support HTML5 video.
+                            <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                        </video>
+                    </div>
                 {% else %}
                     <div class="text-center">
                         <div class="row mb-2">

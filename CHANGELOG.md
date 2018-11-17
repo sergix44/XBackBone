@@ -1,3 +1,11 @@
+## v2.1
++ Improved theme style.
++ Improved page redirecting.
++ Allow e-mail login.
++ Support for ShareX deletion URL.
++ Fixed HTTP/2 push preload.
++ Added video.js support.
+
 ## v2.0
 + Migrated from Flight to Slim 3 framework.
 + Added install wizard (using the CLI is no longer required).

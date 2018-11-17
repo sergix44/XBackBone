@@ -27,8 +27,11 @@ $config = array_replace_recursive([
 		'username' => null,
 		'password' => null,
 	],
-	'routerCacheFile' => __DIR__ . '/../resources/cache/routes.cache.php',
 ], require __DIR__ . '/../config.php');
+
+if (!$config['displayErrorDetails']) {
+	$config['routerCacheFile'] = __DIR__ . '/../resources/cache/routes.cache.php';
+}
 
 $container = new Container(['settings' => $config]);
 

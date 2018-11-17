@@ -61,3 +61,9 @@ body {
     line-height: 40px;
     text-align: right;
 }
+
+.video-content {
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+}

@@ -83,7 +83,7 @@ class UploadController extends Controller
 	{
 		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
+		if (!$media || (!$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false))) {
 			throw new NotFoundException($request, $response);
 		}
 
@@ -108,15 +108,62 @@ class UploadController extends Controller
 				}
 
 			} catch (FileNotFoundException $e) {
-				throw $e;
+				throw new NotFoundException($request, $response);
 			}
 
 			return $this->view->render($response, 'upload/public.twig', [
+				'delete_token' => isset($args['token']) ? $args['token'] : null,
 				'media' => $media,
 				'type' => $mime,
 				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
 			]);
 		}
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function deleteByToken(Request $request, Response $response, $args): Response
+	{
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
+
+		if (!$media) {
+			throw new NotFoundException($request, $response);
+		}
+
+		$user = $this->database->query('SELECT `id`, `active` FROM `users` WHERE `token` = ? LIMIT 1', $args['token'])->fetch();
+
+		if (!$user) {
+			Session::alert('Token specified not found.', 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
+
+		if (!$user->active) {
+			Session::alert('Account disabled.', 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
+
+		if (Session::get('admin', false) || $user->id === $media->user_id) {
+
+			$filesystem = $this->getStorage();
+			try {
+				$filesystem->delete($media->storage_path);
+			} catch (FileNotFoundException $e) {
+				throw new NotFoundException($request, $response);
+			} finally {
+				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $media->mediaId);
+				$this->logger->info('User ' . $user->username . ' deleted a media via token.', [$media->mediaId]);
+			}
+		} else {
+			throw new UnauthorizedException();
+		}
+
+		return redirect($response, '/home');
 	}
 
 	/**
@@ -212,6 +259,10 @@ class UploadController extends Controller
 	{
 		$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
+		if (!$media) {
+			throw new NotFoundException($request, $response);
+		}
+
 		if (Session::get('admin', false) || $media->user_id === Session::get('user_id')) {
 
 			$filesystem = $this->getStorage();
@@ -240,7 +291,7 @@ class UploadController extends Controller
 	{
 		$mediaCode = pathinfo($mediaCode)['filename'];
 
-		$media = $this->database->query('SELECT * FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
+		$media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
 			$userCode,
 			$mediaCode,
 		])->fetch();
@@ -282,7 +333,7 @@ class UploadController extends Controller
 			ob_end_clean();
 			return $response
 				->withHeader('Content-Type', $mime)
-				->withHeader('Content-Disposition', $disposition . ';filename="' . $media->filename . '"')
+				->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
 				->withHeader('Content-Length', $storage->getSize($media->storage_path))
 				->withBody(new Stream($storage->readStream($media->storage_path)));
 		}

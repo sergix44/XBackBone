@@ -348,7 +348,7 @@ class UserController extends Controller
 			],
 			'URL' => '$json:url$',
 			'ThumbnailURL' => '$json:url$/raw',
-			'DeletionURL' => '$json:url$/delete',
+			'DeletionURL' => '$json:url$/delete/' . $user->token,
 		];
 
 		return $response

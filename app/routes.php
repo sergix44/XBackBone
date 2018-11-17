@@ -35,5 +35,7 @@ $app->map(['GET', 'POST'], '/logout', \App\Controllers\LoginController::class . 
 $app->post('/upload', \App\Controllers\UploadController::class . ':upload');
 
 $app->get('/{userCode}/{mediaCode}', \App\Controllers\UploadController::class . ':show');
+$app->get('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':show');
+$app->post('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':deleteByToken');
 $app->get('/{userCode}/{mediaCode}/raw', \App\Controllers\UploadController::class . ':showRaw');
 $app->get('/{userCode}/{mediaCode}/download', \App\Controllers\UploadController::class . ':download');
