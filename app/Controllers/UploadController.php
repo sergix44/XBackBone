@@ -104,7 +104,11 @@ class UploadController extends Controller
 					$media->text = $filesystem->read($media->storage_path);
 				} else if (in_array($type, ['image', 'video'])) {
 					$url = urlFor("/$args[userCode]/$args[mediaCode]/raw");
-					$response = $response->withHeader('Link', "<{$url}>; rel=preload; as={$type}" . Session::get('logged', false) ? '; nopush' : '');
+					$header = "<{$url}>; rel=preload; as={$type}";
+					if (Session::get('logged', false)) {
+						$header .= '; nopush';
+					}
+					$response = $response->withHeader('Link', $header);
 				}
 
 			} catch (FileNotFoundException $e) {
