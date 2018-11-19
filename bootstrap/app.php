@@ -60,11 +60,6 @@ $container['database'] = function ($container) use (&$config) {
 
 Lang::build(substr(@$_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2), __DIR__. '/../resources/lang/');
 
-$container['lang'] = function ($container) {
-	return Lang::getInstance();
-};
-
-
 $container['view'] = function ($container) use (&$config) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/templates', [
 		'cache' => __DIR__ . '/../resources/cache',
@@ -82,7 +77,7 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addGlobal('request', $container->get('request'));
 	$view->getEnvironment()->addGlobal('alerts', Session::getAlert());
 	$view->getEnvironment()->addGlobal('session', Session::all());
-	$view->getEnvironment()->addGlobal('current_lang', $container->get('lang')->getLang());
+	$view->getEnvironment()->addGlobal('current_lang', Lang::getInstance()->getLang());
 	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 
 	$view->getEnvironment()->addFunction(new Twig_Function('route', 'route'));

@@ -58,7 +58,11 @@ class Lang
 			$lang = strtolower(substr($lang, 0, 2));
 		}
 
-		self::$instance = new self($lang, $path);
+		if (file_exists(($path ? $path : self::LANG_PATH) . $lang . '.lang.php')) {
+			self::$instance = new self($lang, $path);
+		} else {
+			self::$instance = new self(self::DEFAULT_LANG, $path);
+		}
 
 		return self::$instance;
 	}
@@ -85,7 +89,7 @@ class Lang
 
 		if (array_key_exists($lang, $this->cache)) {
 			$transDict = $this->cache[$lang];
-		} elseif (file_exists($this->path . $lang . '.lang.php')) {
+		} else if (file_exists($this->path . $lang . '.lang.php')) {
 			$transDict = include $this->path . $lang . '.lang.php';
 			$this->cache[$lang] = $transDict;
 		} else {
