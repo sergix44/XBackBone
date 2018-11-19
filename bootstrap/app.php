@@ -28,7 +28,6 @@ $config = array_replace_recursive([
 		'username' => null,
 		'password' => null,
 	],
-	'lang' => 'en',
 ], require __DIR__ . '/../config.php');
 
 if (!$config['displayErrorDetails']) {
@@ -59,7 +58,7 @@ $container['database'] = function ($container) use (&$config) {
 	return DB::getInstance();
 };
 
-Lang::build($config['lang'], __DIR__. '/../resources/lang/');
+Lang::build(substr(@$_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2), __DIR__. '/../resources/lang/');
 
 $container['lang'] = function ($container) {
 	return Lang::getInstance();
@@ -85,6 +84,10 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addGlobal('session', Session::all());
 	$view->getEnvironment()->addGlobal('lang', $container->get('lang'));
 	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
+
+	$view->getEnvironment()->addFunction(new Twig_Function('route', 'route'));
+	$view->getEnvironment()->addFunction(new Twig_Function('lang', 'lang'));
+	$view->getEnvironment()->addFunction(new Twig_Function('urlFor', 'urlFor'));
 	return $view;
 };
 

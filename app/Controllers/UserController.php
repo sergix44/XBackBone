@@ -57,23 +57,28 @@ class UserController extends Controller
 	public function store(Request $request, Response $response): Response
 	{
 		if ($request->getParam('email') === null) {
-			Session::alert('The email is required.', 'danger');
-			return redirect($response, '/user/create');
+			Session::alert(lang('email_required'), 'danger');
+			return redirect($response, 'user.create');
+		}
+
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', $request->getParam('email'))->fetch()->count > 0) {
+			Session::alert(lang('email_taken'), 'danger');
+			return redirect($response, 'user.create');
 		}
 
 		if ($request->getParam('username') === null) {
-			Session::alert('The username is required.', 'danger');
-			return redirect($response, '/user/create');
+			Session::alert(lang('username_required'), 'danger');
+			return redirect($response, 'user.create');
 		}
 
 		if ($request->getParam('password') === null) {
-			Session::alert('The password is required.', 'danger');
-			return redirect($response, '/user/create');
+			Session::alert(lang('password_required'), 'danger');
+			return redirect($response, 'user.create');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $request->getParam('username'))->fetch()->count > 0) {
-			Session::alert('The username already taken.', 'danger');
-			return redirect($response, '/user/create');
+			Session::alert(lang('username_taken'), 'danger');
+			return redirect($response, 'user.create');
 		}
 
 		do {
@@ -86,16 +91,16 @@ class UserController extends Controller
 			$request->getParam('email'),
 			$request->getParam('username'),
 			password_hash($request->getParam('password'), PASSWORD_DEFAULT),
-			$request->getParam('is_admin') !== null,
-			$request->getParam('is_active') !== null,
+			$request->getParam('is_admin') !== null ? 1 : 0,
+			$request->getParam('is_active') !== null ? 1 : 0,
 			$userCode,
 			$token,
 		]);
 
-		Session::alert("User '{$request->getParam('username')}' created!", 'success');
+		Session::alert(lang('user_created', [$request->getParam('username')]), 'success');
 		$this->logger->info('User ' . Session::get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
 
-		return redirect($response, '/users');
+		return redirect($response, 'user.index');
 	}
 
 	/**
@@ -135,23 +140,28 @@ class UserController extends Controller
 		}
 
 		if ($request->getParam('email') === null) {
-			Session::alert('The email is required.', 'danger');
-			return redirect($response, '/user/' . $args['id'] . '/edit');
+			Session::alert(lang('email_required'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
+		}
+
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [$request->getParam('email'), $user->email])->fetch()->count > 0) {
+			Session::alert(lang('email_taken'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($request->getParam('username') === null) {
-			Session::alert('The username is required.', 'danger');
-			return redirect($response, '/user/' . $args['id'] . '/edit');
+			Session::alert(lang('username_required'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$request->getParam('username'), $user->username])->fetch()->count > 0) {
-			Session::alert('The username already taken.', 'danger');
-			return redirect($response, '/user/' . $args['id'] . '/edit');
+			Session::alert(lang('username_taken'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($user->id === Session::get('user_id') && $request->getParam('is_admin') === null) {
-			Session::alert('You cannot demote yourself.', 'danger');
-			return redirect($response, '/user/' . $args['id'] . '/edit');
+			Session::alert(lang('cannot_demote'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
@@ -159,24 +169,24 @@ class UserController extends Controller
 				$request->getParam('email'),
 				$request->getParam('username'),
 				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
-				$request->getParam('is_admin') !== null,
-				$request->getParam('is_active') !== null,
+				$request->getParam('is_admin') !== null ? 1 : 0,
+				$request->getParam('is_active') !== null ? 1 : 0,
 				$user->id,
 			]);
 		} else {
 			$this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
 				$request->getParam('email'),
 				$request->getParam('username'),
-				$request->getParam('is_admin') !== null,
-				$request->getParam('is_active') !== null,
+				$request->getParam('is_admin') !== null ? 1 : 0,
+				$request->getParam('is_active') !== null ? 1 : 0,
 				$user->id,
 			]);
 		}
 
-		Session::alert("User '{$request->getParam('username')}' updated!", 'success');
+		Session::alert(lang('user_updated', [$request->getParam('username')]), 'success');
 		$this->logger->info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
 
-		return redirect($response, '/users');
+		return redirect($response, 'user.index');
 
 	}
 
@@ -196,16 +206,16 @@ class UserController extends Controller
 		}
 
 		if ($user->id === Session::get('user_id')) {
-			Session::alert('You cannot delete yourself.', 'danger');
-			return redirect($response, '/users');
+			Session::alert(lang('cannot_delete'), 'danger');
+			return redirect($response, 'user.index');
 		}
 
 		$this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
 
-		Session::alert('User deleted.', 'success');
+		Session::alert(lang('user_deleted'), 'success');
 		$this->logger->info('User ' . Session::get('username') . " deleted $user->id.");
 
-		return redirect($response, '/users');
+		return redirect($response, 'user.index');
 	}
 
 	/**
@@ -254,8 +264,13 @@ class UserController extends Controller
 		}
 
 		if ($request->getParam('email') === null) {
-			Session::alert('The email is required.', 'danger');
-			return redirect($response, '/profile');
+			Session::alert(lang('email_required'), 'danger');
+			return redirect($response, 'profile');
+		}
+
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [$request->getParam('email'), $user->email])->fetch()->count > 0) {
+			Session::alert(lang('email_taken'), 'danger');
+			return redirect($response, 'profile');
 		}
 
 		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
@@ -271,10 +286,10 @@ class UserController extends Controller
 			]);
 		}
 
-		Session::alert('Profile updated successfully!', 'success');
+		Session::alert(lang('profile_updated'), 'success');
 		$this->logger->info('User ' . Session::get('username') . " updated profile of $user->id.");
 
-		return redirect($response, '/profile');
+		return redirect($response, 'profile');
 	}
 
 	/**

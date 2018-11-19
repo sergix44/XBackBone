@@ -5,17 +5,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="A lightweight PHP backend for ShareX">
-    <link href="{{ config.base_url }}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ config.base_url }}/static/highlightjs/styles/monokai.css" rel="stylesheet">
-    <link href="{{ config.base_url }}/static/videojs/video-js.min.css" rel="stylesheet">
-    <link href="{{ config.base_url }}/static/app/app.css" rel="stylesheet">
-	<script src="{{ config.base_url }}/static/jquery/jquery.min.js"></script>
-    <script src="{{ config.base_url }}/static/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ config.base_url }}/static/fontawesome/js/all.min.js"></script>
-    <script src="{{ config.base_url }}/static/highlightjs/highlight.pack.min.js"></script>
-    <script src="{{ config.base_url }}/static/clipboardjs/clipboard.min.js"></script>
-    <script src="{{ config.base_url }}/static/videojs/video.min.js"></script>
-    <script src="{{ config.base_url }}/static/app/app.js"></script>
+    <link href="{{ urlFor('/static/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ urlFor('/static/highlightjs/styles/monokai.css') }}" rel="stylesheet">
+    <link href="{{ urlFor('/static/videojs/video-js.min.css') }}" rel="stylesheet">
+    <link href="{{ urlFor('/static/app/app.css') }}" rel="stylesheet">
+	<script src="{{ urlFor('/static/jquery/jquery.min.js') }}"></script>
+    <script src="{{ urlFor('/static/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ urlFor('/static/fontawesome/js/all.min.js') }}"></script>
+    <script src="{{ urlFor('/static/highlightjs/highlight.pack.min.js') }}"></script>
+    <script src="{{ urlFor('/static/clipboardjs/clipboard.min.js') }}"></script>
+    <script src="{{ urlFor('/static/videojs/video.min.js') }}"></script>
+    <script src="{{ urlFor('/static/app/app.js') }}"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <script>window.AppConfig = {'base_url': '{{ config.base_url }}'}</script>
     {% block head %}{% endblock %}

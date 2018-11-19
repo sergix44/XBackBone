@@ -5,19 +5,19 @@
 {% block content %}
     <nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ config.base_url }}">{{ config.app_name }}</a>
+            <a class="navbar-brand" href="{{ route('root') }}">{{ config.app_name }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="ml-auto">
-                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
-                    <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-html="true" title="Telegram Message" data-toggle="popover" data-placement="bottom"
+                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-html="true" title="{{ lang('public.telegram') }}" data-toggle="popover" data-placement="bottom"
                        data-content='<input type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()" value="{{ media.filename }}">
-<button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> Send</button>'><i
+<button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>'><i
                                 class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
-                    <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" class="btn btn-light my-2 my-sm-0" data-toggle="tooltip" title="Show raw"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
-                    <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="Download"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="btn btn-light my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                 </div>
             </div>
         </div>
@@ -27,12 +27,12 @@
         <div class="row ml-auto mr-auto">
             <div class="col-md-12 justify-content-center">
                 {% if delete_token is not null %}
-                    <form method="post" action="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/delete/{{ delete_token }}">
+                    <form method="post" action="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/delete/' ~ delete_token) }}">
                         <div class="text-center mb-4">
-                            <p>Are you sure you want to delete this item? It will be gone <b>forever</b>!</p>
+                            <p>{{ lang('public.delete_text') }}</p>
                             <div class="btn-group">
-                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Yes</button>
-                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}" class="btn btn-secondary">No</a>
+                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> {{ lang('yes') }}</button>
+                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}" class="btn btn-secondary">{{ lang('no') }}</a>
                             </div>
                         </div>
                     </form>
@@ -40,7 +40,7 @@
                 {% if type starts with 'image' %}
                     <div class="row mb-2">
                         <div class="col-md-12">
-                            <img src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
+                            <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
                         </div>
                     </div>
                     <div class="row">
@@ -62,9 +62,9 @@
                 {% elseif type starts with 'video' %}
                     <div class="video-content">
                         <video class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto"}'>
-                            <source src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/raw" type="{{ type }}">
+                            <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ type }}">
                             Your browser does not support HTML5 video.
-                            <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </video>
                     </div>
                 {% else %}
@@ -81,7 +81,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ extension }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                             </div>
                         </div>
                     </div>

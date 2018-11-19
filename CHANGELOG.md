@@ -1,3 +1,9 @@
+## v2.2
++ Added multi-language support.
++ Improved routing.
++ Fixed HTTP/2 push is resetting the current session.
++ Minor improvements and bug fixes.
+
 ## v2.1
 + Improved theme style.
 + Improved page redirecting.

@@ -1,56 +1,54 @@
 {% extends 'base.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ lang('home') }}{% endblock %}
 
 {% block content %}
     {% include 'comp/navbar.twig' %}
     <div class="container">
         {% include 'comp/alert.twig' %}
         {% if medias|length > 0 %}
-            <div class="card box-shadow">
-                <div class="card-body">
-                    {% include 'comp/pager.twig' with {'path': 'home'} %}
-                    <div class="row">
-                        {% for media in medias %}
-                            <div class="col-md-4" id="media_{{ media.id }}">
-                                <div class="card mb-4 box-shadow">
-                                    {% if media.mimetype starts with 'image' %}
-                                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}" target="_blank">
-                                            <img class="card-img-top user-img" src="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}/raw?width=348&height=192" alt="{{ media.filename }}">
-                                        </a>
-                                    {% else %}
-                                        <a href="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}" target="_blank">
-                                            <div class="card-header text-center"><i class="far fa-file fa-10x"></i></div>
-                                        </a>
-                                    {% endif %}
-                                    <div class="card-body">
-                                        <p class="card-text">{{ media.filename }}<small class="float-right">{{ media.size }}</small></p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-sm btn-outline-success btn-clipboard" data-toggle="tooltip" title="Copy link" data-clipboard-text="{{ config.base_url }}/{{ media.user_code }}/{{ media.code }}.{{ media.extension }}">
-                                                    <i class="fas fa-link"></i>
-                                                </button>
-                                                {% if media.published %}
-                                                    <a href="javascript:void(0)" class="btn btn-sm btn-outline-warning publish-toggle" data-toggle="tooltip" title="Unpublish" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
-                                                {% else %}
-                                                    <a href="javascript:void(0)" class="btn btn-sm btn-outline-info publish-toggle" data-toggle="tooltip" title="Publish" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
-                                                {% endif %}
-                                                <button type="button" class="btn btn-sm btn-outline-danger media-delete" data-link="{{ config.base_url }}/upload/{{ media.id }}/delete" data-id="{{ media.id }}" data-toggle="tooltip" title="Delete">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">{{ media.timestamp|date("d/m/Y H:i:s") }}</small>
-                                        </div>
+            {% include 'comp/pager.twig' with {'path': 'home'} %}
+            <div class="row">
+                {% for media in medias %}
+                    <div class="col-md-4" id="media_{{ media.id }}">
+                        <div class="card mb-4 box-shadow">
+                            {% if media.mimetype starts with 'image' %}
+                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank">
+                                    <img class="card-img-top user-img" src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=348&height=192') }}" alt="{{ media.filename }}">
+                                </a>
+                            {% else %}
+                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank">
+                                    <div class="card-header text-center"><i class="far fa-file fa-10x"></i></div>
+                                </a>
+                            {% endif %}
+                            <div class="card-body">
+                                <p class="card-text">{{ media.filename }}
+                                    <small class="float-right">{{ media.size }}</small>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}">
+                                            <i class="fas fa-link"></i>
+                                        </button>
+                                        {% if media.published %}
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-outline-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
+                                        {% else %}
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-outline-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
+                                        {% endif %}
+                                        <button type="button" class="btn btn-sm btn-outline-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
+                                    <small class="text-muted">{{ media.timestamp|date("d/m/Y H:i:s") }}</small>
                                 </div>
                             </div>
-                        {% endfor %}
+                        </div>
                     </div>
-                    {% include 'comp/pager.twig' with {'path': 'home'} %}
-                </div>
+                {% endfor %}
             </div>
+            {% include 'comp/pager.twig' with {'path': 'home'} %}
         {% else %}
-            <div class="text-center text-muted"><i>No medias found.</i></div>
+            <div class="text-center text-muted"><i>{{ lang('no_media') }}</i></div>
         {% endif %}
     </div>
     {% include 'comp/footer.twig' %}

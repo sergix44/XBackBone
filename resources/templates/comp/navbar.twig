@@ -1,25 +1,25 @@
 <nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4 box-shadow">
     <div class="container">
-        <a class="navbar-brand" href="{{ config.base_url }}">{{ config.app_name }}</a>
+        <a class="navbar-brand" href="{{ route('root') }}">{{ config.app_name }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="{{ config.base_url }}/home" class="nav-link {{ request.uri.path starts with '/home' ? 'active' }}"><i class="fas fa-fw fa-home"></i>
-                        Home
+                    <a href="{{ route('home') }}" class="nav-link {{ request.uri.path starts with '/home' ? 'active' }}"><i class="fas fa-fw fa-home"></i>
+                        {{ lang('home') }}
                     </a>
                 </li>
                 {% if session.admin %}
                     <li class="nav-item">
-                        <a href="{{ config.base_url }}/users" class="nav-link {{ request.uri.path starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
-                            Users
+                        <a href="{{ route('user.index') }}" class="nav-link {{ request.uri.path starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                            {{ lang('users') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ config.base_url }}/system" class="nav-link {{ request.uri.path starts with '/system' ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
-                            System
+                        <a href="{{ route('system') }}" class="nav-link {{ request.uri.path starts with '/system' ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
+                            {{ lang('system') }}
                         </a>
                     </li>
                 {% endif %}
@@ -30,10 +30,10 @@
                         <i class="fas fa-fw fa-user"></i> {{ session.username }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userDropdown">
-                        <a class="dropdown-item disabled" href="javascript:void(0)">Used: {{ session.used_space }}</a>
+                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.used_space }}</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ config.base_url }}/profile"><i class="fas fa-fw fa-user"></i> Profile</a>
-                        <a class="dropdown-item" href="{{ config.base_url }}/logout"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
+                        <a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-fw fa-user"></i> {{ lang('profile') }}</a>
+                        <a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-fw fa-sign-out-alt"></i> {{ lang('logout') }}</a>
                     </div>
                 </li>
             </ul>

@@ -23,11 +23,11 @@ class DashboardController extends Controller
 	{
 
 		if ($request->getParam('afterInstall') !== null && is_dir('install')) {
-			Session::alert('Installation completed successfully!', 'success');
+			Session::alert(lang('installed'), 'success');
 			removeDirectory('install');
 		}
 
-		return redirect($response, '/home');
+		return redirect($response, 'home');
 	}
 
 	/**
@@ -117,6 +117,7 @@ class DashboardController extends Controller
 
 		$out = [];
 
+		$out['Default - Bootstrap 4 default theme'] = 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css';
 		foreach ($apiJson->themes as $theme) {
 			$out["{$theme->name} - {$theme->description}"] = $theme->cssMin;
 		}
@@ -128,6 +129,6 @@ class DashboardController extends Controller
 	public function applyTheme(Request $request, Response $response): Response
 	{
 		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
-		return redirect($response, '/system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
+		return redirect($response, 'system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
 	}
 }

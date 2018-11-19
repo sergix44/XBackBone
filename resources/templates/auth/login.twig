@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}{{ lang('login') }}{% endblock %}
 
 {% block head %}
     <style>
@@ -27,7 +27,7 @@
 
 {% block content %}
     <div class="container-fluid">
-        <form class="form-signin text-center" method="post" action="login">
+        <form class="form-signin text-center" method="post" action="{{ route('login') }}">
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="h3 mb-3 font-weight-normal">{{ config.app_name }}</h1>
@@ -36,15 +36,15 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <label for="inputEmail" class="sr-only">Username or E-Mail</label>
-                    <input type="text" id="username" class="form-control" placeholder="Username or E-Mail" name="username" required autofocus>
-                    <label for="password" class="sr-only">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Password" name="password" required>
+                    <label for="inputEmail" class="sr-only">{{ lang('login.username') }}</label>
+                    <input type="text" id="username" class="form-control" placeholder="{{ lang('login.username') }}" name="username" required autofocus>
+                    <label for="password" class="sr-only">{{ lang('login.password') }}</label>
+                    <input type="password" id="password" class="form-control" placeholder="{{ lang('password') }}" name="password" required>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ lang('login') }}</button>
                 </div>
             </div>
         </form>

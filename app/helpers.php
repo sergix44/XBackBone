@@ -55,12 +55,19 @@ if (!function_exists('redirect')) {
 	 * Set the redirect response
 	 * @param \Slim\Http\Response $response
 	 * @param string $path
+	 * @param array $args
 	 * @param null $status
 	 * @return \Slim\Http\Response
 	 */
-	function redirect(\Slim\Http\Response $response, string $path, $status = null)
+	function redirect(\Slim\Http\Response $response, string $path, $args = [], $status = null)
 	{
-		return $response->withRedirect(urlFor($path), $status);
+		if ($path === '/' || substr($path, 0, 1) === '/') {
+			$url = urlFor($path);
+		} else {
+			$url = route($path, $args);
+		}
+
+		return $response->withRedirect($url, $status);
 	}
 }
 
@@ -78,3 +85,29 @@ if (!function_exists('urlFor')) {
 	}
 }
 
+if (!function_exists('route')) {
+	/**
+	 * Generate the app url given a path
+	 * @param string $path
+	 * @param array $args
+	 * @return string
+	 */
+	function route(string $path, array $args = [])
+	{
+		global $app;
+		$uri = $app->getContainer()->get('router')->pathFor($path, $args);
+		return urlFor($uri);
+	}
+}
+
+if (!function_exists('lang')) {
+	/**
+	 * @param string $key
+	 * @param array $args
+	 * @return string
+	 */
+	function lang(string $key, $args = [])
+	{
+		return \App\Web\Lang::getInstance()->get($key, $args);
+	}
+}

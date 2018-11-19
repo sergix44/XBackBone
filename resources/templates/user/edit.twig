@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% block title %}{{ profile ? 'Your Profile' : 'Edit User' }}{% endblock %}
+{% block title %}{{ profile ? lang('your_profile') : lang('user.edit') }}{% endblock %}
 
 {% block content %}
     {% include 'comp/navbar.twig' %}
@@ -10,10 +10,10 @@
             <div class="col-md-8">
                 <div class="card box-shadow">
                     {% if not profile %}
-                        <div class="card-header">Edit User</div>
+                        <div class="card-header">{{ lang('user.edit') }}</div>
                     {% endif %}
                     <div class="card-body">
-                        <form method="post" action="{{ config.base_url }}/{{ profile ? 'profile' : 'user' }}/{{ user.id }}">
+                        <form method="post" action="{{ route( (profile ? 'profile.update' : 'user.update'), {'id': user.id}) }}">
                             <div class="form-group row">
                                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
@@ -21,37 +21,37 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="username" class="col-sm-2 col-form-label">Username</label>
+                                <label for="username" class="col-sm-2 col-form-label">{{ lang('username') }}</label>
                                 <div class="col-sm-10">
                                     {% if profile %}
                                         <input type="text" class="form-control disabled" id="username" value="{{ user.username }}" readonly>
                                     {% else %}
-                                        <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{ user.username }}" autocomplete="off" required>
+                                        <input type="text" class="form-control" id="username" placeholder="{{ lang('username') }}" name="username" value="{{ user.username }}" autocomplete="off" required>
                                     {% endif %}
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                <label for="password" class="col-sm-2 col-form-label">{{ lang('password') }}</label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="password" placeholder="Password" name="password" autocomplete="off">
+                                    <input type="password" class="form-control" id="password" placeholder="{{ lang('password') }}" name="password" autocomplete="off">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="token" class="col-sm-2 col-form-label">Token</label>
+                                <label for="token" class="col-sm-2 col-form-label">{{ lang('token') }}</label>
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <input type="text" id="token" class="form-control" value="{{ user.token }}" readonly>
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-success btn-clipboard" type="button" data-clipboard-target="#token"><i class="fas fa-fw fa-copy"></i> Copy</button>
-                                            <button class="btn btn-outline-primary refresh-token" data-id="{{ user.id }}" type="button"><i class="fas fa-fw fa-sync"></i> Update</button>
+                                            <button class="btn btn-outline-success btn-clipboard" type="button" data-clipboard-target="#token"><i class="fas fa-fw fa-copy"></i> {{ lang('copy') }}</button>
+                                            <button class="btn btn-outline-primary refresh-token" data-id="{{ user.id }}" type="button"><i class="fas fa-fw fa-sync"></i> {{ lang('update') }}</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">Client Config</label>
+                                <label class="col-sm-2 col-form-label">{{ lang('client_config') }}</label>
                                 <div class="col-sm-10">
-                                    <a href="{{ config.base_url }}/user/{{ user.id }}/config/sharex" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX Config File</a>
+                                    <a href="{{ route('config.sharex', {'id': user.id}) }}" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX Config File</a>
                                 </div>
                             </div>
                             {% if not profile %}
@@ -61,7 +61,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin" {{ user.is_admin ? 'checked' }}>
                                             <label class="form-check-label" for="is_admin">
-                                                Is admin
+                                                {{ lang('is_admin') }}
                                             </label>
                                         </div>
                                     </div>
@@ -72,7 +72,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {{ user.active ? 'checked' }}>
                                             <label class="form-check-label" for="is_active">
-                                                Is active
+                                                {{ lang('is_active') }}
                                             </label>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                             <div class="form-group row justify-content-md-end">
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-outline-info">
-                                        <i class="fas fa-save fa-fw"></i> Save
+                                        <i class="fas fa-save fa-fw"></i> {{ lang('save') }}
                                     </button>
                                 </div>
                             </div>

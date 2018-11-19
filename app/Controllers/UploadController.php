@@ -139,12 +139,12 @@ class UploadController extends Controller
 		$user = $this->database->query('SELECT `id`, `active` FROM `users` WHERE `token` = ? LIMIT 1', $args['token'])->fetch();
 
 		if (!$user) {
-			Session::alert('Token specified not found.', 'danger');
+			Session::alert(lang('token_not_found'), 'danger');
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 
 		if (!$user->active) {
-			Session::alert('Account disabled.', 'danger');
+			Session::alert(lang('account_disabled'), 'danger');
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 
@@ -163,7 +163,7 @@ class UploadController extends Controller
 			throw new UnauthorizedException();
 		}
 
-		return redirect($response, '/home');
+		return redirect($response, 'home');
 	}
 
 	/**

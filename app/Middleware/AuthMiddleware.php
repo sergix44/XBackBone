@@ -27,14 +27,14 @@ class AuthMiddleware
 	{
 		if (!Session::get('logged', false)) {
 			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-			return redirect($response, '/login');
+			return redirect($response, 'login.show');
 		}
 
 		if (!$this->container->database->query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', [Session::get('user_id')])->fetch()->active) {
 			Session::alert('Your account is not active anymore.', 'danger');
 			Session::set('logged', false);
 			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-			return redirect($response, '/login');
+			return redirect($response, 'login.show');
 		}
 
 		return $next($request, $response);

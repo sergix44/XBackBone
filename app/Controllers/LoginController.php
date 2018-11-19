@@ -19,7 +19,7 @@ class LoginController extends Controller
 	public function show(Request $request, Response $response): Response
 	{
 		if (Session::get('logged', false)) {
-			return redirect($response, '/home');
+			return redirect($response, 'home');
 		}
 		return $this->view->render($response, 'auth/login.twig');
 	}
@@ -35,13 +35,13 @@ class LoginController extends Controller
 		$result = DB::query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$request->getParam('username'), $request->getParam('username')])->fetch();
 
 		if (!$result || !password_verify($request->getParam('password'), $result->password)) {
-			Session::alert('Wrong credentials', 'danger');
-			return redirect($response, '/login');
+			Session::alert(lang('bad_login'), 'danger');
+			return redirect($response, 'login');
 		}
 
 		if (!$result->active) {
-			Session::alert('Your account is disabled.', 'danger');
-			return redirect($response, '/login');
+			Session::alert(lang('account_disabled'), 'danger');
+			return redirect($response, 'login');
 		}
 
 		Session::set('logged', true);
@@ -50,14 +50,14 @@ class LoginController extends Controller
 		Session::set('admin', $result->is_admin);
 		Session::set('used_space', humanFileSize($this->getUsedSpaceByUser($result->id)));
 
-		Session::alert("Welcome, $result->username!", 'info');
+		Session::alert(lang('welcome', [$result->username]), 'info');
 		$this->logger->info("User $result->username logged in.");
 
 		if (Session::has('redirectTo')) {
 			return $response->withRedirect(Session::get('redirectTo'));
 		}
 
-		return redirect($response, '/home');
+		return redirect($response, 'home');
 	}
 
 	/**
@@ -69,8 +69,8 @@ class LoginController extends Controller
 	{
 		Session::clear();
 		Session::set('logged', false);
-		Session::alert('Goodbye!', 'warning');
-		return redirect($response, '/login');
+		Session::alert(lang('goodbye'), 'warning');
+		return redirect($response, 'login.show');
 	}
 
 }
