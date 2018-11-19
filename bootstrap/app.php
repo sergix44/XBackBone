@@ -82,7 +82,7 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addGlobal('request', $container->get('request'));
 	$view->getEnvironment()->addGlobal('alerts', Session::getAlert());
 	$view->getEnvironment()->addGlobal('session', Session::all());
-	$view->getEnvironment()->addGlobal('lang', $container->get('lang'));
+	$view->getEnvironment()->addGlobal('current_lang', $container->get('lang')->getLang());
 	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 
 	$view->getEnvironment()->addFunction(new Twig_Function('route', 'route'));

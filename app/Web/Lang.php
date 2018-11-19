@@ -102,4 +102,12 @@ class Lang
 
 		return $key;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getLang(): string
+	{
+		return $this->lang;
+	}
 }
