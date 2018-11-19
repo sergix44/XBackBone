@@ -70,6 +70,7 @@ module.exports = function (grunt) {
                 'resources/cache',
                 'resources/sessions',
                 'resources/database',
+                'resources/lang/**/*',
                 'resources/templates/**/*',
                 'resources/schemas/**/*',
                 'static/**/*',
