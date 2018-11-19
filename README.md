@@ -8,6 +8,7 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Code uploads syntax highlighting.
 + Video uploads player.
 + Files upload download page.
++ Multi language support.
 + User management, multi user features and roles.
 + Public and private uploads.
 + Web UI for each user.
@@ -132,8 +133,8 @@ location / {
 ```
 
 ## Built with
-+ Slim 3 since `v2.0` (https://www.slimframework.com/)
-+ FlightPHP up to `v1.x` (http://flightphp.com/)]
++ Slim 3, since `v2.0` (https://www.slimframework.com/)
++ FlightPHP, up to `v1.x` (http://flightphp.com/)
 + Bootstrap 4 (https://getbootstrap.com/)
 + Font Awesome 5 (http://fontawesome.com)
 + ClipboardJS (https://clipboardjs.com/)
