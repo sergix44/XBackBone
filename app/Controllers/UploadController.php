@@ -5,6 +5,7 @@ namespace App\Controllers;
 
 use App\Exceptions\UnauthorizedException;
 use App\Web\Session;
+use Intervention\Image\ImageManagerStatic as Image;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
@@ -89,18 +90,15 @@ class UploadController extends Controller
 
 		$filesystem = $this->getStorage();
 
-		if (stristr($request->getHeaderLine('User-Agent'), 'TelegramBot') ||
-			stristr($request->getHeaderLine('User-Agent'), 'facebookexternalhit/') ||
-			stristr($request->getHeaderLine('User-Agent'), 'Discordbot/') ||
-			stristr($request->getHeaderLine('User-Agent'), 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0') || // The discord service bot?
-			stristr($request->getHeaderLine('User-Agent'), 'Facebot')) {
+		if (isBot($request->getHeaderLine('User-Agent'))) {
 			return $this->streamMedia($request, $response, $filesystem, $media);
 		} else {
 
 			try {
-				$mime = $filesystem->getMimetype($media->storage_path);
+				$media->mimetype = $filesystem->getMimetype($media->storage_path);
+				$media->size = humanFileSize($filesystem->getSize($media->storage_path));
 
-				$type = explode('/', $mime)[0];
+				$type = explode('/', $media->mimetype)[0];
 				if ($type === 'text') {
 					$media->text = $filesystem->read($media->storage_path);
 				} else if (in_array($type, ['image', 'video'])) {
@@ -119,7 +117,6 @@ class UploadController extends Controller
 			return $this->view->render($response, 'upload/public.twig', [
 				'delete_token' => isset($args['token']) ? $args['token'] : null,
 				'media' => $media,
-				'type' => $mime,
 				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
 			]);
 		}
@@ -319,21 +316,17 @@ class UploadController extends Controller
 
 		if ($request->getParam('width') !== null && explode('/', $mime)[0] === 'image') {
 
-			$image = imagecreatefromstring($storage->read($media->storage_path));
-			$scaled = imagescale($image, $request->getParam('width'), $request->getParam('height') !== null ? $request->getParam('height') : -1);
-			imagedestroy($image);
-
-			ob_start();
-			imagepng($scaled, null, 9);
-
-			$imagedata = ob_get_contents();
-			ob_end_clean();
-			imagedestroy($scaled);
+			$image = Image::make($storage->readStream($media->storage_path))
+				->resizeCanvas(
+					$request->getParam('width'),
+					$request->getParam('height'),
+					'center')
+				->encode('png');
 
 			return $response
 				->withHeader('Content-Type', 'image/png')
 				->withHeader('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"')
-				->write($imagedata);
+				->write($image);
 		} else {
 			ob_end_clean();
 			return $response

@@ -83,6 +83,7 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addFunction(new Twig_Function('route', 'route'));
 	$view->getEnvironment()->addFunction(new Twig_Function('lang', 'lang'));
 	$view->getEnvironment()->addFunction(new Twig_Function('urlFor', 'urlFor'));
+	$view->getEnvironment()->addFunction(new Twig_Function('mime2font', 'mime2font'));
 	return $view;
 };
 

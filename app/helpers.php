@@ -13,7 +13,7 @@ if (!function_exists('humanFileSize')) {
 	{
 		for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
 		}
-		return round($size, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
+		return round($size, $precision) . ' ' . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
 	}
 }
 
@@ -77,7 +77,7 @@ if (!function_exists('urlFor')) {
 	 * @param string $path
 	 * @return string
 	 */
-	function urlFor(string $path)
+	function urlFor(string $path): string
 	{
 		global $app;
 		$baseUrl = $app->getContainer()->get('settings')['base_url'];
@@ -92,7 +92,7 @@ if (!function_exists('route')) {
 	 * @param array $args
 	 * @return string
 	 */
-	function route(string $path, array $args = [])
+	function route(string $path, array $args = []): string
 	{
 		global $app;
 		$uri = $app->getContainer()->get('router')->pathFor($path, $args);
@@ -106,8 +106,67 @@ if (!function_exists('lang')) {
 	 * @param array $args
 	 * @return string
 	 */
-	function lang(string $key, $args = [])
+	function lang(string $key, $args = []): string
 	{
 		return \App\Web\Lang::getInstance()->get($key, $args);
+	}
+}
+
+if (!function_exists('isBot')) {
+	/**
+	 * @param string $userAgent
+	 * @return boolean
+	 */
+	function isBot(string $userAgent)
+	{
+		$bots = [
+			'TelegramBot',
+			'facebookexternalhit/',
+			'Discordbot/',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0', // The discord service bot?
+			'Facebot',
+		];
+
+		foreach ($bots as $bot) {
+			if (stripos($userAgent, $bot) !== false) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
+
+if (!function_exists('mime2font')) {
+	function mime2font($mime)
+	{
+		$classes = [
+			'image' => 'fa-file-image',
+			'audio' => 'fa-file-audio',
+			'video' => 'fa-file-video',
+			'application/pdf' => 'fa-file-pdf',
+			'application/msword' => 'fa-file-word',
+			'application/vnd.ms-word' => 'fa-file-word',
+			'application/vnd.oasis.opendocument.text' => 'fa-file-word',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml' => 'fa-file-word',
+			'application/vnd.ms-excel' => 'fa-file-excel',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml' => 'fa-file-excel',
+			'application/vnd.oasis.opendocument.spreadsheet' => 'fa-file-excel',
+			'application/vnd.ms-powerpoint' => 'fa-file-powerpoint',
+			'application/vnd.openxmlformats-officedocument.presentationml' => 'fa-file-powerpoint',
+			'application/vnd.oasis.opendocument.presentation' => 'fa-file-powerpoint',
+			'text/plain' => 'fa-file-alt',
+			'text/html' => 'fa-file-code',
+			'application/json' => 'fa-file-code',
+			'application/gzip' => 'fa-file-archive',
+			'application/zip' => 'fa-file-archive',
+		];
+
+		foreach ($classes as $fullMime => $class) {
+			if (strpos($mime, $fullMime) === 0) {
+				return $class;
+			}
+		}
+		return 'fa-file';
 	}
 }

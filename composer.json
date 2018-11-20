@@ -1,6 +1,6 @@
 {
   "name": "sergix44/xbackbone",
-  "version": "2.2",
+  "version": "2.3",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
@@ -9,6 +9,7 @@
     "slim/twig-view": "^2.4",
     "league/flysystem": "^1.0.45",
     "monolog/monolog": "^1.23",
+    "intervention/image": "^2.4",
     "ext-json": "*",
     "ext-gd": "*",
     "ext-pdo": "*"

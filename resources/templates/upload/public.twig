@@ -37,7 +37,7 @@
                         </div>
                     </form>
                 {% endif %}
-                {% if type starts with 'image' %}
+                {% if media.mimetype starts with 'image' %}
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
@@ -48,7 +48,7 @@
                             {{ media.filename }}
                         </div>
                     </div>
-                {% elseif type starts with 'text' %}
+                {% elseif media.mimetype starts with 'text' %}
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <pre><code>{{ media.text }}</code></pre>
@@ -59,24 +59,37 @@
                             {{ media.filename }}
                         </div>
                     </div>
-                {% elseif type starts with 'video' %}
-                    <div class="video-content">
-                        <video class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto"}'>
-                            <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ type }}">
+                {% elseif media.mimetype starts with 'video' %}
+                    <div class="media-player">
+                        <video class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto", "responsive": true}'>
+                            <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 video.
                             <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </video>
                     </div>
+                {% elseif media.mimetype starts with 'audio' %}
+                    <div class="media-player">
+                        <audio class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto", "responsive": true}'>
+                            <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
+                            Your browser does not support HTML5 audio.
+                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                        </audio>
+                    </div>
                 {% else %}
                     <div class="text-center">
-                        <div class="row mb-2">
+                        <div class="row mb-3">
                             <div class="col-md-12">
-                                <i class="far fa-file-archive fa-10x"></i>
+                                <i class="far {{ mime2font(media.mimetype) }} fa-10x"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <b>{{ media.filename }}</b>
                             </div>
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-12">
-                                {{ media.filename }}
+                                {{ media.size }}
                             </div>
                         </div>
                         <div class="row">

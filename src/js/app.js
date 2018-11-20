@@ -31,8 +31,8 @@ var app = {
                     .tooltip('dispose')
                     .attr('title', 'Publish')
                     .tooltip()
-                    .removeClass('btn-outline-warning')
-                    .addClass('btn-outline-info')
+                    .removeClass('btn-warning')
+                    .addClass('btn-info')
                     .html('<i class="fas fa-check-circle"></i>');
                 $('#published_' + id).html('<span class="badge badge-danger"><i class="fas fa-times"></i></span>');
             });
@@ -43,8 +43,8 @@ var app = {
                     .tooltip('dispose')
                     .attr('title', 'Unpublish')
                     .tooltip()
-                    .removeClass('btn-outline-info')
-                    .addClass('btn-outline-warning')
+                    .removeClass('btn-info')
+                    .addClass('btn-warning')
                     .html('<i class="fas fa-times-circle"></i>');
                 $('#published_' + id).html('<span class="badge badge-success"><i class="fas fa-check"></i></span>');
             });
