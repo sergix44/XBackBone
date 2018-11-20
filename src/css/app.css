@@ -53,10 +53,6 @@ body {
     max-height: 25px;
 }
 
-.user-img {
-    max-height: 192px;
-}
-
 .user-title {
     white-space: nowrap;
     overflow: hidden;
