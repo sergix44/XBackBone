@@ -131,6 +131,17 @@ location / {
   }
 }
 ```
+## Screenshots
+<p align="center">
+  	<img src="https://i.imgur.com/zEHL5U3.png" width="400" title="Installation">
+	<img src="https://i.imgur.com/aNeMhaU.png" width="400" title="Login">
+	<img src="https://i.imgur.com/Sh1btnH.png" width="400" title="Admin view">
+	<img src="https://i.imgur.com/GN6a9AG.png" width="400" title="User management">
+	<img src="https://i.imgur.com/Cz6dkIP.png" width="400" title="User view">
+	<img src="https://i.imgur.com/nFu9waN.png" width="400" title="User profile page">
+	<img src="https://i.imgur.com/aQPDFDY.png" width="400" title="System settings">
+	<img src="https://i.imgur.com/2ZRd27y.png" width="400" title="Public image upload view">
+</p>
 
 ## Built with
 + Slim 3, since `v2.0` (https://www.slimframework.com/)
