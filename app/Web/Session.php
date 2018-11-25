@@ -16,7 +16,8 @@ class Session
 		if (session_status() === PHP_SESSION_NONE) {
 			session_start([
 				'name' => $name,
-				'save_path' => $path
+				'save_path' => $path,
+				'cookie_httponly' => true
 			]);
 		}
 	}

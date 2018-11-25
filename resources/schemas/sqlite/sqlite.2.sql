@@ -1,2 +1,2 @@
-CREATE UNIQUE INDEX IF NOT EXISTS `username_email`
+CREATE UNIQUE INDEX IF NOT EXISTS `email_index`
   ON `users` (`email`);

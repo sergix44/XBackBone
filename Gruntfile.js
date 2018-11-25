@@ -73,6 +73,7 @@ module.exports = function (grunt) {
                 'resources/lang/**/*',
                 'resources/templates/**/*',
                 'resources/schemas/**/*',
+                'resources/lang/**/*',
                 'static/**/*',
                 'vendor/**/*',
                 '.htaccess',

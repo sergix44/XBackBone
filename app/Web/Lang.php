@@ -1,46 +1,34 @@
 <?php
 
-namespace App\Web;
+namespace App;
 
 
 class Lang
 {
 
 	const DEFAULT_LANG = 'en';
-	const LANG_PATH = __DIR__ . '/../../resources/lang/';
-
-	/** @var  array */
-	protected $cache = [];
+	const LANG_PATH = __DIR__ . '../../resources/lang/';
 
 	/** @var  string */
-	protected $path;
+	protected static $langPath = self::LANG_PATH;
 
 	/** @var  string */
-	protected $lang;
+	protected static $lang;
 
 	/** @var  Lang */
 	protected static $instance;
 
-	/**
-	 * Lang constructor.
-	 * @param $lang
-	 * @param $path
-	 */
-	public function __construct($lang, $path)
-	{
-		$this->lang = $lang;
-		$this->path = $path;
+	/** @var  array */
+	protected $cache = [];
 
-	}
 
 	/**
 	 * @return Lang
 	 */
-	public static function getInstance()
+	public static function getInstance(): Lang
 	{
-
 		if (self::$instance === null) {
-			self::$instance = self::build();
+			self::$instance = new self();
 		}
 
 		return self::$instance;
@@ -48,21 +36,23 @@ class Lang
 
 	/**
 	 * @param string $lang
-	 * @param string $path
+	 * @param string $langPath
 	 * @return Lang
 	 */
-	public static function build($lang = self::DEFAULT_LANG, $path = null)
+	public static function build($lang = self::DEFAULT_LANG, $langPath = null): Lang
 	{
 
 		if (strlen($lang) !== 2) {
-			$lang = strtolower(substr($lang, 0, 2));
+			self::$lang = strtolower(substr($lang, 0, 2));
+		} else {
+			self::$lang = $lang;
 		}
 
-		if (file_exists(($path ? $path : self::LANG_PATH) . $lang . '.lang.php')) {
-			self::$instance = new self($lang, $path);
-		} else {
-			self::$instance = new self(self::DEFAULT_LANG, $path);
+		if ($langPath !== null) {
+			self::$langPath = $langPath;
 		}
+
+		self::$instance = new self();
 
 		return self::$instance;
 	}
@@ -73,9 +63,9 @@ class Lang
 	 * @param array $args
 	 * @return string
 	 */
-	public function get($key, $args = [])
+	public function get($key, $args = []): string
 	{
-		return $this->getString($key, $this->lang, $args);
+		return $this->getString($key, self::$lang, $args);
 	}
 
 	/**
@@ -84,13 +74,13 @@ class Lang
 	 * @param $args
 	 * @return string
 	 */
-	private function getString($key, $lang, $args)
+	private function getString($key, $lang, $args): string
 	{
 
 		if (array_key_exists($lang, $this->cache)) {
 			$transDict = $this->cache[$lang];
-		} else if (file_exists($this->path . $lang . '.lang.php')) {
-			$transDict = include $this->path . $lang . '.lang.php';
+		} elseif (file_exists(self::$langPath . $lang . '.lang.php')) {
+			$transDict = include self::$langPath . $lang . '.lang.php';
 			$this->cache[$lang] = $transDict;
 		} else {
 			$transDict = [];
@@ -105,13 +95,5 @@ class Lang
 		}
 
 		return $key;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getLang(): string
-	{
-		return $this->lang;
 	}
 }
