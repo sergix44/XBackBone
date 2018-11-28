@@ -17,7 +17,7 @@
     <script src="{{ urlFor('/static/videojs/video.min.js') }}"></script>
     <script src="{{ urlFor('/static/app/app.js') }}"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script>window.AppConfig = {'base_url': '{{ config.base_url }}'}</script>
+    <script>window.AppConfig = {'base_url': '{{ config.base_url }}', 'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}'}}</script>
     {% block head %}{% endblock %}
 </head>
 <body>

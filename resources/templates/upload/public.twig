@@ -16,7 +16,7 @@
                        data-content='<input type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()" value="{{ media.filename }}">
 <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>'><i
                                 class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
-                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="btn btn-light my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
                     <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                 </div>
             </div>
@@ -61,18 +61,16 @@
                     </div>
                 {% elseif media.mimetype starts with 'video' %}
                     <div class="media-player">
-                        <video class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto", "responsive": true}'>
+                        <video id="player" class="video-js vjs-fluid vjs-big-play-centered" autoplay controls loop preload="auto" data-setup='{"responsive": true }'>
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 video.
-                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </video>
                     </div>
                 {% elseif media.mimetype starts with 'audio' %}
                     <div class="media-player">
-                        <audio class="video-js vjs-fluid vjs-big-play-centered" data-setup='{"controls": true, "autoplay": true, "preload": "auto", "responsive": true}'>
+                        <audio id="player"  class="video-js vjs-fluid vjs-big-play-centered" autoplay controls loop preload="auto" data-setup='{"responsive": true }'>
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 audio.
-                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </audio>
                     </div>
                 {% else %}

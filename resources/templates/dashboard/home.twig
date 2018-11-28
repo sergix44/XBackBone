@@ -11,28 +11,36 @@
             <div class="row">
                 {% for media in medias %}
                     <div class="col-md-4" id="media_{{ media.id }}">
-                        <div class="card mb-4 box-shadow">
+                        <div class="card mb-4 shadow-sm">
                             {% if media.mimetype starts with 'image' %}
                                 <img class="card-img" src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=286&height=219') }}" alt="Card image">
                             {% else %}
                                 <div class="text-center" style="font-size: 178px;"><i class="far {{ mime2font(media.mimetype) }} mb-4 mt-4"></i></div>
                             {% endif %}
                             <div class="card-img-overlay" title="{{ media.filename }}">
-                                <div class="user-img-buttons">
-                                    <span class="badge badge-dark box-shadow-strong">{{ media.size }}</span>
-                                    <div class="btn-group box-shadow-strong float-right">
-                                        <a class="btn btn-sm btn-light" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" data-toggle="tooltip" title="{{ lang('open') }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                        <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}">
-                                            <i class="fas fa-link"></i>
-                                        </button>
-                                        {% if media.published %}
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
-                                        {% else %}
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
-                                        {% endif %}
-                                        <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                <div class="user-img-overlay h-75">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span class="badge badge-dark shadow-lg">{{ media.size }}</span>
+                                            <div class="btn-group shadow-lg float-right">
+                                                <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                                {% if media.published %}
+                                                    <a href="javascript:void(0)" class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
+                                                {% else %}
+                                                    <a href="javascript:void(0)" class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row h-100">
+                                        <div class="col-12 d-flex align-items-center">
+                                            <a class="btn btn-link btn-block btn-outlink text-secondary" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

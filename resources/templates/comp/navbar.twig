@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4 box-shadow">
+<nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4 shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="{{ route('root') }}">{{ config.app_name }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +29,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-fw fa-user"></i> {{ session.username }}
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                    <div class="dropdown-menu shadow-sm" aria-labelledby="userDropdown">
                         <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.used_space }}</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-fw fa-user"></i> {{ lang('profile') }}</a>

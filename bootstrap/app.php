@@ -58,7 +58,7 @@ $container['database'] = function ($container) use (&$config) {
 	return DB::getInstance();
 };
 
-Lang::build(substr(@$_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2), __DIR__. '/../resources/lang/');
+Lang::build(Lang::recognize(), __DIR__. '/../resources/lang/');
 
 $container['view'] = function ($container) use (&$config) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/templates', [

@@ -7,7 +7,7 @@
     <div class="container">
         {% include 'comp/alert.twig' %}
         {% if medias|length > 0 %}
-            <div class="card box-shadow">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     {% include 'comp/pager.twig' with {'path': 'home'} %}
                     <div class="row">
@@ -28,16 +28,15 @@
                                     <tbody>
                                     {% for media in medias %}
                                         <tr id="media_{{ media.id }}">
-                                            <td>
+                                            <td class="text-center">
                                                 {% if media.mimetype starts with 'image' %}
                                                     {% if media.username is not null %}
-                                                        <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=128') }}"
-                                                             class="img-fluid rounded admin-img">
+                                                        <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=256&height=128') }}" class="img-fluid rounded admin-img">
                                                     {% else %}
                                                         <img src="{{ route('upload.raw', {'id': media.id}) }}" class="img-fluid rounded admin-img">
                                                     {% endif %}
                                                 {% else %}
-                                                    <i class="far fa-file fa-2x"></i>
+                                                    <i class="far {{ mime2font(media.mimetype) }} fa-2x"></i>
                                                 {% endif %}
                                             </td>
                                             <td>{{ media.filename }}</td>

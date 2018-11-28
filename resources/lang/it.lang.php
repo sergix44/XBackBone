@@ -28,7 +28,7 @@ return [
 	'public.delete_text' => 'Sei sicuro di voler eliminare questo elemento? Andrà perso per sempre!',
 
 	'preview' => 'Anteprima',
-	'filename' => 'Filename',
+	'filename' => 'Nome file',
 	'size' => 'Dimensione',
 	'public' => 'Pubblico',
 	'owner' => 'Proprietario',
@@ -57,7 +57,7 @@ return [
 	'copy' => 'Copia',
 	'update' => 'Aggiorna',
 	'edit' => 'Modifica',
-	'client_config' => 'Configurazione del Client',
+	'client_config' => 'Config. client',
 	'user_code' => 'Codice Utente',
 	'active' => 'Attivo',
 	'admin' => 'Amministratore',
