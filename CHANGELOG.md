@@ -5,6 +5,7 @@
 + Fontawesome icon match the single file mime-type.
 + Enable audio player with video.js.
 + Video and audio now starts with volume at 50%.
++ Added linux script to allow uploads from linux screenshot tools.
 + Minor layout fixes.
 
 ## v2.2

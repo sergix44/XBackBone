@@ -19,6 +19,7 @@ $app->group('', function () {
 	$this->post('/profile/{id}', \App\Controllers\UserController::class . ':profileEdit')->setName('profile.update');
 	$this->post('/user/{id}/refreshToken', \App\Controllers\UserController::class . ':refreshToken')->setName('refreshToken');
 	$this->get('/user/{id}/config/sharex', \App\Controllers\UserController::class . ':getShareXconfigFile')->setName('config.sharex');
+	$this->get('/user/{id}/config/script', \App\Controllers\UserController::class . ':getUploaderScriptFile')->setName('config.script');
 
 	$this->post('/upload/{id}/publish', \App\Controllers\UploadController::class . ':togglePublish')->setName('upload.publish');
 	$this->post('/upload/{id}/unpublish', \App\Controllers\UploadController::class . ':togglePublish')->setName('upload.unpublish');
