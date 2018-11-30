@@ -100,6 +100,8 @@ Since ShareX does not support Linux, XBackBone can generate a script that allows
 Now, to upload a media, just use the right click on the file > "Open with ..." > search XBackBone Uploader (XXX) in the app list.
 You can use this feature in combination with tools like [Flameshot](https://github.com/lupoDharkael/flameshot), just use the "Open with ..." button once you have done the screenshot.
 
+The script requires `xclip`, `curl`, and `notify-send`.
+
 *Note: XXX is the username of your XBackBone account.*
 
 ## Notes
