@@ -15,6 +15,7 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Logging system.
 + Auto config generator for ShareX.
 + Share to Telegram.
++ Linux client tools supported via a custom script.
 
 ## How to Install
 XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`).
@@ -99,6 +100,8 @@ Since ShareX does not support Linux, XBackBone can generate a script that allows
 
 Now, to upload a media, just use the right click on the file > "Open with ..." > search XBackBone Uploader (XXX) in the app list.
 You can use this feature in combination with tools like [Flameshot](https://github.com/lupoDharkael/flameshot), just use the "Open with ..." button once you have done the screenshot.
+
+The script requires `xclip`, `curl`, and `notify-send`.
 
 *Note: XXX is the username of your XBackBone account.*
 
