@@ -15,6 +15,7 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Logging system.
 + Auto config generator for ShareX.
 + Share to Telegram.
++ Linux client tools supported via a custom script.
 
 ## How to Install
 XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`).
