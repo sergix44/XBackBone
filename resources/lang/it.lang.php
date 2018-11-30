@@ -2,7 +2,7 @@
 
 return [
 
-	'lang' => 'Italian',
+	'lang' => 'Italiano',
 
 	'yes' => 'Sì',
 	'no' => 'No',
