@@ -66,6 +66,14 @@ class Lang
 		return substr(@$_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
 	}
 
+	/**
+	 * @return string
+	 */
+	public static function getLang(): string
+	{
+		return self::$lang;
+	}
+
 
 	/**
 	 * @param $key
