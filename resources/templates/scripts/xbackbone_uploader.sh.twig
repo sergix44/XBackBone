@@ -7,7 +7,7 @@ am_i_root() {
     fi
 }
 
-create_desktop_entry () {
+create_desktop_entry() {
 cat << "EOF" > "/usr/share/applications/xbackbone-uploader-usr_{{ username }}.desktop"
 [Desktop Entry]
 Encoding=UTF-8
@@ -23,43 +23,48 @@ MimeType=image/bmp;image/jpeg;image/gif;image/png;image/tiff;image/x-bmp;image/x
 NoDisplay=false
 EOF
 
-	sed -i "s:&EXEC&:${1}:g" "/usr/share/applications/xbackbone-uploader-usr_{{ username }}.desktop"
-	echo "Desktop entry created!";
+    sed -i "s:&EXEC&:${1}:g" "/usr/share/applications/xbackbone-uploader-usr_{{ username }}.desktop"
+    echo "Desktop entry created!";
 }
 
-upload () {
-	RESPONSE="$(curl -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
-	
-	if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK." ]]; then
-		URL="$(echo "${RESPONSE}" | jq -r '.url')";
-		echo "${URL}" | xclip -selection c;
-		notify-send "Upload completed!" "${URL}";
-	else
-		notify-send "Error!" "$(echo "${RESPONSE}" | jq -r '.message')";
-	fi
+upload() {
+    RESPONSE="$(curl -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
+
+    if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK." ]]; then
+        URL="$(echo "${RESPONSE}" | jq -r '.url')";
+        echo "${URL}" | xclip -selection c;
+        notify-send "Upload completed!" "${URL}";
+    else
+        notify-send "Error!" "$(echo "${RESPONSE}" | jq -r '.message')";
+    fi
 }
 
-check () {
+check() {
 	if [ ! -x "$(command -v xclip)" ]; then
-		echo "xclip command not found."
+        echo "xclip command not found."
         exit;
 	fi	
 
 	if [ ! -x "$(command -v curl)" ]; then
-		echo "curl command not found."
+        echo "curl command not found."
         exit;
 	fi
 
 	if [ ! -x "$(command -v notify-send)" ]; then
-		echo "notify-send command not found."
+        echo "notify-send command not found."
         exit;
 	fi
 }
 
 check
-if [[ "${1}" == "-desktop-entry" ]]; then
-	am_i_root
+if [ "${1}" == "-desktop-entry" ]; then
+    am_i_root
     create_desktop_entry "$(realpath "${0}")";
+    exit;
+fi
+
+if [ -f "${1}" ]; then
+    upload "${1}";
 else
-	upload "${1}";
+    notify-send "Error!" "File specified not exists.";
 fi

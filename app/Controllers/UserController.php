@@ -396,7 +396,7 @@ class UserController extends Controller
 		}
 
 		return $this->view->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_' . $user->username . '.sh"'),
-			'scripts/xbackbone_uploader.sh.template',
+			'scripts/xbackbone_uploader.sh.twig',
 			[
 				'username' => $user->username,
 				'upload_url' => route('upload'),
