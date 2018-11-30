@@ -8,7 +8,7 @@
         {% include 'comp/alert.twig' %}
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card box-shadow">
+                <div class="card shadow-sm">
                     {% if not profile %}
                         <div class="card-header">{{ lang('user.edit') }}</div>
                     {% endif %}
@@ -51,7 +51,10 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">{{ lang('client_config') }}</label>
                                 <div class="col-sm-10">
-                                    <a href="{{ route('config.sharex', {'id': user.id}) }}" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX Config File</a>
+                                    <div class="btn-group">
+                                        <a href="{{ route('config.sharex', {'id': user.id}) }}" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX Config</a>
+                                        <a href="{{ route('config.script', {'id': user.id}) }}" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-download"></i> Linux Script</a>
+                                    </div>
                                 </div>
                             </div>
                             {% if not profile %}

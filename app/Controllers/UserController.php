@@ -351,10 +351,9 @@ class UserController extends Controller
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 
-		$base_url = $this->settings['base_url'];
 		$json = [
 			'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
-			'RequestURL' => "$base_url/upload",
+			'RequestURL' => route('upload'),
 			'FileFormName' => 'upload',
 			'Arguments' => [
 				'file' => '$filename$',
@@ -369,6 +368,41 @@ class UserController extends Controller
 		return $response
 			->withHeader('Content-Disposition', 'attachment;filename="' . $user->username . '-ShareX.sxcu"')
 			->withJson($json, 200, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function getUploaderScriptFile(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
+
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
+
+		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+			throw new UnauthorizedException();
+		}
+
+		if ($user->token === null || $user->token === '') {
+			Session::alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
+
+		return $this->view->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_' . $user->username . '.sh"'),
+			'scripts/xbackbone_uploader.sh.twig',
+			[
+				'username' => $user->username,
+				'upload_url' => route('upload'),
+				'token' => $user->token,
+			]
+		);
 	}
 
 	/**

@@ -1,3 +1,13 @@
+## v2.3
++ Improved image scaling in user gallery.
++ Added overlay on user gallery images.
++ Fixed IT translation.
++ Fontawesome icon match the single file mime-type.
++ Enable audio player with video.js.
++ Video and audio now starts with volume at 50%.
++ Added linux script to allow uploads from linux screenshot tools.
++ Minor layout fixes.
+
 ## v2.2
 + Added multi-language support.
 + Improved routing.

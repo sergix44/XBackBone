@@ -57,6 +57,15 @@ class Lang
 		return self::$instance;
 	}
 
+	/**
+	 * Recognize the current language from the request.
+	 * @return bool|string
+	 */
+	public static function recognize()
+	{
+		return substr(@$_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+	}
+
 
 	/**
 	 * @param $key

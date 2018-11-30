@@ -15,6 +15,12 @@ var app = {
 
         new ClipboardJS('.btn-clipboard');
 
+        if ($('#player').length > 0) {
+            videojs('player').ready(function () {
+                this.volume(0.5);
+            });
+        }
+
         console.log('Application is ready.');
     },
     modalDelete: function () {
@@ -29,7 +35,7 @@ var app = {
                 $callerButton
                     .data('published', false)
                     .tooltip('dispose')
-                    .attr('title', 'Publish')
+                    .attr('title', window.AppConfig.lang.publish)
                     .tooltip()
                     .removeClass('btn-warning')
                     .addClass('btn-info')
@@ -41,7 +47,7 @@ var app = {
                 $callerButton
                     .data('published', true)
                     .tooltip('dispose')
-                    .attr('title', 'Unpublish')
+                    .attr('title', window.AppConfig.lang.hide)
                     .tooltip()
                     .removeClass('btn-info')
                     .addClass('btn-warning')
