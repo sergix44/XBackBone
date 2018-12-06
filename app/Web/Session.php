@@ -10,14 +10,18 @@ class Session
 	 * Start a session if is not already started in the current context
 	 * @param string $name
 	 * @param string $path
+	 * @throws \Exception
 	 */
 	public static function init(string $name, $path = ''): void
 	{
 		if (session_status() === PHP_SESSION_NONE) {
+			if (!is_writable($path) && $path !== '') {
+				throw new \Exception("The given path '{$path}' is not writable.");
+			}
 			session_start([
 				'name' => $name,
 				'save_path' => $path,
-				'cookie_httponly' => true
+				'cookie_httponly' => true,
 			]);
 		}
 	}

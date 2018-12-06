@@ -1,3 +1,7 @@
+## v2.3.1
++ Fixed en lang.
++ Fixed forced background with dark themes.
+
 ## v2.3
 + Improved image scaling in user gallery.
 + Added overlay on user gallery images.

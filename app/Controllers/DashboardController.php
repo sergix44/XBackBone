@@ -129,6 +129,9 @@ class DashboardController extends Controller
 	public function applyTheme(Request $request, Response $response): Response
 	{
 		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
-		return redirect($response, 'system')->withAddedHeader('Cache-Control', 'no-cache, must-revalidate');
+		return redirect($response, 'system')
+			->withAddedHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+			->withAddedHeader('Pragma', 'no-cache')
+			->withAddedHeader('Expire', '0');
 	}
 }

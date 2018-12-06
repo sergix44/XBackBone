@@ -27,7 +27,7 @@ $container = new Container(['settings' => $config]);
 Session::init('xbackbone_session');
 
 $container['view'] = function ($container) use (&$config) {
-	$view = new \Slim\Views\Twig(__DIR__ . '/templates', [
+	$view = new \Slim\Views\Twig([__DIR__ . '/templates', __DIR__ . '/../resources/templates'], [
 		'cache' => false,
 		'autoescape' => 'html',
 		'debug' => $config['displayErrorDetails'],
@@ -137,9 +137,13 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 	$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
 
-	DB::setDsn($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
+	try {
+		DB::setDsn($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
 
-	migrate($config);
+		migrate($config);
+	} catch (PDOException $exception) {
+
+	}
 
 	if (!$installed) {
 		DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
