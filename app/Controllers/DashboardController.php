@@ -128,6 +128,11 @@ class DashboardController extends Controller
 
 	public function applyTheme(Request $request, Response $response): Response
 	{
+		if (!is_writable('static/bootstrap/css/bootstrap.min.css')) {
+			Session::alert(lang('cannot_write_file'), 'danger');
+			return redirect($response, route('system'));
+		}
+
 		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
 		return redirect($response, 'system')
 			->withAddedHeader('Cache-Control', 'no-cache, no-store, must-revalidate')

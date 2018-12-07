@@ -84,4 +84,5 @@ return [
 	'user_deleted' => 'User deleted.',
 	'cannot_delete' => 'You cannot delete yourself.',
 	'cannot_demote' => 'You cannot demote yourself.',
+	'cannot_write_file' => 'The destination path is not writable.',
 ];

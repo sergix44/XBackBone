@@ -131,8 +131,16 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		$config['db']['username'] = $request->getParam('db_user');
 		$config['db']['password'] = $request->getParam('db_password');
 
+		if (!is_writable($config['storage_dir'])) {
+			Session::alert('The storage folder is not writable (' . $config['storage_dir'] . ')', 'danger');
+			return redirect($response, '.');
+		}
 
-		file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+		if ($ret === false) {
+			Session::alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
+			return redirect($response, '.');
+		}
 	}
 
 	$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
@@ -142,7 +150,8 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 		migrate($config);
 	} catch (PDOException $exception) {
-
+		Session::alert("Cannot connect to the database: {$exception->getMessage()} [{$exception->getCode()}]", 'danger');
+		return redirect($response, '.');
 	}
 
 	if (!$installed) {

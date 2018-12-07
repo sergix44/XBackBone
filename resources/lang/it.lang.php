@@ -84,4 +84,5 @@ return [
 	'user_deleted' => 'Utente rimosso.',
 	'cannot_delete' => 'Non puoi eliminare te stesso.',
 	'cannot_demote' => 'Non puoi degradare te stesso. ',
+	'cannot_write_file' => 'Il percorso di destinazione non è scrivibile.',
 ];
