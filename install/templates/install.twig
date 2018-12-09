@@ -19,14 +19,7 @@
 </head>
 <body>
 <div class="container">
-    {% for type, message in alerts %}
-        <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% endfor %}
+    {% include 'comp/alert.twig' %}
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card mt-3">

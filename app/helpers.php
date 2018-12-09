@@ -1,6 +1,23 @@
 <?php
 
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+
 require __DIR__ . '/../vendor/autoload.php';
+
+if (!function_exists('storage')) {
+	/**
+	 * Get a filesystem instance given a path
+	 * @param string $root
+	 * @return Filesystem
+	 */
+	function storage($root = null): Filesystem
+	{
+		global $app;
+		$storagePath = $app->getContainer()->get('settings')['storage_dir'];
+		return new Filesystem(new Local($root !== null ? $root : $storagePath));
+	}
+}
 
 if (!function_exists('humanFileSize')) {
 	/**
@@ -61,7 +78,7 @@ if (!function_exists('redirect')) {
 	 */
 	function redirect(\Slim\Http\Response $response, string $path, $args = [], $status = null)
 	{
-		if ($path === '/' || substr($path, 0, 1) === '/') {
+		if ($path === '/' || $path === './' || substr($path, 0, 1) === '/') {
 			$url = urlFor($path);
 		} else {
 			$url = route($path, $args);

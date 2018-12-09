@@ -12,11 +12,11 @@
   "devDependencies": {
     "grunt": "^1.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "^2.2.1",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-cssmin": "^3.0.0",
+    "grunt-contrib-jshint": "^2.0.0",
+    "grunt-contrib-uglify": "^4.0.0",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-zip": "^0.17.1",
+    "grunt-zip": "^0.18.1",
     "load-grunt-tasks": "^4.0.0"
   }
 }

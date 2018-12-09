@@ -113,6 +113,18 @@ $app = new App($container);
 
 $app->get('/', function (Request $request, Response $response) {
 
+	if (!is_writable(__DIR__ . '/../resources/cache')) {
+		Session::alert('The cache folder is not writable (' . __DIR__ . '/../resources/cache' . ')', 'danger');
+	}
+
+	if (!is_writable(__DIR__ . '/../resources/database')) {
+		Session::alert('The database folder is not writable (' . __DIR__ . '/../resources/database' . ')', 'danger');
+	}
+
+	if (!is_writable(__DIR__ . '/../resources/sessions')) {
+		Session::alert('The sessions folder is not writable (' . __DIR__ . '/../resources/sessions' . ')', 'danger');
+	}
+
 	$installed = file_exists(__DIR__ . '/../config.php');
 
 	return $this->view->render($response, 'install.twig', ['installed' => $installed]);
@@ -131,15 +143,22 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		$config['db']['username'] = $request->getParam('db_user');
 		$config['db']['password'] = $request->getParam('db_password');
 
-		if (!is_writable($config['storage_dir'])) {
-			Session::alert('The storage folder is not writable (' . $config['storage_dir'] . ')', 'danger');
-			return redirect($response, '.');
+		try {
+			storage($config['storage_dir']);
+		} catch (LogicException $exception) {
+			Session::alert('The storage folder is not readable (' . $config['storage_dir'] . ')', 'danger');
+			return redirect($response, './');
+		} finally {
+			if (!is_writable($config['storage_dir'])) {
+				Session::alert('The storage folder is not writable (' . $config['storage_dir'] . ')', 'danger');
+				return redirect($response, './');
+			}
 		}
 
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {
 			Session::alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
-			return redirect($response, '.');
+			return redirect($response, './');
 		}
 	}
 
@@ -151,7 +170,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		migrate($config);
 	} catch (PDOException $exception) {
 		Session::alert("Cannot connect to the database: {$exception->getMessage()} [{$exception->getCode()}]", 'danger');
-		return redirect($response, '.');
+		return redirect($response, './');
 	}
 
 	if (!$installed) {

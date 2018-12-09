@@ -55,7 +55,7 @@ class UploadController extends Controller
 		$fileInfo = pathinfo($file->getClientFilename());
 		$storagePath = "$user->user_code/$code.$fileInfo[extension]";
 
-		$this->getStorage()->writeStream($storagePath, $file->getStream()->detach());
+		storage()->writeStream($storagePath, $file->getStream()->detach());
 
 		$this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', [
 			$user->id,
@@ -88,12 +88,10 @@ class UploadController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		$filesystem = $this->getStorage();
-
 		if (isBot($request->getHeaderLine('User-Agent'))) {
-			return $this->streamMedia($request, $response, $filesystem, $media);
+			return $this->streamMedia($request, $response, storage(), $media);
 		} else {
-
+			$filesystem = storage();
 			try {
 				$media->mimetype = $filesystem->getMimetype($media->storage_path);
 				$media->size = humanFileSize($filesystem->getSize($media->storage_path));
@@ -152,9 +150,8 @@ class UploadController extends Controller
 
 		if (Session::get('admin', false) || $user->id === $media->user_id) {
 
-			$filesystem = $this->getStorage();
 			try {
-				$filesystem->delete($media->storage_path);
+				storage()->delete($media->storage_path);
 			} catch (FileNotFoundException $e) {
 				throw new NotFoundException($request, $response);
 			} finally {
@@ -185,7 +182,7 @@ class UploadController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		return $this->streamMedia($request, $response, $this->getStorage(), $media);
+		return $this->streamMedia($request, $response, storage(), $media);
 	}
 
 	/**
@@ -203,7 +200,7 @@ class UploadController extends Controller
 		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
 			throw new NotFoundException($request, $response);
 		}
-		return $this->streamMedia($request, $response, $this->getStorage(), $media);
+		return $this->streamMedia($request, $response, storage(), $media);
 	}
 
 
@@ -222,7 +219,7 @@ class UploadController extends Controller
 		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
 			throw new NotFoundException($request, $response);
 		}
-		return $this->streamMedia($request, $response, $this->getStorage(), $media, 'attachment');
+		return $this->streamMedia($request, $response, storage(), $media, 'attachment');
 	}
 
 	/**
@@ -267,9 +264,8 @@ class UploadController extends Controller
 
 		if (Session::get('admin', false) || $media->user_id === Session::get('user_id')) {
 
-			$filesystem = $this->getStorage();
 			try {
-				$filesystem->delete($media->storage_path);
+				storage()->delete($media->storage_path);
 			} catch (FileNotFoundException $e) {
 				throw new NotFoundException($request, $response);
 			} finally {

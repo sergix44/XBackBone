@@ -33,15 +33,6 @@ abstract class Controller
 	}
 
 	/**
-	 * Get a filesystem instance
-	 * @return Filesystem
-	 */
-	protected function getStorage(): Filesystem
-	{
-		return new Filesystem(new Local($this->settings['storage_dir']));
-	}
-
-	/**
 	 * @param $id
 	 * @return int
 	 */
@@ -51,7 +42,7 @@ abstract class Controller
 
 		$totalSize = 0;
 
-		$filesystem = $this->getStorage();
+		$filesystem = storage();
 		foreach ($medias as $media) {
 			try {
 				$totalSize += $filesystem->getSize($media->storage_path);

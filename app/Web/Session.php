@@ -90,7 +90,7 @@ class Session
 	 */
 	public static function alert($message, string $type = 'info'): void
 	{
-		$_SESSION['_flash'] = [$type => $message];
+		$_SESSION['_flash'][] = [$type => $message];
 	}
 
 

@@ -49,7 +49,7 @@ class DashboardController extends Controller
 			$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` = ?', Session::get('user_id'))->fetch()->count / self::PER_PAGE;
 		}
 
-		$filesystem = $this->getStorage();
+		$filesystem = storage();
 
 		foreach ($medias as $media) {
 			$extension = pathinfo($media->filename, PATHINFO_EXTENSION);
@@ -91,7 +91,7 @@ class DashboardController extends Controller
 
 		$totalSize = 0;
 
-		$filesystem = $this->getStorage();
+		$filesystem = storage();
 		foreach ($medias as $media) {
 			$totalSize += $filesystem->getSize($media->storage_path);
 		}
