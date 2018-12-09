@@ -1,6 +1,8 @@
 ## v2.3.1
 + Fixed en lang.
 + Fixed forced background with dark themes.
++ Added checks during the installation wizard.
++ cURL and Wget can now directly download the file.
 
 ## v2.3
 + Improved image scaling in user gallery.
