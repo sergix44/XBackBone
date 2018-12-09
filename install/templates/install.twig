@@ -7,19 +7,17 @@
     <meta name="description" content="A lightweight PHP backend for ShareX">
 
     <link href="{{ request.uri }}../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ request.uri }}../static/highlightjs/styles/monokai.css" rel="stylesheet">
     <link href="{{ request.uri }}../static/app/app.css" rel="stylesheet">
 
     <script src="{{ request.uri }}../static/jquery/jquery.min.js"></script>
     <script src="{{ request.uri }}../static/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="{{ request.uri }}../static/fontawesome/js/all.min.js"></script>
-    <script src="{{ request.uri }}../static/highlightjs/highlight.pack.min.js"></script>
-    <script src="{{ request.uri }}../static/clipboardjs/clipboard.min.js"></script>
-    <script src="{{ request.uri }}../static/app/app.js"></script>
 </head>
 <body>
 <div class="container">
-    {% include 'comp/alert.twig' %}
+    <div class="mt-4">
+        {% include 'comp/alert.twig' %}
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card mt-3">
