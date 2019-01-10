@@ -1,3 +1,7 @@
+## v2.4
++ Added function to remove orphaned files.
++ Internal refactoring and improvements
+
 ## v2.3.1
 + Fixed en lang.
 + Fixed forced background with dark themes.

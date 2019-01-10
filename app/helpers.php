@@ -125,7 +125,8 @@ if (!function_exists('lang')) {
 	 */
 	function lang(string $key, $args = []): string
 	{
-		return \App\Web\Lang::getInstance()->get($key, $args);
+		global $app;
+		return $app->getContainer()->get('lang')->get($key, $args);
 	}
 }
 

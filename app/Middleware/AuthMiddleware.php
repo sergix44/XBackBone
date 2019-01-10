@@ -2,20 +2,11 @@
 
 namespace App\Middleware;
 
-use App\Web\Session;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class AuthMiddleware
+class AuthMiddleware extends Middleware
 {
-
-	/** @var \Slim\Container */
-	private $container;
-
-	public function __construct($container)
-	{
-		$this->container = $container;
-	}
 
 	/**
 	 * @param Request $request
@@ -25,15 +16,15 @@ class AuthMiddleware
 	 */
 	public function __invoke(Request $request, Response $response, callable $next)
 	{
-		if (!Session::get('logged', false)) {
-			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		if (!$this->session->get('logged', false)) {
+			$this->session->set('redirectTo', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			return redirect($response, 'login.show');
 		}
 
-		if (!$this->container->database->query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', [Session::get('user_id')])->fetch()->active) {
-			Session::alert('Your account is not active anymore.', 'danger');
-			Session::set('logged', false);
-			Session::set('redirectTo', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		if (!$this->database->query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->active) {
+			$this->session->alert('Your account is not active anymore.', 'danger');
+			$this->session->set('logged', false);
+			$this->session->set('redirectTo', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			return redirect($response, 'login.show');
 		}
 

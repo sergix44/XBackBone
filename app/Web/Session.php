@@ -7,12 +7,12 @@ class Session
 {
 
 	/**
-	 * Start a session if is not already started in the current context
+	 * Session constructor.
 	 * @param string $name
 	 * @param string $path
 	 * @throws \Exception
 	 */
-	public static function init(string $name, $path = ''): void
+	public function __construct(string $name, $path = '')
 	{
 		if (session_status() === PHP_SESSION_NONE) {
 			if (!is_writable($path) && $path !== '') {
@@ -30,7 +30,7 @@ class Session
 	 * Destroy the current session
 	 * @return bool
 	 */
-	public static function destroy(): bool
+	public function destroy(): bool
 	{
 		return session_destroy();
 	}
@@ -38,7 +38,7 @@ class Session
 	/**
 	 * Clear all session stored values
 	 */
-	public static function clear(): void
+	public function clear(): void
 	{
 		$_SESSION = [];
 	}
@@ -48,7 +48,7 @@ class Session
 	 * @param $key
 	 * @return bool
 	 */
-	public static function has($key): bool
+	public function has($key): bool
 	{
 		return isset($_SESSION[$key]);
 	}
@@ -57,7 +57,7 @@ class Session
 	 * Get the content of the current session
 	 * @return array
 	 */
-	public static function all(): array
+	public function all(): array
 	{
 		return $_SESSION;
 	}
@@ -68,7 +68,7 @@ class Session
 	 * @param null $default
 	 * @return mixed
 	 */
-	public static function get($key, $default = null)
+	public function get($key, $default = null)
 	{
 		return self::has($key) ? $_SESSION[$key] : $default;
 	}
@@ -78,7 +78,7 @@ class Session
 	 * @param $key
 	 * @param $value
 	 */
-	public static function set($key, $value): void
+	public function set($key, $value): void
 	{
 		$_SESSION[$key] = $value;
 	}
@@ -88,7 +88,7 @@ class Session
 	 * @param $message
 	 * @param string $type
 	 */
-	public static function alert($message, string $type = 'info'): void
+	public function alert($message, string $type = 'info'): void
 	{
 		$_SESSION['_flash'][] = [$type => $message];
 	}
@@ -98,7 +98,7 @@ class Session
 	 * Retrieve flash alerts
 	 * @return array
 	 */
-	public static function getAlert()
+	public function getAlert()
 	{
 		$flash = self::get('_flash');
 		self::set('_flash', []);

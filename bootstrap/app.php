@@ -47,18 +47,18 @@ $container['logger'] = function ($container) {
 	return $logger;
 };
 
-// Session init
-Session::init('xbackbone_session', __DIR__ . '/../resources/sessions');
-
-// Set the database dsn
-$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
-DB::setDsn($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
-
-$container['database'] = function ($container) use (&$config) {
-	return DB::getInstance();
+$container['session'] = function ($container) {
+	return new Session('xbackbone_session', __DIR__ . '/../resources/sessions');
 };
 
-Lang::build(Lang::recognize(), __DIR__. '/../resources/lang/');
+$container['database'] = function ($container) use (&$config) {
+	$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
+	return new DB($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
+};
+
+$container['lang'] = function ($container) {
+	return Lang::build(Lang::recognize(), __DIR__ . '/../resources/lang/');
+};
 
 $container['view'] = function ($container) use (&$config) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/templates', [
@@ -75,9 +75,9 @@ $container['view'] = function ($container) use (&$config) {
 
 	$view->getEnvironment()->addGlobal('config', $config);
 	$view->getEnvironment()->addGlobal('request', $container->get('request'));
-	$view->getEnvironment()->addGlobal('alerts', Session::getAlert());
-	$view->getEnvironment()->addGlobal('session', Session::all());
-	$view->getEnvironment()->addGlobal('current_lang', Lang::getInstance()->getLang());
+	$view->getEnvironment()->addGlobal('alerts', $container->get('session')->getAlert());
+	$view->getEnvironment()->addGlobal('session', $container->get('session')->all());
+	$view->getEnvironment()->addGlobal('current_lang', $container->get('lang')->getLang());
 	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 
 	$view->getEnvironment()->addFunction(new Twig_Function('route', 'route'));

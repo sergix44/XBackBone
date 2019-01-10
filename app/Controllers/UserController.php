@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 
 use App\Exceptions\UnauthorizedException;
-use App\Web\Session;
 use Slim\Exception\NotFoundException;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -57,27 +56,27 @@ class UserController extends Controller
 	public function store(Request $request, Response $response): Response
 	{
 		if ($request->getParam('email') === null) {
-			Session::alert(lang('email_required'), 'danger');
+			$this->session->alert(lang('email_required'), 'danger');
 			return redirect($response, 'user.create');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', $request->getParam('email'))->fetch()->count > 0) {
-			Session::alert(lang('email_taken'), 'danger');
+			$this->session->alert(lang('email_taken'), 'danger');
 			return redirect($response, 'user.create');
 		}
 
 		if ($request->getParam('username') === null) {
-			Session::alert(lang('username_required'), 'danger');
+			$this->session->alert(lang('username_required'), 'danger');
 			return redirect($response, 'user.create');
 		}
 
 		if ($request->getParam('password') === null) {
-			Session::alert(lang('password_required'), 'danger');
+			$this->session->alert(lang('password_required'), 'danger');
 			return redirect($response, 'user.create');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $request->getParam('username'))->fetch()->count > 0) {
-			Session::alert(lang('username_taken'), 'danger');
+			$this->session->alert(lang('username_taken'), 'danger');
 			return redirect($response, 'user.create');
 		}
 
@@ -97,8 +96,8 @@ class UserController extends Controller
 			$token,
 		]);
 
-		Session::alert(lang('user_created', [$request->getParam('username')]), 'success');
-		$this->logger->info('User ' . Session::get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
+		$this->session->alert(lang('user_created', [$request->getParam('username')]), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
 
 		return redirect($response, 'user.index');
 	}
@@ -140,27 +139,27 @@ class UserController extends Controller
 		}
 
 		if ($request->getParam('email') === null) {
-			Session::alert(lang('email_required'), 'danger');
+			$this->session->alert(lang('email_required'), 'danger');
 			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [$request->getParam('email'), $user->email])->fetch()->count > 0) {
-			Session::alert(lang('email_taken'), 'danger');
+			$this->session->alert(lang('email_taken'), 'danger');
 			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($request->getParam('username') === null) {
-			Session::alert(lang('username_required'), 'danger');
+			$this->session->alert(lang('username_required'), 'danger');
 			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$request->getParam('username'), $user->username])->fetch()->count > 0) {
-			Session::alert(lang('username_taken'), 'danger');
+			$this->session->alert(lang('username_taken'), 'danger');
 			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
-		if ($user->id === Session::get('user_id') && $request->getParam('is_admin') === null) {
-			Session::alert(lang('cannot_demote'), 'danger');
+		if ($user->id === $this->session->get('user_id') && $request->getParam('is_admin') === null) {
+			$this->session->alert(lang('cannot_demote'), 'danger');
 			return redirect($response, 'user.edit', ['id' => $args['id']]);
 		}
 
@@ -183,8 +182,8 @@ class UserController extends Controller
 			]);
 		}
 
-		Session::alert(lang('user_updated', [$request->getParam('username')]), 'success');
-		$this->logger->info('User ' . Session::get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
+		$this->session->alert(lang('user_updated', [$request->getParam('username')]), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
 
 		return redirect($response, 'user.index');
 
@@ -205,15 +204,15 @@ class UserController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		if ($user->id === Session::get('user_id')) {
-			Session::alert(lang('cannot_delete'), 'danger');
+		if ($user->id === $this->session->get('user_id')) {
+			$this->session->alert(lang('cannot_delete'), 'danger');
 			return redirect($response, 'user.index');
 		}
 
 		$this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
 
-		Session::alert(lang('user_deleted'), 'success');
-		$this->logger->info('User ' . Session::get('username') . " deleted $user->id.");
+		$this->session->alert(lang('user_deleted'), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . " deleted $user->id.");
 
 		return redirect($response, 'user.index');
 	}
@@ -227,13 +226,13 @@ class UserController extends Controller
 	 */
 	public function profile(Request $request, Response $response): Response
 	{
-		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', Session::get('user_id'))->fetch();
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $this->session->get('user_id'))->fetch();
 
 		if (!$user) {
 			throw new NotFoundException($request, $response);
 		}
 
-		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
 			throw new UnauthorizedException();
 		}
 
@@ -259,17 +258,17 @@ class UserController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
 			throw new UnauthorizedException();
 		}
 
 		if ($request->getParam('email') === null) {
-			Session::alert(lang('email_required'), 'danger');
+			$this->session->alert(lang('email_required'), 'danger');
 			return redirect($response, 'profile');
 		}
 
 		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [$request->getParam('email'), $user->email])->fetch()->count > 0) {
-			Session::alert(lang('email_taken'), 'danger');
+			$this->session->alert(lang('email_taken'), 'danger');
 			return redirect($response, 'profile');
 		}
 
@@ -286,8 +285,8 @@ class UserController extends Controller
 			]);
 		}
 
-		Session::alert(lang('profile_updated'), 'success');
-		$this->logger->info('User ' . Session::get('username') . " updated profile of $user->id.");
+		$this->session->alert(lang('profile_updated'), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . " updated profile of $user->id.");
 
 		return redirect($response, 'profile');
 	}
@@ -308,7 +307,7 @@ class UserController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
 			throw new UnauthorizedException();
 		}
 
@@ -319,7 +318,7 @@ class UserController extends Controller
 			$user->id,
 		]);
 
-		$this->logger->info('User ' . Session::get('username') . " refreshed token of user $user->id.");
+		$this->logger->info('User ' . $this->session->get('username') . " refreshed token of user $user->id.");
 
 		$response->getBody()->write($token);
 
@@ -342,12 +341,12 @@ class UserController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
 			throw new UnauthorizedException();
 		}
 
 		if ($user->token === null || $user->token === '') {
-			Session::alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
+			$this->session->alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 
@@ -386,12 +385,12 @@ class UserController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		if ($user->id !== Session::get('user_id') && !Session::get('admin', false)) {
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
 			throw new UnauthorizedException();
 		}
 
 		if ($user->token === null || $user->token === '') {
-			Session::alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
+			$this->session->alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 

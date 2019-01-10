@@ -2,12 +2,18 @@
 
 namespace App\Controllers;
 
-
-use League\Flysystem\Adapter\Local;
+use App\Database\DB;
+use App\Web\Session;
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\Filesystem;
+use Monolog\Logger;
 use Slim\Container;
 
+/**
+ * @property Session|null session
+ * @property mixed|null view
+ * @property DB|null database
+ * @property Logger|null logger
+ */
 abstract class Controller
 {
 

@@ -2,9 +2,10 @@
 // Auth routes
 $app->group('', function () {
 	$this->get('/home[/page/{page}]', \App\Controllers\DashboardController::class . ':home')->setName('home');
-	$this->get('/system', \App\Controllers\DashboardController::class . ':system')->add(\App\Middleware\AdminMiddleware::class)->setName('system');
-	$this->get('/system/themes', \App\Controllers\DashboardController::class . ':getThemes')->add(\App\Middleware\AdminMiddleware::class)->setName('theme');
-	$this->post('/system/theme/apply', \App\Controllers\DashboardController::class . ':applyTheme')->add(\App\Middleware\AdminMiddleware::class)->setName('theme.apply');
+	$this->get('/system/deleteOrphanFiles', \App\Controllers\AdminController::class . ':deleteOrphanFiles')->add(\App\Middleware\AdminMiddleware::class)->setName('system.deleteOrphanFiles');
+	$this->get('/system/themes', \App\Controllers\ThemeController::class . ':getThemes')->add(\App\Middleware\AdminMiddleware::class)->setName('theme');
+	$this->post('/system/theme/apply', \App\Controllers\ThemeController::class . ':applyTheme')->add(\App\Middleware\AdminMiddleware::class)->setName('theme.apply');
+	$this->get('/system', \App\Controllers\AdminController::class . ':system')->add(\App\Middleware\AdminMiddleware::class)->setName('system');
 
 	$this->group('', function () {
 		$this->get('/users[/page/{page}]', \App\Controllers\UserController::class . ':index')->setName('user.index');
@@ -38,5 +39,5 @@ $app->post('/upload', \App\Controllers\UploadController::class . ':upload')->set
 $app->get('/{userCode}/{mediaCode}', \App\Controllers\UploadController::class . ':show')->setName('public');
 $app->get('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':show')->setName('public.delete.show');
 $app->post('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':deleteByToken')->setName('public.delete');
-$app->get('/{userCode}/{mediaCode}/raw', \App\Controllers\UploadController::class . ':showRaw')->setName('public.raw');
-$app->get('/{userCode}/{mediaCode}/download', \App\Controllers\UploadController::class . ':download')->setName('public.download');
+$app->get('/{userCode}/{mediaCode}/raw', \App\Controllers\UploadController::class . ':showRaw')->setName('public.raw')->setOutputBuffering(false);
+$app->get('/{userCode}/{mediaCode}/download', \App\Controllers\UploadController::class . ':download')->setName('public.download')->setOutputBuffering(false);

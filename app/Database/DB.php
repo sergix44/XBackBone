@@ -39,7 +39,7 @@ class DB
 		}
 	}
 
-	public function doQuery(string $query, $parameters = [])
+	public function query(string $query, $parameters = [])
 	{
 		if (!is_array($parameters)) {
 			$parameters = [$parameters];
@@ -87,7 +87,7 @@ class DB
 	 * @param array $parameters
 	 * @return bool|\PDOStatement|string
 	 */
-	public static function query(string $query, $parameters = [])
+	public static function doQuery(string $query, $parameters = [])
 	{
 
 		return self::getInstance()->doQuery($query, $parameters);

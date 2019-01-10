@@ -24,7 +24,9 @@ $config = [
 
 $container = new Container(['settings' => $config]);
 
-Session::init('xbackbone_session');
+$container['session'] = function ($container) {
+	return new Session('xbackbone_session');
+};
 
 $container['view'] = function ($container) use (&$config) {
 	$view = new \Slim\Views\Twig([__DIR__ . '/templates', __DIR__ . '/../resources/templates'], [
@@ -41,8 +43,8 @@ $container['view'] = function ($container) use (&$config) {
 
 	$view->getEnvironment()->addGlobal('config', $config);
 	$view->getEnvironment()->addGlobal('request', $container->get('request'));
-	$view->getEnvironment()->addGlobal('alerts', Session::getAlert());
-	$view->getEnvironment()->addGlobal('session', Session::all());
+	$view->getEnvironment()->addGlobal('alerts', $container->get('session')->getAlert());
+	$view->getEnvironment()->addGlobal('session', $container->get('session')->all());
 	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 	return $view;
 };
@@ -56,7 +58,7 @@ function migrate($config)
 	}
 
 	try {
-		DB::query('SELECT 1 FROM `migrations` LIMIT 1');
+		DB::doQuery('SELECT 1 FROM `migrations` LIMIT 1');
 	} catch (PDOException $exception) {
 		$firstMigrate = true;
 	}
@@ -73,7 +75,7 @@ function migrate($config)
 
 	$in = str_repeat('?, ', count($names) - 1) . '?';
 
-	$inMigrationsTable = DB::query("SELECT * FROM `migrations` WHERE `name` IN ($in)", $names)->fetchAll();
+	$inMigrationsTable = DB::doQuery("SELECT * FROM `migrations` WHERE `name` IN ($in)", $names)->fetchAll();
 
 
 	foreach ($files as $file) {
@@ -96,13 +98,13 @@ function migrate($config)
 		try {
 			DB::raw()->exec($sql);
 			if (!$exists) {
-				DB::query('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 1]);
+				DB::doQuery('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 1]);
 			} else {
-				DB::query('UPDATE `migrations` SET `migrated`=? WHERE `name`=?', [1, basename($file)]);
+				DB::doQuery('UPDATE `migrations` SET `migrated`=? WHERE `name`=?', [1, basename($file)]);
 			}
 		} catch (PDOException $exception) {
 			if (!$exists) {
-				DB::query('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 0]);
+				DB::doQuery('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 0]);
 			}
 			throw $exception;
 		}
@@ -114,15 +116,15 @@ $app = new App($container);
 $app->get('/', function (Request $request, Response $response) {
 
 	if (!is_writable(__DIR__ . '/../resources/cache')) {
-		Session::alert('The cache folder is not writable (' . __DIR__ . '/../resources/cache' . ')', 'danger');
+		$this->session->alert('The cache folder is not writable (' . __DIR__ . '/../resources/cache' . ')', 'danger');
 	}
 
 	if (!is_writable(__DIR__ . '/../resources/database')) {
-		Session::alert('The database folder is not writable (' . __DIR__ . '/../resources/database' . ')', 'danger');
+		$this->session->alert('The database folder is not writable (' . __DIR__ . '/../resources/database' . ')', 'danger');
 	}
 
 	if (!is_writable(__DIR__ . '/../resources/sessions')) {
-		Session::alert('The sessions folder is not writable (' . __DIR__ . '/../resources/sessions' . ')', 'danger');
+		$this->session->alert('The sessions folder is not writable (' . __DIR__ . '/../resources/sessions' . ')', 'danger');
 	}
 
 	$installed = file_exists(__DIR__ . '/../config.php');
@@ -146,18 +148,18 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		try {
 			storage($config['storage_dir']);
 		} catch (LogicException $exception) {
-			Session::alert('The storage folder is not readable (' . $config['storage_dir'] . ')', 'danger');
+			$this->session->alert('The storage folder is not readable (' . $config['storage_dir'] . ')', 'danger');
 			return redirect($response, './');
 		} finally {
 			if (!is_writable($config['storage_dir'])) {
-				Session::alert('The storage folder is not writable (' . $config['storage_dir'] . ')', 'danger');
+				$this->session->alert('The storage folder is not writable (' . $config['storage_dir'] . ')', 'danger');
 				return redirect($response, './');
 			}
 		}
 
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {
-			Session::alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
+			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
 			return redirect($response, './');
 		}
 	}
@@ -169,12 +171,12 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 		migrate($config);
 	} catch (PDOException $exception) {
-		Session::alert("Cannot connect to the database: {$exception->getMessage()} [{$exception->getCode()}]", 'danger');
+		$this->session->alert("Cannot connect to the database: {$exception->getMessage()} [{$exception->getCode()}]", 'danger');
 		return redirect($response, './');
 	}
 
 	if (!$installed) {
-		DB::query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
+		DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
 	}
 
 	cleanDirectory(__DIR__ . '/../resources/cache');

@@ -85,4 +85,5 @@ return [
 	'cannot_delete' => 'You cannot delete yourself.',
 	'cannot_demote' => 'You cannot demote yourself.',
 	'cannot_write_file' => 'The destination path is not writable.',
+	'deleted_orphans' => 'Successfully deleted %d orphaned files.',
 ];

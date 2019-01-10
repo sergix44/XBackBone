@@ -2,9 +2,7 @@
 
 namespace App\Controllers;
 
-
 use App\Exceptions\UnauthorizedException;
-use App\Web\Session;
 use Intervention\Image\ImageManagerStatic as Image;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
@@ -84,7 +82,7 @@ class UploadController extends Controller
 	{
 		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-		if (!$media || (!$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false))) {
+		if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
 			throw new NotFoundException($request, $response);
 		}
 
@@ -102,7 +100,7 @@ class UploadController extends Controller
 				} else if (in_array($type, ['image', 'video'])) {
 					$url = urlFor("/$args[userCode]/$args[mediaCode]/raw");
 					$header = "<{$url}>; rel=preload; as={$type}";
-					if (Session::get('logged', false)) {
+					if ($this->session->get('logged', false)) {
 						$header .= '; nopush';
 					}
 					$response = $response->withHeader('Link', $header);
@@ -139,16 +137,16 @@ class UploadController extends Controller
 		$user = $this->database->query('SELECT `id`, `active` FROM `users` WHERE `token` = ? LIMIT 1', $args['token'])->fetch();
 
 		if (!$user) {
-			Session::alert(lang('token_not_found'), 'danger');
+			$this->session->alert(lang('token_not_found'), 'danger');
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 
 		if (!$user->active) {
-			Session::alert(lang('account_disabled'), 'danger');
+			$this->session->alert(lang('account_disabled'), 'danger');
 			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
 		}
 
-		if (Session::get('admin', false) || $user->id === $media->user_id) {
+		if ($this->session->get('admin', false) || $user->id === $media->user_id) {
 
 			try {
 				storage()->delete($media->storage_path);
@@ -197,7 +195,7 @@ class UploadController extends Controller
 	{
 		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
+		if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
 			throw new NotFoundException($request, $response);
 		}
 		return $this->streamMedia($request, $response, storage(), $media);
@@ -216,7 +214,7 @@ class UploadController extends Controller
 	{
 		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-		if (!$media || !$media->published && Session::get('user_id') !== $media->user_id && !Session::get('admin', false)) {
+		if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
 			throw new NotFoundException($request, $response);
 		}
 		return $this->streamMedia($request, $response, storage(), $media, 'attachment');
@@ -231,10 +229,10 @@ class UploadController extends Controller
 	 */
 	public function togglePublish(Request $request, Response $response, $args): Response
 	{
-		if (Session::get('admin')) {
+		if ($this->session->get('admin')) {
 			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 		} else {
-			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$args['id'], Session::get('user_id')])->fetch();
+			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$args['id'], $this->session->get('user_id')])->fetch();
 		}
 
 		if (!$media) {
@@ -262,7 +260,7 @@ class UploadController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
-		if (Session::get('admin', false) || $media->user_id === Session::get('user_id')) {
+		if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
 
 			try {
 				storage()->delete($media->storage_path);
@@ -270,8 +268,8 @@ class UploadController extends Controller
 				throw new NotFoundException($request, $response);
 			} finally {
 				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $args['id']);
-				$this->logger->info('User ' . Session::get('username') . ' deleted a media.', [$args['id']]);
-				Session::set('used_space', humanFileSize($this->getUsedSpaceByUser(Session::get('user_id'))));
+				$this->logger->info('User ' . $this->session->get('username') . ' deleted a media.', [$args['id']]);
+				$this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
 			}
 		} else {
 			throw new UnauthorizedException();
@@ -324,7 +322,6 @@ class UploadController extends Controller
 				->withHeader('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"')
 				->write($image);
 		} else {
-			ob_end_clean();
 			return $response
 				->withHeader('Content-Type', $mime)
 				->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
