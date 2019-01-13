@@ -2,18 +2,24 @@
 // Auth routes
 $app->group('', function () {
 	$this->get('/home[/page/{page}]', \App\Controllers\DashboardController::class . ':home')->setName('home');
-	$this->get('/system/deleteOrphanFiles', \App\Controllers\AdminController::class . ':deleteOrphanFiles')->add(\App\Middleware\AdminMiddleware::class)->setName('system.deleteOrphanFiles');
-	$this->get('/system/themes', \App\Controllers\ThemeController::class . ':getThemes')->add(\App\Middleware\AdminMiddleware::class)->setName('theme');
-	$this->post('/system/theme/apply', \App\Controllers\ThemeController::class . ':applyTheme')->add(\App\Middleware\AdminMiddleware::class)->setName('theme.apply');
-	$this->get('/system', \App\Controllers\AdminController::class . ':system')->add(\App\Middleware\AdminMiddleware::class)->setName('system');
 
 	$this->group('', function () {
+		$this->get('/home/switchView', \App\Controllers\DashboardController::class . ':switchView')->setName('switchView');
+		$this->get('/system/deleteOrphanFiles', \App\Controllers\AdminController::class . ':deleteOrphanFiles')->setName('system.deleteOrphanFiles');
+		$this->get('/system/themes', \App\Controllers\ThemeController::class . ':getThemes')->setName('theme');
+		$this->post('/system/theme/apply', \App\Controllers\ThemeController::class . ':applyTheme')->setName('theme.apply');
+		$this->get('/system', \App\Controllers\AdminController::class . ':system')->setName('system');
+
 		$this->get('/users[/page/{page}]', \App\Controllers\UserController::class . ':index')->setName('user.index');
-		$this->get('/user/create', \App\Controllers\UserController::class . ':create')->setName('user.create');
-		$this->post('/user/create', \App\Controllers\UserController::class . ':store')->setName('user.store');
-		$this->get('/user/{id}/edit', \App\Controllers\UserController::class . ':edit')->setName('user.edit');
-		$this->post('/user/{id}', \App\Controllers\UserController::class . ':update')->setName('user.update');
-		$this->get('/user/{id}/delete', \App\Controllers\UserController::class . ':delete')->setName('user.delete');
+	})->add(\App\Middleware\AdminMiddleware::class);
+
+	$this->group('/user', function () {
+
+		$this->get('/create', \App\Controllers\UserController::class . ':create')->setName('user.create');
+		$this->post('/create', \App\Controllers\UserController::class . ':store')->setName('user.store');
+		$this->get('/{id}/edit', \App\Controllers\UserController::class . ':edit')->setName('user.edit');
+		$this->post('/{id}', \App\Controllers\UserController::class . ':update')->setName('user.update');
+		$this->get('/{id}/delete', \App\Controllers\UserController::class . ':delete')->setName('user.delete');
 	})->add(\App\Middleware\AdminMiddleware::class);
 
 	$this->get('/profile', \App\Controllers\UserController::class . ':profile')->setName('profile');

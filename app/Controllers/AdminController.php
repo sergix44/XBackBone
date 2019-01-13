@@ -22,7 +22,7 @@ class AdminController extends Controller
 		$mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
 		$orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count;
 
-		$medias = $this->database->query('SELECT `users`.`user_code`, `uploads`.`code`, `uploads`.`storage_path` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id`')->fetchAll();
+		$medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads`')->fetchAll();
 
 		$totalSize = 0;
 

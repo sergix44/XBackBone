@@ -86,4 +86,7 @@ return [
 	'cannot_demote' => 'Non puoi degradare te stesso. ',
 	'cannot_write_file' => 'Il percorso di destinazione non è scrivibile.',
 	'deleted_orphans' => 'Eliminati %d file orfani.',
+	'switch_to' => 'Vedi come',
+	'gallery' => 'Galleria',
+	'table' => 'Tabella',
 ];

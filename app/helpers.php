@@ -158,6 +158,11 @@ if (!function_exists('isBot')) {
 }
 
 if (!function_exists('mime2font')) {
+	/**
+	 * Convert get the icon from the file mimetype
+	 * @param $mime
+	 * @return mixed|string
+	 */
 	function mime2font($mime)
 	{
 		$classes = [
@@ -177,6 +182,7 @@ if (!function_exists('mime2font')) {
 			'application/vnd.oasis.opendocument.presentation' => 'fa-file-powerpoint',
 			'text/plain' => 'fa-file-alt',
 			'text/html' => 'fa-file-code',
+			'text/x-php' => 'fa-file-code',
 			'application/json' => 'fa-file-code',
 			'application/gzip' => 'fa-file-archive',
 			'application/zip' => 'fa-file-archive',
@@ -188,5 +194,20 @@ if (!function_exists('mime2font')) {
 			}
 		}
 		return 'fa-file';
+	}
+}
+
+if (!function_exists('dd')) {
+	/**
+	 * Dumps all the giver vars and halt the execution.
+	 */
+	function dd()
+	{
+		echo '<pre>';
+		array_map(function ($x) {
+			print_r($x);
+		}, func_get_args());
+		echo '</pre>';
+		die();
 	}
 }

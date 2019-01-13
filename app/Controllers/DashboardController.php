@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use League\Flysystem\FileNotFoundException;
+use App\Database\Queries\MediaQuery;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -39,36 +39,33 @@ class DashboardController extends Controller
 		$page = isset($args['page']) ? (int)$args['page'] : 0;
 		$page = max(0, --$page);
 
-		if ($this->session->get('admin', false)) {
-			$medias = $this->database->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` ORDER BY `timestamp` DESC LIMIT ? OFFSET ?', [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN])->fetchAll();
-			$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count / self::PER_PAGE_ADMIN;
-		} else {
-			$medias = $this->database->query('SELECT `uploads`.*,`users`.`user_code`, `users`.`username` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? ORDER BY `timestamp` DESC LIMIT ? OFFSET ?', [$this->session->get('user_id'), self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
-			$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` = ?', $this->session->get('user_id'))->fetch()->count / self::PER_PAGE;
-		}
+		$query = new MediaQuery($this->database, $this->session->get('admin', false));
 
-		$filesystem = storage();
-
-		foreach ($medias as $media) {
-			try {
-				$media->size = humanFileSize($filesystem->getSize($media->storage_path));
-				$media->mimetype = $filesystem->getMimetype($media->storage_path);
-			} catch (FileNotFoundException $e) {
-				$media->size = null;
-				$media->mimetype = null;
-			}
-			$media->extension = pathinfo($media->filename, PATHINFO_EXTENSION);
-		}
+		$query->orderBy(MediaQuery::ORDER_NAME)
+			->withUserId($this->session->get('user_id'))
+			->run($page);
 
 		return $this->view->render(
 			$response,
-			$this->session->get('admin', false) ? 'dashboard/admin.twig' : 'dashboard/home.twig',
+			($this->session->get('admin', false) && $this->session->get('gallery_view', true)) ? 'dashboard/admin.twig' : 'dashboard/home.twig',
 			[
-				'medias' => $medias,
-				'next' => $page < floor($pages),
+				'medias' => $query->getMedia(),
+				'next' => $page < floor($query->getPages()),
 				'previous' => $page >= 1,
 				'current_page' => ++$page,
 			]
 		);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 */
+	public function switchView(Request $request, Response $response, $args): Response
+	{
+		$this->session->set('gallery_view', !$this->session->get('gallery_view', true));
+		return redirect($response, 'home');
 	}
 }

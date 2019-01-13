@@ -86,4 +86,7 @@ return [
 	'cannot_demote' => 'You cannot demote yourself.',
 	'cannot_write_file' => 'The destination path is not writable.',
 	'deleted_orphans' => 'Successfully deleted %d orphaned files.',
+	'switch_to' => 'Switch to',
+	'gallery' => 'Gallery',
+	'table' => 'Table',
 ];
