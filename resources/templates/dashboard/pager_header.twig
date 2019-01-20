@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="{{ lang('dotted_search') }}" aria-label="{{ lang('dotted_search') }}" aria-describedby="button-addon2">
+            <div class="input-group-append">
+                <a href="#" class="btn btn-outline-secondary"><i class="fas fa-search"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 d-flex justify-content-center">
+        {% include 'comp/pager.twig' %}
+    </div>
+    <div class="col-md-3 text-right">
+        <div class="btn-group">
+            <div class="btn-group">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownOrder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ lang('order_by') }}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="?sort=time"><i class="fas fa-calendar-alt fa-fw"></i> {{ lang('time') }}</a>
+                        <a class="dropdown-item" href="?sort=name"><i class="fas fa-font fa-fw"></i> {{ lang('name') }}</a>
+                        <a class="dropdown-item" href="?sort=size"><i class="fas fa-weight-hanging fa-fw"></i> {{ lang('size') }}</a>
+                    </div>
+                </div>
+            <button type="button" class="btn btn-outline-info"><i class="fas fa-sort-amount-down"></i></button>
+        </div>
+    </div>
+</div>

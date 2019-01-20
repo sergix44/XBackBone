@@ -89,4 +89,8 @@ return [
 	'switch_to' => 'Vedi come',
 	'gallery' => 'Galleria',
 	'table' => 'Tabella',
+	'dotted_search' => 'Cerca...',
+	'order_by' => 'Ordina per...',
+	'time' => 'Data',
+	'name' => 'Nome',
 ];

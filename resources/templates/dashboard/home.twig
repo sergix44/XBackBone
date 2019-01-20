@@ -7,7 +7,7 @@
     <div class="container">
         {% include 'comp/alert.twig' %}
         {% if medias|length > 0 %}
-            {% include 'comp/pager.twig' with {'path': 'home'} %}
+            {% include 'dashboard/pager_header.twig' with {'path': 'home'} %}
             <div class="row">
                 {% for media in medias %}
                     <div class="col-md-4" id="media_{{ media.id }}">

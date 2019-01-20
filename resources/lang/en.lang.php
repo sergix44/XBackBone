@@ -89,4 +89,8 @@ return [
 	'switch_to' => 'Switch to',
 	'gallery' => 'Gallery',
 	'table' => 'Table',
+	'dotted_search' => 'Search...',
+	'order_by' => 'Order by...',
+	'time' => 'Time',
+	'name' => 'Name',
 ];

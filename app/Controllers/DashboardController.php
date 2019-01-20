@@ -41,7 +41,20 @@ class DashboardController extends Controller
 
 		$query = new MediaQuery($this->database, $this->session->get('admin', false));
 
-		$query->orderBy(MediaQuery::ORDER_NAME)
+		switch ($request->getParam('sort', 'time')) {
+			case 'size':
+				$order = MediaQuery::ORDER_SIZE;
+				break;
+			case 'name':
+				$order = MediaQuery::ORDER_NAME;
+				break;
+			default:
+			case 'time':
+				$order = MediaQuery::ORDER_TIME;
+				break;
+		}
+
+		$query->orderBy($order, $request->getParam('order', 'ASC'))
 			->withUserId($this->session->get('user_id'))
 			->run($page);
 

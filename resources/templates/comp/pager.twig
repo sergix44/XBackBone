@@ -1,6 +1,6 @@
 {% if previous or next %}
     <nav>
-        <ul class="pagination justify-content-center">
+        <ul class="pagination">
             {% if previous %}
                 <li class="page-item">
                     <a class="page-link" href="{{ urlFor('/' ~ path ~ '/page/' ~ (current_page-1)) }}"><i class="fas fa-angle-left fa-fw"></i> {{ lang('pager.previous') }}</a>
