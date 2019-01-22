@@ -93,4 +93,6 @@ return [
 	'order_by' => 'Ordina per...',
 	'time' => 'Data',
 	'name' => 'Nome',
+	'maintenance' => 'Manutenzione',
+	'clean_orphaned_uploads' => 'Pulisci upload orfani',
 ];

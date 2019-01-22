@@ -87,6 +87,12 @@
                         </ul>
                     </div>
                 </div>
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header"><i class="fas fa-tools fa-fw"></i> {{ lang('maintenance') }}</div>
+                    <div class="card-body">
+                        <a href="{{ route('system.deleteOrphanFiles') }}" class="btn btn-outline-dark btn-block"><i class="fas fa-broom fa-fw"></i> {{ lang('clean_orphaned_uploads') }}</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -6,10 +6,11 @@
     {% include 'comp/navbar.twig' %}
     <div class="container">
         {% include 'comp/alert.twig' %}
-        {% if medias|length > 0 %}
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    {% include 'dashboard/pager_header.twig' with {'path': 'home'} %}
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% include 'dashboard/pager_header.twig' with {'path': 'home'} %}
+                {% if medias|length > 0 %}
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
@@ -73,14 +74,16 @@
                                     </tbody>
                                 </table>
                             </div>
-                            {% include 'comp/pager.twig' with {'path': 'home'} %}
+                            <div class="d-flex justify-content-center">
+                                {% include 'comp/pager.twig' with {'path': 'home'} %}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="text-center text-muted"><i>{{ lang('no_media') }}</i></div>
+                {% endif %}
             </div>
-        {% else %}
-            <div class="text-center text-muted"><i>{{ lang('no_media') }}</i></div>
-        {% endif %}
+        </div>
     </div>
     {% include 'comp/footer.twig' %}
 {% endblock %}

@@ -10,7 +10,7 @@ use League\Flysystem\Plugin\ListFiles;
 class MediaQuery
 {
 	const PER_PAGE = 21;
-	const PER_PAGE_ADMIN = 25;
+	const PER_PAGE_ADMIN = 27;
 
 	const ORDER_TIME = 0;
 	const ORDER_NAME = 1;
@@ -74,7 +74,7 @@ class MediaQuery
 	 * @param string $text
 	 * @return $this
 	 */
-	public function search(string $text)
+	public function search(?string $text)
 	{
 		$this->text = $text;
 		return $this;
@@ -99,22 +99,33 @@ class MediaQuery
 			$queryPages .= ' WHERE `user_id` = ?';
 		}
 
+		$orderAndSearch = '';
+		$params = [];
+
+		if ($this->text !== null) {
+			$orderAndSearch = $this->isAdmin ? 'WHERE `uploads`.`filename` LIKE ? ' : 'AND `uploads`.`filename` LIKE ? ';
+			$queryPages .= $this->isAdmin ? ' WHERE `filename` LIKE ?' : ' AND `filename` LIKE ?';
+			$params[] = '%' . htmlentities($this->text) . '%';
+		}
+
 		switch ($this->orderBy) {
 			case self::ORDER_NAME:
-				$queryMedia = sprintf($queryMedia, 'ORDER BY `filename` ' . $this->orderMode);
+				$orderAndSearch .= 'ORDER BY `filename` ' . $this->orderMode;
 				break;
 			default:
 			case self::ORDER_TIME:
-				$queryMedia = sprintf($queryMedia, 'ORDER BY `timestamp` ' . $this->orderMode);
+				$orderAndSearch .= 'ORDER BY `timestamp` ' . $this->orderMode;
 				break;
 		}
 
+		$queryMedia = sprintf($queryMedia, $orderAndSearch);
+
 		if ($this->isAdmin) {
-			$this->media = $this->db->query($queryMedia, [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN])->fetchAll();
-			$this->pages = $this->db->query($queryPages)->fetch()->count / self::PER_PAGE_ADMIN;
+			$this->media = $this->db->query($queryMedia, array_merge($params, [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN]))->fetchAll();
+			$this->pages = $this->db->query($queryPages, $params)->fetch()->count / self::PER_PAGE_ADMIN;
 		} else {
-			$this->media = $this->db->query($queryMedia, [$this->userId, self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
-			$this->pages = $this->db->query($queryPages, $this->userId)->fetch()->count / self::PER_PAGE;
+			$this->media = $this->db->query($queryMedia, array_merge([$this->userId], $params, [self::PER_PAGE, $page * self::PER_PAGE]))->fetchAll();
+			$this->pages = $this->db->query($queryPages, array_merge([$this->userId], $params))->fetch()->count / self::PER_PAGE;
 		}
 
 		$filesystem = storage();
@@ -137,8 +148,7 @@ class MediaQuery
 	 */
 	private function runWithOrderBySize(int $page)
 	{
-		$filesystem = storage();
-		$filesystem->addPlugin(new ListFiles());
+		$filesystem = storage()->addPlugin(new ListFiles());
 
 		if ($this->isAdmin) {
 			$files = $filesystem->listFiles('/', true);
@@ -157,10 +167,20 @@ class MediaQuery
 
 		array_multisort(array_column($files, 'size'), ($this->orderMode === 'ASC') ? SORT_ASC : SORT_DESC, SORT_NUMERIC, $files);
 
-		$files = array_slice($files, $offset, $limit);
-		$paths = array_column($files, 'path');
+		if ($this->text !== null) {
+			if ($this->isAdmin) {
+				$medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`filename` LIKE ? ', ['%' . htmlentities($this->text) . '%'])->fetchAll();
+			} else {
+				$medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? AND `uploads`.`filename` LIKE ? ', [$this->userId, '%' . htmlentities($this->text) . '%'])->fetchAll();
+			}
 
-		$medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("' . implode('","', $paths) . '")')->fetchAll();
+			$paths = array_column($files, 'path');
+		} else {
+			$files = array_slice($files, $offset, $limit);
+			$paths = array_column($files, 'path');
+
+			$medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("' . implode('","', $paths) . '")')->fetchAll();
+		}
 
 		$paths = array_flip($paths);
 		foreach ($medias as $media) {
@@ -168,9 +188,11 @@ class MediaQuery
 		}
 
 		$this->media = [];
-
 		foreach ($files as $file) {
 			$media = $paths[$file['path']];
+			if (!is_object($media)) {
+				continue;
+			}
 			$media->size = humanFileSize($file['size']);
 			try {
 				$media->mimetype = $filesystem->getMimetype($file['path']);
@@ -179,6 +201,10 @@ class MediaQuery
 			}
 			$media->extension = $file['extension'];
 			$this->media[] = $media;
+		}
+
+		if ($this->text !== null) {
+			$this->media = array_slice($this->media, $offset, $limit);
 		}
 	}
 

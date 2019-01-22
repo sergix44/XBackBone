@@ -2,7 +2,9 @@
 + Added function to remove orphaned files.
 + Switch between tab and gallery mode using an admin account.
 + Multiple uploads sorting methods.
++ Search in uploads.
 + Internal refactoring and improvements
++ Updated js dependencies.
 
 ## v2.3.1
 + Fixed en lang.

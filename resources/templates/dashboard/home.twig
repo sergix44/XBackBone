@@ -6,8 +6,8 @@
     {% include 'comp/navbar.twig' %}
     <div class="container">
         {% include 'comp/alert.twig' %}
+        {% include 'dashboard/pager_header.twig' with {'path': 'home'} %}
         {% if medias|length > 0 %}
-            {% include 'dashboard/pager_header.twig' with {'path': 'home'} %}
             <div class="row">
                 {% for media in medias %}
                     <div class="col-md-4" id="media_{{ media.id }}">
@@ -52,7 +52,9 @@
                     </div>
                 {% endfor %}
             </div>
-            {% include 'comp/pager.twig' with {'path': 'home'} %}
+            <div class="d-flex justify-content-center">
+                {% include 'comp/pager.twig' with {'path': 'home'} %}
+            </div>
         {% else %}
             <div class="text-center text-muted"><i>{{ lang('no_media') }}</i></div>
         {% endif %}

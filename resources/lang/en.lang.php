@@ -93,4 +93,6 @@ return [
 	'order_by' => 'Order by...',
 	'time' => 'Time',
 	'name' => 'Name',
+	'maintenance' => 'Maintenance',
+	'clean_orphaned_uploads' => 'Clean Orphaned Uploads',
 ];

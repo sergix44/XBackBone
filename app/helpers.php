@@ -92,13 +92,14 @@ if (!function_exists('urlFor')) {
 	/**
 	 * Generate the app url given a path
 	 * @param string $path
+	 * @param string $append
 	 * @return string
 	 */
-	function urlFor(string $path): string
+	function urlFor(string $path, string $append = ''): string
 	{
 		global $app;
 		$baseUrl = $app->getContainer()->get('settings')['base_url'];
-		return $baseUrl . $path;
+		return $baseUrl . $path . $append;
 	}
 }
 
@@ -107,13 +108,14 @@ if (!function_exists('route')) {
 	 * Generate the app url given a path
 	 * @param string $path
 	 * @param array $args
+	 * @param string $append
 	 * @return string
 	 */
-	function route(string $path, array $args = []): string
+	function route(string $path, array $args = [], string $append = ''): string
 	{
 		global $app;
 		$uri = $app->getContainer()->get('router')->pathFor($path, $args);
-		return urlFor($uri);
+		return urlFor($uri, $append);
 	}
 }
 
@@ -209,5 +211,24 @@ if (!function_exists('dd')) {
 		}, func_get_args());
 		echo '</pre>';
 		die();
+	}
+}
+
+if (!function_exists('queryParams')) {
+	/**
+	 * Get the query parameters of the current request.
+	 * @param array $replace
+	 * @return string
+	 * @throws \Interop\Container\Exception\ContainerException
+	 */
+	function queryParams(array $replace = [])
+	{
+		global $container;
+		/** @var \Slim\Http\Request $request */
+		$request = $container->get('request');
+
+		$params = array_replace_recursive($request->getQueryParams(), $replace);
+
+		return !empty($params) ? '?' . http_build_query($params) : '';
 	}
 }
