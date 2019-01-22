@@ -9,9 +9,6 @@ use Slim\Http\Response;
 class DashboardController extends Controller
 {
 
-	const PER_PAGE = 21;
-	const PER_PAGE_ADMIN = 25;
-
 	/**
 	 * @param Request $request
 	 * @param Response $response

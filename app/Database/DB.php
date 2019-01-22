@@ -89,8 +89,7 @@ class DB
 	 */
 	public static function doQuery(string $query, $parameters = [])
 	{
-
-		return self::getInstance()->doQuery($query, $parameters);
+		return self::getInstance()->query($query, $parameters);
 	}
 
 	/**
