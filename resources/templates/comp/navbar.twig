@@ -31,7 +31,9 @@
                     </a>
                     <div class="dropdown-menu shadow-sm" aria-labelledby="userDropdown">
                         <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.used_space }}</a>
-                        <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.gallery_view is null or session.gallery_view ? lang('gallery') : lang('table') }}</a>
+                        {% if session.admin %}
+                            <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.gallery_view is null or session.gallery_view ? lang('gallery') : lang('table') }}</a>
+                        {% endif %}
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-fw fa-user"></i> {{ lang('profile') }}</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-fw fa-sign-out-alt"></i> {{ lang('logout') }}</a>
