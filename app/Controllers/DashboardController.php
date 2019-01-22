@@ -51,7 +51,7 @@ class DashboardController extends Controller
 				break;
 		}
 
-		$query->orderBy($order, $request->getParam('order', 'ASC'))
+		$query->orderBy($order, $request->getParam('order', 'DESC'))
 			->withUserId($this->session->get('user_id'))
 			->search($request->getParam('search', null))
 			->run($page);
