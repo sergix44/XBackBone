@@ -26,6 +26,16 @@ class UploadController extends Controller
 
 		$json = ['message' => null];
 
+		if ($request->getServerParam('CONTENT_LENGTH') > stringToBytes(ini_get('post_max_size'))) {
+			$json['message'] = 'File too large (post_max_size too low).';
+			return $response->withJson($json, 400);
+		}
+
+		if ($request->getUploadedFiles()['upload']->getError() === UPLOAD_ERR_INI_SIZE) {
+			$json['message'] = 'File too large (upload_max_filesize too low).';
+			return $response->withJson($json, 400);
+		}
+
 		if ($request->getParam('token') === null) {
 			$json['message'] = 'Token not specified.';
 			return $response->withJson($json, 400);

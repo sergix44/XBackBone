@@ -1,3 +1,7 @@
+## v2.4.1
++ Fixed error message when the file is too large. (#15)
++ Fixed button alignment.
+
 ## v2.4
 + Added function to remove orphaned files.
 + Switch between tab and gallery mode using an admin account.

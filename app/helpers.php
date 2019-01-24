@@ -34,6 +34,34 @@ if (!function_exists('humanFileSize')) {
 	}
 }
 
+if (!function_exists('stringToBytes')) {
+	/**
+	 * @param $str
+	 * @return int|string
+	 */
+	function stringToBytes(string $str): int
+	{
+		$val = trim($str);
+		if (is_numeric($val)) {
+			return (int)$val;
+		}
+
+		$last = strtolower($val[strlen($val) - 1]);
+		$val = substr($val, 0, -1);
+
+		$val = (int)$val;
+		switch ($last) {
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
+		}
+		return $val;
+	}
+}
+
 if (!function_exists('removeDirectory')) {
 	/**
 	 * Remove a directory and it's content
