@@ -233,11 +233,11 @@ if (!function_exists('dd')) {
 	 */
 	function dd()
 	{
-		echo '<pre>';
 		array_map(function ($x) {
+			echo '<pre>';
 			print_r($x);
+			echo '</pre>';
 		}, func_get_args());
-		echo '</pre>';
 		die();
 	}
 }

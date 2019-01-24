@@ -8,6 +8,7 @@ var app = {
         $('.publish-toggle').click(app.publishToggle);
         $('.refresh-token').click(app.refreshToken);
         $('#themes').mousedown(app.loadThemes);
+        $('#checkForUpdatesButton').click(app.checkForUpdates);
 
         $('.alert').fadeTo(4000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
@@ -89,6 +90,20 @@ var app = {
     },
     telegramShare: function () {
         window.open($('#telegram-share-button').data('url') + $('#telegram-share-text').val(), '_blank');
+    },
+    checkForUpdates: function () {
+        $('#checkForUpdatesMessage').empty().text('...');
+        $('#doUpgradeButton').prop('disabled', true);
+        $.get(window.AppConfig.base_url + '/system/checkForUpdates', function (data) {
+            if (data.status === 'OK') {
+                $('#checkForUpdatesMessage').empty().text(data.message);
+                if (data.upgrade) {
+                    $('#doUpgradeButton').prop('disabled', false);
+                } else {
+                    $('#doUpgradeButton').prop('disabled', true);
+                }
+            }
+        });
     }
 };
 

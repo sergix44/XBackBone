@@ -5,9 +5,15 @@ $app->group('', function () {
 
 	$this->group('', function () {
 		$this->get('/home/switchView', \App\Controllers\DashboardController::class . ':switchView')->setName('switchView');
+
 		$this->get('/system/deleteOrphanFiles', \App\Controllers\AdminController::class . ':deleteOrphanFiles')->setName('system.deleteOrphanFiles');
+
 		$this->get('/system/themes', \App\Controllers\ThemeController::class . ':getThemes')->setName('theme');
 		$this->post('/system/theme/apply', \App\Controllers\ThemeController::class . ':applyTheme')->setName('theme.apply');
+
+		$this->post('/system/upgrade', \App\Controllers\UpgradeController::class . ':upgrade')->setName('system.upgrade');
+		$this->get('/system/checkForUpdates', \App\Controllers\UpgradeController::class . ':checkForUpdates')->setName('system.checkForUpdates');
+
 		$this->get('/system', \App\Controllers\AdminController::class . ':system')->setName('system');
 
 		$this->get('/users[/page/{page}]', \App\Controllers\UserController::class . ':index')->setName('user.index');
