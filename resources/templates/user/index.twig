@@ -19,7 +19,6 @@
                             <th>Email</th>
                             <th>{{ lang('username') }}</th>
                             <th>{{ lang('user_code') }}</th>
-                            <th>{{ lang('token') }}</th>
                             <th>{{ lang('active') }}</th>
                             <th>{{ lang('admin') }}</th>
                             <th>{{ lang('reg_date') }}</th>
@@ -34,9 +33,6 @@
                                 <td>{{ user.username }}</td>
                                 <td>
                                     <pre>{{ user.user_code|default(lang('none')) }}</pre>
-                                </td>
-                                <td>
-                                    <pre>{{ user.token|default(lang('none')) }}</pre>
                                 </td>
                                 <td>
                                     {% if user.active %}

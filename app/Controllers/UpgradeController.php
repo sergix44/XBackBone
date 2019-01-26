@@ -18,11 +18,16 @@ class UpgradeController extends Controller
 	 */
 	public function upgrade(Request $request, Response $response): Response
 	{
+		if (!is_writable(BASE_DIR)) {
+			$this->session->alert(lang('path_not_writable', BASE_DIR), 'warning');
+			return redirect($response, 'system');
+		}
+
 		try {
 			$json = $this->getApiJson();
 		} catch (\RuntimeException $e) {
-			$jsonResponse['message'] = $e->getMessage();
-			return $response->withJson($jsonResponse, 503);
+			$this->session->alert($e->getMessage(), 'danger');
+			return redirect($response, 'system');
 		}
 
 		if (version_compare($json[0]->tag_name, PLATFORM_VERSION, '<=')) {
@@ -42,21 +47,34 @@ class UpgradeController extends Controller
 			return redirect($response, 'system');
 		}
 
+		$currentFiles = array_merge(
+			glob_recursive(BASE_DIR . 'app/*'),
+			glob_recursive(BASE_DIR . 'bin/*'),
+			glob_recursive(BASE_DIR . 'bootstrap/*'),
+			glob_recursive(BASE_DIR . 'resources/templates/*'),
+			glob_recursive(BASE_DIR . 'resources/lang/*'),
+			glob_recursive(BASE_DIR . 'resources/schemas/*'),
+			glob_recursive(BASE_DIR . 'static/*')
+		);
+
+		removeDirectory(BASE_DIR . 'vendor/');
+
+
 		$updateZip = new ZipArchive();
 		$updateZip->open($tmpFile);
 
-
 		for ($i = 0; $i < $updateZip->numFiles; $i++) {
 			$nameIndex = $updateZip->getNameIndex($i);
-			if (is_dir(BASE_DIR . $nameIndex)) {
-				continue;
+
+			$updateZip->extractTo(BASE_DIR, $nameIndex);
+
+			if (($key = array_search(rtrim(BASE_DIR . $nameIndex, '/'), $currentFiles)) !== false) {
+				unset($currentFiles[$key]);
 			}
-			if (file_exists(BASE_DIR . $nameIndex) && md5($updateZip->getFromIndex($i)) !== md5_file(BASE_DIR . $nameIndex)) {
-				$updateZip->extractTo(BASE_DIR, $nameIndex);
-			} elseif (!file_exists(BASE_DIR . $nameIndex)) {
-				$updateZip->extractTo(BASE_DIR, $nameIndex);
-			}
-			print_r($updateZip->getNameIndex($i) . '<br>');
+		}
+
+		foreach ($currentFiles as $extraneous) {
+			unlink($extraneous);
 		}
 
 		$updateZip->close();
