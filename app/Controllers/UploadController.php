@@ -332,11 +332,60 @@ class UploadController extends Controller
 				->withHeader('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"')
 				->write($image);
 		} else {
-			return $response
-				->withHeader('Content-Type', $mime)
+
+			$stream = new Stream($storage->readStream($media->storage_path));
+			$start = 0;
+			$end = $stream->getSize();
+			if ($request->getServerParam('HTTP_RANGE') !== null) {
+				list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+
+				if (strpos($range, ',') !== false) {
+					return $response->withHeader('Content-Type', $mime)
+						->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
+						->withHeader('Content-Length', $storage->getSize($media->storage_path))
+						->withHeader('Accept-Ranges', 'bytes')
+						->withHeader('Content-Range', "0,{$stream->getSize()}")
+						->withStatus(416)
+						->withBody($stream);
+				}
+
+				if ($range == '-') {
+					$start = $stream->getSize() - substr($range, 1);
+				} else {
+					$range = explode('-', $range);
+					$start = $range[0];
+					$end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $end;
+				}
+
+				$end = ($end > $stream->getSize() - 1) ? $stream->getSize() - 1 : $end;
+
+				if ($start > $end || $start > $stream->getSize() - 1 || $end >= $stream->getSize()) {
+					return $response->withHeader('Content-Type', $mime)
+						->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
+						->withHeader('Content-Length', $storage->getSize($media->storage_path))
+						->withHeader('Accept-Ranges', 'bytes')
+						->withHeader('Content-Range', "0,{$stream->getSize()}")
+						->withStatus(416)
+						->withBody($stream);
+				}
+
+				$stream->seek($start);
+			}
+
+			$response->getBody()->write($stream->getContents());
+
+			return $response->withHeader('Content-Type', $mime)
 				->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
-				->withHeader('Content-Length', $storage->getSize($media->storage_path))
-				->withBody(new Stream($storage->readStream($media->storage_path)));
+				->withHeader('Content-Length', $stream->getSize())
+				->withHeader('Accept-Ranges', 'bytes')
+				->withHeader('Content-Range', "bytes $start-$end/{$stream->getSize()}")
+				->withStatus(206);
+
+//			return $response
+//				->withHeader('Content-Type', $mime)
+//				->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
+//				->withHeader('Content-Length', $storage->getSize($media->storage_path))
+//				->withBody(new Stream($storage->readStream($media->storage_path)));
 		}
 	}
 }
