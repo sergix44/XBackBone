@@ -159,11 +159,16 @@ location / {
 	<img src="https://i.imgur.com/2ZRd27y.png" width="400" title="Public image upload view">
 </p>
 
+## License
+This software is licensed under the <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>, available in this repository.
+As a "copyright notice" it is sufficient to keep the small footer at the bottom of the page, also to help other people to learn about this project!
+
 ## Built with
-+ Slim 3, since `v2.0` (https://www.slimframework.com/)
++ Slim 3, since `v2.0` (https://www.slimframework.com/) and some great PHP packages (Flysystem, Intervention Image, Twig, etc)
 + FlightPHP, up to `v1.x` (http://flightphp.com/)
 + Bootstrap 4 (https://getbootstrap.com/)
 + Font Awesome 5 (http://fontawesome.com)
 + ClipboardJS (https://clipboardjs.com/)
 + HighlightJS (https://highlightjs.org/)
 + JQuery (https://jquery.com/)
++ video.js (https://videojs.com/)

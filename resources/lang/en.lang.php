@@ -1,32 +1,25 @@
 <?php
 
 return [
-
 	'lang' => 'English',
-
 	'yes' => 'Yes',
 	'no' => 'No',
 	'send' => 'Send',
 	'no_media' => 'No media found.',
-
 	'login.username' => 'Username or E-Mail',
 	'password' => 'Password',
 	'login' => 'Login',
 	'username' => 'Username',
-
 	'home' => 'Home',
 	'users' => 'Users',
 	'system' => 'System',
 	'profile' => 'Profile',
 	'logout' => 'Logout',
-
 	'pager.next' => 'Next',
 	'pager.previous' => 'Previous',
-
 	'copy_link' => 'Copy link',
 	'public.telegram' => 'Share on Telegram',
 	'public.delete_text' => 'Are you sure you want to delete this item? It will be gone forever!',
-
 	'preview' => 'Preview',
 	'filename' => 'Filename',
 	'size' => 'Size',
@@ -38,7 +31,6 @@ return [
 	'delete' => 'Delete',
 	'publish' => 'Publish',
 	'hide' => 'Hide',
-
 	'files' => 'Files',
 	'orphaned_files' => 'Orphaned Files',
 	'theme' => 'Theme',
@@ -47,7 +39,6 @@ return [
 	'save' => 'Save',
 	'used' => 'Used',
 	'system_info' => 'System Information',
-
 	'user.create' => 'Create User',
 	'user.edit' => 'Edit User',
 	'is_active' => 'Is active',
@@ -66,7 +57,6 @@ return [
 	'open' => 'Open',
 	'confirm' => 'Confirmation',
 	'confirm_string' => 'Are you sure?',
-
 	'installed' => 'Installation completed successfully!',
 	'bad_login' => 'Wrong credentials.',
 	'account_disabled' => 'Your account is disabled.',
@@ -95,4 +85,12 @@ return [
 	'name' => 'Name',
 	'maintenance' => 'Maintenance',
 	'clean_orphaned_uploads' => 'Clean Orphaned Uploads',
+	'path_not_writable' => 'The output path is not writable.',
+	'already_latest_version' => 'You already have the latest version.',
+	'new_version_available' => 'New version %s available!',
+	'cannot_retrieve_file' => 'Cannot retrieve the file.',
+	'file_size_no_match' => 'The downloaded file doesn\'t match the correct file size.',
+	'check_for_updates' => 'Check for updates',
+	'upgrade' => 'Upgrade',
+	'updates' => 'Updates',
 ];

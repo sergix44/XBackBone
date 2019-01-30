@@ -1,32 +1,25 @@
 <?php
 
 return [
-
 	'lang' => 'Italiano',
-
 	'yes' => 'Sì',
 	'no' => 'No',
 	'send' => 'Invia',
 	'no_media' => 'Nessun media trovato.',
-
 	'login.username' => 'Username o E-Mail',
 	'password' => 'Password',
 	'login' => 'Accedi',
 	'username' => 'Username',
-
 	'home' => 'Home',
 	'users' => 'Utenti',
 	'system' => 'Sistema',
 	'profile' => 'Profilo',
 	'logout' => 'Esci',
-
 	'pager.next' => 'Avanti',
 	'pager.previous' => 'Indietro',
-
 	'copy_link' => 'Copia link',
 	'public.telegram' => 'Condividi su Telegram',
 	'public.delete_text' => 'Sei sicuro di voler eliminare questo elemento? Andrà perso per sempre!',
-
 	'preview' => 'Anteprima',
 	'filename' => 'Nome file',
 	'size' => 'Dimensione',
@@ -38,7 +31,6 @@ return [
 	'delete' => 'Elimina',
 	'publish' => 'Pubblica',
 	'hide' => 'Nascondi',
-
 	'files' => 'File',
 	'orphaned_files' => 'File orfani',
 	'theme' => 'Tema',
@@ -47,7 +39,6 @@ return [
 	'save' => 'Salva',
 	'used' => 'Usato',
 	'system_info' => 'Informazioni di Sistema',
-
 	'user.create' => 'Crea Utente',
 	'user.edit' => 'Modifica Utente',
 	'is_active' => 'Attivo',
@@ -66,7 +57,6 @@ return [
 	'open' => 'Apri',
 	'confirm' => 'Conferma',
 	'confirm_string' => 'Sei sicuro?',
-
 	'installed' => 'Installazione completata!',
 	'bad_login' => 'Credenziali errate.',
 	'account_disabled' => 'Il tuo account è disattivato.',
@@ -95,4 +85,12 @@ return [
 	'name' => 'Nome',
 	'maintenance' => 'Manutenzione',
 	'clean_orphaned_uploads' => 'Pulisci upload orfani',
+	'path_not_writable' => 'Il percorso di output non è scrivibile.',
+	'already_latest_version' => 'Hai già l\'ultima versione disponibile.',
+	'new_version_available' => 'Nuova versione disponibile: %s',
+	'cannot_retrieve_file' => 'Impossibile scaricare il file.',
+	'file_size_no_match' => 'La dimensione del file scaricato non è corretta.',
+	'check_for_updates' => 'Controllo aggiornamenti',
+	'upgrade' => 'Upgrade',
+	'updates' => 'Aggiornamenti',
 ];

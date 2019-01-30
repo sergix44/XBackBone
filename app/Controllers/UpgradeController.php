@@ -101,10 +101,10 @@ class UpgradeController extends Controller
 
 			$jsonResponse['status'] = 'OK';
 			if (version_compare($json[0]->tag_name, PLATFORM_VERSION, '>')) {
-				$jsonResponse['message'] = lang('new_version_available', $json[0]->tag_name); //"New version {$json[0]->tag_name} available!";
+				$jsonResponse['message'] = lang('new_version_available', $json[0]->tag_name);
 				$jsonResponse['upgrade'] = true;
 			} else {
-				$jsonResponse['message'] = lang('already_latest_version');//'You have already the latest version.';
+				$jsonResponse['message'] = lang('already_latest_version');
 				$jsonResponse['upgrade'] = false;
 			}
 			return $response->withJson($jsonResponse, 200);

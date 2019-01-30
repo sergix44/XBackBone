@@ -1,7 +1,8 @@
 ## v2.5
 + Updated project license to <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU AGPLv3</a>.
 + Added self update feature.
-+ Working on partial content implementation (streaming seek con chromium based browsers).
++ Added partial content implementation (stream seeking on chromium based browsers).
++ Improved video.js alignment with large videos.
 
 ## v2.4.1
 + Fixed error message when the file is too large. (#15)
