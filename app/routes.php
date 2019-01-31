@@ -39,7 +39,7 @@ $app->group('', function () {
 	$this->get('/upload/{id}/raw', \App\Controllers\UploadController::class . ':getRawById')->add(\App\Middleware\AdminMiddleware::class)->setName('upload.raw');
 	$this->post('/upload/{id}/delete', \App\Controllers\UploadController::class . ':delete')->setName('upload.delete');
 
-})->add(\App\Middleware\AuthMiddleware::class);
+})->add(App\Middleware\CheckForMaintenanceMiddleware::class)->add(\App\Middleware\AuthMiddleware::class);
 
 $app->get('/', \App\Controllers\DashboardController::class . ':redirects')->setName('root');
 $app->get('/login', \App\Controllers\LoginController::class . ':show')->setName('login.show');
@@ -49,7 +49,7 @@ $app->map(['GET', 'POST'], '/logout', \App\Controllers\LoginController::class . 
 $app->post('/upload', \App\Controllers\UploadController::class . ':upload')->setName('upload');
 
 $app->get('/{userCode}/{mediaCode}', \App\Controllers\UploadController::class . ':show')->setName('public');
-$app->get('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':show')->setName('public.delete.show');
-$app->post('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':deleteByToken')->setName('public.delete');
+$app->get('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':show')->setName('public.delete.show')->add(\App\Middleware\CheckForMaintenanceMiddleware::class);;
+$app->post('/{userCode}/{mediaCode}/delete/{token}', \App\Controllers\UploadController::class . ':deleteByToken')->setName('public.delete')->add(\App\Middleware\CheckForMaintenanceMiddleware::class);;
 $app->get('/{userCode}/{mediaCode}/raw', \App\Controllers\UploadController::class . ':showRaw')->setName('public.raw')->setOutputBuffering(false);
 $app->get('/{userCode}/{mediaCode}/download', \App\Controllers\UploadController::class . ':download')->setName('public.download')->setOutputBuffering(false);

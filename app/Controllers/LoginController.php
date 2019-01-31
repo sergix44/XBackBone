@@ -37,6 +37,11 @@ class LoginController extends Controller
 			return redirect($response, 'login');
 		}
 
+		if (isset($this->settings['maintenance']) && $this->settings['maintenance'] && !$result->is_admin) {
+			$this->session->alert(lang('maintenance_in_progress'), 'info');
+			return redirect($response, 'login');
+		}
+
 		if (!$result->active) {
 			$this->session->alert(lang('account_disabled'), 'danger');
 			return redirect($response, 'login');

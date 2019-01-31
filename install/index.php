@@ -14,6 +14,7 @@ $config = [
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
 	'storage_dir' => 'storage',
 	'displayErrorDetails' => true,
+	'maintenance' => false,
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => 'resources/database/xbackbone.db',

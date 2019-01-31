@@ -50,11 +50,37 @@ module.exports = function (grunt) {
         copy: {
             main: {
                 files: [
-                    {expand: true, cwd: 'node_modules/@fortawesome/fontawesome-free', src: ['css/**', 'js/**'], dest: 'static/fontawesome'},
-                    {expand: true, cwd: 'node_modules/bootstrap/dist', src: ['**'], dest: 'static/bootstrap'},
-                    {expand: true, cwd: 'node_modules/clipboard/dist', src: ['**'], dest: 'static/clipboardjs'},
-                    {expand: true, cwd: 'node_modules/video.js/dist', src: ['video.min.js', 'video-js.min.css'], dest: 'static/videojs'},
-                    {expand: true, cwd: 'node_modules/highlightjs', src: ['styles/**/*', 'highlight.pack.min.js'], dest: 'static/highlightjs'},
+                    {
+                        expand: true,
+                        cwd: 'node_modules/@fortawesome/fontawesome-free',
+                        src: ['js/all.min.js'],
+                        dest: 'static/fontawesome'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'node_modules/bootstrap/dist/css',
+                        src: ['bootstrap.min.css'],
+                        dest: 'static/bootstrap/css'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'node_modules/bootstrap/dist/js',
+                        src: ['bootstrap.bundle.min.js'],
+                        dest: 'static/bootstrap/js'
+                    },
+                    {expand: true, cwd: 'node_modules/clipboard/dist', src: ['clipboard.min.js'], dest: 'static/clipboardjs'},
+                    {
+                        expand: true,
+                        cwd: 'node_modules/video.js/dist',
+                        src: ['video.min.js', 'video-js.min.css'],
+                        dest: 'static/videojs'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'node_modules/highlightjs',
+                        src: ['styles/**/*', 'highlight.pack.min.js'],
+                        dest: 'static/highlightjs'
+                    },
                     {expand: true, cwd: 'node_modules/jquery/dist', src: ['jquery.min.js'], dest: 'static/jquery'}
                 ],
             },

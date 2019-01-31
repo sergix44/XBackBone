@@ -22,6 +22,7 @@ $config = array_replace_recursive([
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
 	'storage_dir' => 'storage',
 	'displayErrorDetails' => false,
+	'maintenance' => false,
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => __DIR__ . '/../resources/database/xbackbone.db',
@@ -90,6 +91,10 @@ $container['view'] = function ($container) use (&$config) {
 
 $container['errorHandler'] = function ($container) {
 	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use (&$container) {
+
+		if ($exception instanceof \App\Exceptions\MaintenanceException) {
+			return $container->view->render($response->withStatus(503), 'errors/maintenance.twig');
+		}
 
 		if ($exception instanceof \App\Exceptions\UnauthorizedException) {
 			return $container->view->render($response->withStatus(403), 'errors/403.twig');

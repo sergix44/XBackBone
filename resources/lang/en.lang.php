@@ -93,4 +93,5 @@ return [
 	'check_for_updates' => 'Check for updates',
 	'upgrade' => 'Upgrade',
 	'updates' => 'Updates',
+	'maintenance_in_progress' => 'Platform under maintenance, try again later...',
 ];

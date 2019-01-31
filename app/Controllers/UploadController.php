@@ -26,6 +26,11 @@ class UploadController extends Controller
 
 		$json = ['message' => null];
 
+		if ($this->settings['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
+			$json['message'] = 'Endpoint under maintenance.';
+			return $response->withJson($json, 503);
+		}
+
 		if ($request->getServerParam('CONTENT_LENGTH') > stringToBytes(ini_get('post_max_size'))) {
 			$json['message'] = 'File too large (post_max_size too low).';
 			return $response->withJson($json, 400);
