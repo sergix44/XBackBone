@@ -163,6 +163,8 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
 			return redirect($response, './');
 		}
+	} else {
+		$config = require __DIR__ . '/../config.php';
 	}
 
 	$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
@@ -182,6 +184,18 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 	cleanDirectory(__DIR__ . '/../resources/cache');
 	cleanDirectory(__DIR__ . '/../resources/sessions');
+
+	removeDirectory(__DIR__ . '/../install');
+
+	if ($installed) {
+		$config['maintenance'] = false;
+
+		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+		if ($ret === false) {
+			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
+			return redirect($response, './');
+		}
+	}
 
 	return $response->withRedirect('../?afterInstall=true');
 });

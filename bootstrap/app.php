@@ -13,7 +13,7 @@ if (!file_exists('config.php') && is_dir('install/')) {
 	header('Location: ./install/');
 	exit();
 } else if (!file_exists('config.php') && !is_dir('install/')) {
-	die('Cannot find the config file.');
+	exit('Cannot find the config file.');
 }
 
 // Load the config
@@ -36,6 +36,10 @@ if (!$config['displayErrorDetails']) {
 }
 
 $container = new Container(['settings' => $config]);
+
+$container['config'] = function ($container) use ($config) {
+	return $config;
+};
 
 $container['logger'] = function ($container) {
 	$logger = new Logger('app');
@@ -133,4 +137,4 @@ $app->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, 
 });
 
 // Load the application routes
-require 'app/routes.php';
+require BASE_DIR . 'app/routes.php';

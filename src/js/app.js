@@ -95,13 +95,11 @@ var app = {
         $('#checkForUpdatesMessage').empty().text('...');
         $('#doUpgradeButton').prop('disabled', true);
         $.get(window.AppConfig.base_url + '/system/checkForUpdates', function (data) {
-            if (data.status === 'OK') {
-                $('#checkForUpdatesMessage').empty().text(data.message);
-                if (data.upgrade) {
-                    $('#doUpgradeButton').prop('disabled', false);
-                } else {
-                    $('#doUpgradeButton').prop('disabled', true);
-                }
+            $('#checkForUpdatesMessage').empty().text(data.message);
+            if (data.upgrade) {
+                $('#doUpgradeButton').prop('disabled', false);
+            } else {
+                $('#doUpgradeButton').prop('disabled', true);
             }
         });
     }

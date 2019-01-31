@@ -16,10 +16,8 @@ class DashboardController extends Controller
 	 */
 	public function redirects(Request $request, Response $response): Response
 	{
-
-		if ($request->getParam('afterInstall') !== null && is_dir('install')) {
+		if ($request->getParam('afterInstall') !== null && !is_dir(BASE_DIR . 'install')) {
 			$this->session->alert(lang('installed'), 'success');
-			removeDirectory('install');
 		}
 
 		return redirect($response, 'home');

@@ -47,6 +47,10 @@ class UpgradeController extends Controller
 			return redirect($response, 'system');
 		}
 
+		$config = $this->config;
+		$config['maintenance'] = true;
+		file_put_contents(BASE_DIR . 'config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+
 		$currentFiles = array_merge(
 			glob_recursive(BASE_DIR . 'app/*'),
 			glob_recursive(BASE_DIR . 'bin/*'),
@@ -107,12 +111,11 @@ class UpgradeController extends Controller
 				$jsonResponse['message'] = lang('already_latest_version');
 				$jsonResponse['upgrade'] = false;
 			}
-			return $response->withJson($jsonResponse, 200);
 		} catch (\RuntimeException $e) {
 			$jsonResponse['status'] = 'ERROR';
 			$jsonResponse['message'] = $e->getMessage();
-			return $response->withJson($jsonResponse, 503);
 		}
+		return $response->withJson($jsonResponse);
 	}
 
 	protected function getApiJson()
@@ -127,7 +130,7 @@ class UpgradeController extends Controller
 			],
 		];
 
-		$data = file_get_contents(self::GITHUB_SOURCE_API, false, stream_context_create($opts));
+		$data = @file_get_contents(self::GITHUB_SOURCE_API, false, stream_context_create($opts));
 
 		if ($data === false) {
 			throw new \RuntimeException('Cannot contact the Github API. Try again.');
