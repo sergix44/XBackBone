@@ -68,7 +68,12 @@ module.exports = function (grunt) {
                         src: ['bootstrap.bundle.min.js'],
                         dest: 'static/bootstrap/js'
                     },
-                    {expand: true, cwd: 'node_modules/clipboard/dist', src: ['clipboard.min.js'], dest: 'static/clipboardjs'},
+                    {
+                        expand: true,
+                        cwd: 'node_modules/clipboard/dist',
+                        src: ['clipboard.min.js'],
+                        dest: 'static/clipboardjs'
+                    },
                     {
                         expand: true,
                         cwd: 'node_modules/video.js/dist',
@@ -106,15 +111,14 @@ module.exports = function (grunt) {
                 'config.example.php',
                 'index.php',
                 'composer.json',
-                'composer.lock'
+                'composer.lock',
+                'LICENSE',
             ]
         }
-
     });
 
     require('load-grunt-tasks')(grunt);
     grunt.registerTask('default', ['jshint', 'cssmin', 'uglify', 'copy']);
     grunt.registerTask('test', ['jshint']);
     grunt.registerTask('build-release', ['default', 'zip']);
-
 };

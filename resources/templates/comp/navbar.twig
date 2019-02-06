@@ -7,18 +7,18 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link {{ request.uri.path starts with '/home' ? 'active' }}"><i class="fas fa-fw fa-home"></i>
+                    <a href="{{ route('home') }}" class="nav-link {{ is_current_path('home') ? 'active' }}"><i class="fas fa-fw fa-home"></i>
                         {{ lang('home') }}
                     </a>
                 </li>
                 {% if session.admin %}
                     <li class="nav-item">
-                        <a href="{{ route('user.index') }}" class="nav-link {{ request.uri.path starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                        <a href="{{ route('user.index') }}" class="nav-link {{ is_current_path('user.index') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
                             {{ lang('users') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('system') }}" class="nav-link {{ request.uri.path starts with '/system' ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
+                        <a href="{{ route('system') }}" class="nav-link {{ is_current_path('system') ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
                             {{ lang('system') }}
                         </a>
                     </li>

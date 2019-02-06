@@ -22,6 +22,8 @@ var app = {
             });
         }
 
+        $('.footer').fadeIn(600);
+
         console.log('Application is ready.');
     },
     modalDelete: function () {

@@ -9,7 +9,7 @@
     <link href="{{ urlFor('/static/highlightjs/styles/monokai.css') }}" rel="stylesheet">
     <link href="{{ urlFor('/static/videojs/video-js.min.css') }}" rel="stylesheet">
     <link href="{{ urlFor('/static/app/app.css') }}" rel="stylesheet">
-	<script src="{{ urlFor('/static/jquery/jquery.min.js') }}"></script>
+    <script src="{{ urlFor('/static/jquery/jquery.min.js') }}"></script>
     <script src="{{ urlFor('/static/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ urlFor('/static/fontawesome/js/all.min.js') }}"></script>
     <script src="{{ urlFor('/static/highlightjs/highlight.pack.min.js') }}"></script>
@@ -22,5 +22,11 @@
 </head>
 <body>
 {% block content %}{% endblock %}
+{% block footer %}
+    <div class="container-fluid footer" style="display: none; font-size: 0.8rem">
+        <div class="text-muted">Proudly powered by <a href="https://github.com/SergiX44/XBackBone">XBackBone{% if session.admin %} v{{ PLATFORM_VERSION }}{% endif %}</a>
+            — <i class="fas fa-fw fa-balance-scale"></i> <a href="{{ urlFor('/LICENSE') }}" target="_blank">AGPL v3.0</a></div>
+    </div>
+{% endblock %}
 </body>
 </html>

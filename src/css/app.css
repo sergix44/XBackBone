@@ -82,8 +82,18 @@ body {
     text-align: right;
 }
 
-.media-player {
-    width: 80%;
-    margin-right: auto;
-    margin-left: auto;
+@media (min-width: 576px) {
+    .media-player {
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+
+@media (min-width: 768px) {
+    .media-player {
+        width: 77%;
+        margin-right: auto;
+        margin-left: auto;
+    }
 }

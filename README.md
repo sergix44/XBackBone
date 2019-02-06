@@ -1,5 +1,5 @@
 
-# XBackBone 📤 [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone)
+# XBackBone 📤 [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone) [![Donations](https://i.imgur.com/bAqVIw8.png?2)](http://bit.ly/XBackBoneDonate)
 XBackBone is a simple, self-hosted, lightweight PHP backend for the instant sharing tool ShareX. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management and past uploads history.
 
 ## Features
@@ -105,48 +105,10 @@ The script requires `xclip`, `curl`, and `notify-send`.
 
 *Note: XXX is the username of your XBackBone account.*
 
-## Notes
+## Web server configuration notes
 If you do not use Apache, or the Apache `.htaccess` is not enabled, set your web server so that the `static/` folder is the only one accessible from the outside, otherwise even private uploads and logs will be accessible!
-The NGINX configuration should be something like this:
-```
-# nginx configuration
 
-location /app {
-  return 403;
-}
-
-location /bin {
-  return 403;
-}
-
-location /bootstrap {
-  return 403;
-}
-
-location /resources {
-  return 403;
-}
-
-location /storage {
-  return 403;
-}
-
-location /vendor {
-  return 403;
-}
-
-location /logs {
-  return 403;
-}
-
-autoindex off;
-
-location / {
-  if (!-e $request_filename){
-    rewrite ^(.*)$ /index.php break;
-  }
-}
-```
+You can find an example configuration nginx.conf in the project repository.
 ## Screenshots
 <p align="center">
   	<img src="https://i.imgur.com/zEHL5U3.png" width="400" title="Installation">

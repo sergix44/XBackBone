@@ -24,7 +24,10 @@ class UploadController extends Controller
 	public function upload(Request $request, Response $response): Response
 	{
 
-		$json = ['message' => null];
+		$json = [
+			'message' => null,
+			'version' => PLATFORM_VERSION
+		];
 
 		if ($this->settings['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
 			$json['message'] = 'Endpoint under maintenance.';
