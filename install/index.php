@@ -14,7 +14,6 @@ $config = [
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
 	'storage_dir' => 'storage',
 	'displayErrorDetails' => true,
-	'maintenance' => false,
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => 'resources/database/xbackbone.db',
@@ -140,7 +139,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 		$config['base_url'] = $request->getParam('base_url');
 		$config['storage_dir'] = $request->getParam('storage_dir');
-		$config['displayErrorDetails'] = false;
+		unset($config['displayErrorDetails']);
 		$config['db']['connection'] = $request->getParam('connection');
 		$config['db']['dsn'] = $request->getParam('dsn');
 		$config['db']['username'] = $request->getParam('db_user');
@@ -188,7 +187,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 	removeDirectory(__DIR__ . '/../install');
 
 	if ($installed) {
-		$config['maintenance'] = false;
+		unset($config['maintenance']);
 
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {

@@ -47,8 +47,9 @@ class UpgradeController extends Controller
 			return redirect($response, 'system');
 		}
 
-		$config = $this->config;
+		$config = require BASE_DIR . 'config.php';
 		$config['maintenance'] = true;
+
 		file_put_contents(BASE_DIR . 'config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 
 		$currentFiles = array_merge(

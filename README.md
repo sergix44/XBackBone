@@ -108,18 +108,20 @@ The script requires `xclip`, `curl`, and `notify-send`.
 ## Web server configuration notes
 If you do not use Apache, or the Apache `.htaccess` is not enabled, set your web server so that the `static/` folder is the only one accessible from the outside, otherwise even private uploads and logs will be accessible!
 
-You can find an example configuration nginx.conf in the project repository.
-## Screenshots
-<p align="center">
-  	<img src="https://i.imgur.com/zEHL5U3.png" width="400" title="Installation">
-	<img src="https://i.imgur.com/aNeMhaU.png" width="400" title="Login">
-	<img src="https://i.imgur.com/Sh1btnH.png" width="400" title="Admin view">
-	<img src="https://i.imgur.com/GN6a9AG.png" width="400" title="User management">
-	<img src="https://i.imgur.com/Cz6dkIP.png" width="400" title="User view">
-	<img src="https://i.imgur.com/nFu9waN.png" width="400" title="User profile page">
-	<img src="https://i.imgur.com/aQPDFDY.png" width="400" title="System settings">
-	<img src="https://i.imgur.com/2ZRd27y.png" width="400" title="Public image upload view">
-</p>
+You can find an example configuration `nginx.conf` in the project repository.
+
+## Maintenance Mode
+Maintenance mode is automatically enabled during an upgrade using the upgrade manager. You can activate it manually by adding in the configuration file this:
+
+```php
+return array(
+    ...
+    'maintenance' => true,
+);
+```
+
+## Animated Demo
+![img](https://i.imgur.com/iV8Rirn.gif)
 
 ## License
 This software is licensed under the <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>, available in this repository.
