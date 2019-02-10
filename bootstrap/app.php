@@ -25,14 +25,14 @@ $config = array_replace_recursive([
 	'maintenance' => false,
 	'db' => [
 		'connection' => 'sqlite',
-		'dsn' => __DIR__ . '/../resources/database/xbackbone.db',
+		'dsn' => BASE_DIR . 'resources/database/xbackbone.db',
 		'username' => null,
 		'password' => null,
 	],
-], require __DIR__ . '/../config.php');
+], require BASE_DIR . 'config.php');
 
 if (!$config['displayErrorDetails']) {
-	$config['routerCacheFile'] = __DIR__ . '/../resources/cache/routes.cache.php';
+	$config['routerCacheFile'] = BASE_DIR . 'resources/cache/routes.cache.php';
 }
 
 $container = new Container(['settings' => $config]);
@@ -44,7 +44,7 @@ $container['config'] = function ($container) use ($config) {
 $container['logger'] = function ($container) {
 	$logger = new Logger('app');
 
-	$streamHandler = new RotatingFileHandler(__DIR__ . '/../logs/log.txt', 10, Logger::DEBUG);
+	$streamHandler = new RotatingFileHandler(BASE_DIR . 'logs/log.txt', 10, Logger::DEBUG);
 	$streamHandler->setFormatter(new LineFormatter("[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n", "Y-m-d H:i:s", true));
 
 	$logger->pushHandler($streamHandler);
@@ -53,21 +53,21 @@ $container['logger'] = function ($container) {
 };
 
 $container['session'] = function ($container) {
-	return new Session('xbackbone_session', __DIR__ . '/../resources/sessions');
+	return new Session('xbackbone_session', BASE_DIR . 'resources/sessions');
 };
 
 $container['database'] = function ($container) use (&$config) {
-	$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__ . '/../' . $config['db']['dsn'] : $config['db']['dsn'];
+	$dsn = $config['db']['connection'] === 'sqlite' ? BASE_DIR . $config['db']['dsn'] : $config['db']['dsn'];
 	return new DB($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
 };
 
 $container['lang'] = function ($container) {
-	return Lang::build(Lang::recognize(), __DIR__ . '/../resources/lang/');
+	return Lang::build(Lang::recognize(), BASE_DIR . 'resources/lang/');
 };
 
 $container['view'] = function ($container) use (&$config) {
-	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/templates', [
-		'cache' => __DIR__ . '/../resources/cache',
+	$view = new \Slim\Views\Twig(BASE_DIR . 'resources/templates', [
+		'cache' => BASE_DIR . 'resources/cache',
 		'autoescape' => 'html',
 		'debug' => $config['displayErrorDetails'],
 		'auto_reload' => $config['displayErrorDetails'],
@@ -93,8 +93,15 @@ $container['view'] = function ($container) use (&$config) {
 	return $view;
 };
 
+$container['phpErrorHandler'] = function ($container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, \Throwable $error) use (&$container) {
+		$container->logger->critical('Fatal runtime error during app execution', [$error, $error->getTraceAsString()]);
+		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $error]);
+	};
+};
+
 $container['errorHandler'] = function ($container) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use (&$container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, \Exception $exception) use (&$container) {
 
 		if ($exception instanceof \App\Exceptions\MaintenanceException) {
 			return $container->view->render($response->withStatus(503), 'errors/maintenance.twig');
@@ -104,8 +111,14 @@ $container['errorHandler'] = function ($container) {
 			return $container->view->render($response->withStatus(403), 'errors/403.twig');
 		}
 
-		$container->logger->critical('Fatal error during app execution', [$exception, $exception->getTraceAsString()]);
+		$container->logger->critical('Fatal exception during app execution', [$exception, $exception->getTraceAsString()]);
 		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $exception]);
+	};
+};
+
+$container['notAllowedHandler'] = function ($container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $methods) use (&$container) {
+		return $container->view->render($response->withStatus(405)->withHeader('Allow', implode(', ', $methods)), 'errors/405.twig');
 	};
 };
 

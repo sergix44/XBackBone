@@ -5,6 +5,7 @@
 + Improved video.js alignment with large videos.
 + Optimized output zip release size.
 + Templates cleanup and optimizations.
++ Improved error handling.
 
 ## v2.4.1
 + Fixed error message when the file is too large. (#15)
