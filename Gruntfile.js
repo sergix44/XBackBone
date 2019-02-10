@@ -113,6 +113,7 @@ module.exports = function (grunt) {
                 'composer.json',
                 'composer.lock',
                 'LICENSE',
+                'favicon.ico',
             ]
         }
     });
