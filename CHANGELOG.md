@@ -6,6 +6,7 @@
 + Optimized output zip release size.
 + Templates cleanup and optimizations.
 + Improved error handling.
++ Added project favicon.
 
 ## v2.4.1
 + Fixed error message when the file is too large. (#15)
