@@ -78,7 +78,7 @@ return array(
 ```
 
 ## How to update
-Self-update **[BETA]**:
+Self-update (since v2.5) **[BETA]**:
 + Navigate to the system page as admin.
 + Click the check for update button, and finally the upgrade button.
 + Wait until the browser redirect to the install page.
