@@ -26,7 +26,7 @@ class UploadController extends Controller
 
 		$json = [
 			'message' => null,
-			'version' => PLATFORM_VERSION
+			'version' => PLATFORM_VERSION,
 		];
 
 		if ($this->settings['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
@@ -369,7 +369,15 @@ class UploadController extends Controller
 				$end = ($end > $stream->getSize() - 1) ? $stream->getSize() - 1 : $end;
 				$stream->seek($start);
 
-				$buffer = 16384;
+				header("Content-Type: $mime");
+				header('Content-Length: ' . ($end - $start + 1));
+				header('Accept-Ranges: bytes');
+				header("Content-Range: bytes $start-$end/{$stream->getSize()}");
+
+				http_response_code(206);
+				ob_end_clean();
+
+				$buffer = 16348;
 				$readed = $start;
 				while ($readed < $end) {
 					if ($readed + $buffer > $end) {
@@ -379,11 +387,7 @@ class UploadController extends Controller
 					$readed += $buffer;
 				}
 
-				return $response->withHeader('Content-Type', $mime)
-					->withHeader('Content-Length', $end - $start + 1)
-					->withHeader('Accept-Ranges', 'bytes')
-					->withHeader('Content-Range', "bytes $start-$end/{$stream->getSize()}")
-					->withStatus(206);
+				exit(0);
 			}
 
 			return $response->withHeader('Content-Type', $mime)

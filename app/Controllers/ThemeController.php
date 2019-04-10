@@ -31,7 +31,7 @@ class ThemeController extends Controller
 	{
 		if (!is_writable('static/bootstrap/css/bootstrap.min.css')) {
 			$this->session->alert(lang('cannot_write_file'), 'danger');
-			return redirect($response, route('system'));
+			return redirect($response, 'system');
 		}
 
 		file_put_contents('static/bootstrap/css/bootstrap.min.css', file_get_contents($request->getParam('css')));
