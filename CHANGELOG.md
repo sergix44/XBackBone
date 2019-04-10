@@ -1,3 +1,7 @@
+## v2.5.1
++ Fixed bad redirect if the theme folder is not writable. (#27)
++ Improved HTTP partial content implementation for large files.
+
 ## v2.5
 + Updated project license to <a href="https://choosealicense.com/licenses/agpl-3.0/">AGPL v3.0</a> (now releases ships with the new license).
 + **[BETA]** Added self update feature.
