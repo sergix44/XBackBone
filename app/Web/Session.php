@@ -3,6 +3,8 @@
 namespace App\Web;
 
 
+use Exception;
+
 class Session
 {
 
@@ -10,19 +12,24 @@ class Session
 	 * Session constructor.
 	 * @param string $name
 	 * @param string $path
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function __construct(string $name, $path = '')
 	{
 		if (session_status() === PHP_SESSION_NONE) {
 			if (!is_writable($path) && $path !== '') {
-				throw new \Exception("The given path '{$path}' is not writable.");
+				throw new Exception("The given path '{$path}' is not writable.");
 			}
-			session_start([
+
+			$started = @session_start([
 				'name' => $name,
 				'save_path' => $path,
 				'cookie_httponly' => true,
 			]);
+
+			if (!$started) {
+				throw new Exception("Cannot start the HTTP session. That the session path '{$path}' is writable and your PHP settings.");
+			}
 		}
 	}
 
@@ -98,7 +105,7 @@ class Session
 	 * Retrieve flash alerts
 	 * @return array
 	 */
-	public function getAlert()
+	public function getAlert(): ?array
 	{
 		$flash = self::get('_flash');
 		self::set('_flash', []);

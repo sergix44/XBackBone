@@ -1,12 +1,16 @@
 <?php
+(PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) ?: die('Sorry, PHP >=7.1 is required to run XBackBone.');
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Database\DB;
 use App\Web\Session;
 use Slim\App;
 use Slim\Container;
+use Slim\Http\Environment;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Http\Uri;
+use Slim\Views\Twig;
 
 define('PLATFORM_VERSION', json_decode(file_get_contents(__DIR__ . '/../composer.json'))->version);
 
@@ -29,7 +33,7 @@ $container['session'] = function ($container) {
 };
 
 $container['view'] = function ($container) use (&$config) {
-	$view = new \Slim\Views\Twig([__DIR__ . '/templates', __DIR__ . '/../resources/templates'], [
+	$view = new Twig([__DIR__ . '/templates', __DIR__ . '/../resources/templates'], [
 		'cache' => false,
 		'autoescape' => 'html',
 		'debug' => $config['displayErrorDetails'],
@@ -38,7 +42,7 @@ $container['view'] = function ($container) use (&$config) {
 
 	// Instantiate and add Slim specific extension
 	$router = $container->get('router');
-	$uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
+	$uri = Uri::createFromEnvironment(new Environment($_SERVER));
 	$view->addExtension(new Slim\Views\TwigExtension($router, $uri));
 
 	$view->getEnvironment()->addGlobal('config', $config);

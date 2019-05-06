@@ -1,6 +1,8 @@
 <?php
 
 use App\Database\DB;
+use App\Exceptions\MaintenanceException;
+use App\Exceptions\UnauthorizedException;
 use App\Web\Lang;
 use App\Web\Session;
 use Monolog\Formatter\LineFormatter;
@@ -8,6 +10,12 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Slim\App;
 use Slim\Container;
+use Slim\Http\Environment;
+use Slim\Http\Request;
+use Slim\Http\Response;
+use Slim\Http\Uri;
+use Slim\Views\Twig;
+use Twig\TwigFunction;
 
 if (!file_exists('config.php') && is_dir('install/')) {
 	header('Location: ./install/');
@@ -66,7 +74,7 @@ $container['lang'] = function ($container) {
 };
 
 $container['view'] = function ($container) use (&$config) {
-	$view = new \Slim\Views\Twig(BASE_DIR . 'resources/templates', [
+	$view = new Twig(BASE_DIR . 'resources/templates', [
 		'cache' => BASE_DIR . 'resources/cache',
 		'autoescape' => 'html',
 		'debug' => $config['displayErrorDetails'],
@@ -75,7 +83,7 @@ $container['view'] = function ($container) use (&$config) {
 
 	// Instantiate and add Slim specific extension
 	$router = $container->get('router');
-	$uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
+	$uri = Uri::createFromEnvironment(new Environment($_SERVER));
 	$view->addExtension(new Slim\Views\TwigExtension($router, $uri));
 
 	$view->getEnvironment()->addGlobal('config', $config);
@@ -85,29 +93,29 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addGlobal('current_lang', $container->get('lang')->getLang());
 	$view->getEnvironment()->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 
-	$view->getEnvironment()->addFunction(new Twig_Function('route', 'route'));
-	$view->getEnvironment()->addFunction(new Twig_Function('lang', 'lang'));
-	$view->getEnvironment()->addFunction(new Twig_Function('urlFor', 'urlFor'));
-	$view->getEnvironment()->addFunction(new Twig_Function('mime2font', 'mime2font'));
-	$view->getEnvironment()->addFunction(new Twig_Function('queryParams', 'queryParams'));
+	$view->getEnvironment()->addFunction(new TwigFunction('route', 'route'));
+	$view->getEnvironment()->addFunction(new TwigFunction('lang', 'lang'));
+	$view->getEnvironment()->addFunction(new TwigFunction('urlFor', 'urlFor'));
+	$view->getEnvironment()->addFunction(new TwigFunction('mime2font', 'mime2font'));
+	$view->getEnvironment()->addFunction(new TwigFunction('queryParams', 'queryParams'));
 	return $view;
 };
 
 $container['phpErrorHandler'] = function ($container) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, \Throwable $error) use (&$container) {
+	return function (Request $request, Response $response, Throwable $error) use (&$container) {
 		$container->logger->critical('Fatal runtime error during app execution', [$error, $error->getTraceAsString()]);
 		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $error]);
 	};
 };
 
 $container['errorHandler'] = function ($container) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, \Exception $exception) use (&$container) {
+	return function (Request $request, Response $response, Exception $exception) use (&$container) {
 
-		if ($exception instanceof \App\Exceptions\MaintenanceException) {
+		if ($exception instanceof MaintenanceException) {
 			return $container->view->render($response->withStatus(503), 'errors/maintenance.twig');
 		}
 
-		if ($exception instanceof \App\Exceptions\UnauthorizedException) {
+		if ($exception instanceof UnauthorizedException) {
 			return $container->view->render($response->withStatus(403), 'errors/403.twig');
 		}
 
@@ -117,13 +125,13 @@ $container['errorHandler'] = function ($container) {
 };
 
 $container['notAllowedHandler'] = function ($container) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $methods) use (&$container) {
+	return function (Request $request, Response $response, $methods) use (&$container) {
 		return $container->view->render($response->withStatus(405)->withHeader('Allow', implode(', ', $methods)), 'errors/405.twig');
 	};
 };
 
 $container['notFoundHandler'] = function ($container) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use (&$container) {
+	return function (Request $request, Response $response) use (&$container) {
 		$response->withStatus(404)->withHeader('Content-Type', 'text/html');
 		return $container->view->render($response, 'errors/404.twig');
 	};
@@ -132,7 +140,7 @@ $container['notFoundHandler'] = function ($container) {
 $app = new App($container);
 
 // Permanently redirect paths with a trailing slash to their non-trailing counterpart
-$app->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
+$app->add(function (Request $request, Response $response, callable $next) {
 	$uri = $request->getUri();
 	$path = $uri->getPath();
 
@@ -151,3 +159,5 @@ $app->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, 
 
 // Load the application routes
 require BASE_DIR . 'app/routes.php';
+
+return $app;
