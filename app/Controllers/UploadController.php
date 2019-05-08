@@ -39,7 +39,7 @@ class UploadController extends Controller
 			return $response->withJson($json, 400);
 		}
 
-		if ($request->getUploadedFiles()['upload']->getError() === UPLOAD_ERR_INI_SIZE) {
+		if (isset($request->getUploadedFiles()['upload']) && $request->getUploadedFiles()['upload']->getError() === UPLOAD_ERR_INI_SIZE) {
 			$json['message'] = 'File too large (upload_max_filesize too low).';
 			return $response->withJson($json, 400);
 		}
@@ -104,18 +104,25 @@ class UploadController extends Controller
 			throw new NotFoundException($request, $response);
 		}
 
+		$filesystem = storage();
+
 		if (isBot($request->getHeaderLine('User-Agent'))) {
-			return $this->streamMedia($request, $response, storage(), $media);
+			return $this->streamMedia($request, $response, $filesystem, $media);
 		} else {
-			$filesystem = storage();
 			try {
 				$media->mimetype = $filesystem->getMimetype($media->storage_path);
-				$media->size = humanFileSize($filesystem->getSize($media->storage_path));
+				$size = $filesystem->getSize($media->storage_path);
 
 				$type = explode('/', $media->mimetype)[0];
 				if ($type === 'text') {
-					$media->text = $filesystem->read($media->storage_path);
+					if ($size <= (200 * 1024)) {// less than 200 KB
+						$media->text = $filesystem->read($media->storage_path);
+					} else {
+						$type = 'application';
+						$media->mimetype = 'application/octet-stream';
+					}
 				}
+				$media->size = humanFileSize($size);
 
 			} catch (FileNotFoundException $e) {
 				throw new NotFoundException($request, $response);
@@ -124,6 +131,7 @@ class UploadController extends Controller
 			return $this->view->render($response, 'upload/public.twig', [
 				'delete_token' => isset($args['token']) ? $args['token'] : null,
 				'media' => $media,
+				'type' => $type,
 				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
 			]);
 		}

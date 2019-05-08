@@ -216,6 +216,7 @@ if (!function_exists('mime2font')) {
 			'application/json' => 'fa-file-code',
 			'application/gzip' => 'fa-file-archive',
 			'application/zip' => 'fa-file-archive',
+			'application/octet-stream' => 'fa-file-alt',
 		];
 
 		foreach ($classes as $fullMime => $class) {
@@ -223,7 +224,7 @@ if (!function_exists('mime2font')) {
 				return $class;
 			}
 		}
-		return 'fa-file';
+		return 'fa-file-download';
 	}
 }
 
