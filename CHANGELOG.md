@@ -1,6 +1,7 @@
 ## v2.5.2
 + Improved session handling.
-+ Big text file now are not rendered in the browser.
++ Fixed telegram share not working.
++ Fix for big text file now are not rendered in the browser.
 + Added preloading for some resources to improve performances.
 + Added check for block execution on EOL and unsupported PHP versions.
 + Other minor improvements.

@@ -18,10 +18,7 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="ml-auto">
                     <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
-                    <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-html="true" title="{{ lang('public.telegram') }}" data-toggle="popover" data-placement="bottom"
-                       data-content='<input type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()" value="{{ media.filename }}">
-<button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>'><i
-                                class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('public.telegram') }}" onclick="$('#modalTelegramShare').modal('toggle')"><i class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
                     <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
                     <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                 </div>
@@ -103,6 +100,25 @@
                         </div>
                     </div>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalTelegramShare" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ lang('public.telegram') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <textarea type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()">{{ media.filename }}</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang('cancel') }}</button>
+                </div>
             </div>
         </div>
     </div>

@@ -94,4 +94,5 @@ return [
 	'upgrade' => 'Upgrade',
 	'updates' => 'Updates',
 	'maintenance_in_progress' => 'Platform under maintenance, try again later...',
+	'cancel' => 'Cancel',
 ];
