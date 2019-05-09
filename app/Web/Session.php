@@ -25,6 +25,7 @@ class Session
 				'name' => $name,
 				'save_path' => $path,
 				'cookie_httponly' => true,
+				'gc_probability' => 25,
 			]);
 
 			if (!$started) {

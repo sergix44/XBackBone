@@ -115,11 +115,23 @@ module.exports = function (grunt) {
                 'LICENSE',
                 'favicon.ico',
             ]
+        },
+
+        shell: {
+            phpstan: {
+                command: '"./vendor/bin/phpstan" analyse app resources/lang bin install'
+            },
+            composer_no_dev: {
+                command: 'composer install --no-dev'
+            }
         }
+
     });
 
     require('load-grunt-tasks')(grunt);
     grunt.registerTask('default', ['jshint', 'cssmin', 'uglify', 'copy']);
     grunt.registerTask('test', ['jshint']);
-    grunt.registerTask('build-release', ['default', 'zip']);
+    grunt.registerTask('phpstan', ['shell:phpstan']);
+    grunt.registerTask('composer_no_dev', ['shell:composer_no_dev']);
+    grunt.registerTask('build-release', ['default', 'composer_no_dev', 'zip']);
 };
