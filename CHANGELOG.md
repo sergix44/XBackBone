@@ -1,3 +1,10 @@
+## v2.5.2
++ Improved session handling.
++ Big text file now are not rendered in the browser.
++ Added preloading for some resources to improve performances.
++ Added check for block execution on EOL and unsupported PHP versions.
++ Other minor improvements.
+
 ## v2.5.1
 + Fixed bad redirect if the theme folder is not writable. (#27)
 + Improved HTTP partial content implementation for large files.
