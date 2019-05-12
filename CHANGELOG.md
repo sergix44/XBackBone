@@ -1,4 +1,4 @@
-## 2.5.3
+## v2.5.3
 + Fixed bad css loading on Firefox (#35).
 + Fixed wrong style for publish/unpublish button.
 + Improved exception stacktrace logging.
