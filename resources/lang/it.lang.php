@@ -27,7 +27,7 @@ return [
 	'owner' => 'Proprietario',
 	'date' => 'Data',
 	'raw' => 'Vedi raw',
-	'download' => 'Download',
+	'download' => 'Scarica',
 	'delete' => 'Elimina',
 	'publish' => 'Pubblica',
 	'hide' => 'Nascondi',

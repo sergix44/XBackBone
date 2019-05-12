@@ -33,27 +33,30 @@ var app = {
     publishToggle: function () {
         var id = $(this).data('id');
         var $callerButton = $(this);
+        var isOutline = false;
         if ($(this).data('published')) {
+            isOutline = $callerButton.hasClass('btn-outline-warning');
             $.post(window.AppConfig.base_url + '/upload/' + id + '/unpublish', function () {
                 $callerButton
                     .data('published', false)
                     .tooltip('dispose')
                     .attr('title', window.AppConfig.lang.publish)
                     .tooltip()
-                    .removeClass('btn-warning')
-                    .addClass('btn-info')
+                    .removeClass(isOutline ? 'btn-outline-warning' : 'btn-warning')
+                    .addClass(isOutline ? 'btn-outline-info' : 'btn-info')
                     .html('<i class="fas fa-check-circle"></i>');
                 $('#published_' + id).html('<span class="badge badge-danger"><i class="fas fa-times"></i></span>');
             });
         } else {
+            isOutline = $callerButton.hasClass('btn-outline-info');
             $.post(window.AppConfig.base_url + '/upload/' + id + '/publish', function () {
                 $callerButton
                     .data('published', true)
                     .tooltip('dispose')
                     .attr('title', window.AppConfig.lang.hide)
                     .tooltip()
-                    .removeClass('btn-info')
-                    .addClass('btn-warning')
+                    .removeClass(isOutline ? 'btn-outline-info' : 'btn-info')
+                    .addClass(isOutline ? 'btn-outline-warning' : 'btn-warning')
                     .html('<i class="fas fa-times-circle"></i>');
                 $('#published_' + id).html('<span class="badge badge-success"><i class="fas fa-check"></i></span>');
             });

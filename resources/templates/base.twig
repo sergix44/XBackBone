@@ -7,17 +7,23 @@
     <meta name="description" content="XBackBone is a simple and lightweight PHP backend for ShareX">
     <link rel="shortcut icon" href="{{ urlFor('/favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ urlFor('/favicon.ico') }}" type="image/x-icon">
-    <link href="{{ urlFor('/static/bootstrap/css/bootstrap.min.css') }}" rel="preload" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="{{ urlFor('/static/bootstrap/css/bootstrap.min.css') }}" as="style">
+    <link rel="preload" href="{{ urlFor('/static/app/app.css') }}" as="style">
+    <link rel="preload" href="{{ urlFor('/static/jquery/jquery.min.js') }}" as="script">
+    <link rel="preload" href="{{ urlFor('/static/bootstrap/js/bootstrap.bundle.min.js') }}" as="script">
+    <link rel="preload" href="{{ urlFor('/static/fontawesome/js/all.min.js') }}" as="script">
+    <link rel="preload" href="{{ urlFor('/static/app/app.js') }}" as="script">
+    <link href="{{ urlFor('/static/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ urlFor('/static/highlightjs/styles/monokai.css') }}" rel="stylesheet">
     <link href="{{ urlFor('/static/videojs/video-js.min.css') }}" rel="stylesheet">
-    <link href="{{ urlFor('/static/app/app.css') }}" rel="preload" as="style" onload="this.rel='stylesheet'">
-    <script src="{{ urlFor('/static/jquery/jquery.min.js') }}" rel="prefetch"></script>
-    <script src="{{ urlFor('/static/bootstrap/js/bootstrap.bundle.min.js') }}" rel="prefetch"></script>
-    <script src="{{ urlFor('/static/fontawesome/js/all.min.js') }}" rel="prefetch"></script>
+    <link href="{{ urlFor('/static/app/app.css') }}" rel="stylesheet">
+    <script src="{{ urlFor('/static/jquery/jquery.min.js') }}"></script>
+    <script src="{{ urlFor('/static/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ urlFor('/static/fontawesome/js/all.min.js') }}"></script>
     <script src="{{ urlFor('/static/highlightjs/highlight.pack.min.js') }}"></script>
     <script src="{{ urlFor('/static/clipboardjs/clipboard.min.js') }}"></script>
     <script src="{{ urlFor('/static/videojs/video.min.js') }}"></script>
-    <script src="{{ urlFor('/static/app/app.js') }}" rel="prefetch"></script>
+    <script src="{{ urlFor('/static/app/app.js') }}"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <script>window.AppConfig = {'base_url': '{{ config.base_url }}', 'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}'}}</script>
     {% block head %}{% endblock %}
