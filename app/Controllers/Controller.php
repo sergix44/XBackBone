@@ -53,7 +53,7 @@ abstract class Controller
 			try {
 				$totalSize += $filesystem->getSize($media->storage_path);
 			} catch (FileNotFoundException $e) {
-				$this->logger->error('Error calculating file size', [$e->getTraceAsString()]);
+				$this->logger->error('Error calculating file size', ['exception' => $e]);
 			}
 		}
 

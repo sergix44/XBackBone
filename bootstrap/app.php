@@ -53,7 +53,11 @@ $container['logger'] = function ($container) {
 	$logger = new Logger('app');
 
 	$streamHandler = new RotatingFileHandler(BASE_DIR . 'logs/log.txt', 10, Logger::DEBUG);
-	$streamHandler->setFormatter(new LineFormatter("[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n", "Y-m-d H:i:s", true));
+
+	$lineFormatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n", "Y-m-d H:i:s");
+	$lineFormatter->includeStacktraces(true);
+
+	$streamHandler->setFormatter($lineFormatter);
 
 	$logger->pushHandler($streamHandler);
 
@@ -103,7 +107,7 @@ $container['view'] = function ($container) use (&$config) {
 
 $container['phpErrorHandler'] = function ($container) {
 	return function (Request $request, Response $response, Throwable $error) use (&$container) {
-		$container->logger->critical('Fatal runtime error during app execution', [$error, $error->getTraceAsString()]);
+		$container->logger->critical('Fatal runtime error during app execution', ['exception' => $error]);
 		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $error]);
 	};
 };
@@ -119,7 +123,7 @@ $container['errorHandler'] = function ($container) {
 			return $container->view->render($response->withStatus(403), 'errors/403.twig');
 		}
 
-		$container->logger->critical('Fatal exception during app execution', [$exception, $exception->getTraceAsString()]);
+		$container->logger->critical('Fatal exception during app execution', ['exception' => $exception]);
 		return $container->view->render($response->withStatus(500), 'errors/500.twig', ['exception' => $exception]);
 	};
 };
