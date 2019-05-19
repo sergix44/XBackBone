@@ -1,6 +1,6 @@
 {
   "name": "sergix44/xbackbone",
-  "version": "2.5.3",
+  "version": "2.6",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
@@ -13,7 +13,10 @@
     "ext-json": "*",
     "ext-gd": "*",
     "ext-pdo": "*",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "league/flysystem-aws-s3-v3": "^1.0",
+    "spatie/flysystem-dropbox": "^1.0",
+    "superbalist/flysystem-google-storage": "^7.2"
   },
   "autoload": {
     "files": [

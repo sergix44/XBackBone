@@ -5,6 +5,12 @@ use App\Exceptions\MaintenanceException;
 use App\Exceptions\UnauthorizedException;
 use App\Web\Lang;
 use App\Web\Session;
+use Aws\S3\S3Client;
+use Google\Cloud\Storage\StorageClient;
+use League\Flysystem\Adapter\Ftp as FtpAdapter;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
@@ -15,6 +21,9 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Http\Uri;
 use Slim\Views\Twig;
+use Spatie\Dropbox\Client as DropboxClient;
+use Spatie\FlysystemDropbox\DropboxAdapter;
+use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
 use Twig\TwigFunction;
 
 if (!file_exists('config.php') && is_dir('install/')) {
@@ -28,7 +37,6 @@ if (!file_exists('config.php') && is_dir('install/')) {
 $config = array_replace_recursive([
 	'app_name' => 'XBackBone',
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
-	'storage_dir' => 'storage',
 	'displayErrorDetails' => false,
 	'maintenance' => false,
 	'db' => [
@@ -36,6 +44,9 @@ $config = array_replace_recursive([
 		'dsn' => BASE_DIR . 'resources/database/xbackbone.db',
 		'username' => null,
 		'password' => null,
+	],
+	'storage' => [
+		'driver' => 'local',
 	],
 ], require BASE_DIR . 'config.php');
 
@@ -71,6 +82,47 @@ $container['session'] = function ($container) {
 $container['database'] = function ($container) use (&$config) {
 	$dsn = $config['db']['connection'] === 'sqlite' ? BASE_DIR . $config['db']['dsn'] : $config['db']['dsn'];
 	return new DB($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
+};
+
+$container['storage'] = function ($container) use (&$config) {
+
+	switch ($config['storage']['driver']) {
+		case 'local':
+			return new Filesystem(new Local($config['storage']['path']));
+		case 's3':
+			$client = new S3Client([
+				'credentials' => [
+					'key' => $config['storage']['key'],
+					'secret' => $config['storage']['secret'],
+				],
+				'region' => $config['storage']['region'],
+				'version' => 'latest',
+			]);
+
+			return new Filesystem(new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']));
+		case 'dropbox':
+			$client = new DropboxClient($config['storage']['token']);
+			return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
+		case 'ftp':
+			return new Filesystem(new FtpAdapter([
+				'host' =>  $config['storage']['host'],
+				'username' =>  $config['storage']['username'],
+				'password' =>  $config['storage']['password'],
+				'port' =>  $config['storage']['port'],
+				'root' =>  $config['storage']['path'],
+				'passive' =>  $config['storage']['passive'],
+				'ssl' =>  $config['storage']['ssl'],
+				'timeout' => 30,
+			]));
+		case 'google-cloud':
+			$client = new StorageClient([
+				'projectId' => $config['storage']['project_id'],
+				'keyFilePath' => $config['storage']['key_path'],
+			]);
+			return new Filesystem(new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket'])));
+		default:
+			throw new InvalidArgumentException('The driver specified is not supported.');
+	}
 };
 
 $container['lang'] = function ($container) {

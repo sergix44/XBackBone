@@ -5,6 +5,7 @@ namespace App\Database\Queries;
 
 use App\Database\DB;
 use League\Flysystem\FileNotFoundException;
+use League\Flysystem\Filesystem;
 use League\Flysystem\Plugin\ListFiles;
 
 class MediaQuery
@@ -34,6 +35,9 @@ class MediaQuery
 	/** @var string */
 	protected $text;
 
+	/** @var Filesystem */
+	protected $storage;
+
 	private $pages;
 	private $media;
 
@@ -41,11 +45,13 @@ class MediaQuery
 	 * MediaQuery constructor.
 	 * @param DB $db
 	 * @param bool $isAdmin
+	 * @param Filesystem $storage
 	 */
-	public function __construct(DB $db, bool $isAdmin)
+	public function __construct(DB $db, bool $isAdmin, Filesystem $storage)
 	{
 		$this->db = $db;
 		$this->isAdmin = $isAdmin;
+		$this->storage = $storage;
 	}
 
 	/**
@@ -128,12 +134,10 @@ class MediaQuery
 			$this->pages = $this->db->query($queryPages, array_merge([$this->userId], $params))->fetch()->count / self::PER_PAGE;
 		}
 
-		$filesystem = storage();
-
 		foreach ($this->media as $media) {
 			try {
-				$media->size = humanFileSize($filesystem->getSize($media->storage_path));
-				$media->mimetype = $filesystem->getMimetype($media->storage_path);
+				$media->size = humanFileSize($this->storage->getSize($media->storage_path));
+				$media->mimetype = $this->storage->getMimetype($media->storage_path);
 			} catch (FileNotFoundException $e) {
 				$media->size = null;
 				$media->mimetype = null;
@@ -148,17 +152,17 @@ class MediaQuery
 	 */
 	private function runWithOrderBySize(int $page)
 	{
-		$filesystem = storage()->addPlugin(new ListFiles());
+		$this->storage->addPlugin(new ListFiles());
 
 		if ($this->isAdmin) {
-			$files = $filesystem->listFiles('/', true);
+			$files = $this->storage->listFiles('/', true);
 			$this->pages = count($files) / self::PER_PAGE_ADMIN;
 
 			$offset = $page * self::PER_PAGE_ADMIN;
 			$limit = self::PER_PAGE_ADMIN;
 		} else {
 			$userCode = $this->db->query('SELECT `user_code` FROM `users` WHERE `id` = ?', [$this->userId])->fetch()->user_code;
-			$files = $filesystem->listFiles($userCode);
+			$files = $this->storage->listFiles($userCode);
 			$this->pages = count($files) / self::PER_PAGE;
 
 			$offset = $page * self::PER_PAGE;
@@ -195,7 +199,7 @@ class MediaQuery
 			}
 			$media->size = humanFileSize($file['size']);
 			try {
-				$media->mimetype = $filesystem->getMimetype($file['path']);
+				$media->mimetype = $this->storage->getMimetype($file['path']);
 			} catch (FileNotFoundException $e) {
 				$media->mimetype = null;
 			}

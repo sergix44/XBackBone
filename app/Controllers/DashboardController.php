@@ -34,7 +34,7 @@ class DashboardController extends Controller
 		$page = isset($args['page']) ? (int)$args['page'] : 0;
 		$page = max(0, --$page);
 
-		$query = new MediaQuery($this->database, $this->session->get('admin', false));
+		$query = new MediaQuery($this->database, $this->session->get('admin', false), $this->storage);
 
 		switch ($request->getParam('sort', 'time')) {
 			case 'size':

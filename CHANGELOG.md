@@ -1,3 +1,7 @@
+## v2.6
++ Added support to use AWS S3, Google Cloud Storage, Dropbox and FTP(s) accounts as storage location.
++ Fixed missing icon. 
+
 ## v2.5.3
 + Fixed bad css loading on Firefox (#35).
 + Fixed wrong style for publish/unpublish button.

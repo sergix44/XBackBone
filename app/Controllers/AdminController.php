@@ -26,7 +26,7 @@ class AdminController extends Controller
 
 		$totalSize = 0;
 
-		$filesystem = storage();
+		$filesystem = $this->storage;
 		foreach ($medias as $media) {
 			$totalSize += $filesystem->getSize($media->storage_path);
 		}
@@ -50,7 +50,7 @@ class AdminController extends Controller
 	{
 		$orphans = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` IS NULL')->fetchAll();
 
-		$filesystem = storage();
+		$filesystem = $this->storage;
 		$deleted = 0;
 
 		foreach ($orphans as $orphan) {

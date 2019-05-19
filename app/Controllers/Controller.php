@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Database\DB;
 use App\Web\Session;
 use League\Flysystem\FileNotFoundException;
+use League\Flysystem\Filesystem;
 use Monolog\Logger;
 use Slim\Container;
 
@@ -13,6 +14,7 @@ use Slim\Container;
  * @property mixed|null view
  * @property DB|null database
  * @property Logger|null logger
+ * @property Filesystem|null storage
  */
 abstract class Controller
 {
@@ -48,7 +50,7 @@ abstract class Controller
 
 		$totalSize = 0;
 
-		$filesystem = storage();
+		$filesystem = $this->storage;
 		foreach ($medias as $media) {
 			try {
 				$totalSize += $filesystem->getSize($media->storage_path);

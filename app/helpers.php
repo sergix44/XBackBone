@@ -5,20 +5,6 @@ use League\Flysystem\Filesystem;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-if (!function_exists('storage')) {
-	/**
-	 * Get a filesystem instance given a path
-	 * @param string $root
-	 * @return Filesystem
-	 */
-	function storage($root = null): Filesystem
-	{
-		global $app;
-		$storagePath = $app->getContainer()->get('settings')['storage_dir'];
-		return new Filesystem(new Local($root !== null ? $root : $storagePath));
-	}
-}
-
 if (!function_exists('humanFileSize')) {
 	/**
 	 * Generate a human readable file size
@@ -224,13 +210,13 @@ if (!function_exists('mime2font')) {
 				return $class;
 			}
 		}
-		return 'fa-file-download';
+		return 'fa-file';
 	}
 }
 
 if (!function_exists('dd')) {
 	/**
-	 * Dumps all the giver vars and halt the execution.
+	 * Dumps all the given vars and halt the execution.
 	 */
 	function dd()
 	{
