@@ -65,10 +65,105 @@
                             </div>
                             <hr>
                             <div class="form-group row">
-                                <label for="storage_dir" class="col-sm-3 col-form-label">Storage Directory</label>
+                                <label for="storage_driver" class="col-sm-3 col-form-label">Storage Driver</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_dir" name="storage_dir" value="{{ config.storage_dir }}" autocomplete="off" required>
-                                    <small>Must be a writable directory</small>
+                                    <select id="storage_driver" name="storage_driver">
+                                        <option value="local" selected>Local Storage</option>
+                                        <option value="ftp">FTP/FTPS</option>
+                                        <option value="s3">Amazon AWS S3</option>
+                                        <option value="google-cloud">Google Cloud Storage</option>
+                                        <option value="dropbox">Dropbox</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_path" class="col-sm-3 col-form-label">Storage path root</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_path" name="storage_path" value="./storage" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_key" class="col-sm-3 col-form-label">AWS S3 key</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_key" name="storage_key" placeholder="your-key" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_secret" class="col-sm-3 col-form-label">AWS S3 secret</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_secret" name="storage_secret" placeholder="your-secret" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_region" class="col-sm-3 col-form-label">AWS S3 region</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_region" name="storage_region" placeholder="your-region" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_token" class="col-sm-3 col-form-label">Dropbox token</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_token" name="storage_token" placeholder="authorization-token" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_host" class="col-sm-3 col-form-label">FTP host</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_host" name="storage_host" placeholder="127.0.0.1" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_username" class="col-sm-3 col-form-label">FTP username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_username" name="storage_username" placeholder="username" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_password" class="col-sm-3 col-form-label">FTP password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="storage_password" name="storage_password" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_port" class="col-sm-3 col-form-label">FTP port</label>
+                                <div class="col-sm-9">
+                                    <input type="number" min="0" max="65535" class="form-control" id="storage_port" name="storage_port" placeholder="21" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_passive" class="col-sm-3 col-form-label">FTP passive mode</label>
+                                <div class="col-sm-9">
+                                    <select name="storage_passive" id="storage_passive">
+                                        <option value="1" selected>Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_ssl" class="col-sm-3 col-form-label">FTP SSL enabled</label>
+                                <div class="col-sm-9">
+                                    <select name="storage_ssl" id="storage_ssl">
+                                        <option value="1">Yes</option>
+                                        <option value="0" selected>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_project_id" class="col-sm-3 col-form-label">Google project id</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_project_id" name="storage_project_id" placeholder="your-project-id" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_key_path" class="col-sm-3 col-form-label">Google key path</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_key_path" name="storage_key_path" placeholder="/path/to/service-account.json" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hide-hook">
+                                <label for="storage_bucket" class="col-sm-3 col-form-label">Storage bucket</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="storage_bucket" name="storage_bucket" placeholder="your-bucket-name" autocomplete="off">
                                 </div>
                             </div>
                             <hr>
@@ -125,6 +220,9 @@
                     break;
             }
         });
+        $('#storage_driver').change(function () {
+
+        })
     })
 </script>
 </body>
