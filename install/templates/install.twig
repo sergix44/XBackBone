@@ -1,17 +1,18 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Installing XBackBone</title>
+    <title>XBackBone Installer</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="A lightweight PHP backend for ShareX">
+    <meta name="description" content="XBackBone Installer">
 
-    <link href="{{ request.uri }}../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ request.uri }}../static/app/app.css" rel="stylesheet">
+    <link href="../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/app/app.css" rel="stylesheet">
 
-    <script src="{{ request.uri }}../static/jquery/jquery.min.js"></script>
-    <script src="{{ request.uri }}../static/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ request.uri }}../static/fontawesome/js/all.min.js"></script>
+    <script src="../static/jquery/jquery.min.js"></script>
+    <script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/fontawesome/js/all.min.js"></script>
+    <script src="installer.js"></script>
 </head>
 <body>
 <div class="container">
@@ -50,25 +51,25 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row hook-database">
                                 <label for="db_user" class="col-sm-3 col-form-label">Database Username</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="db_user" name="db_user" autocomplete="off" disabled>
+                                    <input type="text" class="form-control hook-database-input" id="db_user" name="db_user" value="db_user" autocomplete="off">
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row hook-database">
                                 <label for="db_password" class="col-sm-3 col-form-label">Database Password</label>
                                 <div class="col-sm-9">
-                                    <input type="password" class="form-control" id="db_password" name="db_password" autocomplete="off" disabled>
+                                    <input type="password" class="form-control hook-database-input" id="db_password" name="db_password" autocomplete="off">
                                 </div>
                             </div>
                             <hr>
                             <div class="form-group row">
                                 <label for="storage_driver" class="col-sm-3 col-form-label">Storage Driver</label>
                                 <div class="col-sm-9">
-                                    <select id="storage_driver" name="storage_driver">
-                                        <option value="local" selected>Local Storage</option>
+                                    <select id="storage_driver" name="storage_driver" class="form-control" required>
+                                        <option value="local">Local Storage</option>
                                         <option value="ftp">FTP/FTPS</option>
                                         <option value="s3">Amazon AWS S3</option>
                                         <option value="google-cloud">Google Cloud Storage</option>
@@ -76,94 +77,94 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_path" class="col-sm-3 col-form-label">Storage path root</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_path" name="storage_path" value="./storage" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_path" name="storage_path" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_key" class="col-sm-3 col-form-label">AWS S3 key</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_key" name="storage_key" placeholder="your-key" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_key" name="storage_key" placeholder="your-key" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_secret" class="col-sm-3 col-form-label">AWS S3 secret</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_secret" name="storage_secret" placeholder="your-secret" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_secret" name="storage_secret" placeholder="your-secret" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_region" class="col-sm-3 col-form-label">AWS S3 region</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_region" name="storage_region" placeholder="your-region" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_region" name="storage_region" placeholder="your-region" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_token" class="col-sm-3 col-form-label">Dropbox token</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_token" name="storage_token" placeholder="authorization-token" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_token" name="storage_token" placeholder="authorization-token" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_host" class="col-sm-3 col-form-label">FTP host</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_host" name="storage_host" placeholder="127.0.0.1" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_host" name="storage_host" placeholder="127.0.0.1" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_username" class="col-sm-3 col-form-label">FTP username</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_username" name="storage_username" placeholder="username" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_username" name="storage_username" placeholder="username" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_password" class="col-sm-3 col-form-label">FTP password</label>
                                 <div class="col-sm-9">
-                                    <input type="password" class="form-control" id="storage_password" name="storage_password" autocomplete="off">
+                                    <input type="password" class="form-control hook-storage-input" id="storage_password" name="storage_password" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_port" class="col-sm-3 col-form-label">FTP port</label>
                                 <div class="col-sm-9">
-                                    <input type="number" min="0" max="65535" class="form-control" id="storage_port" name="storage_port" placeholder="21" autocomplete="off">
+                                    <input type="number" min="0" max="65535" class="form-control hook-storage-input" id="storage_port" name="storage_port" placeholder="21" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_passive" class="col-sm-3 col-form-label">FTP passive mode</label>
                                 <div class="col-sm-9">
-                                    <select name="storage_passive" id="storage_passive">
+                                    <select name="storage_passive" id="storage_passive" class="form-control hook-storage-input">
                                         <option value="1" selected>Yes</option>
                                         <option value="0">No</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_ssl" class="col-sm-3 col-form-label">FTP SSL enabled</label>
                                 <div class="col-sm-9">
-                                    <select name="storage_ssl" id="storage_ssl">
+                                    <select name="storage_ssl" id="storage_ssl" class="form-control hook-storage-input">
                                         <option value="1">Yes</option>
                                         <option value="0" selected>No</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_project_id" class="col-sm-3 col-form-label">Google project id</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_project_id" name="storage_project_id" placeholder="your-project-id" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_project_id" name="storage_project_id" placeholder="your-project-id" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_key_path" class="col-sm-3 col-form-label">Google key path</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_key_path" name="storage_key_path" placeholder="/path/to/service-account.json" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_key_path" name="storage_key_path" placeholder="/path/to/service-account.json" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="form-group row hide-hook">
+                            <div class="form-group row hook-storage">
                                 <label for="storage_bucket" class="col-sm-3 col-form-label">Storage bucket</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="storage_bucket" name="storage_bucket" placeholder="your-bucket-name" autocomplete="off">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_bucket" name="storage_bucket" placeholder="your-bucket-name" autocomplete="off">
                                 </div>
                             </div>
                             <hr>
@@ -183,8 +184,8 @@
 
                             <div class="form-group row justify-content-md-end">
                                 <div class="col-sm-9">
-                                    <button type="submit" class="btn btn-outline-success">
-                                        <i class="fas fa-save fa-fw"></i> Configure & Install
+                                    <button type="submit" class="btn btn-outline-success" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                                        <i class="fas fa-save fa-fw"></i> Install
                                     </button>
                                 </div>
                             </div>
@@ -192,7 +193,7 @@
                         {% else %}
                             <div class="form-group row">
                                 <div class="col-sm-12 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-lg btn-outline-primary">
+                                    <button type="submit" class="btn btn-lg btn-outline-primary" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
                                         <i class="fas fa-sync fa-fw"></i> Update database
                                     </button>
                                 </div>
@@ -204,26 +205,17 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $('#connection').change(function () {
-            switch ($(this).val()) {
-                case 'sqlite':
-                    $('#dsn').val('resources/database/xbackbone.db');
-                    $('#db_user').val('').prop('disabled', 'disabled');
-                    $('#db_password').val('').prop('disabled', 'disabled');
-                    break;
-                case 'mysql':
-                    $('#dsn').val('host=localhost;port=3306;dbname=xbackbone');
-                    $('#db_user').val('db_user').prop('disabled', '');
-                    $('#db_password').val('').prop('disabled', '');
-                    break;
-            }
-        });
-        $('#storage_driver').change(function () {
-
-        })
-    })
-</script>
+<div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Please wait...</h6>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-10x fa-spinner fa-pulse"></i>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -25,6 +25,7 @@ define('PLATFORM_VERSION', json_decode(file_get_contents(__DIR__ . '/../composer
 
 $config = [
 	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
+	'displayErrorDetails' => true,
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => 'resources/database/xbackbone.db',
@@ -226,8 +227,8 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 				$config['storage']['password'] = $request->getParam('storage_password');
 				$config['storage']['port'] = $request->getParam('storage_port');
 				$config['storage']['path'] = $request->getParam('storage_path');
-				$config['storage']['passive'] = $request->getParam('storage_passive');
-				$config['storage']['ssl'] = $request->getParam('storage_ssl');
+				$config['storage']['passive'] = $request->getParam('storage_passive') === '1';
+				$config['storage']['ssl'] = $request->getParam('storage_ssl') === '1';
 				break;
 			case 'google-cloud':
 				$config['storage']['project_id'] = $request->getParam('storage_project_id');
@@ -242,20 +243,20 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 		// check if the storage is valid
 		try {
-			$success = $this->storage->write('test.install.txt', '');
-			$this->storage->readAndDelete('test.install.txt');
+			$success = $this->storage->write('storage_test.xbackbone.txt', 'XBACKBONE_TEST_FILE');
 			if (!$success) {
 				throw new Exception('The storage is not writable.');
 			}
+			$this->storage->readAndDelete('test.install.txt');
 		} catch (Exception $e) {
 			$this->session->alert("Storage setup error: {$e->getMessage()} [{$e->getTraceAsString()}]", 'danger');
-			return redirect($response, './');
+			return redirect($response, $request->getUri());
 		}
 
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {
 			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
-			return redirect($response, './');
+			return redirect($response, $request->getUri());
 		}
 	}
 
@@ -269,7 +270,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		migrate($config);
 	} catch (PDOException $exception) {
 		$this->session->alert("Cannot connect to the database: {$exception->getMessage()} [{$exception->getCode()}]", 'danger');
-		return redirect($response, './');
+		return redirect($response, $request->getUri());
 	}
 
 	// if not installed, create the default admin account
@@ -281,7 +282,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 	cleanDirectory(__DIR__ . '/../resources/cache');
 	cleanDirectory(__DIR__ . '/../resources/sessions');
 
-	removeDirectory(__DIR__ . '/../install');
+	//removeDirectory(__DIR__ . '/../install');
 
 	// if is upgrading and existing installation, put it out maintenance
 	if ($installed) {
@@ -290,7 +291,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {
 			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
-			return redirect($response, './');
+			return redirect($response, $request->getUri());
 		}
 	}
 

@@ -26,8 +26,9 @@ class DB
 	/** @var string */
 	protected $currentDriver;
 
-	public function __construct(string $dsn, $username, $password)
+	public function __construct(string $dsn, string $username = null, string $password = null)
 	{
+		self::setDsn($dsn, $username, $password);
 
 		$this->pdo = new PDO($dsn, $username, $password);
 		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

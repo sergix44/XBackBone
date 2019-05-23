@@ -26,6 +26,9 @@ module.exports = function (grunt) {
                     'static/app/app.js': [
                         'src/js/app.js'
                     ],
+                    'install/installer.js': [
+                        'src/js/installer.js'
+                    ],
                 }
             }
         },
@@ -41,6 +44,7 @@ module.exports = function (grunt) {
             scripts: {
                 files: [
                     'src/js/app.js',
+                    'src/js/installer.js',
                 ],
 
                 tasks: ['uglify']

@@ -130,6 +130,7 @@ fabric.properties
 # Repo file
 storage/
 static/
+install/installer.js
 !resources/cache/.gitkeep
 resources/cache/*
 resources/database/*.db
