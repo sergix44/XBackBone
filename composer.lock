@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "d2c8e7bde7729d78cef484491535c639",
@@ -1396,16 +1396,16 @@
         },
         {
             "name": "spatie/flysystem-dropbox",
-            "version": "1.0.6",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/flysystem-dropbox.git",
-                "reference": "cff7dba925282736fff271fc41781a76fbe40799"
+                "reference": "b0e983356dffe38b7d35994a0f48b1cca3c28007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/flysystem-dropbox/zipball/cff7dba925282736fff271fc41781a76fbe40799",
-                "reference": "cff7dba925282736fff271fc41781a76fbe40799",
+                "url": "https://api.github.com/repos/spatie/flysystem-dropbox/zipball/b0e983356dffe38b7d35994a0f48b1cca3c28007",
+                "reference": "b0e983356dffe38b7d35994a0f48b1cca3c28007",
                 "shasum": ""
             },
             "require": {
@@ -1444,7 +1444,7 @@
                 "spatie",
                 "v2"
             ],
-            "time": "2017-11-18T21:56:03+00:00"
+            "time": "2019-05-30T10:34:25+00:00"
         },
         {
             "name": "superbalist/flysystem-google-storage",
