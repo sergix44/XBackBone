@@ -29,7 +29,7 @@ EOF
 }
 
 upload() {
-    RESPONSE="$(curl -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
+    RESPONSE="$(curl -s -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
     
     if jq -e . >/dev/null 2>&1 <<<"$RESPONSE"; then
         # Response is JSON
