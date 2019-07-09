@@ -45,6 +45,11 @@ check() {
         echo "xclip command not found."
         exit;
 	fi	
+	
+	if [ ! -x "$(command -v jq)" ]; then
+        echo "jq command not found."
+        exit;
+	fi	
 
 	if [ ! -x "$(command -v curl)" ]; then
         echo "curl command not found."
