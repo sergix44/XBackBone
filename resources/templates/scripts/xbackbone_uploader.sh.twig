@@ -16,6 +16,7 @@ Type=Application
 Terminal=false;
 Comment=Uploader script for XBackBone ({{ username }})
 Name=XBackBone Uploader ({{ username }})
+Icon=image
 GenericName=File Uploader
 StartupNotify=false
 Categories=Graphics;
@@ -28,7 +29,15 @@ EOF
 }
 
 upload() {
-    RESPONSE="$(curl -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
+    RESPONSE="$(curl -s -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
+    
+    if jq -e . >/dev/null 2>&1 <<<"$RESPONSE"; then
+        # Response is JSON
+        echo;
+    else
+        notify-send "Error: Uploading returned unexpected response" "Response: ${RESPONSE}";
+        exit 1;
+    fi
 
     if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK." ]]; then
         URL="$(echo "${RESPONSE}" | jq -r '.url')";
@@ -42,6 +51,11 @@ upload() {
 check() {
 	if [ ! -x "$(command -v xclip)" ]; then
         echo "xclip command not found."
+        exit;
+	fi	
+	
+	if [ ! -x "$(command -v jq)" ]; then
+        echo "jq command not found."
         exit;
 	fi	
 
