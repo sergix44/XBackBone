@@ -55,28 +55,6 @@ php bin/migrate --install
 ```
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
-#### Changing themes
-XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
-
-From the web UI:
-+ Navigate to the web interface as admin -> System Menu -> Choose a theme from the dropdown.
-
-From the CLI:
-+ Run the command `php bin/theme` to see the available themes.
-+ Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
-+ If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
-
-*Clear the browser cache once you have applied.*
-
-#### Change app install name
-Add to the `config.php` file an array element like this:
-```php
-return array(
-    'app_name' => 'This line will overwrite "XBackBone"',
-    ...
-);
-```
-
 ## How to update
 Self-update (since v2.5) **[BETA]**:
 + Navigate to the system page as admin.
@@ -95,6 +73,30 @@ Manual update:
 #### Docker deployment
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
 
+## Translations
+You can help translating the project on [OneSkyApp](https://sergix44.oneskyapp.com/collaboration/project?id=161726).
+
+## Changing themes
+XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
+
+From the web UI:
++ Navigate to the web interface as admin -> System Menu -> Choose a theme from the dropdown.
+
+From the CLI:
++ Run the command `php bin/theme` to see the available themes.
++ Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
++ If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
+
+*Clear the browser cache once you have applied.*
+
+### Change app install name
+Add to the `config.php` file an array element like this:
+```php
+return array(
+    'app_name' => 'This line will overwrite "XBackBone"',
+    ...
+);
+```
 ## ShareX Configuration
 Once you are logged in, just go in your profile settings and download the ShareX config file for your account.
 
