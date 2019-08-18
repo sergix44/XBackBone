@@ -74,7 +74,7 @@ Manual update:
 + [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker)
 
 ## Translations
-You can help translating the project on [OneSkyApp](https://sergix44.oneskyapp.com/collaboration/project?id=161726).
+You can help translating the project on [Weblate](https://hosted.weblate.org/projects/xbackbone/xbackbone/).
 
 ## Changing themes
 XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
