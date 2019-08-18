@@ -1,5 +1,5 @@
 
-# XBackBone 📤 [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone) [![Donations](https://i.imgur.com/bAqVIw8.png?2)](http://bit.ly/XBackBoneDonate)
+# XBackBone 📤 ![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone) [![Donations](https://i.imgur.com/bAqVIw8.png?2)](http://bit.ly/XBackBoneDonate)
 XBackBone is a simple, self-hosted, lightweight PHP backend for the instant sharing tool ShareX. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management and past uploads history.
 
 ## Features
