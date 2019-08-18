@@ -76,6 +76,10 @@ Manual update:
 ## Translations
 You can help translating the project on [Weblate](https://hosted.weblate.org/projects/xbackbone/xbackbone/).
 
+<a href="https://hosted.weblate.org/engage/xbackbone/?utm_source=widget">
+<img src="https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/multi-auto.svg" alt="Stato traduzione" />
+</a>
+
 ## Changing themes
 XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
 
