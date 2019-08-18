@@ -2519,6 +2519,7 @@
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
             "time": "2019-08-17T12:49:22+00:00"
+
         },
         {
             "name": "symfony/console",
