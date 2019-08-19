@@ -44,7 +44,7 @@ return [
     'deleted_orphans' => 'Slettet %d avsondrede filer.',
     'username' => 'Brukernavn',
     'save' => 'Lagre',
-    'lang' => 'Engelsk',
+    'lang' => 'Norwegian Bokmål',
     'upgrade' => 'Oppgrader',
     'updates' => 'Oppdateringer',
     'user_updated' => 'Bruker "%s" oppdatert.',

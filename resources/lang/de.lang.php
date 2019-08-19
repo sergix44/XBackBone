@@ -1,7 +1,6 @@
 <?php
-
 return [
-    'lang' => 'Germany',
+    'lang' => 'German',
     'yes' => 'Ja',
     'no' => 'Nein',
     'send' => 'Senden',
