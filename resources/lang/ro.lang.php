@@ -1,1 +1,4 @@
 <?php
+return [
+    'lang' => 'Romanian',
+];
