@@ -94,4 +94,11 @@ return [
     'orphaned_files' => 'Avsondrede filer',
     'apply' => 'Bruk',
     'dotted_search' => 'Søk…',
+    'enforce_language' => 'Påtving språk',
+    'auto_set' => 'Sett automatisk',
+    'translated_strings' => 'oversatte strenger',
+    'total_strings' => 'totalt antall strenger',
+    'lang_name' => 'språknavn',
+    'default_lang_behavior' => 'Som forvalg, vil XBackBone prøve å samsvare nettleserspråk (tilbakefallsspråk er engelsk).',
+    'lang_set' => 'Systemspråk er satt til "%s"',
 ];
