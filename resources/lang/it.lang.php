@@ -94,4 +94,11 @@ return [
     'updates' => 'Aggiornamenti',
     'maintenance_in_progress' => 'Manutenzione in corso, riprova più tardi.',
     'cancel' => 'Annulla',
+    'enforce_language' => 'Imponi lingua',
+    'auto_set' => 'Imposta automaticamente',
+    'translated_strings' => 'stringhe tradotte',
+    'total_strings' => 'stringhe totali',
+    'lang_name' => 'nome della lingua',
+    'default_lang_behavior' => 'Per impostazione predefinita, XBackbone cercherà di abbinare la lingua del browser (il fallback è l\'inglese).',
+    'lang_set' => 'Lingua di sistema applicata a "%s"',
 ];
