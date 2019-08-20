@@ -2,6 +2,7 @@
 
 return [
 	'lang' => 'English',
+	'enforce_language' => 'Enforce language',
 	'yes' => 'Yes',
 	'no' => 'No',
 	'send' => 'Send',
@@ -95,4 +96,10 @@ return [
 	'updates' => 'Updates',
 	'maintenance_in_progress' => 'Platform under maintenance, try again later...',
 	'cancel' => 'Cancel',
+	'auto_set' => 'Set automatically',
+	'translated_strings' => 'translated strings',
+	'total_strings' => 'total strings',
+	'lang_name' => 'language name',
+	'default_lang_behavior' => 'By default, it XBackbone will try to match the browser language (fallback is english).',
+	'lang_set' => 'System language enforced to "%s"',
 ];

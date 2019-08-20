@@ -75,8 +75,33 @@
                         </form>
                     </div>
                 </div>
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header"><i class="fas fa-language fa-fw"></i> {{ lang('enforce_language') }}</div>
+                    <div class="card-body">
+                        <form method="post" action="{{ route('lang.apply') }}">
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <select class="form-control" id="lang" name="lang">
+                                        <option value="auto" selected>({{ lang('auto_set') }})</option>
+                                        {% for lang, name in installed_lang %}
+                                            <option value="{{ lang }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small>[{{ lang('translated_strings') }} / {{ lang('total_strings') }}] {{ lang('lang_name') }}. {{ lang('default_lang_behavior') }}</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-outline-success" id="lang-apply">
+                                        <i class="fas fa-save fa-fw"></i> {{ lang('apply') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="card shadow-sm">
-                    <div class="card-header"><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('updates') }} <b>[BETA]</b></div>
+                    <div class="card-header"><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('updates') }} <b>[BETA]</b> <span class="float-right">v{{ PLATFORM_VERSION }}</span></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col">

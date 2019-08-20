@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database\DB;
+use App\Web\Lang;
 use App\Web\Session;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
@@ -15,6 +16,7 @@ use Slim\Container;
  * @property DB|null database
  * @property Logger|null logger
  * @property Filesystem|null storage
+ * @property Lang lang
  */
 abstract class Controller
 {

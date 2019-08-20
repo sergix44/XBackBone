@@ -41,12 +41,7 @@ class Lang
 	 */
 	public static function build($lang = self::DEFAULT_LANG, $langPath = null): Lang
 	{
-
-		if (strlen($lang) !== 2) {
-			self::$lang = strtolower(substr($lang, 0, 2));
-		} else {
-			self::$lang = $lang;
-		}
+		self::$lang = $lang;
 
 		if ($langPath !== null) {
 			self::$langPath = $langPath;
@@ -63,7 +58,7 @@ class Lang
 	 */
 	public static function recognize()
 	{
-		return substr(@$_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+		return locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 	}
 
 	/**
@@ -72,6 +67,27 @@ class Lang
 	public static function getLang(): string
 	{
 		return self::$lang;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getList()
+	{
+		$languages = [];
+
+		$default = count(include self::$langPath . self::DEFAULT_LANG . '.lang.php') - 1;
+
+		foreach (glob(self::$langPath . '*.lang.php') as $file) {
+			$dict = include $file;
+
+			$count = count($dict) - 1;
+			$prepend = "[{$count}/{$default}] ";
+
+			$languages[str_replace('.lang.php', '', basename($file))] = $prepend . $dict['lang'];
+		}
+
+		return $languages;
 	}
 
 
@@ -93,11 +109,15 @@ class Lang
 	 */
 	private function getString($key, $lang, $args): string
 	{
+		$redLang = strtolower(substr($lang, 0, 2));
 
 		if (array_key_exists($lang, $this->cache)) {
 			$transDict = $this->cache[$lang];
 		} elseif (file_exists(self::$langPath . $lang . '.lang.php')) {
 			$transDict = include self::$langPath . $lang . '.lang.php';
+			$this->cache[$lang] = $transDict;
+		} elseif (file_exists(self::$langPath . $redLang . '.lang.php')) {
+			$transDict = include self::$langPath . $redLang . '.lang.php';
 			$this->cache[$lang] = $transDict;
 		} else {
 			$transDict = [];

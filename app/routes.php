@@ -11,6 +11,8 @@ $app->group('', function () {
 		$this->get('/system/themes', \App\Controllers\ThemeController::class . ':getThemes')->setName('theme');
 		$this->post('/system/theme/apply', \App\Controllers\ThemeController::class . ':applyTheme')->setName('theme.apply');
 
+		$this->post('/system/lang/apply', \App\Controllers\AdminController::class . ':applyLang')->setName('lang.apply');
+
 		$this->post('/system/upgrade', \App\Controllers\UpgradeController::class . ':upgrade')->setName('system.upgrade');
 		$this->get('/system/checkForUpdates', \App\Controllers\UpgradeController::class . ':checkForUpdates')->setName('system.checkForUpdates');
 

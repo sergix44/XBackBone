@@ -38,6 +38,7 @@ class AdminController extends Controller
 			'totalSize' => humanFileSize($totalSize),
 			'post_max_size' => ini_get('post_max_size'),
 			'upload_max_filesize' => ini_get('upload_max_filesize'),
+			'installed_lang' => $this->lang->getList(),
 		]);
 	}
 
@@ -62,6 +63,28 @@ class AdminController extends Controller
 		}
 
 		$this->session->alert(lang('deleted_orphans', [$deleted]));
+
+		return redirect($response, 'system');
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function applyLang(Request $request, Response $response): Response
+	{
+		$config = require BASE_DIR . 'config.php';
+
+		if ($request->getParam('lang') !== 'auto') {
+			$config['lang'] = $request->getParam('lang');
+		} else {
+			unset($config['lang']);
+		}
+
+		file_put_contents(BASE_DIR . 'config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+
+		$this->session->alert(lang('lang_set', [$request->getParam('lang')]));
 
 		return redirect($response, 'system');
 	}

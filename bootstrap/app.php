@@ -105,13 +105,13 @@ $container['storage'] = function ($container) use (&$config) {
 			return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
 		case 'ftp':
 			return new Filesystem(new FtpAdapter([
-				'host' =>  $config['storage']['host'],
-				'username' =>  $config['storage']['username'],
-				'password' =>  $config['storage']['password'],
-				'port' =>  $config['storage']['port'],
-				'root' =>  $config['storage']['path'],
-				'passive' =>  $config['storage']['passive'],
-				'ssl' =>  $config['storage']['ssl'],
+				'host' => $config['storage']['host'],
+				'username' => $config['storage']['username'],
+				'password' => $config['storage']['password'],
+				'port' => $config['storage']['port'],
+				'root' => $config['storage']['path'],
+				'passive' => $config['storage']['passive'],
+				'ssl' => $config['storage']['ssl'],
 				'timeout' => 30,
 			]));
 		case 'google-cloud':
@@ -125,7 +125,10 @@ $container['storage'] = function ($container) use (&$config) {
 	}
 };
 
-$container['lang'] = function ($container) {
+$container['lang'] = function ($container) use (&$config) {
+	if (isset($config['lang'])) {
+		return Lang::build($config['lang'], BASE_DIR . 'resources/lang/');
+	}
 	return Lang::build(Lang::recognize(), BASE_DIR . 'resources/lang/');
 };
 

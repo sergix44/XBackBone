@@ -260,6 +260,14 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		}
 	}
 
+	// if from older installations with no support of other than local driver
+	// update the config
+	if ($installed && isset($config['storage_dir'])) {
+		$config['storage']['driver'] = 'local';
+		$config['storage']['path'] = $config['storage_dir'];
+		unset($config['storage_dir']);
+	}
+
 
 	// Build the dns string and run the migrations
 	try {
@@ -282,7 +290,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 	cleanDirectory(__DIR__ . '/../resources/cache');
 	cleanDirectory(__DIR__ . '/../resources/sessions');
 
-	//removeDirectory(__DIR__ . '/../install');
+	removeDirectory(__DIR__ . '/../install');
 
 	// if is upgrading and existing installation, put it out maintenance
 	if ($installed) {
