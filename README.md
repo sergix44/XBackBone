@@ -39,9 +39,12 @@ You must set the `base_url`, or remove it for get dynamically the url from reque
 ```php
 return [
 	'base_url' => 'https://example.com', // no trailing slash
-	'storage_dir' => 'storage',
+	'storage' => [
+		'driver' => 'local',
+		'path' => 'storage',
+	],
 	'db' => [
-		'connection' => 'sqlite',
+		'connection' => 'sqlite', // current support for sqlite and mysql
 		'dsn' => 'resources/database/xbackbone.db',
 		'username' => null, // username and password not needed for sqlite
 		'password' => null,
