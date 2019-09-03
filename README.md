@@ -5,9 +5,11 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 ## Features
 
 + Supports every upload type from ShareX.
++ Low memory footprint.
++ Multiple backends support: Local storage, AWS S3, Google Cloud, Dropbox, FTP.
 + Code uploads syntax highlighting.
 + Video uploads player.
-+ Files upload download page.
++ Files preview page.
 + Multi language support.
 + User management, multi user features and roles.
 + Public and private uploads.
@@ -16,9 +18,15 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Auto config generator for ShareX.
 + Share to Telegram.
 + Linux client tools supported via a custom script.
++ Direct downloads using curl or wget commands.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions (ex. `php-sqlite3` for SQLite, `php-gd` and `php-json`).
+XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions:
++ `php-sqlite3` for SQLite
++ `php-mysql` for MariaDB/MySQL
++ `php-gd`
++ `php-json`
++ `php-intl`
 
 ### Web installation
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
@@ -56,6 +64,7 @@ return [
 ```sh
 php bin/migrate --install
 ```
++ Delete the `/install` directory.
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
 ## How to update

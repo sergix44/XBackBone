@@ -92,7 +92,7 @@ if (!function_exists('redirect')) {
 	 */
 	function redirect(\Slim\Http\Response $response, string $path, $args = [], $status = null)
 	{
-		if ($path === '/' || $path === './' || substr($path, 0, 1) === '/') {
+		if (substr($path, 0, 1) === '/' || substr($path, 0, 3) === '../' || substr($path, 0, 2) === './') {
 			$url = urlFor($path);
 		} else {
 			$url = route($path, $args);

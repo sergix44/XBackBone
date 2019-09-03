@@ -1,19 +1,21 @@
 #!/usr/bin/env php
 <?php
 
-use App\Database\DB;
-
-require __DIR__ . '/../vendor/autoload.php';
-
 if (php_sapi_name() !== 'cli') {
 	die();
 }
 
-$config = include 'config.php';
+use App\Database\DB;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$config = include __DIR__ . '/../config.php';
 
 if (!$config) {
 	die('config.php not found. Please create a new one.');
 }
+
+chdir(__DIR__ . '/../');
 
 DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
 
@@ -56,7 +58,7 @@ foreach ($files as $file) {
 		if (basename($file) === $migration->name && $migration->migrated) {
 			$continue = true;
 			break;
-		} elseif (basename($file) === $migration->name && !$migration->migrated) {
+		} else if (basename($file) === $migration->name && !$migration->migrated) {
 			$exists = true;
 			break;
 		}
@@ -86,4 +88,11 @@ if (isset($argv[1]) && $argv[1] === '--install') {
 	DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
 }
 
+if (file_exists(__DIR__ . '/../install')) {
+	removeDirectory(__DIR__ . '/../install');
+}
+
+include __DIR__ . '/clean';
+
 echo 'Done.' . PHP_EOL;
+exit(0);

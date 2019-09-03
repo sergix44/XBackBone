@@ -1,11 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
 if (php_sapi_name() !== 'cli') {
 	die();
 }
+
+require __DIR__ . '/../vendor/autoload.php';
+
+chdir(__DIR__ . '/../');
 
 $json = json_decode(file_get_contents('https://bootswatch.com/api/4.json'));
 

@@ -1,3 +1,9 @@
+## v2.6.1
++ Fixed bad redirects on the web installer (#62).
++ Improved shell commands.
++ Added alert if required extensions are not loaded.
++ Updated translations.
+
 ## v2.6
 + Added support to use AWS S3, Google Cloud Storage, Dropbox and FTP(s) accounts as storage location.
 + Fixed missing icon.

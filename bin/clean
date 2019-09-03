@@ -1,11 +1,11 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
 if (php_sapi_name() !== 'cli') {
 	die();
 }
+
+require __DIR__ . '/../vendor/autoload.php';
 
 $action = isset($argv[1]) ? $argv[1] : 'all';
 

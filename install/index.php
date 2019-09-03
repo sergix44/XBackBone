@@ -9,6 +9,7 @@ use Google\Cloud\Storage\StorageClient;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Adapter\Ftp as FtpAdapter;
+use League\Flysystem\FileExistsException;
 use Spatie\Dropbox\Client as DropboxClient;
 use League\Flysystem\Filesystem;
 use Slim\App;
@@ -175,6 +176,18 @@ $app = new App($container);
 
 $app->get('/', function (Request $request, Response $response) {
 
+	if (!extension_loaded('gd')) {
+		$this->session->alert('The required "gd" extension is not loaded.', 'danger');
+	}
+
+	if (!extension_loaded('intl')) {
+		$this->session->alert('The required "intl" extension is not loaded.', 'danger');
+	}
+
+	if (!extension_loaded('json')) {
+		$this->session->alert('The required "json" extension is not loaded.', 'danger');
+	}
+
 	if (!is_writable(__DIR__ . '/../resources/cache')) {
 		$this->session->alert('The cache folder is not writable (' . __DIR__ . '/../resources/cache' . ')', 'danger');
 	}
@@ -243,20 +256,25 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 		// check if the storage is valid
 		try {
-			$success = $this->storage->write('storage_test.xbackbone.txt', 'XBACKBONE_TEST_FILE');
+			try {
+				$success = $this->storage->write('storage_test.xbackbone.txt', 'XBACKBONE_TEST_FILE');
+			} catch (FileExistsException $fileExistsException) {
+				$success = $this->storage->update('storage_test.xbackbone.txt', 'XBACKBONE_TEST_FILE');
+			}
+
 			if (!$success) {
 				throw new Exception('The storage is not writable.');
 			}
 			$this->storage->readAndDelete('test.install.txt');
 		} catch (Exception $e) {
-			$this->session->alert("Storage setup error: {$e->getMessage()} [{$e->getTraceAsString()}]", 'danger');
-			return redirect($response, $request->getUri());
+			$this->session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
+			return redirect($response, '/install');
 		}
 
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {
 			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
-			return redirect($response, $request->getUri());
+			return redirect($response, '/install');
 		}
 	}
 
@@ -276,9 +294,9 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		DB::setDsn($config['db']['connection'] . ':' . $dsn, $config['db']['username'], $config['db']['password']);
 
 		migrate($config);
-	} catch (PDOException $exception) {
-		$this->session->alert("Cannot connect to the database: {$exception->getMessage()} [{$exception->getCode()}]", 'danger');
-		return redirect($response, $request->getUri());
+	} catch (PDOException $e) {
+		$this->session->alert("Cannot connect to the database: {$e->getMessage()} [{$e->getCode()}]", 'danger');
+		return redirect($response, '/install');
 	}
 
 	// if not installed, create the default admin account
@@ -299,11 +317,13 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		$ret = file_put_contents(__DIR__ . '/../config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 		if ($ret === false) {
 			$this->session->alert('The config folder is not writable (' . __DIR__ . '/../config.php' . ')', 'danger');
-			return redirect($response, $request->getUri());
+			return redirect($response, '/install');
 		}
 	}
 
-	return $response->withRedirect('../?afterInstall=true');
+	// Installed successfully, destroy the installer session
+	session_destroy();
+	return redirect($response, '../?afterInstall=true');
 });
 
 $app->run();
