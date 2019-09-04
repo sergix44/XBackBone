@@ -38,7 +38,7 @@ class ThemeController extends Controller
 		return redirect($response, 'system')
 			->withAddedHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
 			->withAddedHeader('Pragma', 'no-cache')
-			->withAddedHeader('Expire', '0');
+			->withAddedHeader('Expire', 'Mon, 26 Jul 1997 05:00:00 GMT');
 	}
 
 }

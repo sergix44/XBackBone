@@ -27,7 +27,7 @@ $(document).ready(function () {
         $all_storage_inputs.prop('required', '');
         switch ($(this).val()) {
             case 'local':
-                $('#storage_path').val('./storage').prop('required', 'required').parent().parent().show();
+                $('#storage_path').val($('#storage_path').data('default-local')).prop('required', 'required').parent().parent().show();
                 break;
             case 'ftp':
                 $('#storage_path').val('/storage').prop('required', 'required').parent().parent().show();

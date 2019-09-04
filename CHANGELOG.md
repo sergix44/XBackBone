@@ -1,5 +1,6 @@
 ## v2.6.1
 + Fixed bad redirects on the web installer (#62).
++ Fixed login page with dark themes.
 + Improved shell commands.
 + Added alert if required extensions are not loaded.
 + Updated translations.

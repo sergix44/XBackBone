@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-
+(PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) ?: die('Sorry, PHP 7.1 or above is required to run XBackBone.');
 if (php_sapi_name() !== 'cli') {
 	die();
 }

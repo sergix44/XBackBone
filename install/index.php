@@ -202,7 +202,10 @@ $app->get('/', function (Request $request, Response $response) {
 
 	$installed = file_exists(__DIR__ . '/../config.php');
 
-	return $this->view->render($response, 'install.twig', ['installed' => $installed]);
+	return $this->view->render($response, 'install.twig', [
+		'installed' => $installed,
+		'default_local' => realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR . 'storage',
+	]);
 });
 
 $app->post('/', function (Request $request, Response $response) use (&$config) {
@@ -255,17 +258,18 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 		}
 
 		// check if the storage is valid
+		$storageTestFile = 'storage_test.xbackbone.txt';
 		try {
 			try {
-				$success = $this->storage->write('storage_test.xbackbone.txt', 'XBACKBONE_TEST_FILE');
+				$success = $this->storage->write($storageTestFile, 'XBACKBONE_TEST_FILE');
 			} catch (FileExistsException $fileExistsException) {
-				$success = $this->storage->update('storage_test.xbackbone.txt', 'XBACKBONE_TEST_FILE');
+				$success = $this->storage->update($storageTestFile, 'XBACKBONE_TEST_FILE');
 			}
 
 			if (!$success) {
 				throw new Exception('The storage is not writable.');
 			}
-			$this->storage->readAndDelete('test.install.txt');
+			$this->storage->readAndDelete($storageTestFile);
 		} catch (Exception $e) {
 			$this->session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
 			return redirect($response, '/install');
@@ -323,7 +327,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 	// Installed successfully, destroy the installer session
 	session_destroy();
-	return redirect($response, '../?afterInstall=true');
+	return redirect($response, '/../?afterInstall=true');
 });
 
 $app->run();
