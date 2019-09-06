@@ -8,8 +8,10 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Low memory footprint.
 + Multiple backends support: Local storage, AWS S3, Google Cloud, Dropbox, FTP.
 + Code uploads syntax highlighting.
-+ Video uploads player.
++ Video and audio uploads webplayer.
 + Files preview page.
++ Bootswatch themes support.
++ Responsive theme.
 + Multi language support.
 + User management, multi user features and roles.
 + Public and private uploads.
@@ -19,14 +21,15 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Share to Telegram.
 + Linux client tools supported via a custom script.
 + Direct downloads using curl or wget commands.
++ Direct images links support on Discord, Telegram, Facebook, etc.
 
 ## How to Install
 XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions:
-+ `php-sqlite3` for SQLite
-+ `php-mysql` for MariaDB/MySQL
-+ `php-gd`
-+ `php-json`
-+ `php-intl`
++ `php-sqlite3` for SQLite.
++ `php-mysql` for MariaDB/MySQL.
++ `php-gd` image manipualtion library.
++ `php-json` json file support.
++ `php-intl` internalization library.
 
 ### Web installation
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
