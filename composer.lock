@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b00b4789eb0530c6eb3a5280dae29c86",
+    "content-hash": "12e49250d00781ff06391038f1cd356a",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.110.7",
+            "version": "3.110.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "57d9dd171a5afe0b48ce44f05be2d8875c2f7b34"
+                "reference": "705fc1ffe05747e6789b19480764ebcd06995911"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/57d9dd171a5afe0b48ce44f05be2d8875c2f7b34",
-                "reference": "57d9dd171a5afe0b48ce44f05be2d8875c2f7b34",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/705fc1ffe05747e6789b19480764ebcd06995911",
+                "reference": "705fc1ffe05747e6789b19480764ebcd06995911",
                 "shasum": ""
             },
             "require": {
@@ -87,7 +87,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-08-30T18:07:59+00:00"
+            "time": "2019-09-05T18:11:21+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1535,9 +1535,9 @@
             "authors": [
                 {
                     "name": "Alex Vanderbist",
+                    "role": "Developer",
                     "email": "alex.vanderbist@gmail.com",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
+                    "homepage": "https://spatie.be"
                 }
             ],
             "description": "Flysystem Adapter for the Dropbox v2 API",

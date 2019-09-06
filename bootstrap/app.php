@@ -155,6 +155,7 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addFunction(new TwigFunction('route', 'route'));
 	$view->getEnvironment()->addFunction(new TwigFunction('lang', 'lang'));
 	$view->getEnvironment()->addFunction(new TwigFunction('urlFor', 'urlFor'));
+	$view->getEnvironment()->addFunction(new TwigFunction('asset', 'asset'));
 	$view->getEnvironment()->addFunction(new TwigFunction('mime2font', 'mime2font'));
 	$view->getEnvironment()->addFunction(new TwigFunction('queryParams', 'queryParams'));
 	return $view;

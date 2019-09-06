@@ -102,6 +102,18 @@ if (!function_exists('redirect')) {
 	}
 }
 
+if (!function_exists('asset')) {
+	/**
+	 * Get the asset link with timestamp
+	 * @param string $path
+	 * @return string
+	 */
+	function asset(string $path): string
+	{
+		return urlFor($path, '?' . filemtime(realpath(BASE_DIR . $path)));
+	}
+}
+
 if (!function_exists('urlFor')) {
 	/**
 	 * Generate the app url given a path

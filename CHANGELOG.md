@@ -1,3 +1,8 @@
+## v2.6.2
++ Use the font awesome web font for better performances.
++ Changed background default color.
++ Added method for cache busting when updating/change theme.
+
 ## v2.6.1
 + Fixed bad redirects on the web installer (#62).
 + Fixed login page with dark themes.

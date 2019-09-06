@@ -92,7 +92,6 @@ if (file_exists(__DIR__ . '/../install')) {
 	removeDirectory(__DIR__ . '/../install');
 }
 
-include __DIR__ . '/clean';
-
+echo 'If you are upgrading from a previous version, please run a "php bin\clean".' . PHP_EOL;
 echo 'Done.' . PHP_EOL;
 exit(0);
