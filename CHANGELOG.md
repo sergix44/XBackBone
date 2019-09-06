@@ -2,6 +2,7 @@
 + Use the font awesome web font for better performances.
 + Changed background default color.
 + Added method for cache busting when updating/change theme.
++ Added russian translation from [Weblate](https://hosted.weblate.org/projects/xbackbone/xbackbone/).
 
 ## v2.6.1
 + Fixed bad redirects on the web installer (#62).
