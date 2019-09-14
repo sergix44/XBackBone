@@ -58,7 +58,11 @@ class Lang
 	 */
 	public static function recognize()
 	{
-		return locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
+			return locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		}else{
+			return locale_accept_from_http(self::DEFAULT_LANG);
+		}
 	}
 
 	/**
