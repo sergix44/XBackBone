@@ -47,6 +47,7 @@ $config = array_replace_recursive([
 	],
 	'storage' => [
 		'driver' => 'local',
+		'path' => realpath(__DIR__ . '/') . DIRECTORY_SEPARATOR . 'storage',
 	],
 ], require BASE_DIR . 'config.php');
 

@@ -48,7 +48,7 @@ abstract class Controller
 	 */
 	protected function getUsedSpaceByUser($id): int
 	{
-		$medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $id)->fetchAll();
+		$medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $id);
 
 		$totalSize = 0;
 

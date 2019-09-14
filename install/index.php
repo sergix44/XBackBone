@@ -24,17 +24,19 @@ use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
 
 define('PLATFORM_VERSION', json_decode(file_get_contents(__DIR__ . '/../composer.json'))->version);
 
+// default config
 $config = [
-	'base_url' => isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['HTTP_HOST'] : 'http://' . $_SERVER['HTTP_HOST'],
+	'base_url' => str_replace('/install/', '', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"),
 	'displayErrorDetails' => true,
 	'db' => [
 		'connection' => 'sqlite',
-		'dsn' => 'resources/database/xbackbone.db',
+		'dsn' => realpath(__DIR__ . '/../') . implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
 		'username' => null,
 		'password' => null,
 	],
 	'storage' => [
 		'driver' => 'local',
+		'path' => realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR . 'storage',
 	],
 ];
 
@@ -110,8 +112,7 @@ $container['storage'] = function ($container) use (&$config) {
 	}
 };
 
-function migrate($config)
-{
+function migrate($config) {
 	$firstMigrate = false;
 	if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__ . '/../' . $config['db']['dsn'])) {
 		touch(__DIR__ . '/../' . $config['db']['dsn']);
@@ -204,7 +205,6 @@ $app->get('/', function (Request $request, Response $response) {
 
 	return $this->view->render($response, 'install.twig', [
 		'installed' => $installed,
-		'default_local' => realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR . 'storage',
 	]);
 });
 
@@ -327,7 +327,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 	// Installed successfully, destroy the installer session
 	session_destroy();
-	return redirect($response, '/../?afterInstall=true');
+	return $response->withRedirect("{$config['base_url']}/?afterInstall=true");
 });
 
 $app->run();

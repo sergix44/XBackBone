@@ -1,3 +1,8 @@
+## v2.6.3
++ Fixed #67.
++ Fixed bad preload statement.
++ Fixed wrong redirect after install in subdirs.
+
 ## v2.6.2
 + Use the font awesome web font for better performances.
 + Changed background default color.

@@ -140,7 +140,7 @@ if (!function_exists('route')) {
 	function route(string $path, array $args = [], string $append = ''): string
 	{
 		global $app;
-		$uri = $app->getContainer()->get('router')->pathFor($path, $args);
+		$uri = $app->getContainer()->get('router')->relativePathFor($path, $args);
 		return urlFor($uri, $append);
 	}
 }
