@@ -305,7 +305,7 @@ $app->post('/', function (Request $request, Response $response) use (&$config) {
 
 	// if not installed, create the default admin account
 	if (!$installed) {
-		DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
+		DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [$request->getParam('email'), password_hash($request->getParam('password'), PASSWORD_DEFAULT), humanRandomString(5)]);
 	}
 
 	// post install cleanup

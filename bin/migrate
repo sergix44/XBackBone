@@ -85,7 +85,7 @@ foreach ($files as $file) {
 }
 
 if (isset($argv[1]) && $argv[1] === '--install') {
-	DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT), substr(md5(microtime()), rand(0, 26), 5)]);
+	DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT), humanRandomString(5)]);
 }
 
 if (file_exists(__DIR__ . '/../install')) {

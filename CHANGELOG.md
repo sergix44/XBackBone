@@ -1,3 +1,8 @@
+## v2.6.4
++ Filter on displayable images.
++ Fixed during upload error on php compiled for 32 bit.
++ The generated random strings are now more human readable.
+
 ## v2.6.3
 + Fixed #67.
 + Fixed bad preload statement.

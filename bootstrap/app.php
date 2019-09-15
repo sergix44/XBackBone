@@ -159,6 +159,7 @@ $container['view'] = function ($container) use (&$config) {
 	$view->getEnvironment()->addFunction(new TwigFunction('asset', 'asset'));
 	$view->getEnvironment()->addFunction(new TwigFunction('mime2font', 'mime2font'));
 	$view->getEnvironment()->addFunction(new TwigFunction('queryParams', 'queryParams'));
+	$view->getEnvironment()->addFunction(new TwigFunction('isDisplayableImage', 'isDisplayableImage'));
 	return $view;
 };
 

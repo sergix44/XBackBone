@@ -62,7 +62,7 @@ class UploadController extends Controller
 		}
 
 		do {
-			$code = uniqid();
+			$code = humanRandomString();
 		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
 		/** @var \Psr\Http\Message\UploadedFileInterface $file */
@@ -114,8 +114,12 @@ class UploadController extends Controller
 				$size = $filesystem->getSize($media->storage_path);
 
 				$type = explode('/', $media->mimetype)[0];
+				if ($type === 'image' && !isDisplayableImage($media->mimetype)) {
+					$type = 'application';
+					$media->mimetype = 'application/octet-stream';
+				}
 				if ($type === 'text') {
-					if ($size <= (200 * 1024)) {// less than 200 KB
+					if ($size <= (200 * 1024)) { // less than 200 KB
 						$media->text = $filesystem->read($media->storage_path);
 					} else {
 						$type = 'application';

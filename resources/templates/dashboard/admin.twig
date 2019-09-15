@@ -30,7 +30,7 @@
                                     {% for media in medias %}
                                         <tr id="media_{{ media.id }}">
                                             <td class="text-center">
-                                                {% if media.mimetype starts with 'image' %}
+                                                {% if isDisplayableImage(media.mimetype) %}
                                                     {% if media.username is not null %}
                                                         <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=256&height=128') }}" class="img-fluid rounded admin-img">
                                                     {% else %}

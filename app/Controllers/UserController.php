@@ -81,7 +81,7 @@ class UserController extends Controller
 		}
 
 		do {
-			$userCode = substr(md5(microtime()), rand(0, 26), 5);
+			$userCode = humanRandomString(5);
 		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
 		$token = $this->generateNewToken();

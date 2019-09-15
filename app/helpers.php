@@ -1,9 +1,8 @@
 <?php
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-
-require __DIR__ . '/../vendor/autoload.php';
+if (!defined('HUMAN_RANDOM_CHARS')) {
+	define('HUMAN_RANDOM_CHARS', 'bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZaeiouAEIOU');
+}
 
 if (!function_exists('humanFileSize')) {
 	/**
@@ -20,22 +19,63 @@ if (!function_exists('humanFileSize')) {
 	}
 }
 
+if (!function_exists('humanRandomString')) {
+	/**
+	 * @param int $length
+	 * @return string
+	 */
+	function humanRandomString(int $length = 13): string
+	{
+		$result = '';
+		$numberOffset = round($length * 0.2);
+		for ($x = 0; $x < $length - $numberOffset; $x++) {
+			$result .= ($x % 2) ? HUMAN_RANDOM_CHARS[rand(42, 51)] : HUMAN_RANDOM_CHARS[rand(0, 41)];
+		}
+		for ($x = 0; $x < $numberOffset; $x++) {
+			$result .= rand(0, 9);
+		}
+		return $result;
+	}
+}
+
+if (!function_exists('isDisplayableImage')) {
+	/**
+	 * @param string $mime
+	 * @return bool
+	 */
+	function isDisplayableImage(string $mime): bool
+	{
+		return in_array($mime, [
+			'image/apng',
+			'image/bmp',
+			'image/gif',
+			'image/x-icon',
+			'image/jpeg',
+			'image/png',
+			'image/svg',
+			'image/svg+xml',
+			'image/tiff',
+			'image/webp',
+		]);
+	}
+}
+
 if (!function_exists('stringToBytes')) {
 	/**
 	 * @param $str
-	 * @return int|string
+	 * @return float
 	 */
-	function stringToBytes(string $str): int
+	function stringToBytes(string $str): float
 	{
 		$val = trim($str);
 		if (is_numeric($val)) {
-			return (int)$val;
+			return (float)$val;
 		}
 
 		$last = strtolower($val[strlen($val) - 1]);
 		$val = substr($val, 0, -1);
 
-		$val = (int)$val;
+		$val = (float)$val;
 		switch ($last) {
 			case 'g':
 				$val *= 1024;
