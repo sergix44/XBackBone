@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d1d3f6740d7faaed52a5f15768f048d0",
+    "content-hash": "4df20787f0e03ad691f0eb848cc7b25d",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1502,20 +1502,20 @@
         },
         {
             "name": "spatie/flysystem-dropbox",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/flysystem-dropbox.git",
-                "reference": "762cb0386def2b534db237d2267dfe8fd359d1ba"
+                "reference": "8aa19e6f63d36f66d716f13a4d4dec23012d16e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/flysystem-dropbox/zipball/762cb0386def2b534db237d2267dfe8fd359d1ba",
-                "reference": "762cb0386def2b534db237d2267dfe8fd359d1ba",
+                "url": "https://api.github.com/repos/spatie/flysystem-dropbox/zipball/8aa19e6f63d36f66d716f13a4d4dec23012d16e2",
+                "reference": "8aa19e6f63d36f66d716f13a4d4dec23012d16e2",
                 "shasum": ""
             },
             "require": {
-                "league/flysystem": "^1.0",
+                "league/flysystem": "^1.0.20",
                 "php": "^7.0",
                 "spatie/dropbox-api": "^1.1.0"
             },
@@ -1550,7 +1550,7 @@
                 "spatie",
                 "v2"
             ],
-            "time": "2019-09-13T18:23:14+00:00"
+            "time": "2019-09-14T17:00:10+00:00"
         },
         {
             "name": "superbalist/flysystem-google-storage",

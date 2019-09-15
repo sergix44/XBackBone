@@ -60,9 +60,8 @@ class Lang
 	{
 		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 			return locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-		} else {
-			return self::DEFAULT_LANG;
 		}
+		return self::DEFAULT_LANG;
 	}
 
 	/**
@@ -117,10 +116,10 @@ class Lang
 
 		if (array_key_exists($lang, $this->cache)) {
 			$transDict = $this->cache[$lang];
-		} elseif (file_exists(self::$langPath . $lang . '.lang.php')) {
+		} else if (file_exists(self::$langPath . $lang . '.lang.php')) {
 			$transDict = include self::$langPath . $lang . '.lang.php';
 			$this->cache[$lang] = $transDict;
-		} elseif (file_exists(self::$langPath . $redLang . '.lang.php')) {
+		} else if (file_exists(self::$langPath . $redLang . '.lang.php')) {
 			$transDict = include self::$langPath . $redLang . '.lang.php';
 			$this->cache[$lang] = $transDict;
 		} else {

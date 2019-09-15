@@ -1,6 +1,7 @@
 ## v2.6.4
 + Filter on displayable images.
 + Fixed during upload error on php compiled for 32 bit.
++ Fixed icons on the installer page.
 + The generated random strings are now more human readable.
 
 ## v2.6.3
