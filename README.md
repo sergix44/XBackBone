@@ -1,12 +1,12 @@
 
 # XBackBone 📤 ![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone) [![Donations](https://i.imgur.com/bAqVIw8.png?2)](http://bit.ly/XBackBoneDonate)
-XBackBone is a simple, self-hosted, lightweight PHP backend for the instant sharing tool ShareX. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management and past uploads history.
+XBackBone is a simple, self-hosted, lightweight PHP file manager that support the instant sharing tool ShareX and *NIX systems. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management, past uploads history and search support.
 
 ## Features
 
 + Supports every upload type from ShareX.
 + Low memory footprint.
-+ Multiple backends support: Local storage, AWS S3, Google Cloud, Dropbox, FTP.
++ Multiple backends support: Local storage, AWS S3, Google Cloud, Dropbox, FTP(s).
 + Code uploads syntax highlighting.
 + Video and audio uploads webplayer.
 + Files preview page.
@@ -19,17 +19,18 @@ XBackBone is a simple, self-hosted, lightweight PHP backend for the instant shar
 + Logging system.
 + Auto config generator for ShareX.
 + Share to Telegram.
-+ Linux client tools supported via a custom script.
++ Linux supported via a per-user custom generated script.
 + Direct downloads using curl or wget commands.
 + Direct images links support on Discord, Telegram, Facebook, etc.
 
 ## How to Install
-XBackBone require PHP >= `7.1`, writable storage path and PDO, with installed the required extensions:
+#### Prerequisites
+XBackBone require PHP >= `7.1`, with installed the required extensions:
 + `php-sqlite3` for SQLite.
 + `php-mysql` for MariaDB/MySQL.
 + `php-gd` image manipualtion library.
 + `php-json` json file support.
-+ `php-intl` internalization library.
++ `php-intl` internationalization functions.
 
 ### Web installation
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
