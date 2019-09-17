@@ -17,6 +17,7 @@ use Slim\Container;
  * @property Logger|null logger
  * @property Filesystem|null storage
  * @property Lang lang
+ * @property array settings
  */
 abstract class Controller
 {

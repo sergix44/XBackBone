@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4df20787f0e03ad691f0eb848cc7b25d",
+    "content-hash": "ebbdff1fa0c06d25785f6d437dc7e11f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.112.0",
+            "version": "3.112.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "1e21446c6780a3b9b5e4315bd6d4347d2c3381eb"
+                "reference": "0d7a3ecb5dca10d1872ee5106cb154cbef52cf1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1e21446c6780a3b9b5e4315bd6d4347d2c3381eb",
-                "reference": "1e21446c6780a3b9b5e4315bd6d4347d2c3381eb",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0d7a3ecb5dca10d1872ee5106cb154cbef52cf1c",
+                "reference": "0d7a3ecb5dca10d1872ee5106cb154cbef52cf1c",
                 "shasum": ""
             },
             "require": {
@@ -87,7 +87,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-09-12T18:09:53+00:00"
+            "time": "2019-09-17T18:07:57+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -2553,16 +2553,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.11.15",
+            "version": "0.11.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "1be5b3a706db16ac472a4c40ec03cf4c810b118d"
+                "reference": "635cf20f3b92ce34ee94a8d2f282d62eb9dc6e1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/1be5b3a706db16ac472a4c40ec03cf4c810b118d",
-                "reference": "1be5b3a706db16ac472a4c40ec03cf4c810b118d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/635cf20f3b92ce34ee94a8d2f282d62eb9dc6e1b",
+                "reference": "635cf20f3b92ce34ee94a8d2f282d62eb9dc6e1b",
                 "shasum": ""
             },
             "require": {
@@ -2614,8 +2614,7 @@
             "autoload": {
                 "psr-4": {
                     "PHPStan\\": [
-                        "src/",
-                        "build/PHPStan"
+                        "src/"
                     ]
                 }
             },
@@ -2624,7 +2623,7 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2019-08-18T20:51:53+00:00"
+            "time": "2019-09-17T11:19:51+00:00"
         },
         {
             "name": "symfony/console",

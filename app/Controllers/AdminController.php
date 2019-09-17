@@ -62,6 +62,8 @@ class AdminController extends Controller
 			}
 		}
 
+		$this->database->query('DELETE FROM `uploads` WHERE `user_id` IS NULL');
+
 		$this->session->alert(lang('deleted_orphans', [$deleted]));
 
 		return redirect($response, 'system');

@@ -97,7 +97,7 @@ class UserController extends Controller
 		]);
 
 		$this->session->alert(lang('user_created', [$request->getParam('username')]), 'success');
-		$this->logger->info('User ' . $this->session->get('username') . ' created a new user.', [array_diff($request->getParams(), ['password'])]);
+		$this->logger->info('User ' . $this->session->get('username') . ' created a new user.', [array_diff_key($request->getParams(), array_flip(['password']))]);
 
 		return redirect($response, 'user.index');
 	}
@@ -183,7 +183,10 @@ class UserController extends Controller
 		}
 
 		$this->session->alert(lang('user_updated', [$request->getParam('username')]), 'success');
-		$this->logger->info('User ' . $this->session->get('username') . " updated $user->id.", [$user, array_diff($request->getParams(), ['password'])]);
+		$this->logger->info('User ' . $this->session->get('username') . " updated $user->id.", [
+			array_diff_key((array)$user, array_flip(['password'])),
+			array_diff_key($request->getParams(), array_flip(['password'])),
+		]);
 
 		return redirect($response, 'user.index');
 

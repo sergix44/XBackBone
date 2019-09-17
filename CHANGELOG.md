@@ -1,3 +1,8 @@
+## v2.6.5
++ Fixed error after orphaned files removal #74.
++ Fixed update password not correctly removed from log files #74.
++ Changed color to some buttons to address visibility with some themes.
+
 ## v2.6.4
 + Filter on displayable images.
 + Fixed during upload error on php compiled for 32 bit.
