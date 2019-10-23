@@ -1,9 +1,14 @@
 module.exports = function (grunt) {
+    let version = grunt.file.readJSON('composer.json').version;
+    let releaseFilename = 'release-v' + version + '.zip';
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
         jshint: {
-            all: ['Gruntfile.js', 'src/js/app.js']
+            all: ['Gruntfile.js', 'src/js/app.js'],
+            options: {
+                'esversion': 6,
+            }
         },
 
         cssmin: {
@@ -94,9 +99,8 @@ module.exports = function (grunt) {
                 ],
             },
         },
-
         zip: {
-            'release.zip': [
+            [releaseFilename]: [
                 'app/**/*',
                 'bin/**/*',
                 'bootstrap/**/*',
