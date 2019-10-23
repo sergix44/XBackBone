@@ -1,3 +1,7 @@
+## v.2.6.6
++ Ability to choose between releases and prereleases with the web updater.
++ Updated translations.
+
 ## v2.6.5
 + Fixed error after orphaned files removal #74.
 + Fixed update password not correctly removed from log files #74.
