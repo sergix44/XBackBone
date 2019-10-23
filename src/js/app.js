@@ -8,7 +8,7 @@ var app = {
         $('.publish-toggle').click(app.publishToggle);
         $('.refresh-token').click(app.refreshToken);
         $('#themes').mousedown(app.loadThemes);
-        $('#checkForUpdatesButton').click(app.checkForUpdates);
+        $('.checkForUpdatesButton').click(app.checkForUpdates);
 
         $('.alert').fadeTo(4000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
@@ -99,7 +99,7 @@ var app = {
     checkForUpdates: function () {
         $('#checkForUpdatesMessage').empty().text('...');
         $('#doUpgradeButton').prop('disabled', true);
-        $.get(window.AppConfig.base_url + '/system/checkForUpdates', function (data) {
+        $.get(window.AppConfig.base_url + '/system/checkForUpdates?prerelease=' + $(this).data('prerelease'), function (data) {
             $('#checkForUpdatesMessage').empty().text(data.message);
             if (data.upgrade) {
                 $('#doUpgradeButton').prop('disabled', false);

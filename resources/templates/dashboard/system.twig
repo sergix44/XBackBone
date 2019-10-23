@@ -101,11 +101,19 @@
                     </div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-header"><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('updates') }} <b>[BETA]</b> <span class="float-right">v{{ PLATFORM_VERSION }}</span></div>
+                    <div class="card-header"><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('updates') }} <span class="float-right">v{{ PLATFORM_VERSION }}</span></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <button type="button" id="checkForUpdatesButton" class="btn btn-block btn-outline-info"><i class="fas fa-sync fa-fw"></i> {{ lang('check_for_updates') }}</button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-block btn-outline-info checkForUpdatesButton" data-prerelease="false"><i class="fas fa-sync fa-fw"></i> {{ lang('check_for_updates') }}</button>
+                                    <button type="button" class="btn btn-outline-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item checkForUpdatesButton" href="javascript:void(0);" data-prerelease="true">{{ lang('prerelease_channel') }}</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col text-center"><span class="text-muted" id="checkForUpdatesMessage"></span></div>
 

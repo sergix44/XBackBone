@@ -101,4 +101,5 @@ return [
     'lang_name' => 'language name',
     'default_lang_behavior' => 'XBackBone will try to match the browser language by default (fallback is English).',
     'lang_set' => 'System language enforced to "%s"',
+    'prerelease_channel' => 'Prerelease Channel',
 ];

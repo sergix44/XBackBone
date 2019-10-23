@@ -1,6 +1,6 @@
 {
   "name": "sergix44/xbackbone",
-  "version": "2.6.5",
+  "version": "2.6.6",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
@@ -19,6 +19,8 @@
     "ext-pdo": "*",
     "ext-zip": "*"
   },
+  "prefer-stable": true,
+  "minimum-stability": "dev",
   "autoload": {
     "files": [
       "app/helpers.php"
