@@ -101,4 +101,5 @@ return [
     'lang_name' => 'språknavn',
     'default_lang_behavior' => 'Som forvalg, vil XBackBone prøve å samsvare nettleserspråk (tilbakefallsspråk er engelsk).',
     'lang_set' => 'Systemspråk er satt til "%s"',
+    'prerelease_channel' => 'Forhåndsslipp-kanal',
 ];
