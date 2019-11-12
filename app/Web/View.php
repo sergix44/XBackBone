@@ -17,11 +17,6 @@ use Twig\TwigFunction;
 class View
 {
     /**
-     * @var Container
-     */
-    private $container;
-
-    /**
      * @var Environment
      */
     private $twig;
@@ -35,8 +30,6 @@ class View
      */
     public function __construct(Container $container)
     {
-        $this->container = $container;
-
         $config = $container->get('config');
         $loader = new FilesystemLoader(BASE_DIR.'resources/templates');
 
