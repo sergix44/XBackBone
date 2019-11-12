@@ -83,9 +83,9 @@ var app = {
         var $themes = $('#themes');
         $.get(window.AppConfig.base_url + '/system/themes', function (data) {
             $themes.empty();
-            Object.keys(data).forEach(function (key) {
+            $.each(data, function (key, value) {
                 var opt = document.createElement('option');
-                opt.value = data[key];
+                opt.value = value;
                 opt.innerHTML = key;
                 $themes.append(opt);
             });

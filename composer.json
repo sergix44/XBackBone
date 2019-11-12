@@ -1,26 +1,33 @@
 {
   "name": "sergix44/xbackbone",
-  "version": "2.6.6",
+  "version": "3.0",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
     "php": ">=7.1",
-    "slim/slim": "^3.0",
-    "slim/twig-view": "^2.4",
+    "ext-intl": "*",
+    "ext-json": "*",
+    "ext-gd": "*",
+    "ext-pdo": "*",
+    "ext-zip": "*",
+    "slim/slim": "^4.0",
+    "php-di/slim-bridge": "^3.0",
+    "twig/twig": "^2.12",
+    "guzzlehttp/psr7": "^1.6",
     "league/flysystem": "^1.0.45",
     "monolog/monolog": "^1.23",
     "intervention/image": "^2.4",
     "league/flysystem-aws-s3-v3": "^1.0",
     "spatie/flysystem-dropbox": "^1.0",
     "superbalist/flysystem-google-storage": "^7.2",
-    "ext-intl": "*",
-    "ext-json": "*",
-    "ext-gd": "*",
-    "ext-pdo": "*",
-    "ext-zip": "*"
+    "http-interop/http-factory-guzzle": "^1.0"
+
   },
-  "prefer-stable": true,
-  "minimum-stability": "dev",
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
   "autoload": {
     "files": [
       "app/helpers.php"

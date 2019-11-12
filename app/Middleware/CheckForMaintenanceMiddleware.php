@@ -2,25 +2,26 @@
 
 namespace App\Middleware;
 
-use App\Exceptions\MaintenanceException;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use App\Exceptions\UnderMaintenanceException;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class CheckForMaintenanceMiddleware extends Middleware
 {
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @param callable $next
-	 * @return Response
-	 * @throws MaintenanceException
-	 */
-	public function __invoke(Request $request, Response $response, callable $next)
-	{
-		if (isset($this->settings['maintenance']) && $this->settings['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
-			throw new MaintenanceException();
-		}
+    /**
+     * @param  Request  $request
+     * @param  RequestHandler  $handler
+     * @return Response
+     * @throws UnderMaintenanceException
+     */
+    public function __invoke(Request $request, RequestHandler $handler): Response
+    {
+        if (isset($this->config['maintenance']) && $this->settings['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
+            throw new UnderMaintenanceException($request);
+        }
 
-		return $next($request, $response);
-	}
+        $response = $handler->handle($request);
+        return $response;
+    }
 }
