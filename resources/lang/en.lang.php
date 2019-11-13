@@ -28,6 +28,7 @@ return [
     'date' => 'Date',
     'raw' => 'Show raw',
     'download' => 'Download',
+    'upload' => 'Upload',
     'delete' => 'Delete',
     'publish' => 'Publish',
     'hide' => 'Hide',
@@ -99,4 +100,5 @@ return [
     'default_lang_behavior' => 'XBackBone will try to match the browser language by default (the fallback is English).',
     'lang_set' => 'System language enforced to "%s"',
     'prerelease_channel' => 'Prerelease Channel',
+    'no_upload_token' => 'You don\'t have a personal upload token. (Generate one and try again)',
 ];

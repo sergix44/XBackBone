@@ -15,6 +15,7 @@ use Slim\Routing\RouteCollectorProxy;
 global $app;
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/home[/page/{page}]', [DashboardController::class, 'home'])->setName('home');
+    $group->get('/upload', [UploadController::class, 'webUpload'])->setName('upload.web');
 
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');

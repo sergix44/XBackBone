@@ -27,6 +27,7 @@ return [
     'date' => 'Data',
     'raw' => 'Vedi raw',
     'download' => 'Scarica',
+    'upload' => 'Carica',
     'delete' => 'Elimina',
     'publish' => 'Pubblica',
     'hide' => 'Nascondi',
@@ -99,4 +100,5 @@ return [
     'default_lang_behavior' => 'Per impostazione predefinita, XBackbone cercherà di abbinare la lingua del browser (il fallback è l\'Inglese).',
     'lang_set' => 'Lingua di sistema applicata a "%s"',
     'prerelease_channel' => 'Canale prerelease',
+    'no_upload_token' => 'Non hai un token personale per l\'upload associato. (Generane uno e riprova)',
 ];

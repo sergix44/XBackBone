@@ -1,0 +1,20 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('upload') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form action="{{ route('upload') }}" class="dropzone" id="upload-dropzone">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple>
+                    </div>
+                    <input type="hidden" name="token" value="{{ user.token }}">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

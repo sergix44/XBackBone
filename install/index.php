@@ -257,7 +257,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     cleanDirectory(__DIR__.'/../resources/cache');
     cleanDirectory(__DIR__.'/../resources/sessions');
 
-    removeDirectory(__DIR__.'/../install');
+    //removeDirectory(__DIR__.'/../install');
 
     // if is upgrading and existing installation, put it out maintenance
     if ($installed) {

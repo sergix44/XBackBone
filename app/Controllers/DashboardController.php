@@ -59,7 +59,7 @@ class DashboardController extends Controller
 
         return view()->render(
             $response,
-            ($this->session->get('admin', false) && $this->session->get('gallery_view', true)) ? 'dashboard/admin.twig' : 'dashboard/home.twig',
+            ($this->session->get('admin', false) && $this->session->get('gallery_view', true)) ? 'dashboard/list.twig' : 'dashboard/grid.twig',
             [
                 'medias' => $query->getMedia(),
                 'next' => $page < floor($query->getPages()),

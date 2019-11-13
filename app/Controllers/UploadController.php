@@ -20,11 +20,32 @@ class UploadController extends Controller
      * @param  Request  $request
      * @param  Response  $response
      * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function webUpload(Request $request, Response $response): Response
+    {
+        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $this->session->get('user_id'))->fetch();
+
+        if ($user->token === null || $user->token === '') {
+            $this->session->alert(lang('no_upload_token'), 'danger');
+            return redirect($response, $request->getHeaderLine('Referer'));
+        }
+
+        return view()->render($response, 'upload/web.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * @param  Request  $request
+     * @param  Response  $response
+     * @return Response
      * @throws FileExistsException
      */
     public function upload(Request $request, Response $response): Response
     {
-
         $json = [
             'message' => null,
             'version' => PLATFORM_VERSION,
@@ -40,7 +61,16 @@ class UploadController extends Controller
             return json($response, $json, 400);
         }
 
-        if (isset($request->getUploadedFiles()['upload']) && $request->getUploadedFiles()['upload']->getError() === UPLOAD_ERR_INI_SIZE) {
+        $file = array_values($request->getUploadedFiles());
+        /** @var \Psr\Http\Message\UploadedFileInterface|null $file */
+        $file = isset($file[0]) ? $file[0] : null;
+
+        if ($file === null) {
+            $json['message'] = 'Request without file attached.';
+            return json($response, $json, 400);
+        }
+
+        if ($file->getError() === UPLOAD_ERR_INI_SIZE) {
             $json['message'] = 'File too large (upload_max_filesize too low?).';
             return json($response, $json, 400);
         }
@@ -65,9 +95,6 @@ class UploadController extends Controller
         do {
             $code = humanRandomString();
         } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
-
-        /** @var \Psr\Http\Message\UploadedFileInterface $file */
-        $file = $request->getUploadedFiles()['upload'];
 
         $fileInfo = pathinfo($file->getClientFilename());
         $storagePath = "$user->user_code/$code.$fileInfo[extension]";
@@ -169,12 +196,12 @@ class UploadController extends Controller
 
         if (!$user) {
             $this->session->alert(lang('token_not_found'), 'danger');
-            return redirect($response, $request->getHeaderLine('HTTP_REFERER'));
+            return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         if (!$user->active) {
             $this->session->alert(lang('account_disabled'), 'danger');
-            return redirect($response, $request->getHeaderLine('HTTP_REFERER'));
+            return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         if ($this->session->get('admin', false) || $user->id === $media->user_id) {
@@ -232,7 +259,7 @@ class UploadController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        if($ext !== null && pathinfo($media->filename, PATHINFO_EXTENSION) !== $ext){
+        if ($ext !== null && pathinfo($media->filename, PATHINFO_EXTENSION) !== $ext) {
             throw new HttpBadRequestException($request);
         }
 

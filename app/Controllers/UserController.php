@@ -358,8 +358,8 @@ class UserController extends Controller
         }
 
         if ($user->token === null || $user->token === '') {
-            $this->session->alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
-            return redirect($response, $request->getHeaderLine('HTTP_REFERER'));
+            $this->session->alert(lang('no_upload_token'), 'danger');
+            return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         $json = [
@@ -404,8 +404,8 @@ class UserController extends Controller
         }
 
         if ($user->token === null || $user->token === '') {
-            $this->session->alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
-            return redirect($response, $request->getHeaderLine('HTTP_REFERER'));
+            $this->session->alert(lang('no_upload_token'), 'danger');
+            return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         return view()->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_'.$user->username.'.sh"'),

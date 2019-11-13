@@ -95,6 +95,12 @@ module.exports = function (grunt) {
                         src: ['styles/**/*', 'highlight.pack.min.js'],
                         dest: 'static/highlightjs'
                     },
+                    {
+                        expand: true,
+                        cwd: 'node_modules/dropzone/dist/min',
+                        src: ['dropzone.min.css', 'dropzone.min.js'],
+                        dest: 'static/dropzone'
+                    },
                     {expand: true, cwd: 'node_modules/jquery/dist', src: ['jquery.min.js'], dest: 'static/jquery'}
                 ],
             },
