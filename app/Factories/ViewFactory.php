@@ -33,6 +33,7 @@ class ViewFactory
         $twig->addGlobal('alerts', $container->get('session')->getAlert());
         $twig->addGlobal('session', $container->get('session')->all());
         $twig->addGlobal('current_lang', $container->get('lang')->getLang());
+        $twig->addGlobal('maxUploadSize', stringToBytes(ini_get('post_max_size')));
         $twig->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 
         $twig->addFunction(new TwigFunction('route', 'route'));

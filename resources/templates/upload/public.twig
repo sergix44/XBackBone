@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 {% elseif type is same as ('audio') %}
-                    <div class="media-player">
+                    <div class="media-player media-audio">
                         <audio id="player" autoplay controls loop preload="auto">
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 audio.

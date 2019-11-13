@@ -101,4 +101,5 @@ return [
     'lang_set' => 'Lingua di sistema applicata a "%s"',
     'prerelease_channel' => 'Canale prerelease',
     'no_upload_token' => 'Non hai un token personale per l\'upload associato. (Generane uno e riprova)',
+    'drop_to_upload' => 'Clicca o lascia i tuoi file qui per caricarli.',
 ];

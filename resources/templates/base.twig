@@ -19,16 +19,20 @@
     <link href="{{ asset('/static/plyr/plyr.css') }}" rel="stylesheet">
     <link href="{{ asset('/static/dropzone/dropzone.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/static/app/app.css') }}" rel="stylesheet">
-    <script>window.AppConfig = {'base_url': '{{ config.base_url }}', 'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}'}}</script>
+    <script>
+        window.AppConfig = {
+            'base_url': '{{ config.base_url }}',
+            'max_upload_size': {{ maxUploadSize }},
+            'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}', 'dropzone': '{{ lang('drop_to_upload') }}'}
+        }
+    </script>
     {% block head %}{% endblock %}
 </head>
 <body class="bg-light">
 {% block content %}{% endblock %}
 {% block footer %}
     <div class="container-fluid footer" style="display: none; font-size: 0.8rem">
-        <div class="text-muted">Proudly powered by <a href="https://github.com/SergiX44/XBackBone">XBackBone{% if session.admin %} v{{ PLATFORM_VERSION }}{% endif %}</a>
-                                — <i class="fas fa-fw fa-balance-scale"></i> AGPL v3.0
-        </div>
+        <div class="text-muted">Proudly powered by <a href="https://github.com/SergiX44/XBackBone">XBackBone{% if session.admin %} v{{ PLATFORM_VERSION }}{% endif %}</a> — <i class="fas fa-fw fa-balance-scale"></i> AGPL v3.0</div>
     </div>
 {% endblock %}
 <script src="{{ asset('/static/jquery/jquery.min.js') }}"></script>

@@ -101,4 +101,5 @@ return [
     'lang_set' => 'System language enforced to "%s"',
     'prerelease_channel' => 'Prerelease Channel',
     'no_upload_token' => 'You don\'t have a personal upload token. (Generate one and try again)',
+    'drop_to_upload' => 'Click or drop your files here to upload.',
 ];

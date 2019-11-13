@@ -1,10 +1,11 @@
 var app = {
-    init: function() {
+    init: function () {
         Dropzone.options.uploadDropzone = {
             paramName: 'upload',
-            maxFilesize: 2, // MB
-            accept: function(file, done) {
-                done('test');
+            maxFilesize: window.AppConfig.max_upload_size / Math.pow(1024, 2), // MB
+            dictDefaultMessage: window.AppConfig.lang.dropzone,
+            error: function (file, response) {
+                this.defaultOptions.error(file, response.message);
             }
         };
     },
@@ -24,12 +25,7 @@ var app = {
         });
 
         new ClipboardJS('.btn-clipboard');
-
-        var player = new Plyr($('#player'));
-        player.on('ready', function () {
-            player.volume = 0.5;
-            console.log('Player ready.');
-        });
+        new Plyr($('#player'));
 
         $('.footer').fadeIn(600);
 

@@ -85,7 +85,7 @@ class Lang
             $dict = include $file;
 
             $count = count($dict) - 1;
-            $percent = round(($count / $default) * 100);
+            $percent = min(round(($count / $default) * 100), 100);
 
             $languages[str_replace('.lang.php', '', basename($file))] = "[{$percent}%] ".$dict['lang'];
         }

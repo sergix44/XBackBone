@@ -82,18 +82,37 @@ body {
     text-align: right;
 }
 
-@media (min-width: 576px) {
+@media (max-width: 576px) {
     .media-player {
         width: 100%;
         margin-right: auto;
         margin-left: auto;
     }
+
+    .media-audio {
+        margin-top: 40vh;
+    }
 }
 
 @media (min-width: 768px) {
     .media-player {
-        width: 78%;
+        width: 77%;
         margin-right: auto;
         margin-left: auto;
+
     }
+
+    .media-audio {
+        margin-top: 50vh;
+    }
+}
+
+.dropzone {
+    min-height: 300px;
+    border: 2px dashed rgba(0, 0, 0, 0.3);
+    padding: 20px 20px;
+}
+
+.dropzone .dz-image {
+    border-radius: .25rem !important;
 }
