@@ -96,10 +96,7 @@ return [
     'cancel' => 'Annulla',
     'enforce_language' => 'Imponi lingua',
     'auto_set' => 'Imposta automaticamente',
-    'translated_strings' => 'stringhe tradotte',
-    'total_strings' => 'stringhe totali',
-    'lang_name' => 'nome della lingua',
-    'default_lang_behavior' => 'Per impostazione predefinita, XBackbone cercherà di abbinare la lingua del browser (il fallback è l\'inglese).',
+    'default_lang_behavior' => 'Per impostazione predefinita, XBackbone cercherà di abbinare la lingua del browser (il fallback è l\'Inglese).',
     'lang_set' => 'Lingua di sistema applicata a "%s"',
     'prerelease_channel' => 'Canale prerelease',
 ];

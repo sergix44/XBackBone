@@ -96,10 +96,7 @@ return [
     'maintenance_in_progress' => 'Platform under maintenance, try again later...',
     'cancel' => 'Cancel',
     'auto_set' => 'Set automatically',
-    'translated_strings' => 'translated strings',
-    'total_strings' => 'total strings',
-    'lang_name' => 'language name',
-    'default_lang_behavior' => 'XBackBone will try to match the browser language by default (fallback is English).',
+    'default_lang_behavior' => 'XBackBone will try to match the browser language by default (the fallback is English).',
     'lang_set' => 'System language enforced to "%s"',
     'prerelease_channel' => 'Prerelease Channel',
 ];

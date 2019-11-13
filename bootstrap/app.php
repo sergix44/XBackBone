@@ -3,9 +3,9 @@
 use App\Database\DB;
 use App\Exception\Handlers\AppErrorHandler;
 use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
+use App\Factories\ViewFactory;
 use App\Web\Lang;
 use App\Web\Session;
-use App\Web\View;
 use Aws\S3\S3Client;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
@@ -137,8 +137,8 @@ $builder->addDefinitions([
         return Lang::build(Lang::recognize(), BASE_DIR.'resources/lang/');
     }),
 
-    'view' => factory(function ($container) {
-        return new View($container);
+    'view' => factory(function (Container $container) {
+        return ViewFactory::createAppInstance($container);
     }),
 ]);
 

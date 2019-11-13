@@ -17,11 +17,10 @@ class CheckForMaintenanceMiddleware extends Middleware
      */
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
-        if (isset($this->config['maintenance']) && $this->settings['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
+        if (isset($this->config['maintenance']) && $this->config['maintenance'] && !$this->database->query('SELECT `id`, `is_admin` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->is_admin) {
             throw new UnderMaintenanceException($request);
         }
 
-        $response = $handler->handle($request);
-        return $response;
+        return $handler->handle($request);
     }
 }

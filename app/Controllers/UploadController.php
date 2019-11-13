@@ -84,7 +84,7 @@ class UploadController extends Controller
         $json['message'] = 'OK.';
         $json['url'] = urlFor("/$user->user_code/$code.$fileInfo[extension]");
 
-        $this->logger->info("User $user->username uploaded new media.", [$this->database->raw()->lastInsertId()]);
+        $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
 
         return json($response, $json, 201);
     }

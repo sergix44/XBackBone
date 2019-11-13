@@ -3,11 +3,26 @@
 namespace App\Middleware;
 
 
+use App\Database\DB;
+use App\Web\Lang;
+use App\Web\Session;
 use DI\Container;
+use League\Flysystem\Filesystem;
+use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Twig\Environment;
 
+/**
+ * @property Session|null session
+ * @property Environment view
+ * @property DB|null database
+ * @property Logger|null logger
+ * @property Filesystem|null storage
+ * @property Lang lang
+ * @property array config
+ */
 abstract class Middleware
 {
     /** @var Container */
