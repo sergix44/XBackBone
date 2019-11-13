@@ -1,3 +1,11 @@
+## v.3.0 (WIP)
++ Upgraded from Slim3 to Slim 4.
++ Added web upload.
++ Raw URL now accept file extensions.
++ Improved installer.
++ Replaced videojs player with Plyr.
++ Small fixes and improvements.
+
 ## v.2.6.6
 + Ability to choose between releases and prereleases with the web updater.
 + Updated translations.
