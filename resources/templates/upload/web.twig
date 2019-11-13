@@ -8,7 +8,7 @@
         {% include 'comp/alert.twig' %}
         <div class="card shadow-sm">
             <div class="card-body">
-                <form action="{{ route('upload') }}" class="dropzone" id="upload-dropzone">
+                <form action="{{ route('upload') }}" method="post" id="upload-dropzone" class="dropzone">
                     <div class="fallback">
                         <input name="file" type="file" multiple>
                     </div>

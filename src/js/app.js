@@ -1,4 +1,13 @@
 var app = {
+    init: function() {
+        Dropzone.options.uploadDropzone = {
+            paramName: 'upload',
+            maxFilesize: 2, // MB
+            accept: function(file, done) {
+                done('test');
+            }
+        };
+    },
     run: function () {
         $('[data-toggle="tooltip"]').tooltip();
         $('[data-toggle="popover"]').popover();
@@ -110,4 +119,5 @@ var app = {
     }
 };
 
+app.init();
 $(document).ready(app.run);
