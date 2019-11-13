@@ -16,11 +16,11 @@ var app = {
 
         new ClipboardJS('.btn-clipboard');
 
-        if ($('#player').length > 0) {
-            videojs('player').ready(function () {
-                this.volume(0.5);
-            });
-        }
+        var player = new Plyr($('#player'));
+        player.on('ready', function () {
+            player.volume = 0.5;
+            console.log('Player ready.');
+        });
 
         $('.footer').fadeIn(600);
 

@@ -64,14 +64,14 @@
                     </div>
                 {% elseif type is same as ('audio') %}
                     <div class="media-player">
-                        <audio id="player" class="video-js vjs-big-play-centered vjs-16-9" autoplay controls loop preload="auto" data-setup='{"responsive": true }'>
+                        <audio id="player" autoplay controls loop preload="auto">
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 audio.
                         </audio>
                     </div>
                 {% elseif type is same as ('video') %}
                     <div class="media-player">
-                        <video id="player" class="video-js vjs-big-play-centered vjs-16-9" autoplay controls loop preload="auto" data-setup='{"responsive": true }'>
+                        <video id="player" autoplay controls loop preload="auto">
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 video.
                         </video>

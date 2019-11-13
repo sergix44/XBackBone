@@ -85,9 +85,9 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'node_modules/video.js/dist',
-                        src: ['video.min.js', 'video-js.min.css'],
-                        dest: 'static/videojs'
+                        cwd: 'node_modules/plyr/dist',
+                        src: ['plyr.min.js', 'plyr.css'],
+                        dest: 'static/plyr'
                     },
                     {
                         expand: true,
