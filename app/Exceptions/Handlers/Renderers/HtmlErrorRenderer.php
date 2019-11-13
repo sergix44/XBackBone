@@ -5,6 +5,7 @@ namespace App\Exception\Handlers\Renderers;
 
 
 use App\Exceptions\UnderMaintenanceException;
+use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
@@ -38,6 +39,10 @@ class HtmlErrorRenderer implements ErrorRendererInterface
 
         if ($exception instanceof HttpNotFoundException) {
             return view()->string( 'errors/404.twig');
+        }
+
+        if ($exception instanceof HttpBadRequestException) {
+            return view()->string( 'errors/400.twig');
         }
 
         return view()->string('errors/500.twig', ['exception' => $displayErrorDetails ? $exception : null]);

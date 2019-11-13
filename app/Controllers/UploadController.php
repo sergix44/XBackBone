@@ -9,6 +9,7 @@ use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
 
@@ -218,17 +219,23 @@ class UploadController extends Controller
      * @param  Response  $response
      * @param  string  $userCode
      * @param  string  $mediaCode
+     * @param  string|null  $ext
      * @return Response
      * @throws FileNotFoundException
      * @throws HttpNotFoundException
      */
-    public function showRaw(Request $request, Response $response, string $userCode, string $mediaCode): Response
+    public function showRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
     {
         $media = $this->getMedia($userCode, $mediaCode);
 
         if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
             throw new HttpNotFoundException($request);
         }
+
+        if($ext !== null && pathinfo($media->filename, PATHINFO_EXTENSION) !== $ext){
+            throw new HttpBadRequestException($request);
+        }
+
         return $this->streamMedia($request, $response, $this->storage, $media);
     }
 

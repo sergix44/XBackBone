@@ -66,5 +66,5 @@ $app->post('/upload', [UploadController::class, 'upload'])->setName('upload');
 $app->get('/{userCode}/{mediaCode}', [UploadController::class, 'show'])->setName('public');
 $app->get('/{userCode}/{mediaCode}/delete/{token}', [UploadController::class, 'show'])->setName('public.delete.show')->add(CheckForMaintenanceMiddleware::class);
 $app->post('/{userCode}/{mediaCode}/delete/{token}', [UploadController::class, 'deleteByToken'])->setName('public.delete')->add(CheckForMaintenanceMiddleware::class);
-$app->get('/{userCode}/{mediaCode}/raw', [UploadController::class, 'showRaw'])->setName('public.raw');
+$app->get('/{userCode}/{mediaCode}/raw[.{ext}]', [UploadController::class, 'showRaw'])->setName('public.raw');
 $app->get('/{userCode}/{mediaCode}/download', [UploadController::class, 'download'])->setName('public.download');
