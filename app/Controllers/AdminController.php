@@ -80,8 +80,8 @@ class AdminController extends Controller
     {
         $config = require BASE_DIR.'config.php';
 
-        if (param($request,'lang') !== 'auto') {
-            $config['lang'] = param($request,'lang');
+        if (param($request, 'lang') !== 'auto') {
+            $config['lang'] = param($request, 'lang');
         } else {
             unset($config['lang']);
         }
@@ -89,6 +89,24 @@ class AdminController extends Controller
         file_put_contents(BASE_DIR.'config.php', '<?php'.PHP_EOL.'return '.var_export($config, true).';');
 
         $this->session->alert(lang('lang_set', [param($request, 'lang')]));
+
+        return redirect($response, route('system'));
+    }
+
+    /**
+     * @param  Request  $request
+     * @param  Response  $response
+     * @return Response
+     */
+    public function applyCustomHead(Request $request, Response $response): Response
+    {
+        if ($request->getAttribute('custom_head_key_present')) {
+            $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = \'custom_head\'', param($request, 'custom_head'));
+        } else {
+            $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES (\'custom_head\', ?)', param($request, 'custom_head'));
+        }
+
+        $this->session->alert(lang('custom_head_set'));
 
         return redirect($response, route('system'));
     }

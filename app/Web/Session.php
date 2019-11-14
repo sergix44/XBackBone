@@ -21,6 +21,18 @@ class Session
                 throw new Exception("The given path '{$path}' is not writable.");
             }
 
+            // Workaround for php <= 7.3
+            if (PHP_VERSION_ID < 70300) {
+                $params = session_get_cookie_params();
+                session_set_cookie_params(
+                    $params['lifetime'],
+                    $params['path'].'; SameSite=Lax',
+                    $params['domain'],
+                    $params['secure'],
+                    $params['httponly']
+                );
+            }
+
             $started = @session_start([
                 'name' => $name,
                 'save_path' => $path,
@@ -28,18 +40,6 @@ class Session
                 'gc_probability' => 25,
                 'cookie_samesite' => 'Lax' // works only for php  >= 7.3
             ]);
-
-            // Workaround for php <= 7.3
-            if (PHP_VERSION_ID < 70300) {
-                $sessionParams = session_get_cookie_params();
-                setcookie(
-                    $name,
-                    $this->getId(),
-                    $sessionParams['filetime'],
-                    $sessionParams['path'],
-                    $sessionParams['domain'].'; SameSite=Lax'
-                );
-            }
 
             if (!$started) {
                 throw new Exception("Cannot start the HTTP session. That the session path '{$path}' is writable and your PHP settings.");

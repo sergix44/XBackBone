@@ -27,6 +27,8 @@ $app->group('', function (RouteCollectorProxy $group) {
 
         $group->post('/system/lang/apply', [AdminController::class, 'applyLang'])->setName('lang.apply');
 
+        $group->post('/system/customHead', [AdminController::class, 'applyCustomHead'])->setName('customHead.apply');
+
         $group->post('/system/upgrade', [UpgradeController::class, 'upgrade'])->setName('system.upgrade');
         $group->get('/system/checkForUpdates', [UpgradeController::class, 'checkForUpdates'])->setName('system.checkForUpdates');
 

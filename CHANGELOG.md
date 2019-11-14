@@ -3,7 +3,10 @@
 + Added web upload.
 + Raw URL now accept file extensions.
 + Improved installer.
++ Improved thumbnail generation.
 + Replaced videojs player with Plyr.
++ Implemented SameSite XSS protection.
++ Added ability to add custom HTML in <head> tag.
 + Small fixes and improvements.
 
 ## v.2.6.6

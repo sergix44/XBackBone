@@ -4,6 +4,7 @@ use App\Database\DB;
 use App\Exception\Handlers\AppErrorHandler;
 use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
 use App\Factories\ViewFactory;
+use App\Middleware\InjectMiddleware;
 use App\Web\Lang;
 use App\Web\Session;
 use Aws\S3\S3Client;
@@ -172,8 +173,7 @@ $app->add(function (Request $request, RequestHandler $handler) {
     return $handler->handle($request);
 });
 
-// Load the application routes
-require BASE_DIR.'app/routes.php';
+$app->add(InjectMiddleware::class);
 
 // Configure the error handler
 $errorHandler = new AppErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
@@ -182,5 +182,8 @@ $errorHandler->registerErrorRenderer('text/html', HtmlErrorRenderer::class);
 // Add Error Middleware
 $errorMiddleware = $app->addErrorMiddleware($config['debug'], true, true);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
+
+// Load the application routes
+require BASE_DIR.'app/routes.php';
 
 return $app;

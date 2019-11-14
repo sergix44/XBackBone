@@ -112,3 +112,7 @@ body {
 .dropzone .dz-image {
     border-radius: .25rem !important;
 }
+
+.system-tile {
+    font-size: 2.5rem;
+}

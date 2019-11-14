@@ -29,6 +29,16 @@ var app = {
 
         $('.footer').fadeIn(600);
 
+        $('.same-height-container').each(function () {
+            var highestBox = 0;
+            $('.same-height', this).each(function () {
+                if ($(this).height() > highestBox) {
+                    highestBox = $(this).height();
+                }
+            });
+            $('.same-height', this).height(highestBox);
+        });
+
         console.log('Application is ready.');
     },
     modalDelete: function () {

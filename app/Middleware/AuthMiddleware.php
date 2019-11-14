@@ -24,7 +24,7 @@ class AuthMiddleware extends Middleware
         }
 
         if (!$this->database->query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->active) {
-            $this->session->alert('Your account is not active anymore.', 'danger');
+            $this->session->alert(lang('account_disabled'), 'danger');
             $this->session->set('logged', false);
             return redirect(new Response(), route('login.show'));
         }

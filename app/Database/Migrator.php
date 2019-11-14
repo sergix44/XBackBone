@@ -47,7 +47,7 @@ class Migrator
             $this->db->getPdo()->exec(file_get_contents($this->schemaPath.DIRECTORY_SEPARATOR.'migrations.sql'));
         }
 
-        $files = glob($this->schemaPath.DIRECTORY_SEPARATOR.$this->db->getCurrentDriver().'/*.sql');
+        $files = glob($this->schemaPath.'/'.$this->db->getCurrentDriver().'/*.sql');
 
         $names = array_map(function ($path) {
             return basename($path);

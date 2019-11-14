@@ -60,4 +60,12 @@ class View
         return $this->twig->render($view, $parameters);
     }
 
+    /**
+     * @return Environment
+     */
+    public function getTwig(): Environment
+    {
+        return $this->twig;
+    }
+
 }
