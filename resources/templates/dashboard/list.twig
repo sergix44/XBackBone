@@ -32,9 +32,9 @@
                                             <td class="text-center">
                                                 {% if isDisplayableImage(media.mimetype) %}
                                                     {% if media.username is not null %}
-                                                        <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=256&height=128') }}" class="img-fluid rounded admin-img">
+                                                        <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=84&height=42') }}" class="img-fluid rounded">
                                                     {% else %}
-                                                        <img src="{{ route('upload.raw', {'id': media.id}) }}" class="img-fluid rounded admin-img">
+                                                        <img src="{{ route('upload.raw', {'id': media.id}) }}" class="img-fluid rounded">
                                                     {% endif %}
                                                 {% else %}
                                                     <i class="far {{ mime2font(media.mimetype) }} fa-2x"></i>

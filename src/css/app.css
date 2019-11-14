@@ -40,10 +40,6 @@ body {
     border-top-right-radius: 0;
 }
 
-.admin-img {
-    max-height: 25px;
-}
-
 .user-title {
     white-space: nowrap;
     overflow: hidden;

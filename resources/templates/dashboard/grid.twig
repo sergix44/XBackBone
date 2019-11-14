@@ -13,7 +13,7 @@
                     <div class="col-md-4" id="media_{{ media.id }}">
                         <div class="card mb-4 shadow-sm">
                             {% if isDisplayableImage(media.mimetype) %}
-                                <img class="card-img" src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=286&height=219') }}" alt="Card image">
+                                <img class="card-img" src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=348&height=267') }}" alt="Card image">
                             {% else %}
                                 <div class="text-center" style="font-size: 178px;"><i class="far {{ mime2font(media.mimetype) }} mb-4 mt-4"></i></div>
                             {% endif %}

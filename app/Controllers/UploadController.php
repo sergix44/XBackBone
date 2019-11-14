@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use GuzzleHttp\Psr7\Stream;
+use Intervention\Image\Constraint;
 use Intervention\Image\ImageManagerStatic as Image;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
@@ -378,16 +379,20 @@ class UploadController extends Controller
         if (param($request, 'width') !== null && explode('/', $mime)[0] === 'image') {
 
             $image = Image::make($storage->readStream($media->storage_path))
-                ->resizeCanvas(
+                ->resize(
                     param($request, 'width'),
                     param($request, 'height'),
-                    'center')
-                ->encode('png');
+                    function (Constraint $constraint) {
+                        $constraint->aspectRatio();
+                    })
+                ->resizeCanvas(param($request, 'width'),
+                    param($request, 'height'), 'center')
+                ->stream('png');
 
-            $response->getBody()->write($image);
             return $response
                 ->withHeader('Content-Type', 'image/png')
-                ->withHeader('Content-Disposition', $disposition.';filename="scaled-'.pathinfo($media->filename)['filename'].'.png"');
+                ->withHeader('Content-Disposition', $disposition.';filename="scaled-'.pathinfo($media->filename, PATHINFO_FILENAME).'.png"')
+                ->withBody($image);
         } else {
             $stream = new Stream($storage->readStream($media->storage_path));
 
