@@ -1,5 +1,6 @@
 
-# XBackBone 📤 [![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg)](https://hosted.weblate.org/engage/xbackbone/?utm_source=widget) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone) [![Donations](https://i.imgur.com/bAqVIw8.png?2)](http://bit.ly/XBackBoneDonate)
+# XBackBone 📤 [![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg)](https://hosted.weblate.org/engage/xbackbone/?utm_source=widget) [![Build Status](https://travis-ci.org/SergiX44/XBackBone.svg?branch=master)](https://travis-ci.org/SergiX44/XBackBone) [![Donations](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url)
+
 XBackBone is a simple, self-hosted, lightweight PHP file manager that support the instant sharing tool ShareX and *NIX systems. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management, past uploads history and search support.
 
 ## Features
