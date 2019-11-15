@@ -25,7 +25,7 @@ var app = {
         });
 
         new ClipboardJS('.btn-clipboard');
-        new Plyr($('#player'));
+        new Plyr($('#player'), {ratio: '16:9'});
 
         $('.footer').fadeIn(600);
 

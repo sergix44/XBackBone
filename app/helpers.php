@@ -28,7 +28,7 @@ if (!function_exists('humanRandomString')) {
      * @param  int  $length
      * @return string
      */
-    function humanRandomString(int $length = 13): string
+    function humanRandomString(int $length = 10): string
     {
         $result = '';
         $numberOffset = round($length * 0.2);

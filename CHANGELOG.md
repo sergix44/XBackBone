@@ -1,12 +1,13 @@
 ## v.3.0 (WIP)
 + Upgraded from Slim3 to Slim 4.
 + Added web upload.
++ Added ability to add custom HTML in \<head\> tag.
++ Added ability to show a preview of PDF files.
 + Raw URL now accept file extensions.
 + Improved installer.
 + Improved thumbnail generation.
 + Replaced videojs player with Plyr.
 + Implemented SameSite XSS protection.
-+ Added ability to add custom HTML in <head> tag.
 + Small fixes and improvements.
 
 ## v.2.6.6

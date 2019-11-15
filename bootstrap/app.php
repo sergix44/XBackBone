@@ -5,6 +5,7 @@ use App\Exception\Handlers\AppErrorHandler;
 use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
 use App\Factories\ViewFactory;
 use App\Middleware\InjectMiddleware;
+use App\Middleware\RememberMiddleware;
 use App\Web\Lang;
 use App\Web\Session;
 use Aws\S3\S3Client;
@@ -149,7 +150,8 @@ if (!$config['debug']) {
     $app->getRouteCollector()->setCacheFile(BASE_DIR.'resources/cache/routes.cache.php');
 }
 
-$app->addRoutingMiddleware();
+$app->add(InjectMiddleware::class);
+$app->add(RememberMiddleware::class);
 
 // Permanently redirect paths with a trailing slash to their non-trailing counterpart
 $app->add(function (Request $request, RequestHandler $handler) {
@@ -173,7 +175,7 @@ $app->add(function (Request $request, RequestHandler $handler) {
     return $handler->handle($request);
 });
 
-$app->add(InjectMiddleware::class);
+$app->addRoutingMiddleware();
 
 // Configure the error handler
 $errorHandler = new AppErrorHandler($app->getCallableResolver(), $app->getResponseFactory());

@@ -24,8 +24,8 @@
                     <a class="dropdown-item" href="{{ queryParams({'sort':'size'}) }}"><i class="fas fa-weight-hanging fa-fw"></i> {{ lang('size') }}</a>
                 </div>
             </div>
-            <a href="{{ queryParams({'order': request.param('order') is same as('ASC') ? 'DESC' : 'ASC' }) }}" class="btn btn-outline-info">
-                <i class="fas {{ request.param('order') is same as('ASC') ? 'fa-sort-amount-up' : 'fa-sort-amount-down' }}"></i>
+            <a href="{{ queryParams({'order': request.queryParams['order'] is same as('ASC') ? 'DESC' : 'ASC' }) }}" class="btn btn-outline-info">
+                <i class="fas {{ request.queryParams['order'] is same as('ASC') ? 'fa-sort-amount-up' : 'fa-sort-amount-down' }}"></i>
             </a>
         </div>
     </div>

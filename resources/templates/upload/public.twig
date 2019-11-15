@@ -67,6 +67,7 @@
                         <audio id="player" autoplay controls loop preload="auto">
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 audio.
+                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </audio>
                     </div>
                 {% elseif type is same as ('video') %}
@@ -74,8 +75,14 @@
                         <video id="player" autoplay controls loop preload="auto">
                             <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 video.
+                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </video>
                     </div>
+                {% elseif media.mimetype is same as ('application/pdf') %}
+                    <object type="{{ media.mimetype }}" data="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="pdf-viewer">
+                        Your browser does not support PDF previews.
+                        <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                    </object>
                 {% else %}
                     <div class="text-center">
                         <div class="row mb-3">
@@ -116,7 +123,8 @@
                     <textarea type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()">{{ media.filename }}</textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text="><i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>
+                    <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text=">
+                        <i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang('cancel') }}</button>
                 </div>
             </div>

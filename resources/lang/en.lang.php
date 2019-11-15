@@ -107,4 +107,5 @@ return [
     'custom_head_html' => 'Custom HTML Head content',
     'custom_head_html_hint' => 'This content will be added at the <head> tag on every page.',
     'custom_head_set' => 'Custom Head HTML applied successfully.',
+    'remember_me' => 'Remember me',
 ];

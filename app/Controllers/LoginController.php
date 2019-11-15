@@ -28,6 +28,7 @@ class LoginController extends Controller
      * @param  Request  $request
      * @param  Response  $response
      * @return Response
+     * @throws \Exception
      */
     public function login(Request $request, Response $response): Response
     {
@@ -58,6 +59,30 @@ class LoginController extends Controller
         $this->session->alert(lang('welcome', [$result->username]), 'info');
         $this->logger->info("User $result->username logged in.");
 
+        if (param($request, 'remember') === 'on') {
+            $selector = bin2hex(random_bytes(8));
+            $token = bin2hex(random_bytes(32));
+            $expire = time() + 604800; // a week
+
+            $this->database->query('UPDATE `users` SET `remember_selector`=?, `remember_token`=?, `remember_expire`=? WHERE `id`=?', [
+                $selector,
+                password_hash($token, PASSWORD_DEFAULT),
+                date('Y-m-d\TH:i:s', $expire),
+                $result->id,
+            ]);
+
+            // Workaround for php <= 7.3
+            if (PHP_VERSION_ID < 70300) {
+                setcookie('remember', "{$selector}:{$token}", $expire, '; SameSite=Lax', '', false, true);
+            } else {
+                setcookie('remember', "{$selector}:{$token}", [
+                    'expires' => $expire,
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
+            }
+        }
+
         if ($this->session->has('redirectTo')) {
             return redirect($response, $this->session->get('redirectTo'));
         }
@@ -66,14 +91,20 @@ class LoginController extends Controller
     }
 
     /**
+     * @param  Request  $request
      * @param  Response  $response
      * @return Response
      */
-    public function logout(Response $response): Response
+    public function logout(Request $request,Response $response): Response
     {
         $this->session->clear();
         $this->session->set('logged', false);
         $this->session->alert(lang('goodbye'), 'warning');
+
+        if (!empty($request->getCookieParams()['remember'])) {
+            setcookie('remember', null);
+        }
+
         return redirect($response, route('login.show'));
     }
 

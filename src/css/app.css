@@ -35,7 +35,7 @@ body {
 }
 
 .form-signin input[type="password"] {
-    margin-bottom: 10px;
+    margin-bottom: .50rem;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
@@ -95,7 +95,6 @@ body {
         width: 77%;
         margin-right: auto;
         margin-left: auto;
-
     }
 
     .media-audio {
@@ -106,6 +105,7 @@ body {
 .dropzone {
     min-height: 300px;
     border: 2px dashed rgba(0, 0, 0, 0.3);
+    background: none;
     padding: 20px 20px;
 }
 
@@ -115,4 +115,9 @@ body {
 
 .system-tile {
     font-size: 2.5rem;
+}
+
+.pdf-viewer {
+    width: 100%;
+    height: 85vh
 }

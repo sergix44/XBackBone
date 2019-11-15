@@ -250,6 +250,7 @@ class UploadController extends Controller
      * @param  string|null  $ext
      * @return Response
      * @throws FileNotFoundException
+     * @throws HttpBadRequestException
      * @throws HttpNotFoundException
      */
     public function showRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
