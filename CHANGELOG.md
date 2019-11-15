@@ -3,6 +3,7 @@
 + Added web upload.
 + Added ability to add custom HTML in \<head\> tag.
 + Added ability to show a preview of PDF files.
++ Added remember me functionality.
 + Raw URL now accept file extensions.
 + Improved installer.
 + Improved thumbnail generation.
