@@ -5,6 +5,7 @@
 + Added ability to show a preview of PDF files.
 + Added remember me functionality.
 + Raw URL now accept file extensions.
++ The linux script can be used on headless systems.
 + Improved installer.
 + Improved thumbnail generation.
 + Replaced videojs player with Plyr.
