@@ -102,4 +102,10 @@ return [
     'prerelease_channel' => 'Canale prerelease',
     'no_upload_token' => 'Non hai un token personale per l\'upload associato. (Generane uno e riprova)',
     'drop_to_upload' => 'Clicca o lascia i tuoi file qui per caricarli.',
+    'donation' => 'Donazione',
+    'donate_text' => 'Se ti piace XBackBone, prendi in considerazione una donazione per sostenere lo sviluppo!',
+    'custom_head_html' => 'Contenuto Head HTML personalizzato',
+    'custom_head_html_hint' => 'Questo contenuto sarà aggiunto al tag <head> in ogni pagina.',
+    'custom_head_set' => 'Custom Head HTML applicato con successo.',
+    'remember_me' => 'Ricordami',
 ];
