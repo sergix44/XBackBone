@@ -10,8 +10,8 @@ assignees: ''
 **System Info**
 + PHP Version:
 + XBackBone Version:
-+ Webserver:
-+ Database backend:
++ Webserver: [Apache/Nginx/...]
++ Database backend: [SQLite/Mysql/...]
 
 **Describe the bug**
 A clear and concise description of what the bug is.
