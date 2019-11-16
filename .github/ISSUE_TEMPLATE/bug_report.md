@@ -11,6 +11,7 @@ assignees: ''
 + PHP Version:
 + XBackBone Version:
 + Webserver:
++ Database backend:
 
 **Describe the bug**
 A clear and concise description of what the bug is.
