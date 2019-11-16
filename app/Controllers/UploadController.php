@@ -379,7 +379,7 @@ class UploadController extends Controller
 
         if (param($request, 'width') !== null && explode('/', $mime)[0] === 'image') {
 
-            $image = Image::make($storage->readStream($media->storage_path))
+            $response = Image::make($storage->readStream($media->storage_path))
                 ->resize(
                     param($request, 'width'),
                     param($request, 'height'),
@@ -388,12 +388,9 @@ class UploadController extends Controller
                     })
                 ->resizeCanvas(param($request, 'width'),
                     param($request, 'height'), 'center')
-                ->stream('png');
+                ->psrResponse('png');
 
-            return $response
-                ->withHeader('Content-Type', 'image/png')
-                ->withHeader('Content-Disposition', $disposition.';filename="scaled-'.pathinfo($media->filename, PATHINFO_FILENAME).'.png"')
-                ->withBody($image);
+            return $response->withHeader('Content-Disposition', $disposition.';filename="scaled-'.pathinfo($media->filename, PATHINFO_FILENAME).'.png"');
         } else {
             $stream = new Stream($storage->readStream($media->storage_path));
 

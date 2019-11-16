@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mt-3">
                         <div class="card shadow-sm same-height">
                             <div class="card-header"><i class="fas fa-language fa-fw"></i> {{ lang('enforce_language') }}</div>
                             <div class="card-body">
@@ -125,7 +125,7 @@
 
                             <div class="col">
                                 <form method="post" action="{{ route('system.upgrade') }}">
-                                    <button type="submit" id="doUpgradeButton" class="btn btn-block btn-outline-success" disabled><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('upgrade') }}</button>
+                                    <button type="submit" id="doUpgradeButton" class="btn btn-block btn-outline-success" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})" disabled><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('upgrade') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -169,6 +169,21 @@
                             <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url" target="_blank" class="text-warning"><i class="fab fa-cc-paypal fa-3x"></i></a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">{{ lang('please_wait') }}</h6>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-10x fa-spinner fa-pulse"></i>
+                </div>
+                <div class="modal-footer">
+                    {{ lang('dont_close') }}
                 </div>
             </div>
         </div>

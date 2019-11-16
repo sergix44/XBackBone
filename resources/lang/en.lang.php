@@ -108,4 +108,6 @@ return [
     'custom_head_html_hint' => 'This content will be added at the <head> tag on every page.',
     'custom_head_set' => 'Custom Head HTML applied successfully.',
     'remember_me' => 'Remember me',
+    'please_wait' => 'Please wait...',
+    'dont_close' => 'Do not close this tab until completion.',
 ];
