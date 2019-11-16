@@ -108,4 +108,6 @@ return [
     'custom_head_html_hint' => 'Questo contenuto sarà aggiunto al tag <head> in ogni pagina.',
     'custom_head_set' => 'Custom Head HTML applicato con successo.',
     'remember_me' => 'Ricordami',
+    'please_wait' => 'Attendere prego...',
+    'dont_close' => 'Non chiudere questa scheda fino al completamento.',
 ];
