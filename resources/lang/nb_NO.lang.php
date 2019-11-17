@@ -102,4 +102,11 @@ return [
     'default_lang_behavior' => 'Som forvalg, vil XBackBone prøve å samsvare nettleserspråk (tilbakefallsspråk er engelsk).',
     'lang_set' => 'Systemspråk er satt til "%s"',
     'prerelease_channel' => 'Forhåndsslipp-kanal',
+    'upload' => 'Last opp',
+    'donation' => 'Donasjon',
+    'custom_head_html' => 'Egendefinert HTML-hodeinnhold',
+    'custom_head_html_hint' => 'Dette inneholdet vil bli lagt til i <head>-taggen på hver side.',
+    'custom_head_set' => 'Egendefinert HTML-hode lagt til.',
+    'remember_me' => 'Husk meg',
+    'please_wait' => 'Vent…',
 ];
