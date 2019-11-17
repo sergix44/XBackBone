@@ -185,10 +185,10 @@ if (!function_exists('urlFor')) {
      * @param  string  $append
      * @return string
      */
-    function urlFor(string $path, string $append = ''): string
+    function urlFor(string $path = '', string $append = ''): string
     {
-        $baseUrl = resolve('config')['base_url'];
-        return $baseUrl.$path.$append;
+        global $app;
+        return $app->getBasePath().$path.$append;
     }
 }
 

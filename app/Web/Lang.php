@@ -84,6 +84,10 @@ class Lang
         foreach (glob(self::$langPath.'*.lang.php') as $file) {
             $dict = include $file;
 
+            if (!is_array($dict)) {
+                continue;
+            }
+
             $count = count($dict) - 1;
             $percent = min(round(($count / $default) * 100), 100);
 

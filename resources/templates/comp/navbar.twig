@@ -16,7 +16,7 @@
                         {{ lang('upload') }}
                     </a>
                 </li>
-                {% if session.admin %}
+                {% if session.get('admin') %}
                     <li class="nav-item">
                         <a href="{{ route('user.index') }}" class="nav-link {{ request.uri.path starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
                             {{ lang('users') }}
@@ -32,11 +32,11 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-fw fa-user"></i> {{ session.username }}
+                        <i class="fas fa-fw fa-user"></i> {{ session.get('username') }}
                     </a>
                     <div class="dropdown-menu shadow-sm" aria-labelledby="userDropdown">
-                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.used_space }}</a>
-                        {% if session.admin %}
+                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.get('used_space') }}</a>
+                        {% if session.get('admin') %}
                             <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.gallery_view is null or session.gallery_view ? lang('gallery') : lang('table') }}</a>
                         {% endif %}
                         <div class="dropdown-divider"></div>

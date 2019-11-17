@@ -27,10 +27,9 @@
                     <form method="post" action="">
                         {% if not installed %}
                             <div class="form-group row">
-                                <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
+                                <label for="base_path" class="col-sm-3 col-form-label">Base Path</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="base_url" name="base_url" value="{{ config.base_url }}" autocomplete="off" required>
-                                    <small>No trailing slash.</small>
+                                    <input type="text" class="form-control" id="base_path" name="base_path" value="{{ app_path }}" autocomplete="off" required>
                                 </div>
                             </div>
                             <hr>
@@ -205,7 +204,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">

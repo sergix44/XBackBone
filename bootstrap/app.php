@@ -41,7 +41,7 @@ if (!file_exists('config.php') && is_dir('install/')) {
 // Load the config
 $config = array_replace_recursive([
     'app_name' => 'XBackBone',
-    'base_url' => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
+    'base_path' => $_SERVER['REQUEST_URI'],
     'debug' => false,
     'maintenance' => false,
     'db' => [
@@ -145,6 +145,7 @@ $builder->addDefinitions([
 ]);
 
 $app = Bridge::create($builder->build());
+$app->setBasePath(substr($config['base_path'], 0, -1));
 
 if (!$config['debug']) {
     $app->getRouteCollector()->setCacheFile(BASE_DIR.'resources/cache/routes.cache.php');
@@ -154,11 +155,11 @@ $app->add(InjectMiddleware::class);
 $app->add(RememberMiddleware::class);
 
 // Permanently redirect paths with a trailing slash to their non-trailing counterpart
-$app->add(function (Request $request, RequestHandler $handler) {
+$app->add(function (Request $request, RequestHandler $handler) use (&$config) {
     $uri = $request->getUri();
     $path = $uri->getPath();
 
-    if ($path !== '/' && substr($path, -1) === '/') {
+    if ($path !== $config['base_path'] && substr($path, -1) === '/') {
         // permanently redirect paths with a trailing slash
         // to their non-trailing counterpart
         $uri = $uri->withPath(substr($path, 0, -1));

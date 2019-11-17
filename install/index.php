@@ -31,7 +31,7 @@ define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
 
 // default config
 $config = [
-    'base_url' => str_replace('/install/', '', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"),
+    'base_path' => $_SERVER['REQUEST_URI'],
     'debug' => true,
     'db' => [
         'connection' => 'sqlite',
@@ -106,10 +106,10 @@ $builder->addDefinitions([
 ]);
 
 $app = Bridge::create($builder->build());
+$app->setBasePath($_SERVER['REQUEST_URI']);
 $app->addRoutingMiddleware();
-$app->setBasePath('/install');
 
-$app->get('/', function (Response $response, View $view, Session $session) {
+$app->get('', function (Response $response, View $view, Session $session) use (&$config) {
 
     if (!extension_loaded('gd')) {
         $session->alert('The required "gd" extension is not loaded.', 'danger');
@@ -143,10 +143,11 @@ $app->get('/', function (Response $response, View $view, Session $session) {
 
     return $view->render($response, 'install.twig', [
         'installed' => $installed,
+        'app_path' => str_replace('install/', '', $config['base_path']),
     ]);
-});
+})->setName('install');
 
-$app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session) use (&$config) {
+$app->post('', function (Request $request, Response $response, Filesystem $storage, Session $session) use (&$config) {
 
     // Check if there is a previous installation, if not, setup the config file
     $installed = true;
@@ -154,7 +155,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $installed = false;
 
         // config file setup
-        $config['base_url'] = param($request, 'base_url');
+        $config['base_path'] = param($request, 'base_path');
         $config['storage']['driver'] = param($request, 'storage_driver');
         unset($config['debug']);
         $config['db']['connection'] = param($request, 'connection');
@@ -176,6 +177,10 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
                 $config['storage']['token'] = param($request, 'storage_token');
                 break;
             case 'ftp':
+                if (!extension_loaded('ftp')) {
+                    $session->alert('The "ftp" extension is not loaded.', 'danger');
+                    return redirect($response, urlFor());
+                }
                 $config['storage']['host'] = param($request, 'storage_host');
                 $config['storage']['username'] = param($request, 'storage_username');
                 $config['storage']['password'] = param($request, 'storage_password');
@@ -194,30 +199,24 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
                 $config['storage']['path'] = param($request, 'storage_path');
                 break;
         }
+    }
 
-        // check if the storage is valid
-        $storageTestFile = 'storage_test.xbackbone.txt';
+    // check if the storage is valid
+    $storageTestFile = 'storage_test.xbackbone.txt';
+    try {
         try {
-            try {
-                $success = $storage->write($storageTestFile, 'XBACKBONE_TEST_FILE');
-            } catch (FileExistsException $fileExistsException) {
-                $success = $storage->update($storageTestFile, 'XBACKBONE_TEST_FILE');
-            }
-
-            if (!$success) {
-                throw new Exception('The storage is not writable.');
-            }
-            $storage->readAndDelete($storageTestFile);
-        } catch (Exception $e) {
-            $session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
-            return redirect($response, '/install');
+            $success = $storage->write($storageTestFile, 'XBACKBONE_TEST_FILE');
+        } catch (FileExistsException $fileExistsException) {
+            $success = $storage->update($storageTestFile, 'XBACKBONE_TEST_FILE');
         }
 
-        $ret = file_put_contents(__DIR__.'/../config.php', '<?php'.PHP_EOL.'return '.var_export($config, true).';');
-        if ($ret === false) {
-            $session->alert('The config folder is not writable ('.__DIR__.'/../config.php'.')', 'danger');
-            return redirect($response, '/install');
+        if (!$success) {
+            throw new Exception('The storage is not writable.');
         }
+        $storage->readAndDelete($storageTestFile);
+    } catch (Exception $e) {
+        $session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
+        return redirect($response, urlFor());
     }
 
     // if from older installations with no support of other than local driver
@@ -228,6 +227,13 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         unset($config['storage_dir']);
     }
 
+    // if from 2.x versions
+    // update the config
+    if ($installed && isset($config['base_url'])) {
+        $path = parse_url($config['base_url'], PHP_URL_PATH);
+        $config['base_path'] = $path.'/';
+        unset($config['base_url']);
+    }
 
     // Build the dns string and run the migrations
     try {
@@ -245,7 +251,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $migrator->migrate();
     } catch (PDOException $e) {
         $session->alert("Cannot connect to the database: {$e->getMessage()} [{$e->getCode()}]", 'danger');
-        return redirect($response, '/install');
+        return redirect($response, urlFor());
     }
 
     // if not installed, create the default admin account
@@ -262,17 +268,18 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     // if is upgrading and existing installation, put it out maintenance
     if ($installed) {
         unset($config['maintenance']);
+    }
 
-        $ret = file_put_contents(__DIR__.'/../config.php', '<?php'.PHP_EOL.'return '.var_export($config, true).';');
-        if ($ret === false) {
-            $session->alert('The config folder is not writable ('.__DIR__.'/../config.php'.')', 'danger');
-            return redirect($response, '/install');
-        }
+    // Finally write the config
+    $ret = file_put_contents(__DIR__.'/../config.php', '<?php'.PHP_EOL.'return '.var_export($config, true).';');
+    if ($ret === false) {
+        $session->alert('The config folder is not writable ('.__DIR__.'/../config.php'.')', 'danger');
+        return redirect($response, '/install');
     }
 
     // Installed successfully, destroy the installer session
     $session->destroy();
-    return redirect($response, "{$config['base_url']}/?afterInstall=true");
+    return redirect($response, "{$config['base_path']}?afterInstall=true");
 });
 
 $app->run();
