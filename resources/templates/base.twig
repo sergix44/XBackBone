@@ -21,7 +21,7 @@
     <link href="{{ asset('/static/app/app.css') }}" rel="stylesheet">
     <script>
         window.AppConfig = {
-            'base_path': '{{ config.base_path }}',
+            'base_path': '{{ urlFor() }}',
             'max_upload_size': {{ maxUploadSize }},
             'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}', 'dropzone': '{{ lang('drop_to_upload') }}'}
         }
