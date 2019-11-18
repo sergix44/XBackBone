@@ -11,17 +11,17 @@ use Aws\S3\S3Client;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
 use Google\Cloud\Storage\StorageClient;
+use League\Flysystem\Adapter\Ftp as FtpAdapter;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\Adapter\Ftp as FtpAdapter;
 use League\Flysystem\FileExistsException;
-use Spatie\Dropbox\Client as DropboxClient;
 use League\Flysystem\Filesystem;
+use Psr\Container\ContainerInterface as Container;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Spatie\Dropbox\Client as DropboxClient;
 use Spatie\FlysystemDropbox\DropboxAdapter;
 use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
-use Psr\Container\ContainerInterface as Container;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 use function DI\factory;
 use function DI\get;
 use function DI\value;
@@ -31,7 +31,7 @@ define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
 
 // default config
 $config = [
-    'base_path' => $_SERVER['REQUEST_URI'],
+    'base_url' => str_replace('/install/', '', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"),
     'debug' => true,
     'db' => [
         'connection' => 'sqlite',
@@ -106,10 +106,10 @@ $builder->addDefinitions([
 ]);
 
 $app = Bridge::create($builder->build());
-$app->setBasePath($_SERVER['REQUEST_URI']);
+$app->setBasePath(parse_url($config['base_url'].'/install', PHP_URL_PATH));
 $app->addRoutingMiddleware();
 
-$app->get('', function (Response $response, View $view, Session $session) use (&$config) {
+$app->get('/', function (Response $response, View $view, Session $session) use (&$config) {
 
     if (!extension_loaded('gd')) {
         $session->alert('The required "gd" extension is not loaded.', 'danger');
@@ -142,12 +142,11 @@ $app->get('', function (Response $response, View $view, Session $session) use (&
     $installed = file_exists(__DIR__.'/../config.php');
 
     return $view->render($response, 'install.twig', [
-        'installed' => $installed,
-        'app_path' => str_replace('install/', '', $config['base_path']),
+        'installed' => $installed
     ]);
 })->setName('install');
 
-$app->post('', function (Request $request, Response $response, Filesystem $storage, Session $session) use (&$config) {
+$app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session) use (&$config) {
 
     // Check if there is a previous installation, if not, setup the config file
     $installed = true;
@@ -155,7 +154,7 @@ $app->post('', function (Request $request, Response $response, Filesystem $stora
         $installed = false;
 
         // config file setup
-        $config['base_path'] = param($request, 'base_path');
+        $config['base_url'] = param($request, 'base_url');
         $config['storage']['driver'] = param($request, 'storage_driver');
         unset($config['debug']);
         $config['db']['connection'] = param($request, 'connection');
@@ -179,7 +178,7 @@ $app->post('', function (Request $request, Response $response, Filesystem $stora
             case 'ftp':
                 if (!extension_loaded('ftp')) {
                     $session->alert('The "ftp" extension is not loaded.', 'danger');
-                    return redirect($response, urlFor());
+                    return redirect($response, urlFor('/'));
                 }
                 $config['storage']['host'] = param($request, 'storage_host');
                 $config['storage']['username'] = param($request, 'storage_username');
@@ -216,7 +215,7 @@ $app->post('', function (Request $request, Response $response, Filesystem $stora
         $storage->readAndDelete($storageTestFile);
     } catch (Exception $e) {
         $session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
-        return redirect($response, urlFor());
+        return redirect($response, urlFor('/install'));
     }
 
     // if from older installations with no support of other than local driver
@@ -227,31 +226,21 @@ $app->post('', function (Request $request, Response $response, Filesystem $stora
         unset($config['storage_dir']);
     }
 
-    // if from 2.x versions
-    // update the config
-    if ($installed && isset($config['base_url'])) {
-        $path = parse_url($config['base_url'], PHP_URL_PATH);
-        $config['base_path'] = $path.'/';
-        unset($config['base_url']);
-    }
-
     // Build the dns string and run the migrations
     try {
-
         $firstMigrate = false;
         if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__.'/../'.$config['db']['dsn'])) {
             touch(__DIR__.'/../'.$config['db']['dsn']);
             $firstMigrate = true;
         }
 
-        $dsn = $config['db']['connection'] === 'sqlite' ? __DIR__.'/../'.$config['db']['dsn'] : $config['db']['dsn'];
-        $db = new DB($config['db']['connection'].':'.$dsn, $config['db']['username'], $config['db']['password']);
+        $db = new DB(dsnFromConfig($config), $config['db']['username'], $config['db']['password']);
 
         $migrator = new Migrator($db, __DIR__.'/../resources/schemas', $firstMigrate);
         $migrator->migrate();
     } catch (PDOException $e) {
         $session->alert("Cannot connect to the database: {$e->getMessage()} [{$e->getCode()}]", 'danger');
-        return redirect($response, urlFor());
+        return redirect($response, urlFor('/install'));
     }
 
     // if not installed, create the default admin account
@@ -279,7 +268,7 @@ $app->post('', function (Request $request, Response $response, Filesystem $stora
 
     // Installed successfully, destroy the installer session
     $session->destroy();
-    return redirect($response, "{$config['base_path']}?afterInstall=true");
+    return redirect($response, urlFor('/?afterInstall=true'));
 });
 
 $app->run();

@@ -1,6 +1,6 @@
 <?php
 return [
-	'base_path' => '/',
+    'base_url' => 'https://localhost', // no trailing slash
 	'db' => [
 		'connection' => 'sqlite',
 		'dsn' => 'resources/database/xbackbone.db',

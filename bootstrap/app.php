@@ -12,9 +12,6 @@ use Aws\S3\S3Client;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
 use Google\Cloud\Storage\StorageClient;
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use League\Flysystem\Adapter\Ftp as FtpAdapter;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
@@ -23,6 +20,8 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface as Container;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Spatie\Dropbox\Client as DropboxClient;
 use Spatie\FlysystemDropbox\DropboxAdapter;
 use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
@@ -41,7 +40,7 @@ if (!file_exists('config.php') && is_dir('install/')) {
 // Load the config
 $config = array_replace_recursive([
     'app_name' => 'XBackBone',
-    'base_path' => $_SERVER['REQUEST_URI'],
+    'base_url' => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
     'debug' => false,
     'maintenance' => false,
     'db' => [
@@ -65,7 +64,7 @@ if (!$config['debug']) {
 $builder->addDefinitions([
     'config' => value($config),
 
-    'logger' => factory(function (Container $container) {
+    'logger' => factory(function () {
         $logger = new Logger('app');
 
         $streamHandler = new RotatingFileHandler(BASE_DIR.'logs/log.txt', 10, Logger::DEBUG);
@@ -80,14 +79,13 @@ $builder->addDefinitions([
         return $logger;
     }),
 
-    'session' => factory(function (Container $container) {
+    'session' => factory(function () {
         return new Session('xbackbone_session', BASE_DIR.'resources/sessions');
     }),
 
     'database' => factory(function (Container $container) {
         $config = $container->get('config');
-        $dsn = $config['db']['connection'] === 'sqlite' ? BASE_DIR.$config['db']['dsn'] : $config['db']['dsn'];
-        return new DB($config['db']['connection'].':'.$dsn, $config['db']['username'], $config['db']['password']);
+        return new DB(dsnFromConfig($config), $config['db']['username'], $config['db']['password']);
     }),
 
     'storage' => factory(function (Container $container) {
@@ -145,7 +143,7 @@ $builder->addDefinitions([
 ]);
 
 $app = Bridge::create($builder->build());
-$app->setBasePath(substr($config['base_path'], 0, -1));
+$app->setBasePath(parse_url($config['base_url'], PHP_URL_PATH));
 
 if (!$config['debug']) {
     $app->getRouteCollector()->setCacheFile(BASE_DIR.'resources/cache/routes.cache.php');
@@ -155,18 +153,18 @@ $app->add(InjectMiddleware::class);
 $app->add(RememberMiddleware::class);
 
 // Permanently redirect paths with a trailing slash to their non-trailing counterpart
-$app->add(function (Request $request, RequestHandler $handler) use (&$config) {
+$app->add(function (Request $request, RequestHandler $handler) use (&$app, &$config) {
     $uri = $request->getUri();
     $path = $uri->getPath();
 
-    if ($path !== $config['base_path'] && substr($path, -1) === '/') {
+    if ($path !== $app->getBasePath().'/' && substr($path, -1) === '/') {
         // permanently redirect paths with a trailing slash
         // to their non-trailing counterpart
         $uri = $uri->withPath(substr($path, 0, -1));
 
-        if ($request->getMethod() == 'GET') {
-            $response = new Response();
-            return $response->withStatus(301)
+        if ($request->getMethod() === 'GET') {
+            return $app->getResponseFactory()
+                ->createResponse(301)
                 ->withHeader('Location', (string)$uri);
         } else {
             $request = $request->withUri($uri);

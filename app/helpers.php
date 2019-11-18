@@ -187,8 +187,8 @@ if (!function_exists('urlFor')) {
      */
     function urlFor(string $path = '', string $append = ''): string
     {
-        global $app;
-        return $app->getBasePath().$path.$append;
+        $baseUrl = resolve('config')['base_url'];
+        return $baseUrl.$path.$append;
     }
 }
 
@@ -375,5 +375,18 @@ if (!function_exists('glob_recursive')) {
             $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
         }
         return $files;
+    }
+}
+
+if (!function_exists('dsnFromConfig')) {
+    /**
+     * Return the database DSN from config.
+     * @param  array  $config
+     * @return string
+     */
+    function dsnFromConfig(array $config): string
+    {
+        $dsn = $config['db']['connection'] === 'sqlite' ? BASE_DIR.$config['db']['dsn'] : $config['db']['dsn'];
+        return $config['db']['connection'].':'.$dsn;
     }
 }

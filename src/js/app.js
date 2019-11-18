@@ -51,7 +51,7 @@ var app = {
         var isOutline = false;
         if ($(this).data('published')) {
             isOutline = $callerButton.hasClass('btn-outline-warning');
-            $.post(window.AppConfig.base_path + '/upload/' + id + '/unpublish', function () {
+            $.post(window.AppConfig.base_url + '/upload/' + id + '/unpublish', function () {
                 $callerButton
                     .data('published', false)
                     .tooltip('dispose')
@@ -64,7 +64,7 @@ var app = {
             });
         } else {
             isOutline = $callerButton.hasClass('btn-outline-info');
-            $.post(window.AppConfig.base_path + '/upload/' + id + '/publish', function () {
+            $.post(window.AppConfig.base_url + '/upload/' + id + '/publish', function () {
                 $callerButton
                     .data('published', true)
                     .tooltip('dispose')
@@ -80,7 +80,7 @@ var app = {
     mediaDelete: function () {
         var id = $(this).data('id');
         var $callerButton = $(this);
-        $.post(window.AppConfig.base_path + '/upload/' + id + '/delete', function () {
+        $.post(window.AppConfig.base_url + '/upload/' + id + '/delete', function () {
             $callerButton.tooltip('dispose');
             $('#media_' + id).fadeOut(200, function () {
                 $(this).remove();
@@ -89,14 +89,14 @@ var app = {
     },
     refreshToken: function () {
         var id = $(this).data('id');
-        $.post(window.AppConfig.base_path + '/user/' + id + '/refreshToken', function (data) {
+        $.post(window.AppConfig.base_url + '/user/' + id + '/refreshToken', function (data) {
             $('#token').val(data);
         });
     },
     loadThemes: function (e) {
         e.preventDefault();
         var $themes = $('#themes');
-        $.get(window.AppConfig.base_path + '/system/themes', function (data) {
+        $.get(window.AppConfig.base_url + '/system/themes', function (data) {
             $themes.empty();
             $.each(data, function (key, value) {
                 var opt = document.createElement('option');
@@ -114,7 +114,7 @@ var app = {
     checkForUpdates: function () {
         $('#checkForUpdatesMessage').empty().text('...');
         $('#doUpgradeButton').prop('disabled', true);
-        $.get(window.AppConfig.base_path + '/system/checkForUpdates?prerelease=' + $(this).data('prerelease'), function (data) {
+        $.get(window.AppConfig.base_url + '/system/checkForUpdates?prerelease=' + $(this).data('prerelease'), function (data) {
             $('#checkForUpdatesMessage').empty().text(data.message);
             if (data.upgrade) {
                 $('#doUpgradeButton').prop('disabled', false);

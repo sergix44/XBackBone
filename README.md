@@ -47,11 +47,11 @@ XBackBone require PHP >= `7.1`, with installed the required extensions:
 cp config.example.php config.php && nano config.php
 ```
 By default, XBackBone will use Sqlite3 as DB engine, and a `storage` dir in the main directory. You can leave these settings unchanged for a simple personal installation.
-You must set the `base_path`, or remove it for get dynamically the url from request (not recommended).
+You must set the `base_url`, or remove it for get dynamically the url from request (not recommended).
 
 ```php
 return [
-	'base_path' => '/',
+	'base_url' => 'https://example.com', // no trailing slash
 	'storage' => [
 		'driver' => 'local',
 		'path' => 'storage',
