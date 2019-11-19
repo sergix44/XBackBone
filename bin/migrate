@@ -24,8 +24,7 @@ if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__.'/../'.$con
     $firstMigrate = true;
 }
 
-$dsn = $config['db']['connection'] === 'sqlite' ? __DIR__.'/../'.$config['db']['dsn'] : $config['db']['dsn'];
-$db = new DB($config['db']['connection'].':'.$dsn, $config['db']['username'], $config['db']['password']);
+$db = new DB(dsnFromConfig($config), $config['db']['username'], $config['db']['password']);
 
 $migrator = new Migrator($db, 'resources/schemas', $firstMigrate);
 $migrator->migrate();

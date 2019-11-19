@@ -1,31 +1,18 @@
 <?php
 
-use App\Database\DB;
 use App\Exception\Handlers\AppErrorHandler;
 use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
 use App\Factories\ViewFactory;
 use App\Middleware\InjectMiddleware;
 use App\Middleware\RememberMiddleware;
-use App\Web\Lang;
-use App\Web\Session;
-use Aws\S3\S3Client;
+use App\Web\View;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
-use Google\Cloud\Storage\StorageClient;
-use League\Flysystem\Adapter\Ftp as FtpAdapter;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\Filesystem;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Spatie\Dropbox\Client as DropboxClient;
-use Spatie\FlysystemDropbox\DropboxAdapter;
-use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
 use function DI\factory;
+use function DI\get;
 use function DI\value;
 
 if (!file_exists('config.php') && is_dir('install/')) {
@@ -61,89 +48,19 @@ if (!$config['debug']) {
     $builder->enableCompilation(BASE_DIR.'/resources/cache/di/');
     $builder->writeProxiesToFile(true, BASE_DIR.'/resources/cache/proxies');
 }
+
 $builder->addDefinitions([
     'config' => value($config),
-
-    'logger' => factory(function () {
-        $logger = new Logger('app');
-
-        $streamHandler = new RotatingFileHandler(BASE_DIR.'logs/log.txt', 10, Logger::DEBUG);
-
-        $lineFormatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n", "Y-m-d H:i:s");
-        $lineFormatter->includeStacktraces(true);
-
-        $streamHandler->setFormatter($lineFormatter);
-
-        $logger->pushHandler($streamHandler);
-
-        return $logger;
-    }),
-
-    'session' => factory(function () {
-        return new Session('xbackbone_session', BASE_DIR.'resources/sessions');
-    }),
-
-    'database' => factory(function (Container $container) {
-        $config = $container->get('config');
-        return new DB(dsnFromConfig($config), $config['db']['username'], $config['db']['password']);
-    }),
-
-    'storage' => factory(function (Container $container) {
-        $config = $container->get('config');
-        switch ($config['storage']['driver']) {
-            case 'local':
-                return new Filesystem(new Local($config['storage']['path']));
-            case 's3':
-                $client = new S3Client([
-                    'credentials' => [
-                        'key' => $config['storage']['key'],
-                        'secret' => $config['storage']['secret'],
-                    ],
-                    'region' => $config['storage']['region'],
-                    'version' => 'latest',
-                ]);
-
-                return new Filesystem(new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']));
-            case 'dropbox':
-                $client = new DropboxClient($config['storage']['token']);
-                return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
-            case 'ftp':
-                return new Filesystem(new FtpAdapter([
-                    'host' => $config['storage']['host'],
-                    'username' => $config['storage']['username'],
-                    'password' => $config['storage']['password'],
-                    'port' => $config['storage']['port'],
-                    'root' => $config['storage']['path'],
-                    'passive' => $config['storage']['passive'],
-                    'ssl' => $config['storage']['ssl'],
-                    'timeout' => 30,
-                ]));
-            case 'google-cloud':
-                $client = new StorageClient([
-                    'projectId' => $config['storage']['project_id'],
-                    'keyFilePath' => $config['storage']['key_path'],
-                ]);
-                return new Filesystem(new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket'])));
-            default:
-                throw new InvalidArgumentException('The driver specified is not supported.');
-        }
-    }),
-
-    'lang' => factory(function (Container $container) {
-        $config = $container->get('config');
-        if (isset($config['lang'])) {
-            return Lang::build($config['lang'], BASE_DIR.'resources/lang/');
-        }
-        return Lang::build(Lang::recognize(), BASE_DIR.'resources/lang/');
-    }),
-
-    'view' => factory(function (Container $container) {
+    View::class => factory(function (Container $container) {
         return ViewFactory::createAppInstance($container);
     }),
+    'view' => get(View::class),
 ]);
 
+$builder->addDefinitions(__DIR__.'/container.php');
+
 $app = Bridge::create($builder->build());
-$app->setBasePath(parse_url($config['base_url'], PHP_URL_PATH));
+$app->setBasePath(parse_url($config['base_url'], PHP_URL_PATH) ?: '');
 
 if (!$config['debug']) {
     $app->getRouteCollector()->setCacheFile(BASE_DIR.'resources/cache/routes.cache.php');

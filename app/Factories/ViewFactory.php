@@ -61,8 +61,7 @@ class ViewFactory
 
         $twig->addGlobal('config', $config);
         $twig->addGlobal('request', $request);
-        $twig->addGlobal('alerts', $container->get('session')->getAlert());
-        $twig->addGlobal('session', $container->get('session')->all());
+        $twig->addGlobal('session', $container->get('session'));
         $twig->addGlobal('PLATFORM_VERSION', PLATFORM_VERSION);
 
         return new View($twig);

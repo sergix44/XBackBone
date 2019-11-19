@@ -7,21 +7,13 @@ use App\Database\Migrator;
 use App\Factories\ViewFactory;
 use App\Web\Session;
 use App\Web\View;
-use Aws\S3\S3Client;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
-use Google\Cloud\Storage\StorageClient;
-use League\Flysystem\Adapter\Ftp as FtpAdapter;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Spatie\Dropbox\Client as DropboxClient;
-use Spatie\FlysystemDropbox\DropboxAdapter;
-use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
 use function DI\factory;
 use function DI\get;
 use function DI\value;
@@ -53,57 +45,12 @@ $builder = new ContainerBuilder();
 
 $builder->addDefinitions([
     'config' => value($config),
-
-    Session::class => factory(function () {
-        return new Session('xbackbone_session');
-    }),
-    'session' => get(Session::class),
-
-    Filesystem::class => factory(function (Container $container) {
-        $config = $container->get('config');
-        switch ($config['storage']['driver']) {
-            case 'local':
-                return new Filesystem(new Local($config['storage']['path']));
-            case 's3':
-                $client = new S3Client([
-                    'credentials' => [
-                        'key' => $config['storage']['key'],
-                        'secret' => $config['storage']['secret'],
-                    ],
-                    'region' => $config['storage']['region'],
-                    'version' => 'latest',
-                ]);
-
-                return new Filesystem(new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']));
-            case 'dropbox':
-                $client = new DropboxClient($config['storage']['token']);
-                return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
-            case 'ftp':
-                return new Filesystem(new FtpAdapter([
-                    'host' => $config['storage']['host'],
-                    'username' => $config['storage']['username'],
-                    'password' => $config['storage']['password'],
-                    'port' => $config['storage']['port'],
-                    'root' => $config['storage']['path'],
-                    'passive' => $config['storage']['passive'],
-                    'ssl' => $config['storage']['ssl'],
-                    'timeout' => 30,
-                ]));
-            case 'google-cloud':
-                $client = new StorageClient([
-                    'projectId' => $config['storage']['project_id'],
-                    'keyFilePath' => $config['storage']['key_path'],
-                ]);
-                return new Filesystem(new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket'])));
-            default:
-                throw new InvalidArgumentException('The driver specified is not supported.');
-        }
-    }),
-
-    View::class => factory(function ($container) {
+    View::class => factory(function (Container $container) {
         return ViewFactory::createInstallerInstance($container);
     }),
+    'view' => get(View::class),
 ]);
+$builder->addDefinitions(__DIR__.'/../bootstrap/container.php');
 
 $app = Bridge::create($builder->build());
 $app->setBasePath(parse_url($config['base_url'].'/install', PHP_URL_PATH));
@@ -142,7 +89,7 @@ $app->get('/', function (Response $response, View $view, Session $session) use (
     $installed = file_exists(__DIR__.'/../config.php');
 
     return $view->render($response, 'install.twig', [
-        'installed' => $installed
+        'installed' => $installed,
     ]);
 })->setName('install');
 
