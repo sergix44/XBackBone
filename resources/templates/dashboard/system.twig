@@ -124,8 +124,8 @@
                             <div class="col text-center"><span class="text-muted" id="checkForUpdatesMessage"></span></div>
 
                             <div class="col">
-                                <form method="post" action="{{ route('system.upgrade') }}">
-                                    <button type="submit" id="doUpgradeButton" class="btn btn-block btn-outline-success" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})" disabled><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('upgrade') }}</button>
+                                <form method="post" action="{{ route('system.upgrade') }}" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                                    <button type="submit" id="doUpgradeButton" class="btn btn-block btn-outline-success" disabled><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('upgrade') }}</button>
                                 </form>
                             </div>
                         </div>

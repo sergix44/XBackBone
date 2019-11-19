@@ -24,7 +24,7 @@
             <div class="card mt-3">
                 <div class="card-header">Install XBackBone</div>
                 <div class="card-body">
-                    <form method="post" action="">
+                    <form method="post" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
                         {% if not installed %}
                             <div class="form-group row">
                                 <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
@@ -184,7 +184,7 @@
 
                             <div class="form-group row justify-content-md-end">
                                 <div class="col-sm-9">
-                                    <button type="submit" class="btn btn-outline-success" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                                    <button type="submit" class="btn btn-outline-success">
                                         <i class="fas fa-save fa-fw"></i> Install
                                     </button>
                                 </div>
@@ -193,7 +193,7 @@
                         {% else %}
                             <div class="form-group row">
                                 <div class="col-sm-12 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-lg btn-outline-primary" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                                    <button type="submit" class="btn btn-lg btn-outline-primary">
                                         <i class="fas fa-sync fa-fw"></i> Update database
                                     </button>
                                 </div>
