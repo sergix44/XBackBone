@@ -6,6 +6,10 @@ var app = {
             dictDefaultMessage: window.AppConfig.lang.dropzone,
             error: function (file, response) {
                 this.defaultOptions.error(file, response.message);
+            },
+            totaluploadprogress: function (uploadProgress) {
+                var text = Math.round(uploadProgress) + '%';
+                $('#uploadProgess').css({'width': text}).text(text);
             }
         };
     },

@@ -8,6 +8,9 @@
         {% include 'comp/alert.twig' %}
         <div class="card shadow-sm">
             <div class="card-body">
+                <div class="progress mb-3">
+                    <div class="progress-bar progress-bar-animated progress-bar-striped" style="width: 0;" id="uploadProgess"></div>
+                </div>
                 <form action="{{ route('upload') }}" method="post" id="upload-dropzone" class="dropzone">
                     <div class="fallback">
                         <input name="file" type="file" multiple>
