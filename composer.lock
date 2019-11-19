@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.117.2",
+            "version": "3.118.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "3dc81df70f1cdf2842c85915548bffb870c1e1da"
+                "reference": "e4600c22cb69c94d1aa65bf91af5c225f2a109fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3dc81df70f1cdf2842c85915548bffb870c1e1da",
-                "reference": "3dc81df70f1cdf2842c85915548bffb870c1e1da",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e4600c22cb69c94d1aa65bf91af5c225f2a109fd",
+                "reference": "e4600c22cb69c94d1aa65bf91af5c225f2a109fd",
                 "shasum": ""
             },
             "require": {
@@ -87,7 +87,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-11-15T19:21:02+00:00"
+            "time": "2019-11-18T19:13:19+00:00"
         },
         {
             "name": "firebase/php-jwt",
