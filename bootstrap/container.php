@@ -91,11 +91,7 @@ return [
     }),
     'storage' => get(Filesystem::class),
 
-    Lang::class => factory(function (Container $container) {
-        $config = $container->get('config');
-        if (isset($config['lang'])) {
-            return Lang::build($config['lang'], BASE_DIR.'resources/lang/');
-        }
+    Lang::class => factory(function () {
         return Lang::build(Lang::recognize(), BASE_DIR.'resources/lang/');
     }),
     'lang' => get(Lang::class),

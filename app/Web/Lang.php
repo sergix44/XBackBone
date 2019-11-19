@@ -72,6 +72,15 @@ class Lang
         return self::$lang;
     }
 
+
+    /**
+     * @param $lang
+     */
+    public static function setLang($lang)
+    {
+        self::$lang = $lang;
+    }
+
     /**
      * @return array
      */

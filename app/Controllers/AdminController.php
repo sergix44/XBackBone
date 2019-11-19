@@ -11,6 +11,7 @@ class AdminController extends Controller
 {
 
     /**
+     * @param  Request  $request
      * @param  Response  $response
      * @return Response
      * @throws FileNotFoundException
@@ -18,7 +19,7 @@ class AdminController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function system(Response $response): Response
+    public function system(Request $request, Response $response): Response
     {
         $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count;
         $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
@@ -41,6 +42,7 @@ class AdminController extends Controller
             'post_max_size' => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
             'installed_lang' => $this->lang->getList(),
+            'forced_lang' => $request->getAttribute('forced_lang')
         ]);
     }
 
@@ -78,15 +80,15 @@ class AdminController extends Controller
      */
     public function applyLang(Request $request, Response $response): Response
     {
-        $config = require BASE_DIR.'config.php';
-
         if (param($request, 'lang') !== 'auto') {
-            $config['lang'] = param($request, 'lang');
+            if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'lang\'')->fetch()) {
+                $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES (\'lang\', ?)', param($request, 'lang'));
+            } else {
+                $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = \'lang\'', param($request, 'lang'));
+            }
         } else {
-            unset($config['lang']);
+            $this->database->query('DELETE FROM `settings` WHERE `key` = \'lang\'');
         }
-
-        file_put_contents(BASE_DIR.'config.php', '<?php'.PHP_EOL.'return '.var_export($config, true).';');
 
         $this->session->alert(lang('lang_set', [param($request, 'lang')]));
 

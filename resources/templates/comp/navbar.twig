@@ -7,23 +7,23 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link {{ request.uri.path starts with '/home' ? 'active' }}"><i class="fas fa-fw fa-home"></i>
+                    <a href="{{ route('home') }}" class="nav-link {{ inPath(request.uri.path, '/home') ? 'active' }}"><i class="fas fa-fw fa-home"></i>
                         {{ lang('home') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('upload') }}" class="nav-link {{ request.uri.path starts with '/upload' ? 'active' }}"><i class="fas fa-fw fa-upload"></i>
+                    <a href="{{ route('upload') }}" class="nav-link {{ inPath(request.uri.path, '/upload') ? 'active' }}"><i class="fas fa-fw fa-upload"></i>
                         {{ lang('upload') }}
                     </a>
                 </li>
                 {% if session.get('admin') %}
                     <li class="nav-item">
-                        <a href="{{ route('user.index') }}" class="nav-link {{ request.uri.path starts with '/user' ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                        <a href="{{ route('user.index') }}" class="nav-link {{ inPath(request.uri.path, '/users') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
                             {{ lang('users') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('system') }}" class="nav-link {{ request.uri.path starts with '/system' ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
+                        <a href="{{ route('system') }}" class="nav-link {{ inPath(request.uri.path, '/system') ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
                             {{ lang('system') }}
                         </a>
                     </li>

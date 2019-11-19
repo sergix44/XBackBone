@@ -4,6 +4,7 @@ use App\Exception\Handlers\AppErrorHandler;
 use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
 use App\Factories\ViewFactory;
 use App\Middleware\InjectMiddleware;
+use App\Middleware\LangMiddleware;
 use App\Middleware\RememberMiddleware;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
@@ -67,6 +68,7 @@ if (!$config['debug']) {
 }
 
 $app->add(InjectMiddleware::class);
+$app->add(LangMiddleware::class);
 $app->add(RememberMiddleware::class);
 
 // Permanently redirect paths with a trailing slash to their non-trailing counterpart

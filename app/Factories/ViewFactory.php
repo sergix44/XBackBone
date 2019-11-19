@@ -26,7 +26,7 @@ class ViewFactory
             'auto_reload' => $config['debug'],
         ]);
 
-        $request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
+        $request = ServerRequestCreatorFactory::determineServerRequestCreator()->createServerRequestFromGlobals();
 
         $twig->addGlobal('config', $config);
         $twig->addGlobal('request', $request);
@@ -42,6 +42,7 @@ class ViewFactory
         $twig->addFunction(new TwigFunction('mime2font', 'mime2font'));
         $twig->addFunction(new TwigFunction('queryParams', 'queryParams'));
         $twig->addFunction(new TwigFunction('isDisplayableImage', 'isDisplayableImage'));
+        $twig->addFunction(new TwigFunction('inPath', 'inPath'));
 
         return new View($twig);
     }
@@ -57,7 +58,7 @@ class ViewFactory
             'auto_reload' => $config['debug'],
         ]);
 
-        $request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
+        $request = ServerRequestCreatorFactory::determineServerRequestCreator()->createServerRequestFromGlobals();
 
         $twig->addGlobal('config', $config);
         $twig->addGlobal('request', $request);

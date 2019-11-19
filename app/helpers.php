@@ -352,12 +352,25 @@ if (!function_exists('queryParams')) {
      */
     function queryParams(array $replace = [])
     {
-        $serverRequestCreator = ServerRequestCreatorFactory::create();
-        $request = $serverRequestCreator->createServerRequestFromGlobals();
+        $request = ServerRequestCreatorFactory::determineServerRequestCreator()->createServerRequestFromGlobals();
 
         $params = array_replace_recursive($request->getQueryParams(), $replace);
 
         return !empty($params) ? '?'.http_build_query($params) : '';
+    }
+}
+
+if (!function_exists('inPath')) {
+    /**
+     * Check if uri start with a path
+     * @param  string  $uri
+     * @param  string  $path
+     * @return bool
+     */
+    function inPath(string $uri, string $path): bool
+    {
+        $path = parse_url(urlFor($path), PHP_URL_PATH);
+        return substr($uri, 0, strlen($uri)) === $path;
     }
 }
 

@@ -204,6 +204,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     // if is upgrading and existing installation, put it out maintenance
     if ($installed) {
         unset($config['maintenance']);
+        unset($config['lang']);
     }
 
     // Finally write the config

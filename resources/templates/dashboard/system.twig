@@ -86,9 +86,9 @@
                                     <div class="form-group row">
                                         <div class="col-sm-12">
                                             <select class="form-control" id="lang" name="lang">
-                                                <option value="auto" selected>({{ lang('auto_set') }})</option>
+                                                <option value="auto">({{ lang('auto_set') }})</option>
                                                 {% for lang, name in installed_lang %}
-                                                    <option value="{{ lang }}">{{ name }}</option>
+                                                    <option value="{{ lang }}"{{ forced_lang == lang ? ' selected' }}>{{ name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <small>{{ lang('default_lang_behavior') }}</small>
