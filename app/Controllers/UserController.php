@@ -114,14 +114,11 @@ class UserController extends Controller
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     * @throws HttpUnauthorizedException
      */
     public function edit(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request);
-        }
+        $user = $this->getUser($request, $id, false);
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => false,
@@ -135,14 +132,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return Response
      * @throws HttpNotFoundException
+     * @throws HttpUnauthorizedException
      */
     public function update(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request);
-        }
+        $user = $this->getUser($request, $id, false);
 
         if (param($request, 'email') === null) {
             $this->session->alert(lang('email_required'), 'danger');
@@ -204,14 +198,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return Response
      * @throws HttpNotFoundException
+     * @throws HttpUnauthorizedException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request, $response);
-        }
+        $user = $this->getUser($request, $id, false);
 
         if ($user->id === $this->session->get('user_id')) {
             $this->session->alert(lang('cannot_delete'), 'danger');
@@ -238,15 +229,7 @@ class UserController extends Controller
      */
     public function profile(Request $request, Response $response): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $this->session->get('user_id'))->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request);
-        }
-
-        if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
-            throw new HttpUnauthorizedException($request);
-        }
+        $user = $this->getUser($request, $this->session->get('user_id'), true);
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => true,
@@ -264,15 +247,7 @@ class UserController extends Controller
      */
     public function profileEdit(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request, $response);
-        }
-
-        if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
-            throw new HttpUnauthorizedException($request);
-        }
+        $user = $this->getUser($request, $id, true);
 
         if (param($request, 'email') === null) {
             $this->session->alert(lang('email_required'), 'danger');
@@ -313,15 +288,7 @@ class UserController extends Controller
      */
     public function refreshToken(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request, $response);
-        }
-
-        if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
-            throw new HttpUnauthorizedException($request);
-        }
+        $user = $this->getUser($request, $id, true);
 
         $token = $this->generateNewToken();
 
@@ -347,15 +314,7 @@ class UserController extends Controller
      */
     public function getShareXconfigFile(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request, $response);
-        }
-
-        if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
-            throw new HttpUnauthorizedException($request);
-        }
+        $user = $this->getUser($request, $id, true);
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');
@@ -393,15 +352,7 @@ class UserController extends Controller
      */
     public function getUploaderScriptFile(Request $request, Response $response, int $id): Response
     {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request, $response);
-        }
-
-        if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
-            throw new HttpUnauthorizedException($request);
-        }
+        $user = $this->getUser($request, $id, true);
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');

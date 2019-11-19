@@ -11,6 +11,9 @@ use DI\NotFoundException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Monolog\Logger;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpUnauthorizedException;
 use Twig\Environment;
 
 /**
@@ -67,5 +70,28 @@ abstract class Controller
         }
 
         return $totalSize;
+    }
+
+    /**
+     * @param  Request  $request
+     * @param $id
+     * @param  bool  $authorize
+     * @return mixed
+     * @throws HttpNotFoundException
+     * @throws HttpUnauthorizedException
+     */
+    protected function getUser(Request $request, $id, $authorize = false)
+    {
+        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
+
+        if (!$user) {
+            throw new HttpNotFoundException($request);
+        }
+
+        if ($authorize && $user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
+            throw new HttpUnauthorizedException($request);
+        }
+
+        return $user;
     }
 }
