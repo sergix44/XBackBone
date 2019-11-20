@@ -9,11 +9,11 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 abstract class Middleware extends Controller
 {
-
     /**
-     * @param  Request  $request
-     * @param  RequestHandler  $handler
+     * @param Request        $request
+     * @param RequestHandler $handler
+     *
      * @return Response
      */
-    public abstract function __invoke(Request $request, RequestHandler $handler);
+    abstract public function __invoke(Request $request, RequestHandler $handler);
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Factories;
-
 
 use App\Web\View;
 use Psr\Container\ContainerInterface as Container;
@@ -13,16 +11,15 @@ use Twig\TwigFunction;
 
 class ViewFactory
 {
-
     public static function createAppInstance(Container $container)
     {
         $config = $container->get('config');
         $loader = new FilesystemLoader(BASE_DIR.'resources/templates');
 
         $twig = new Environment($loader, [
-            'cache' => BASE_DIR.'resources/cache/twig',
-            'autoescape' => 'html',
-            'debug' => $config['debug'],
+            'cache'       => BASE_DIR.'resources/cache/twig',
+            'autoescape'  => 'html',
+            'debug'       => $config['debug'],
             'auto_reload' => $config['debug'],
         ]);
 
@@ -47,14 +44,15 @@ class ViewFactory
         return new View($twig);
     }
 
-    public static function createInstallerInstance(Container $container) {
+    public static function createInstallerInstance(Container $container)
+    {
         $config = $container->get('config');
-        $loader = new FilesystemLoader([BASE_DIR . 'install/templates', BASE_DIR.'resources/templates']);
+        $loader = new FilesystemLoader([BASE_DIR.'install/templates', BASE_DIR.'resources/templates']);
 
         $twig = new Environment($loader, [
-            'cache' => false,
-            'autoescape' => 'html',
-            'debug' => $config['debug'],
+            'cache'       => false,
+            'autoescape'  => 'html',
+            'debug'       => $config['debug'],
             'auto_reload' => $config['debug'],
         ]);
 
@@ -67,5 +65,4 @@ class ViewFactory
 
         return new View($twig);
     }
-
 }

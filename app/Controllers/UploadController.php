@@ -8,14 +8,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UploadController extends Controller
 {
-
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function webUpload(Request $request, Response $response): Response
     {
@@ -23,6 +24,7 @@ class UploadController extends Controller
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
@@ -32,10 +34,12 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws FileExistsException
+     *
+     * @return Response
      */
     public function upload(Request $request, Response $response): Response
     {
@@ -46,11 +50,13 @@ class UploadController extends Controller
 
         if ($this->config['maintenance']) {
             $json['message'] = 'Endpoint under maintenance.';
+
             return json($response, $json, 503);
         }
 
         if ($request->getServerParams()['CONTENT_LENGTH'] > stringToBytes(ini_get('post_max_size'))) {
             $json['message'] = 'File too large (post_max_size too low?).';
+
             return json($response, $json, 400);
         }
 
@@ -60,16 +66,19 @@ class UploadController extends Controller
 
         if ($file === null) {
             $json['message'] = 'Request without file attached.';
+
             return json($response, $json, 400);
         }
 
         if ($file->getError() === UPLOAD_ERR_INI_SIZE) {
             $json['message'] = 'File too large (upload_max_filesize too low?).';
+
             return json($response, $json, 400);
         }
 
         if (param($request, 'token') === null) {
             $json['message'] = 'Token not specified.';
+
             return json($response, $json, 400);
         }
 
@@ -77,11 +86,13 @@ class UploadController extends Controller
 
         if (!$user) {
             $json['message'] = 'Token specified not found.';
+
             return json($response, $json, 404);
         }
 
         if (!$user->active) {
             $json['message'] = 'Account disabled.';
+
             return json($response, $json, 401);
         }
 

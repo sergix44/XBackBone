@@ -9,12 +9,12 @@ use App\Middleware\RememberMiddleware;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
-use Psr\Container\ContainerInterface as Container;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use function DI\factory;
 use function DI\get;
 use function DI\value;
+use Psr\Container\ContainerInterface as Container;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 if (!file_exists('config.php') && is_dir('install/')) {
     header('Location: ./install/');
@@ -27,19 +27,19 @@ if (!file_exists('config.php') && is_dir('install/')) {
 
 // Load the config
 $config = array_replace_recursive([
-    'app_name' => 'XBackBone',
-    'base_url' => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
-    'debug' => false,
+    'app_name'    => 'XBackBone',
+    'base_url'    => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
+    'debug'       => false,
     'maintenance' => false,
-    'db' => [
+    'db'          => [
         'connection' => 'sqlite',
-        'dsn' => BASE_DIR.'resources/database/xbackbone.db',
-        'username' => null,
-        'password' => null,
+        'dsn'        => BASE_DIR.'resources/database/xbackbone.db',
+        'username'   => null,
+        'password'   => null,
     ],
     'storage' => [
         'driver' => 'local',
-        'path' => realpath(__DIR__.'/').DIRECTORY_SEPARATOR.'storage',
+        'path'   => realpath(__DIR__.'/').DIRECTORY_SEPARATOR.'storage',
     ],
 ], require BASE_DIR.'config.php');
 
@@ -51,7 +51,7 @@ if (!$config['debug']) {
 }
 
 $builder->addDefinitions([
-    'config' => value($config),
+    'config'    => value($config),
     View::class => factory(function (Container $container) {
         return ViewFactory::createAppInstance($container);
     }),
@@ -84,7 +84,7 @@ $app->add(function (Request $request, RequestHandler $handler) use (&$app, &$con
         if ($request->getMethod() === 'GET') {
             return $app->getResponseFactory()
                 ->createResponse(301)
-                ->withHeader('Location', (string)$uri);
+                ->withHeader('Location', (string) $uri);
         } else {
             $request = $request->withUri($uri);
         }

@@ -2,30 +2,27 @@
 
 namespace App\Web;
 
-
 class Lang
 {
-
     const DEFAULT_LANG = 'en';
     const LANG_PATH = __DIR__.'../../resources/lang/';
 
-    /** @var  string */
+    /** @var string */
     protected static $langPath = self::LANG_PATH;
 
-    /** @var  string */
+    /** @var string */
     protected static $lang;
 
-    /** @var  Lang */
+    /** @var Lang */
     protected static $instance;
 
-    /** @var  array */
+    /** @var array */
     protected $cache = [];
-
 
     /**
      * @return Lang
      */
-    public static function getInstance(): Lang
+    public static function getInstance(): self
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -35,11 +32,12 @@ class Lang
     }
 
     /**
-     * @param  string  $lang
-     * @param  string  $langPath
+     * @param string $lang
+     * @param string $langPath
+     *
      * @return Lang
      */
-    public static function build($lang = self::DEFAULT_LANG, $langPath = null): Lang
+    public static function build($lang = self::DEFAULT_LANG, $langPath = null): self
     {
         self::$lang = $lang;
 
@@ -54,6 +52,7 @@ class Lang
 
     /**
      * Recognize the current language from the request.
+     *
      * @return bool|string
      */
     public static function recognize()
@@ -61,6 +60,7 @@ class Lang
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             return locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
         }
+
         return self::DEFAULT_LANG;
     }
 
@@ -71,7 +71,6 @@ class Lang
     {
         return self::$lang;
     }
-
 
     /**
      * @param $lang
@@ -106,10 +105,10 @@ class Lang
         return $languages;
     }
 
-
     /**
      * @param $key
-     * @param  array  $args
+     * @param array $args
+     *
      * @return string
      */
     public function get($key, $args = []): string
@@ -121,6 +120,7 @@ class Lang
      * @param $key
      * @param $lang
      * @param $args
+     *
      * @return string
      */
     private function getString($key, $lang, $args): string

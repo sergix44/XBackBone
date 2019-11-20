@@ -1,18 +1,12 @@
 <?php
 
-
 namespace App\Web;
 
-
-use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Factory\ServerRequestCreatorFactory;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use Twig\Loader\FilesystemLoader;
-use Twig\TwigFunction;
 
 class View
 {
@@ -21,10 +15,10 @@ class View
      */
     private $twig;
 
-
     /**
      * View constructor.
-     * @param  Environment  $twig
+     *
+     * @param Environment $twig
      */
     public function __construct(Environment $twig)
     {
@@ -32,28 +26,33 @@ class View
     }
 
     /**
-     * @param  Response  $response
-     * @param  string  $view
-     * @param  array|null  $parameters
-     * @return Response
+     * @param Response   $response
+     * @param string     $view
+     * @param array|null $parameters
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     *
+     * @return Response
      */
     public function render(Response $response, string $view, ?array $parameters = [])
     {
         $body = $this->twig->render($view, $parameters);
         $response->getBody()->write($body);
+
         return $response;
     }
 
     /**
-     * @param  string  $view
-     * @param  array|null  $parameters
-     * @return string
+     * @param string     $view
+     * @param array|null $parameters
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     *
+     * @return string
      */
     public function string(string $view, ?array $parameters = [])
     {
@@ -67,5 +66,4 @@ class View
     {
         return $this->twig;
     }
-
 }

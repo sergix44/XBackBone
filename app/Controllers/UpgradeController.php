@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use RuntimeException;
@@ -13,13 +12,15 @@ class UpgradeController extends Controller
     const GITHUB_SOURCE_API = 'https://api.github.com/repos/SergiX44/XBackBone/releases';
 
     /**
-     * @param  Response  $response
+     * @param Response $response
+     *
      * @return Response
      */
     public function upgrade(Response $response): Response
     {
         if (!is_writable(BASE_DIR)) {
             $this->session->alert(lang('path_not_writable', BASE_DIR), 'warning');
+
             return redirect($response, route('system'));
         }
 
@@ -27,11 +28,13 @@ class UpgradeController extends Controller
             $json = $this->getApiJson();
         } catch (RuntimeException $e) {
             $this->session->alert($e->getMessage(), 'danger');
+
             return redirect($response, route('system'));
         }
 
         if (version_compare($json[0]->tag_name, PLATFORM_VERSION, '<=')) {
             $this->session->alert(lang('already_latest_version'), 'warning');
+
             return redirect($response, route('system'));
         }
 
@@ -39,11 +42,13 @@ class UpgradeController extends Controller
 
         if (file_put_contents($tmpFile, file_get_contents($json[0]->assets[0]->browser_download_url)) === false) {
             $this->session->alert(lang('cannot_retrieve_file'), 'danger');
+
             return redirect($response, route('system'));
-        };
+        }
 
         if (filesize($tmpFile) !== $json[0]->assets[0]->size) {
             $this->session->alert(lang('file_size_no_match'), 'danger');
+
             return redirect($response, route('system'));
         }
 
@@ -63,7 +68,6 @@ class UpgradeController extends Controller
         );
 
         removeDirectory(BASE_DIR.'vendor/');
-
 
         $updateZip = new ZipArchive();
         $updateZip->open($tmpFile);
@@ -89,14 +93,15 @@ class UpgradeController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
     public function checkForUpdates(Request $request, Response $response): Response
     {
         $jsonResponse = [
-            'status' => null,
+            'status'  => null,
             'message' => null,
             'upgrade' => false,
         ];
@@ -148,5 +153,4 @@ class UpgradeController extends Controller
 
         return json_decode($data);
     }
-
 }

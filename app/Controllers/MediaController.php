@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controllers;
-
 
 use GuzzleHttp\Psr7\Stream;
 use Intervention\Image\Constraint;
@@ -18,17 +16,19 @@ use Slim\Exception\HttpUnauthorizedException;
 class MediaController extends Controller
 {
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @param  string|null  $token
-     * @return Response
+     * @param Request     $request
+     * @param Response    $response
+     * @param string      $userCode
+     * @param string      $mediaCode
+     * @param string|null $token
+     *
      * @throws HttpNotFoundException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws FileNotFoundException
+     *
+     * @return Response
      */
     public function show(Request $request, Response $response, string $userCode, string $mediaCode, string $token = null): Response
     {
@@ -61,27 +61,28 @@ class MediaController extends Controller
                     }
                 }
                 $media->size = humanFileSize($size);
-
             } catch (FileNotFoundException $e) {
                 throw new HttpNotFoundException($request);
             }
 
             return view()->render($response, 'upload/public.twig', [
                 'delete_token' => $token,
-                'media' => $media,
-                'type' => $type,
-                'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
+                'media'        => $media,
+                'type'         => $type,
+                'extension'    => pathinfo($media->filename, PATHINFO_EXTENSION),
             ]);
         }
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws FileNotFoundException
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function getRawById(Request $request, Response $response, int $id): Response
     {
@@ -95,15 +96,17 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @param  string|null  $ext
-     * @return Response
+     * @param Request     $request
+     * @param Response    $response
+     * @param string      $userCode
+     * @param string      $mediaCode
+     * @param string|null $ext
+     *
      * @throws FileNotFoundException
      * @throws HttpBadRequestException
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function getRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
     {
@@ -120,15 +123,16 @@ class MediaController extends Controller
         return $this->streamMedia($request, $response, $this->storage, $media);
     }
 
-
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param string   $userCode
+     * @param string   $mediaCode
+     *
      * @throws FileNotFoundException
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function download(Request $request, Response $response, string $userCode, string $mediaCode): Response
     {
@@ -137,15 +141,18 @@ class MediaController extends Controller
         if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
             throw new HttpNotFoundException($request);
         }
+
         return $this->streamMedia($request, $response, $this->storage, $media, 'attachment');
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function togglePublish(Request $request, Response $response, int $id): Response
     {
@@ -165,12 +172,14 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -192,14 +201,16 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @param  string  $token
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param string   $userCode
+     * @param string   $mediaCode
+     * @param string   $token
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function deleteByToken(Request $request, Response $response, string $userCode, string $mediaCode, string $token): Response
     {
@@ -213,11 +224,13 @@ class MediaController extends Controller
 
         if (!$user) {
             $this->session->alert(lang('token_not_found'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         if (!$user->active) {
             $this->session->alert(lang('account_disabled'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
@@ -232,9 +245,10 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  string  $storagePath
-     * @param  int  $id
+     * @param Request $request
+     * @param string  $storagePath
+     * @param int     $id
+     *
      * @throws HttpNotFoundException
      */
     protected function deleteMedia(Request $request, string $storagePath, int $id)
@@ -251,6 +265,7 @@ class MediaController extends Controller
     /**
      * @param $userCode
      * @param $mediaCode
+     *
      * @return mixed
      */
     protected function getMedia($userCode, $mediaCode)
@@ -266,13 +281,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  Filesystem  $storage
+     * @param Request    $request
+     * @param Response   $response
+     * @param Filesystem $storage
      * @param $media
-     * @param  string  $disposition
-     * @return Response
+     * @param string $disposition
+     *
      * @throws FileNotFoundException
+     *
+     * @return Response
      */
     protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
     {
@@ -303,13 +320,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Filesystem  $storage
+     * @param Filesystem $storage
      * @param $media
-     * @param  null  $width
-     * @param  null  $height
-     * @param  string  $disposition
-     * @return Response
+     * @param null   $width
+     * @param null   $height
+     * @param string $disposition
+     *
      * @throws FileNotFoundException
+     *
+     * @return Response
      */
     protected function makeThumbnail(Filesystem $storage, $media, $width = null, $height = null, string $disposition = 'inline')
     {
@@ -323,12 +342,13 @@ class MediaController extends Controller
     }
 
     /**
-     * @param  Response  $response
-     * @param  Stream  $stream
-     * @param  string  $range
-     * @param  string  $disposition
+     * @param Response $response
+     * @param Stream   $stream
+     * @param string   $range
+     * @param string   $disposition
      * @param $media
      * @param $mime
+     *
      * @return Response
      */
     protected function handlePartialRequest(Response $response, Stream $stream, string $range, string $disposition, $media, $mime)
@@ -347,11 +367,11 @@ class MediaController extends Controller
         }
 
         if ($range === '-') {
-            $start = $stream->getSize() - (int)substr($range, 1);
+            $start = $stream->getSize() - (int) substr($range, 1);
         } else {
             $range = explode('-', $range);
-            $start = (int)$range[0];
-            $end = (isset($range[1]) && is_numeric($range[1])) ? (int)$range[1] : $stream->getSize();
+            $start = (int) $range[0];
+            $end = (isset($range[1]) && is_numeric($range[1])) ? (int) $range[1] : $stream->getSize();
         }
 
         $end = ($end > $stream->getSize() - 1) ? $stream->getSize() - 1 : $end;
