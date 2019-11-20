@@ -1,8 +1,10 @@
 <?php
 // Auth routes
 use App\Controllers\AdminController;
+use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
 use App\Controllers\LoginController;
+use App\Controllers\MediaController;
 use App\Controllers\ThemeController;
 use App\Controllers\UpgradeController;
 use App\Controllers\UploadController;
@@ -49,13 +51,13 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/profile', [UserController::class, 'profile'])->setName('profile');
     $group->post('/profile/{id}', [UserController::class, 'profileEdit'])->setName('profile.update');
     $group->post('/user/{id}/refreshToken', [UserController::class, 'refreshToken'])->setName('refreshToken');
-    $group->get('/user/{id}/config/sharex', [UserController::class, 'getShareXconfigFile'])->setName('config.sharex');
-    $group->get('/user/{id}/config/script', [UserController::class, 'getUploaderScriptFile'])->setName('config.script');
+    $group->get('/user/{id}/config/sharex', [ClientController::class, 'getShareXConfig'])->setName('config.sharex');
+    $group->get('/user/{id}/config/script', [ClientController::class, 'getBashScript'])->setName('config.script');
 
-    $group->post('/upload/{id}/publish', [UploadController::class, 'togglePublish'])->setName('upload.publish');
-    $group->post('/upload/{id}/unpublish', [UploadController::class, 'togglePublish'])->setName('upload.unpublish');
-    $group->get('/upload/{id}/raw', [UploadController::class, 'getRawById'])->add(AdminMiddleware::class)->setName('upload.raw');
-    $group->post('/upload/{id}/delete', [UploadController::class, 'delete'])->setName('upload.delete');
+    $group->post('/upload/{id}/publish', [MediaController::class, 'togglePublish'])->setName('upload.publish');
+    $group->post('/upload/{id}/unpublish', [MediaController::class, 'togglePublish'])->setName('upload.unpublish');
+    $group->get('/upload/{id}/raw', [MediaController::class, 'getRawById'])->add(AdminMiddleware::class)->setName('upload.raw');
+    $group->post('/upload/{id}/delete', [MediaController::class, 'delete'])->setName('upload.delete');
 
 })->add(App\Middleware\CheckForMaintenanceMiddleware::class)->add(AuthMiddleware::class);
 
@@ -66,8 +68,8 @@ $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setNa
 
 $app->post('/upload', [UploadController::class, 'upload'])->setName('upload');
 
-$app->get('/{userCode}/{mediaCode}', [UploadController::class, 'show'])->setName('public');
-$app->get('/{userCode}/{mediaCode}/delete/{token}', [UploadController::class, 'show'])->setName('public.delete.show')->add(CheckForMaintenanceMiddleware::class);
-$app->post('/{userCode}/{mediaCode}/delete/{token}', [UploadController::class, 'deleteByToken'])->setName('public.delete')->add(CheckForMaintenanceMiddleware::class);
-$app->get('/{userCode}/{mediaCode}/raw[.{ext}]', [UploadController::class, 'showRaw'])->setName('public.raw');
-$app->get('/{userCode}/{mediaCode}/download', [UploadController::class, 'download'])->setName('public.download');
+$app->get('/{userCode}/{mediaCode}', [MediaController::class, 'show'])->setName('public');
+$app->get('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'show'])->setName('public.delete.show')->add(CheckForMaintenanceMiddleware::class);
+$app->post('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'deleteByToken'])->setName('public.delete')->add(CheckForMaintenanceMiddleware::class);
+$app->get('/{userCode}/{mediaCode}/raw[.{ext}]', [MediaController::class, 'getRaw'])->setName('public.raw');
+$app->get('/{userCode}/{mediaCode}/download', [MediaController::class, 'download'])->setName('public.download');
