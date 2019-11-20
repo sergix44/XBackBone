@@ -2,22 +2,22 @@
 
 namespace App\Controllers;
 
-
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AdminController extends Controller
 {
-
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws FileNotFoundException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function system(Request $request, Response $response): Response
     {
@@ -35,20 +35,21 @@ class AdminController extends Controller
         }
 
         return view()->render($response, 'dashboard/system.twig', [
-            'usersCount' => $usersCount,
-            'mediasCount' => $mediasCount,
-            'orphanFilesCount' => $orphanFilesCount,
-            'totalSize' => humanFileSize($totalSize),
-            'post_max_size' => ini_get('post_max_size'),
+            'usersCount'          => $usersCount,
+            'mediasCount'         => $mediasCount,
+            'orphanFilesCount'    => $orphanFilesCount,
+            'totalSize'           => humanFileSize($totalSize),
+            'post_max_size'       => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'installed_lang' => $this->lang->getList(),
-            'forced_lang' => $request->getAttribute('forced_lang')
+            'installed_lang'      => $this->lang->getList(),
+            'forced_lang'         => $request->getAttribute('forced_lang'),
         ]);
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
     public function deleteOrphanFiles(Response $response): Response
@@ -74,8 +75,9 @@ class AdminController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
     public function applyLang(Request $request, Response $response): Response
@@ -96,8 +98,9 @@ class AdminController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
     public function applyCustomHead(Request $request, Response $response): Response

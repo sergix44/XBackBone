@@ -16,14 +16,15 @@ use Slim\Exception\HttpUnauthorizedException;
 
 class UploadController extends Controller
 {
-
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function webUpload(Request $request, Response $response): Response
     {
@@ -31,6 +32,7 @@ class UploadController extends Controller
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
@@ -40,10 +42,12 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws FileExistsException
+     *
+     * @return Response
      */
     public function upload(Request $request, Response $response): Response
     {
@@ -54,11 +58,13 @@ class UploadController extends Controller
 
         if ($this->config['maintenance']) {
             $json['message'] = 'Endpoint under maintenance.';
+
             return json($response, $json, 503);
         }
 
         if ($request->getServerParams()['CONTENT_LENGTH'] > stringToBytes(ini_get('post_max_size'))) {
             $json['message'] = 'File too large (post_max_size too low?).';
+
             return json($response, $json, 400);
         }
 
@@ -68,16 +74,19 @@ class UploadController extends Controller
 
         if ($file === null) {
             $json['message'] = 'Request without file attached.';
+
             return json($response, $json, 400);
         }
 
         if ($file->getError() === UPLOAD_ERR_INI_SIZE) {
             $json['message'] = 'File too large (upload_max_filesize too low?).';
+
             return json($response, $json, 400);
         }
 
         if (param($request, 'token') === null) {
             $json['message'] = 'Token not specified.';
+
             return json($response, $json, 400);
         }
 
@@ -85,11 +94,13 @@ class UploadController extends Controller
 
         if (!$user) {
             $json['message'] = 'Token specified not found.';
+
             return json($response, $json, 404);
         }
 
         if (!$user->active) {
             $json['message'] = 'Account disabled.';
+
             return json($response, $json, 401);
         }
 
@@ -118,17 +129,19 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @param  string|null  $token
-     * @return Response
+     * @param Request     $request
+     * @param Response    $response
+     * @param string      $userCode
+     * @param string      $mediaCode
+     * @param string|null $token
+     *
      * @throws HttpNotFoundException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws FileNotFoundException
+     *
+     * @return Response
      */
     public function show(Request $request, Response $response, string $userCode, string $mediaCode, string $token = null): Response
     {
@@ -161,29 +174,30 @@ class UploadController extends Controller
                     }
                 }
                 $media->size = humanFileSize($size);
-
             } catch (FileNotFoundException $e) {
                 throw new HttpNotFoundException($request);
             }
 
             return view()->render($response, 'upload/public.twig', [
                 'delete_token' => $token,
-                'media' => $media,
-                'type' => $type,
-                'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
+                'media'        => $media,
+                'type'         => $type,
+                'extension'    => pathinfo($media->filename, PATHINFO_EXTENSION),
             ]);
         }
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @param  string  $token
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param string   $userCode
+     * @param string   $mediaCode
+     * @param string   $token
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function deleteByToken(Request $request, Response $response, string $userCode, string $mediaCode, string $token): Response
     {
@@ -197,16 +211,17 @@ class UploadController extends Controller
 
         if (!$user) {
             $this->session->alert(lang('token_not_found'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         if (!$user->active) {
             $this->session->alert(lang('account_disabled'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         if ($this->session->get('admin', false) || $user->id === $media->user_id) {
-
             try {
                 $this->storage->delete($media->storage_path);
             } catch (FileNotFoundException $e) {
@@ -223,16 +238,17 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws FileNotFoundException
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function getRawById(Request $request, Response $response, int $id): Response
     {
-
         $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
 
         if (!$media) {
@@ -243,15 +259,17 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @param  string|null  $ext
-     * @return Response
+     * @param Request     $request
+     * @param Response    $response
+     * @param string      $userCode
+     * @param string      $mediaCode
+     * @param string|null $ext
+     *
      * @throws FileNotFoundException
      * @throws HttpBadRequestException
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function showRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
     {
@@ -268,15 +286,16 @@ class UploadController extends Controller
         return $this->streamMedia($request, $response, $this->storage, $media);
     }
 
-
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $userCode
-     * @param  string  $mediaCode
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param string   $userCode
+     * @param string   $mediaCode
+     *
      * @throws FileNotFoundException
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function download(Request $request, Response $response, string $userCode, string $mediaCode): Response
     {
@@ -285,15 +304,18 @@ class UploadController extends Controller
         if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
             throw new HttpNotFoundException($request);
         }
+
         return $this->streamMedia($request, $response, $this->storage, $media, 'attachment');
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
+     *
+     * @return Response
      */
     public function togglePublish(Request $request, Response $response, int $id): Response
     {
@@ -313,12 +335,14 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -329,7 +353,6 @@ class UploadController extends Controller
         }
 
         if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
-
             try {
                 $this->storage->delete($media->storage_path);
             } catch (FileNotFoundException $e) {
@@ -349,6 +372,7 @@ class UploadController extends Controller
     /**
      * @param $userCode
      * @param $mediaCode
+     *
      * @return mixed
      */
     protected function getMedia($userCode, $mediaCode)
@@ -364,13 +388,15 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  Filesystem  $storage
+     * @param Request    $request
+     * @param Response   $response
+     * @param Filesystem $storage
      * @param $media
-     * @param  string  $disposition
-     * @return Response
+     * @param string $disposition
+     *
      * @throws FileNotFoundException
+     *
+     * @return Response
      */
     protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
     {
@@ -378,7 +404,6 @@ class UploadController extends Controller
         $mime = $storage->getMimetype($media->storage_path);
 
         if (param($request, 'width') !== null && explode('/', $mime)[0] === 'image') {
-
             $response = Image::make($storage->readStream($media->storage_path))
                 ->resize(
                     param($request, 'width'),
@@ -416,11 +441,11 @@ class UploadController extends Controller
                 }
 
                 if ($range === '-') {
-                    $start = $stream->getSize() - (int)substr($range, 1);
+                    $start = $stream->getSize() - (int) substr($range, 1);
                 } else {
                     $range = explode('-', $range);
-                    $start = (int)$range[0];
-                    $end = (isset($range[1]) && is_numeric($range[1])) ? (int)$range[1] : $stream->getSize();
+                    $start = (int) $range[0];
+                    $end = (isset($range[1]) && is_numeric($range[1])) ? (int) $range[1] : $stream->getSize();
                 }
 
                 $end = ($end > $stream->getSize() - 1) ? $stream->getSize() - 1 : $end;

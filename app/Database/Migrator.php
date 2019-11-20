@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Database;
-
 
 use PDOException;
 
@@ -21,12 +19,12 @@ class Migrator
      */
     private $firstMigrate;
 
-
     /**
      * Migrator constructor.
-     * @param  DB  $db
-     * @param  string  $schemaPath
-     * @param  bool  $firstMigrate
+     *
+     * @param DB     $db
+     * @param string $schemaPath
+     * @param bool   $firstMigrate
      */
     public function __construct(DB $db, string $schemaPath, bool $firstMigrate = false)
     {
@@ -57,9 +55,7 @@ class Migrator
 
         $inMigrationsTable = $this->db->query("SELECT * FROM `migrations` WHERE `name` IN ($in)", $names)->fetchAll();
 
-
         foreach ($files as $file) {
-
             $continue = false;
             $exists = false;
 
@@ -79,6 +75,7 @@ class Migrator
             }
 
             $sql = file_get_contents($file);
+
             try {
                 $this->db->getPdo()->exec($sql);
                 if (!$exists) {
@@ -90,9 +87,9 @@ class Migrator
                 if (!$exists) {
                     $this->db->query('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 0]);
                 }
+
                 throw $exception;
             }
         }
     }
-
 }

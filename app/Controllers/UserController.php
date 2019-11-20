@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
@@ -13,12 +12,14 @@ class UserController extends Controller
     const PER_PAGE = 15;
 
     /**
-     * @param  Response  $response
-     * @param  int|null  $page
-     * @return Response
+     * @param Response $response
+     * @param int|null $page
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function index(Response $response, int $page = 0): Response
     {
@@ -31,20 +32,22 @@ class UserController extends Controller
         return view()->render($response,
             'user/index.twig',
             [
-                'users' => $users,
-                'next' => $page < floor($pages),
-                'previous' => $page >= 1,
+                'users'        => $users,
+                'next'         => $page < floor($pages),
+                'previous'     => $page >= 1,
                 'current_page' => ++$page,
             ]
         );
     }
 
     /**
-     * @param  Response  $response
-     * @return Response
+     * @param Response $response
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function create(Response $response): Response
     {
@@ -52,34 +55,40 @@ class UserController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
     public function store(Request $request, Response $response): Response
     {
         if (param($request, 'email') === null) {
             $this->session->alert(lang('email_required'), 'danger');
+
             return redirect($response, route('user.create'));
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
+
             return redirect($response, route('user.create'));
         }
 
         if (param($request, 'username') === null) {
             $this->session->alert(lang('username_required'), 'danger');
+
             return redirect($response, route('user.create'));
         }
 
         if (param($request, 'password') === null) {
             $this->session->alert(lang('password_required'), 'danger');
+
             return redirect($response, route('user.create'));
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count > 0) {
             $this->session->alert(lang('username_taken'), 'danger');
+
             return redirect($response, route('user.create'));
         }
 
@@ -106,15 +115,17 @@ class UserController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
      * @param $id
-     * @return Response
+     *
      * @throws HttpNotFoundException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function edit(Request $request, Response $response, int $id): Response
     {
@@ -122,17 +133,19 @@ class UserController extends Controller
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => false,
-            'user' => $user,
+            'user'    => $user,
         ]);
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function update(Request $request, Response $response, int $id): Response
     {
@@ -140,26 +153,31 @@ class UserController extends Controller
 
         if (param($request, 'email') === null) {
             $this->session->alert(lang('email_required'), 'danger');
+
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
+
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if (param($request, 'username') === null) {
             $this->session->alert(lang('username_required'), 'danger');
+
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count > 0) {
             $this->session->alert(lang('username_taken'), 'danger');
+
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if ($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null) {
             $this->session->alert(lang('cannot_demote'), 'danger');
+
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
@@ -184,21 +202,22 @@ class UserController extends Controller
 
         $this->session->alert(lang('user_updated', [param($request, 'username')]), 'success');
         $this->logger->info('User '.$this->session->get('username')." updated $user->id.", [
-            array_diff_key((array)$user, array_flip(['password'])),
+            array_diff_key((array) $user, array_flip(['password'])),
             array_diff_key($request->getParsedBody(), array_flip(['password'])),
         ]);
 
         return redirect($response, route('user.index'));
-
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -206,6 +225,7 @@ class UserController extends Controller
 
         if ($user->id === $this->session->get('user_id')) {
             $this->session->alert(lang('cannot_delete'), 'danger');
+
             return redirect($response, route('user.index'));
         }
 
@@ -218,14 +238,16 @@ class UserController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function profile(Request $request, Response $response): Response
     {
@@ -233,17 +255,19 @@ class UserController extends Controller
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => true,
-            'user' => $user,
+            'user'    => $user,
         ]);
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function profileEdit(Request $request, Response $response, int $id): Response
     {
@@ -251,11 +275,13 @@ class UserController extends Controller
 
         if (param($request, 'email') === null) {
             $this->session->alert(lang('email_required'), 'danger');
+
             return redirect($response, route('profile'));
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
+
             return redirect($response, route('profile'));
         }
 
@@ -279,12 +305,14 @@ class UserController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function refreshToken(Request $request, Response $response, int $id): Response
     {
@@ -305,12 +333,14 @@ class UserController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return Response
      */
     public function getShareXconfigFile(Request $request, Response $response, int $id): Response
     {
@@ -318,21 +348,22 @@ class UserController extends Controller
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         $json = [
             'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
-            'RequestURL' => route('upload'),
-            'FileFormName' => 'upload',
-            'Arguments' => [
-                'file' => '$filename$',
-                'text' => '$input$',
+            'RequestURL'      => route('upload'),
+            'FileFormName'    => 'upload',
+            'Arguments'       => [
+                'file'  => '$filename$',
+                'text'  => '$input$',
                 'token' => $user->token,
             ],
-            'URL' => '$json:url$',
+            'URL'          => '$json:url$',
             'ThumbnailURL' => '$json:url$/raw',
-            'DeletionURL' => '$json:url$/delete/'.$user->token,
+            'DeletionURL'  => '$json:url$/delete/'.$user->token,
         ];
 
         return json($response, $json, 200, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
@@ -340,15 +371,17 @@ class UserController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int      $id
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function getUploaderScriptFile(Request $request, Response $response, int $id): Response
     {
@@ -356,15 +389,16 @@ class UserController extends Controller
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');
+
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
         return view()->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_'.$user->username.'.sh"'),
             'scripts/xbackbone_uploader.sh.twig',
             [
-                'username' => $user->username,
+                'username'   => $user->username,
                 'upload_url' => route('upload'),
-                'token' => $user->token,
+                'token'      => $user->token,
             ]
         );
     }

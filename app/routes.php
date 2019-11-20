@@ -1,4 +1,5 @@
 <?php
+
 // Auth routes
 use App\Controllers\AdminController;
 use App\Controllers\DashboardController;
@@ -38,7 +39,6 @@ $app->group('', function (RouteCollectorProxy $group) {
     })->add(AdminMiddleware::class);
 
     $group->group('/user', function (RouteCollectorProxy $group) {
-
         $group->get('/create', [UserController::class, 'create'])->setName('user.create');
         $group->post('/create', [UserController::class, 'store'])->setName('user.store');
         $group->get('/{id}/edit', [UserController::class, 'edit'])->setName('user.edit');
@@ -56,7 +56,6 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/upload/{id}/unpublish', [UploadController::class, 'togglePublish'])->setName('upload.unpublish');
     $group->get('/upload/{id}/raw', [UploadController::class, 'getRawById'])->add(AdminMiddleware::class)->setName('upload.raw');
     $group->post('/upload/{id}/delete', [UploadController::class, 'delete'])->setName('upload.delete');
-
 })->add(App\Middleware\CheckForMaintenanceMiddleware::class)->add(AuthMiddleware::class);
 
 $app->get('/', [DashboardController::class, 'redirects'])->setName('root');

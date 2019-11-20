@@ -8,11 +8,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class DashboardController extends Controller
 {
-
     /**
      * @Inject
-     * @param  Request  $request
-     * @param  Response  $response
+     *
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
     public function redirects(Request $request, Response $response): Response
@@ -25,13 +26,15 @@ class DashboardController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int|null  $page
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     * @param int|null $page
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function home(Request $request, Response $response, int $page = 0): Response
     {
@@ -61,21 +64,23 @@ class DashboardController extends Controller
             $response,
             ($this->session->get('admin', false) && $this->session->get('gallery_view', true)) ? 'dashboard/list.twig' : 'dashboard/grid.twig',
             [
-                'medias' => $query->getMedia(),
-                'next' => $page < floor($query->getPages()),
-                'previous' => $page >= 1,
+                'medias'       => $query->getMedia(),
+                'next'         => $page < floor($query->getPages()),
+                'previous'     => $page >= 1,
                 'current_page' => ++$page,
             ]
         );
     }
 
     /**
-     * @param  Response  $response
+     * @param Response $response
+     *
      * @return Response
      */
     public function switchView(Response $response): Response
     {
         $this->session->set('gallery_view', !$this->session->get('gallery_view', true));
+
         return redirect($response, route('home'));
     }
 }

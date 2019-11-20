@@ -2,33 +2,36 @@
 
 namespace App\Controllers;
 
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class LoginController extends Controller
 {
-
     /**
-     * @param  Response  $response
-     * @return Response
+     * @param Response $response
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     *
+     * @return Response
      */
     public function show(Response $response): Response
     {
         if ($this->session->get('logged', false)) {
             return redirect($response, route('home'));
         }
+
         return view()->render($response, 'auth/login.twig');
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @throws \Exception
+     *
+     * @return Response
      */
     public function login(Request $request, Response $response): Response
     {
@@ -37,16 +40,19 @@ class LoginController extends Controller
 
         if (!$result || !password_verify(param($request, 'password'), $result->password)) {
             $this->session->alert(lang('bad_login'), 'danger');
+
             return redirect($response, route('login'));
         }
 
         if (isset($this->config['maintenance']) && $this->config['maintenance'] && !$result->is_admin) {
             $this->session->alert(lang('maintenance_in_progress'), 'info');
+
             return redirect($response, route('login'));
         }
 
         if (!$result->active) {
             $this->session->alert(lang('account_disabled'), 'danger');
+
             return redirect($response, route('login'));
         }
 
@@ -76,7 +82,7 @@ class LoginController extends Controller
                 setcookie('remember', "{$selector}:{$token}", $expire, '; SameSite=Lax', '', false, true);
             } else {
                 setcookie('remember', "{$selector}:{$token}", [
-                    'expires' => $expire,
+                    'expires'  => $expire,
                     'httponly' => true,
                     'samesite' => 'Lax',
                 ]);
@@ -91,11 +97,12 @@ class LoginController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
+     *
      * @return Response
      */
-    public function logout(Request $request,Response $response): Response
+    public function logout(Request $request, Response $response): Response
     {
         $this->session->clear();
         $this->session->set('logged', false);
@@ -107,5 +114,4 @@ class LoginController extends Controller
 
         return redirect($response, route('login.show'));
     }
-
 }
