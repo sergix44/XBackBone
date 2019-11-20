@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Exception\Handlers;
 
 use Slim\Handlers\ErrorHandler;

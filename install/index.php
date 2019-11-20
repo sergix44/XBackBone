@@ -1,4 +1,5 @@
 <?php
+
 (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) ?: die('Sorry, PHP 7.1 or above is required to run XBackBone.');
 require __DIR__.'/../vendor/autoload.php';
 
@@ -9,14 +10,14 @@ use App\Web\Session;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
+use function DI\factory;
+use function DI\get;
+use function DI\value;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use function DI\factory;
-use function DI\get;
-use function DI\value;
 
 define('PLATFORM_VERSION', json_decode(file_get_contents(__DIR__.'/../composer.json'))->version);
 define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
@@ -24,16 +25,16 @@ define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
 // default config
 $config = [
     'base_url' => str_replace('/install/', '', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"),
-    'debug' => true,
-    'db' => [
+    'debug'    => true,
+    'db'       => [
         'connection' => 'sqlite',
-        'dsn' => realpath(__DIR__.'/../').implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
-        'username' => null,
-        'password' => null,
+        'dsn'        => realpath(__DIR__.'/../').implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
+        'username'   => null,
+        'password'   => null,
     ],
     'storage' => [
         'driver' => 'local',
-        'path' => realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.'storage',
+        'path'   => realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.'storage',
     ],
 ];
 
@@ -44,7 +45,7 @@ if (file_exists(__DIR__.'/../config.php')) {
 $builder = new ContainerBuilder();
 
 $builder->addDefinitions([
-    'config' => value($config),
+    'config'    => value($config),
     View::class => factory(function (Container $container) {
         return ViewFactory::createInstallerInstance($container);
     }),
@@ -57,7 +58,6 @@ $app->setBasePath(parse_url($config['base_url'].'/install', PHP_URL_PATH));
 $app->addRoutingMiddleware();
 
 $app->get('/', function (Response $response, View $view, Session $session) use (&$config) {
-
     if (!extension_loaded('gd')) {
         $session->alert('The required "gd" extension is not loaded.', 'danger');
     }
@@ -109,7 +109,6 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $config['db']['username'] = param($request, 'db_user');
         $config['db']['password'] = param($request, 'db_password');
 
-
         // setup storage configuration
         switch ($config['storage']['driver']) {
             case 's3':
@@ -125,6 +124,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
             case 'ftp':
                 if (!extension_loaded('ftp')) {
                     $session->alert('The "ftp" extension is not loaded.', 'danger');
+
                     return redirect($response, urlFor('/'));
                 }
                 $config['storage']['host'] = param($request, 'storage_host');
@@ -149,6 +149,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
 
     // check if the storage is valid
     $storageTestFile = 'storage_test.xbackbone.txt';
+
     try {
         try {
             $success = $storage->write($storageTestFile, 'XBACKBONE_TEST_FILE');
@@ -162,6 +163,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $storage->readAndDelete($storageTestFile);
     } catch (Exception $e) {
         $session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
+
         return redirect($response, urlFor('/install'));
     }
 
@@ -187,6 +189,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $migrator->migrate();
     } catch (PDOException $e) {
         $session->alert("Cannot connect to the database: {$e->getMessage()} [{$e->getCode()}]", 'danger');
+
         return redirect($response, urlFor('/install'));
     }
 
@@ -211,11 +214,13 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     $ret = file_put_contents(__DIR__.'/../config.php', '<?php'.PHP_EOL.'return '.var_export($config, true).';');
     if ($ret === false) {
         $session->alert('The config folder is not writable ('.__DIR__.'/../config.php'.')', 'danger');
+
         return redirect($response, '/install');
     }
 
     // Installed successfully, destroy the installer session
     $session->destroy();
+
     return redirect($response, urlFor('/?afterInstall=true'));
 });
 

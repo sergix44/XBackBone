@@ -10,10 +10,12 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 class CheckForMaintenanceMiddleware extends Middleware
 {
     /**
-     * @param  Request  $request
-     * @param  RequestHandler  $handler
-     * @return Response
+     * @param Request        $request
+     * @param RequestHandler $handler
+     *
      * @throws UnderMaintenanceException
+     *
+     * @return Response
      */
     public function __invoke(Request $request, RequestHandler $handler): Response
     {

@@ -27,7 +27,6 @@ use Slim\Exception\HttpUnauthorizedException;
  */
 abstract class Controller
 {
-
     /** @var Container */
     protected $container;
 
@@ -38,20 +37,22 @@ abstract class Controller
 
     /**
      * @param $name
-     * @return mixed|null
+     *
      * @throws DependencyException
      * @throws NotFoundException
+     *
+     * @return mixed|null
      */
     public function __get($name)
     {
         if ($this->container->has($name)) {
             return $this->container->get($name);
         }
-        return null;
     }
 
     /**
      * @param $id
+     *
      * @return int
      */
     protected function getUsedSpaceByUser($id): int
@@ -73,12 +74,14 @@ abstract class Controller
     }
 
     /**
-     * @param  Request  $request
+     * @param Request $request
      * @param $id
-     * @param  bool  $authorize
-     * @return mixed
+     * @param bool $authorize
+     *
      * @throws HttpNotFoundException
      * @throws HttpUnauthorizedException
+     *
+     * @return mixed
      */
     protected function getUser(Request $request, $id, $authorize = false)
     {

@@ -2,16 +2,16 @@
 
 namespace App\Web;
 
-
 use Exception;
 
 class Session
 {
-
     /**
      * Session constructor.
-     * @param  string  $name
-     * @param  string  $path
+     *
+     * @param string $name
+     * @param string $path
+     *
      * @throws Exception
      */
     public function __construct(string $name, $path = '')
@@ -34,11 +34,11 @@ class Session
             }
 
             $started = @session_start([
-                'name' => $name,
-                'save_path' => $path,
+                'name'            => $name,
+                'save_path'       => $path,
                 'cookie_httponly' => true,
-                'gc_probability' => 25,
-                'cookie_samesite' => 'Lax' // works only for php  >= 7.3
+                'gc_probability'  => 25,
+                'cookie_samesite' => 'Lax', // works only for php  >= 7.3
             ]);
 
             if (!$started) {
@@ -56,7 +56,8 @@ class Session
     }
 
     /**
-     * Destroy the current session
+     * Destroy the current session.
+     *
      * @return bool
      */
     public function destroy(): bool
@@ -65,7 +66,7 @@ class Session
     }
 
     /**
-     * Clear all session stored values
+     * Clear all session stored values.
      */
     public function clear(): void
     {
@@ -73,8 +74,10 @@ class Session
     }
 
     /**
-     * Check if session has a stored key
+     * Check if session has a stored key.
+     *
      * @param $key
+     *
      * @return bool
      */
     public function has($key): bool
@@ -83,7 +86,8 @@ class Session
     }
 
     /**
-     * Get the content of the current session
+     * Get the content of the current session.
+     *
      * @return array
      */
     public function all(): array
@@ -92,9 +96,11 @@ class Session
     }
 
     /**
-     * Returned a value given a key
+     * Returned a value given a key.
+     *
      * @param $key
-     * @param  null  $default
+     * @param null $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
@@ -103,7 +109,8 @@ class Session
     }
 
     /**
-     * Add a key-value pair to the session
+     * Add a key-value pair to the session.
+     *
      * @param $key
      * @param $value
      */
@@ -113,25 +120,26 @@ class Session
     }
 
     /**
-     * Set a flash alert
+     * Set a flash alert.
+     *
      * @param $message
-     * @param  string  $type
+     * @param string $type
      */
     public function alert($message, string $type = 'info'): void
     {
         $_SESSION['_flash'][] = [$type => $message];
     }
 
-
     /**
-     * Retrieve flash alerts
+     * Retrieve flash alerts.
+     *
      * @return array
      */
     public function getAlert(): ?array
     {
         $flash = self::get('_flash');
         self::set('_flash', []);
+
         return $flash;
     }
-
 }
