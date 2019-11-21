@@ -57,7 +57,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/upload/{id}/publish', [MediaController::class, 'togglePublish'])->setName('upload.publish');
     $group->post('/upload/{id}/unpublish', [MediaController::class, 'togglePublish'])->setName('upload.unpublish');
     $group->get('/upload/{id}/raw', [MediaController::class, 'getRawById'])->add(AdminMiddleware::class)->setName('upload.raw');
-    $group->map(['GET', 'POST'],'/upload/{id}/delete', [MediaController::class, 'delete'])->setName('upload.delete');
+    $group->map(['GET', 'POST'], '/upload/{id}/delete', [MediaController::class, 'delete'])->setName('upload.delete');
 })->add(App\Middleware\CheckForMaintenanceMiddleware::class)->add(AuthMiddleware::class);
 
 $app->get('/', [DashboardController::class, 'redirects'])->setName('root');

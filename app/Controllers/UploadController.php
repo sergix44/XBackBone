@@ -9,14 +9,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UploadController extends Controller
 {
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @return Response
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
-     *
      * @throws \Twig\Error\LoaderError
+     *
+     * @return Response
      */
     public function webUpload(Request $request, Response $response): Response
     {
@@ -34,12 +34,12 @@ class UploadController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @return Response
      * @throws FileExistsException
      *
+     * @return Response
      */
     public function upload(Request $request, Response $response): Response
     {
