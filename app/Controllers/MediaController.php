@@ -16,19 +16,19 @@ use Slim\Exception\HttpUnauthorizedException;
 class MediaController extends Controller
 {
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param string      $userCode
-     * @param string      $mediaCode
-     * @param string|null $token
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
+     * @param  string|null  $token
      *
+     * @return Response
      * @throws HttpNotFoundException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws FileNotFoundException
      *
-     * @return Response
      */
     public function show(Request $request, Response $response, string $userCode, string $mediaCode, string $token = null): Response
     {
@@ -42,47 +42,47 @@ class MediaController extends Controller
 
         if (isBot($request->getHeaderLine('User-Agent'))) {
             return $this->streamMedia($request, $response, $filesystem, $media);
-        } else {
-            try {
-                $media->mimetype = $filesystem->getMimetype($media->storage_path);
-                $size = $filesystem->getSize($media->storage_path);
+        }
 
-                $type = explode('/', $media->mimetype)[0];
-                if ($type === 'image' && !isDisplayableImage($media->mimetype)) {
+        try {
+            $media->mimetype = $filesystem->getMimetype($media->storage_path);
+            $size = $filesystem->getSize($media->storage_path);
+
+            $type = explode('/', $media->mimetype)[0];
+            if ($type === 'image' && !isDisplayableImage($media->mimetype)) {
+                $type = 'application';
+                $media->mimetype = 'application/octet-stream';
+            }
+            if ($type === 'text') {
+                if ($size <= (200 * 1024)) { // less than 200 KB
+                    $media->text = $filesystem->read($media->storage_path);
+                } else {
                     $type = 'application';
                     $media->mimetype = 'application/octet-stream';
                 }
-                if ($type === 'text') {
-                    if ($size <= (200 * 1024)) { // less than 200 KB
-                        $media->text = $filesystem->read($media->storage_path);
-                    } else {
-                        $type = 'application';
-                        $media->mimetype = 'application/octet-stream';
-                    }
-                }
-                $media->size = humanFileSize($size);
-            } catch (FileNotFoundException $e) {
-                throw new HttpNotFoundException($request);
             }
-
-            return view()->render($response, 'upload/public.twig', [
-                'delete_token' => $token,
-                'media'        => $media,
-                'type'         => $type,
-                'extension'    => pathinfo($media->filename, PATHINFO_EXTENSION),
-            ]);
+            $media->size = humanFileSize($size);
+        } catch (FileNotFoundException $e) {
+            throw new HttpNotFoundException($request);
         }
+
+        return view()->render($response, 'upload/public.twig', [
+            'delete_token' => $token,
+            'media' => $media,
+            'type' => $type,
+            'url' => urlFor("/{$userCode}/{$mediaCode}"),
+        ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws FileNotFoundException
-     * @throws HttpNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     public function getRawById(Request $request, Response $response, int $id): Response
     {
@@ -96,17 +96,17 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param string      $userCode
-     * @param string      $mediaCode
-     * @param string|null $ext
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
+     * @param  string|null  $ext
      *
-     * @throws FileNotFoundException
+     * @return Response
      * @throws HttpBadRequestException
      * @throws HttpNotFoundException
      *
-     * @return Response
+     * @throws FileNotFoundException
      */
     public function getRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
     {
@@ -124,15 +124,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param string   $userCode
-     * @param string   $mediaCode
-     *
-     * @throws FileNotFoundException
-     * @throws HttpNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
      *
      * @return Response
+     * @throws HttpNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     public function download(Request $request, Response $response, string $userCode, string $mediaCode): Response
     {
@@ -146,13 +146,13 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpNotFoundException
+     *
      */
     public function togglePublish(Request $request, Response $response, int $id): Response
     {
@@ -172,14 +172,14 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -197,20 +197,24 @@ class MediaController extends Controller
             throw new HttpUnauthorizedException($request);
         }
 
+        if ($request->getMethod() === 'GET') {
+            return redirect($response, route('home'));
+        }
+
         return $response;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param string   $userCode
-     * @param string   $mediaCode
-     * @param string   $token
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
+     * @param  string  $token
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function deleteByToken(Request $request, Response $response, string $userCode, string $mediaCode, string $token): Response
     {
@@ -245,9 +249,9 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param string  $storagePath
-     * @param int     $id
+     * @param  Request  $request
+     * @param  string  $storagePath
+     * @param  int  $id
      *
      * @throws HttpNotFoundException
      */
@@ -281,15 +285,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request    $request
-     * @param Response   $response
-     * @param Filesystem $storage
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  Filesystem  $storage
      * @param $media
-     * @param string $disposition
-     *
-     * @throws FileNotFoundException
+     * @param  string  $disposition
      *
      * @return Response
+     * @throws FileNotFoundException
+     *
      */
     protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
     {
@@ -320,15 +324,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Filesystem $storage
+     * @param  Filesystem  $storage
      * @param $media
-     * @param null   $width
-     * @param null   $height
-     * @param string $disposition
-     *
-     * @throws FileNotFoundException
+     * @param  null  $width
+     * @param  null  $height
+     * @param  string  $disposition
      *
      * @return Response
+     * @throws FileNotFoundException
+     *
      */
     protected function makeThumbnail(Filesystem $storage, $media, $width = null, $height = null, string $disposition = 'inline')
     {
@@ -342,10 +346,10 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Response $response
-     * @param Stream   $stream
-     * @param string   $range
-     * @param string   $disposition
+     * @param  Response  $response
+     * @param  Stream  $stream
+     * @param  string  $range
+     * @param  string  $disposition
      * @param $media
      * @param $mime
      *
@@ -367,11 +371,11 @@ class MediaController extends Controller
         }
 
         if ($range === '-') {
-            $start = $stream->getSize() - (int) substr($range, 1);
+            $start = $stream->getSize() - (int)substr($range, 1);
         } else {
             $range = explode('-', $range);
-            $start = (int) $range[0];
-            $end = (isset($range[1]) && is_numeric($range[1])) ? (int) $range[1] : $stream->getSize();
+            $start = (int)$range[0];
+            $end = (isset($range[1]) && is_numeric($range[1])) ? (int)$range[1] : $stream->getSize();
         }
 
         $end = ($end > $stream->getSize() - 1) ? $stream->getSize() - 1 : $end;

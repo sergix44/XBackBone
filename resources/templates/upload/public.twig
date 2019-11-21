@@ -3,8 +3,8 @@
 {% block title %}{{ media.filename }}{% endblock %}
 
 {% block head %}
-    {% if type in ['image', 'text'] %}
-        <link rel="preload" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" as="{{ type }}">
+    {% if type == 'image' %}
+        <link rel="preload" href="{{ url }}/raw" as="{{ type }}">
     {% endif %}
 {% endblock %}
 
@@ -17,10 +17,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="ml-auto">
-                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ url }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
                     <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('public.telegram') }}" onclick="$('#modalTelegramShare').modal('toggle')"><i class="fab fa-telegram-plane fa-lg fa-fw"></i></a>
-                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
-                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-danger my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ url }}/raw" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ url }}/download" class="btn btn-warning my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
+                    {% if session.get('logged') %}
+                        <a href="javascript:void(0)" class="btn btn-danger my-2 my-sm-0 public-delete" data-link="{{ route('upload.delete', {'id': media.mediaId}) }}" data-toggle="tooltip" title="{{ lang('delete') }}"><i class="fas fa-trash fa-lg fa-fw"></i></a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -30,12 +33,12 @@
         <div class="row ml-auto mr-auto">
             <div class="col-md-12 justify-content-center">
                 {% if delete_token is not null %}
-                    <form method="post" action="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/delete/' ~ delete_token) }}">
+                    <form method="post" action="{{ url }}/delete/{{ delete_token }}">
                         <div class="text-center mb-4">
                             <p>{{ lang('public.delete_text') }}</p>
                             <div class="btn-group">
                                 <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> {{ lang('yes') }}</button>
-                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}" class="btn btn-secondary">{{ lang('no') }}</a>
+                                <a href="{{ url }}" class="btn btn-secondary">{{ lang('no') }}</a>
                             </div>
                         </div>
                     </form>
@@ -43,7 +46,7 @@
                 {% if type is same as ('image') %}
                     <div class="row mb-2">
                         <div class="col-md-12">
-                            <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
+                            <img src="{{ url }}/raw" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
                         </div>
                     </div>
                     <div class="row">
@@ -65,23 +68,23 @@
                 {% elseif type is same as ('audio') %}
                     <div class="media-player media-audio">
                         <audio id="player" autoplay controls loop preload="auto">
-                            <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
+                            <source src="{{ url }}/raw" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 audio.
-                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                            <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </audio>
                     </div>
                 {% elseif type is same as ('video') %}
                     <div class="media-player">
                         <video id="player" autoplay controls loop preload="auto">
-                            <source src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" type="{{ media.mimetype }}">
+                            <source src="{{ url }}/raw" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 video.
-                            <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                            <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </video>
                     </div>
                 {% elseif media.mimetype is same as ('application/pdf') %}
-                    <object type="{{ media.mimetype }}" data="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/raw') }}" class="pdf-viewer">
+                    <object type="{{ media.mimetype }}" data="{{ url }}/raw" class="pdf-viewer">
                         Your browser does not support PDF previews.
-                        <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                        <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                     </object>
                 {% else %}
                     <div class="text-center">
@@ -102,7 +105,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension ~ '/download') }}" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                                <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                             </div>
                         </div>
                     </div>
@@ -123,11 +126,12 @@
                     <textarea type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()">{{ media.filename }}</textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ extension) }}&text=">
+                    <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ url }}&text=">
                         <i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang('cancel') }}</button>
                 </div>
             </div>
         </div>
     </div>
+    {% include 'comp/modal_delete.twig' %}
 {% endblock %}

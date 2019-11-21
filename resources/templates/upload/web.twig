@@ -8,15 +8,26 @@
         {% include 'comp/alert.twig' %}
         <div class="card shadow-sm">
             <div class="card-body">
-                <div class="progress mb-3">
-                    <div class="progress-bar progress-bar-animated progress-bar-striped" style="width: 0;" id="uploadProgess"></div>
-                </div>
-                <form action="{{ route('upload') }}" method="post" id="upload-dropzone" class="dropzone">
-                    <div class="fallback">
-                        <input name="file" type="file" multiple>
+                <div class="row mb-3">
+                    <div class="col-10">
+                        <div class="progress h-100">
+                            <div class="progress-bar progress-bar-animated progress-bar-striped" style="width: 0;" id="uploadProgess"></div>
+                        </div>
                     </div>
-                    <input type="hidden" name="token" value="{{ user.token }}">
-                </form>
+                    <div class="col-2 text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-block" onclick="Dropzone.instances[0].removeAllFiles(true)" data-toggle="tooltip" title="{{ lang('cancel') }}"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <form action="{{ route('upload') }}" method="post" id="upload-dropzone" class="dropzone">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple>
+                            </div>
+                            <input type="hidden" name="token" value="{{ user.token }}">
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

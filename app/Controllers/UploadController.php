@@ -9,14 +9,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UploadController extends Controller
 {
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
-     * @throws \Twig\Error\LoaderError
+     * @return Response
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      *
-     * @return Response
+     * @throws \Twig\Error\LoaderError
      */
     public function webUpload(Request $request, Response $response): Response
     {
@@ -34,12 +34,12 @@ class UploadController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @throws FileExistsException
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
+     * @throws FileExistsException
+     *
      */
     public function upload(Request $request, Response $response): Response
     {
@@ -113,7 +113,7 @@ class UploadController extends Controller
         ]);
 
         $json['message'] = 'OK.';
-        $json['url'] = urlFor("/$user->user_code/$code.$fileInfo[extension]");
+        $json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
 
         $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
 

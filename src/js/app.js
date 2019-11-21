@@ -18,6 +18,7 @@ var app = {
         $('[data-toggle="popover"]').popover();
 
         $('.user-delete').click(app.modalDelete);
+        $('.public-delete').click(app.modalDelete);
         $('.media-delete').click(app.mediaDelete);
         $('.publish-toggle').click(app.publishToggle);
         $('.refresh-token').click(app.refreshToken);
