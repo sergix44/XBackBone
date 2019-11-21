@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\ServerRequestCreatorFactory;
@@ -42,7 +22,7 @@ if (!function_exists('humanFileSize')) {
         for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
         }
 
-        return round($size, $precision).' '.array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')[$i];
+        return round($size, $precision).' '.['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
     }
 }
 
@@ -75,7 +55,7 @@ if (!function_exists('isDisplayableImage')) {
      */
     function isDisplayableImage(string $mime): bool
     {
-        return in_array($mime, array(
+        return in_array($mime, [
             'image/apng',
             'image/bmp',
             'image/gif',
@@ -86,7 +66,7 @@ if (!function_exists('isDisplayableImage')) {
             'image/svg+xml',
             'image/tiff',
             'image/webp',
-        ));
+        ]);
     }
 }
 
@@ -241,7 +221,7 @@ if (!function_exists('route')) {
      *
      * @return string
      */
-    function route(string $path, array $args = array(), string $append = ''): string
+    function route(string $path, array $args = [], string $append = ''): string
     {
         global $app;
         $uri = $app->getRouteCollector()->getRouteParser()->relativeUrlFor($path, $args);
@@ -304,7 +284,7 @@ if (!function_exists('lang')) {
      *
      * @return string
      */
-    function lang(string $key, $args = array()): string
+    function lang(string $key, $args = []): string
     {
         return resolve('lang')->get($key, $args);
     }
@@ -318,7 +298,7 @@ if (!function_exists('isBot')) {
      */
     function isBot(string $userAgent)
     {
-        $bots = array(
+        $bots = [
             'TelegramBot',
             'facebookexternalhit/',
             'Discordbot/',
@@ -326,7 +306,7 @@ if (!function_exists('isBot')) {
             'Facebot',
             'curl/',
             'wget/',
-        );
+        ];
 
         foreach ($bots as $bot) {
             if (stripos($userAgent, $bot) !== false) {
@@ -348,7 +328,7 @@ if (!function_exists('mime2font')) {
      */
     function mime2font($mime)
     {
-        $classes = array(
+        $classes = [
             'image'                                                          => 'fa-file-image',
             'audio'                                                          => 'fa-file-audio',
             'video'                                                          => 'fa-file-video',
@@ -370,7 +350,7 @@ if (!function_exists('mime2font')) {
             'application/gzip'                                               => 'fa-file-archive',
             'application/zip'                                                => 'fa-file-archive',
             'application/octet-stream'                                       => 'fa-file-alt',
-        );
+        ];
 
         foreach ($classes as $fullMime => $class) {
             if (strpos($mime, $fullMime) === 0) {
@@ -405,7 +385,7 @@ if (!function_exists('queryParams')) {
      *
      * @return string
      */
-    function queryParams(array $replace = array())
+    function queryParams(array $replace = [])
     {
         $request = ServerRequestCreatorFactory::determineServerRequestCreator()->createServerRequestFromGlobals();
 

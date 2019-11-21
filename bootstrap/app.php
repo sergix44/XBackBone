@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 use App\Exception\Handlers\AppErrorHandler;
 use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
 use App\Factories\ViewFactory;
@@ -46,22 +26,22 @@ if (!file_exists('config.php') && is_dir('install/')) {
 }
 
 // Load the config
-$config = array_replace_recursive(array(
+$config = array_replace_recursive([
     'app_name'    => 'XBackBone',
     'base_url'    => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
     'debug'       => false,
     'maintenance' => false,
-    'db'          => array(
+    'db'          => [
         'connection' => 'sqlite',
         'dsn'        => BASE_DIR.'resources/database/xbackbone.db',
         'username'   => null,
         'password'   => null,
-    ),
-    'storage' => array(
+    ],
+    'storage' => [
         'driver' => 'local',
         'path'   => realpath(__DIR__.'/').DIRECTORY_SEPARATOR.'storage',
-    ),
-), require BASE_DIR.'config.php');
+    ],
+], require BASE_DIR.'config.php');
 
 $builder = new ContainerBuilder();
 
@@ -70,13 +50,13 @@ if (!$config['debug']) {
     $builder->writeProxiesToFile(true, BASE_DIR.'/resources/cache/proxies');
 }
 
-$builder->addDefinitions(array(
+$builder->addDefinitions([
     'config'    => value($config),
     View::class => factory(function (Container $container) {
         return ViewFactory::createAppInstance($container);
     }),
     'view' => get(View::class),
-));
+]);
 
 $builder->addDefinitions(__DIR__.'/container.php');
 

@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 namespace App\Exception\Handlers\Renderers;
 
 use App\Exceptions\UnderMaintenanceException;
@@ -65,6 +45,6 @@ class HtmlErrorRenderer implements ErrorRendererInterface
             return view()->string('errors/400.twig');
         }
 
-        return view()->string('errors/500.twig', array('exception' => $displayErrorDetails ? $exception : null));
+        return view()->string('errors/500.twig', ['exception' => $displayErrorDetails ? $exception : null]);
     }
 }

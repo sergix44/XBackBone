@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 namespace App\Controllers;
 
 use League\Flysystem\FileExistsException;
@@ -29,14 +9,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UploadController extends Controller
 {
     /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\LoaderError
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     *
+     * @throws \Twig\Error\LoaderError
      */
     public function webUpload(Request $request, Response $response): Response
     {
@@ -48,25 +28,25 @@ class UploadController extends Controller
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
-        return view()->render($response, 'upload/web.twig', array(
+        return view()->render($response, 'upload/web.twig', [
             'user' => $user,
-        ));
+        ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @throws FileExistsException
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
+     * @throws FileExistsException
+     *
      */
     public function upload(Request $request, Response $response): Response
     {
-        $json = array(
+        $json = [
             'message' => null,
             'version' => PLATFORM_VERSION,
-        );
+        ];
 
         if ($this->config['maintenance']) {
             $json['message'] = 'Endpoint under maintenance.';
@@ -125,17 +105,17 @@ class UploadController extends Controller
 
         $this->storage->writeStream($storagePath, $file->getStream()->detach());
 
-        $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', array(
+        $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', [
             $user->id,
             $code,
             $file->getClientFilename(),
             $storagePath,
-        ));
+        ]);
 
         $json['message'] = 'OK.';
         $json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
 
-        $this->logger->info("User $user->username uploaded new media.", array($this->database->getPdo()->lastInsertId()));
+        $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
 
         return json($response, $json, 201);
     }

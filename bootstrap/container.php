@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 use App\Database\DB;
 use App\Web\Lang;
 use App\Web\Session;
@@ -39,7 +19,7 @@ use Spatie\Dropbox\Client as DropboxClient;
 use Spatie\FlysystemDropbox\DropboxAdapter;
 use Superbalist\Flysystem\GoogleStorage\GoogleStorageAdapter;
 
-return array(
+return [
     Logger::class => factory(function () {
         $logger = new Logger('app');
 
@@ -74,22 +54,22 @@ return array(
             case 'local':
                 return new Filesystem(new Local($config['storage']['path']));
             case 's3':
-                $client = new S3Client(array(
-                    'credentials' => array(
+                $client = new S3Client([
+                    'credentials' => [
                         'key'    => $config['storage']['key'],
                         'secret' => $config['storage']['secret'],
-                    ),
+                    ],
                     'region'  => $config['storage']['region'],
                     'version' => 'latest',
-                ));
+                ]);
 
                 return new Filesystem(new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']));
             case 'dropbox':
                 $client = new DropboxClient($config['storage']['token']);
 
-                return new Filesystem(new DropboxAdapter($client), array('case_sensitive' => false));
+                return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
             case 'ftp':
-                return new Filesystem(new FtpAdapter(array(
+                return new Filesystem(new FtpAdapter([
                     'host'     => $config['storage']['host'],
                     'username' => $config['storage']['username'],
                     'password' => $config['storage']['password'],
@@ -98,12 +78,12 @@ return array(
                     'passive'  => $config['storage']['passive'],
                     'ssl'      => $config['storage']['ssl'],
                     'timeout'  => 30,
-                )));
+                ]));
             case 'google-cloud':
-                $client = new StorageClient(array(
+                $client = new StorageClient([
                     'projectId'   => $config['storage']['project_id'],
                     'keyFilePath' => $config['storage']['key_path'],
-                ));
+                ]);
 
                 return new Filesystem(new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket'])));
             default:
@@ -116,4 +96,4 @@ return array(
         return Lang::build(Lang::recognize(), BASE_DIR.'resources/lang/');
     }),
     'lang' => get(Lang::class),
-);
+];

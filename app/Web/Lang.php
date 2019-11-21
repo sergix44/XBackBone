@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 namespace App\Web;
 
 class Lang
@@ -37,7 +17,7 @@ class Lang
     protected static $instance;
 
     /** @var array */
-    protected $cache = array();
+    protected $cache = [];
 
     /**
      * @return Lang
@@ -105,7 +85,7 @@ class Lang
      */
     public static function getList()
     {
-        $languages = array();
+        $languages = [];
 
         $default = count(include self::$langPath.self::DEFAULT_LANG.'.lang.php') - 1;
 
@@ -131,7 +111,7 @@ class Lang
      *
      * @return string
      */
-    public function get($key, $args = array()): string
+    public function get($key, $args = []): string
     {
         return $this->getString($key, self::$lang, $args);
     }
@@ -158,7 +138,7 @@ class Lang
                     $transDict = include self::$langPath.$redLang.'.lang.php';
                     $this->cache[$lang] = $transDict;
                 } else {
-                    $transDict = array();
+                    $transDict = [];
                 }
             }
         }

@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 namespace App\Controllers;
 
 use GuzzleHttp\Psr7\Stream;
@@ -36,19 +16,19 @@ use Slim\Exception\HttpUnauthorizedException;
 class MediaController extends Controller
 {
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param string      $userCode
-     * @param string      $mediaCode
-     * @param string|null $token
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
+     * @param  string|null  $token
      *
+     * @return Response
      * @throws HttpNotFoundException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws FileNotFoundException
      *
-     * @return Response
      */
     public function show(Request $request, Response $response, string $userCode, string $mediaCode, string $token = null): Response
     {
@@ -86,23 +66,23 @@ class MediaController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        return view()->render($response, 'upload/public.twig', array(
+        return view()->render($response, 'upload/public.twig', [
             'delete_token' => $token,
-            'media'        => $media,
-            'type'         => $type,
-            'url'          => urlFor("/{$userCode}/{$mediaCode}"),
-        ));
+            'media' => $media,
+            'type' => $type,
+            'url' => urlFor("/{$userCode}/{$mediaCode}"),
+        ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws FileNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     public function getRawById(Request $request, Response $response, int $id): Response
     {
@@ -116,17 +96,17 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param string      $userCode
-     * @param string      $mediaCode
-     * @param string|null $ext
-     *
-     * @throws HttpBadRequestException
-     * @throws HttpNotFoundException
-     * @throws FileNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
+     * @param  string|null  $ext
      *
      * @return Response
+     * @throws HttpBadRequestException
+     * @throws HttpNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     public function getRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
     {
@@ -144,15 +124,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param string   $userCode
-     * @param string   $mediaCode
-     *
-     * @throws HttpNotFoundException
-     * @throws FileNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
      *
      * @return Response
+     * @throws HttpNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     public function download(Request $request, Response $response, string $userCode, string $mediaCode): Response
     {
@@ -166,40 +146,40 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpNotFoundException
+     *
      */
     public function togglePublish(Request $request, Response $response, int $id): Response
     {
         if ($this->session->get('admin')) {
             $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
         } else {
-            $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', array($id, $this->session->get('user_id')))->fetch();
+            $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$id, $this->session->get('user_id')])->fetch();
         }
 
         if (!$media) {
             throw new HttpNotFoundException($request);
         }
 
-        $this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', array($media->published ? 0 : 1, $media->id));
+        $this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [$media->published ? 0 : 1, $media->id]);
 
         return $response;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpUnauthorizedException
-     * @throws HttpNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -211,7 +191,7 @@ class MediaController extends Controller
 
         if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
             $this->deleteMedia($request, $media->storage_path, $id);
-            $this->logger->info('User '.$this->session->get('username').' deleted a media.', array($id));
+            $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
             $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
         } else {
             throw new HttpUnauthorizedException($request);
@@ -225,16 +205,16 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param string   $userCode
-     * @param string   $mediaCode
-     * @param string   $token
-     *
-     * @throws HttpUnauthorizedException
-     * @throws HttpNotFoundException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  string  $userCode
+     * @param  string  $mediaCode
+     * @param  string  $token
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function deleteByToken(Request $request, Response $response, string $userCode, string $mediaCode, string $token): Response
     {
@@ -260,7 +240,7 @@ class MediaController extends Controller
 
         if ($this->session->get('admin', false) || $user->id === $media->user_id) {
             $this->deleteMedia($request, $media->storage_path, $media->mediaId);
-            $this->logger->info('User '.$user->username.' deleted a media via token.', array($media->mediaId));
+            $this->logger->info('User '.$user->username.' deleted a media via token.', [$media->mediaId]);
         } else {
             throw new HttpUnauthorizedException($request);
         }
@@ -269,9 +249,9 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param string  $storagePath
-     * @param int     $id
+     * @param  Request  $request
+     * @param  string  $storagePath
+     * @param  int  $id
      *
      * @throws HttpNotFoundException
      */
@@ -296,24 +276,24 @@ class MediaController extends Controller
     {
         $mediaCode = pathinfo($mediaCode)['filename'];
 
-        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', array(
+        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
             $userCode,
             $mediaCode,
-        ))->fetch();
+        ])->fetch();
 
         return $media;
     }
 
     /**
-     * @param Request    $request
-     * @param Response   $response
-     * @param Filesystem $storage
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  Filesystem  $storage
      * @param $media
-     * @param string $disposition
-     *
-     * @throws FileNotFoundException
+     * @param  string  $disposition
      *
      * @return Response
+     * @throws FileNotFoundException
+     *
      */
     protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
     {
@@ -325,7 +305,7 @@ class MediaController extends Controller
         } else {
             $stream = new Stream($storage->readStream($media->storage_path));
 
-            if (!in_array(explode('/', $mime)[0], array('image', 'video', 'audio')) || $disposition === 'attachment') {
+            if (!in_array(explode('/', $mime)[0], ['image', 'video', 'audio']) || $disposition === 'attachment') {
                 return $response->withHeader('Content-Type', $mime)
                     ->withHeader('Content-Disposition', $disposition.'; filename="'.$media->filename.'"')
                     ->withHeader('Content-Length', $stream->getSize())
@@ -344,15 +324,15 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Filesystem $storage
+     * @param  Filesystem  $storage
      * @param $media
-     * @param null   $width
-     * @param null   $height
-     * @param string $disposition
-     *
-     * @throws FileNotFoundException
+     * @param  null  $width
+     * @param  null  $height
+     * @param  string  $disposition
      *
      * @return Response
+     * @throws FileNotFoundException
+     *
      */
     protected function makeThumbnail(Filesystem $storage, $media, $width = null, $height = null, string $disposition = 'inline')
     {
@@ -366,10 +346,10 @@ class MediaController extends Controller
     }
 
     /**
-     * @param Response $response
-     * @param Stream   $stream
-     * @param string   $range
-     * @param string   $disposition
+     * @param  Response  $response
+     * @param  Stream  $stream
+     * @param  string  $range
+     * @param  string  $disposition
      * @param $media
      * @param $mime
      *

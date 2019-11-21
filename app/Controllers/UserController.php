@@ -1,25 +1,5 @@
 <?php
 
-/*
- * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
- *
- * @author Sergio Brighenti <sergio@brighenti.me>
- *
- * @license AGPL-3.0
- *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -45,18 +25,18 @@ class UserController extends Controller
     {
         $page = max(0, --$page);
 
-        $users = $this->database->query('SELECT * FROM `users` LIMIT ? OFFSET ?', array(self::PER_PAGE, $page * self::PER_PAGE))->fetchAll();
+        $users = $this->database->query('SELECT * FROM `users` LIMIT ? OFFSET ?', [self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
 
         $pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count / self::PER_PAGE;
 
         return view()->render($response,
             'user/index.twig',
-            array(
+            [
                 'users'        => $users,
                 'next'         => $page < floor($pages),
                 'previous'     => $page >= 1,
                 'current_page' => ++$page,
-            )
+            ]
         );
     }
 
@@ -118,7 +98,7 @@ class UserController extends Controller
 
         $token = $this->generateNewToken();
 
-        $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', array(
+        $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', [
             param($request, 'email'),
             param($request, 'username'),
             password_hash(param($request, 'password'), PASSWORD_DEFAULT),
@@ -126,10 +106,10 @@ class UserController extends Controller
             param($request, 'is_active') !== null ? 1 : 0,
             $userCode,
             $token,
-        ));
+        ]);
 
-        $this->session->alert(lang('user_created', array(param($request, 'username'))), 'success');
-        $this->logger->info('User '.$this->session->get('username').' created a new user.', array(array_diff_key($request->getParsedBody(), array_flip(array('password')))));
+        $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
+        $this->logger->info('User '.$this->session->get('username').' created a new user.', [array_diff_key($request->getParsedBody(), array_flip(['password']))]);
 
         return redirect($response, route('user.index'));
     }
@@ -151,10 +131,10 @@ class UserController extends Controller
     {
         $user = $this->getUser($request, $id, false);
 
-        return view()->render($response, 'user/edit.twig', array(
+        return view()->render($response, 'user/edit.twig', [
             'profile' => false,
             'user'    => $user,
-        ));
+        ]);
     }
 
     /**
@@ -174,57 +154,57 @@ class UserController extends Controller
         if (param($request, 'email') === null) {
             $this->session->alert(lang('email_required'), 'danger');
 
-            return redirect($response, route('user.edit', array('id' => $id)));
+            return redirect($response, route('user.edit', ['id' => $id]));
         }
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', array(param($request, 'email'), $user->email))->fetch()->count > 0) {
+        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
 
-            return redirect($response, route('user.edit', array('id' => $id)));
+            return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if (param($request, 'username') === null) {
             $this->session->alert(lang('username_required'), 'danger');
 
-            return redirect($response, route('user.edit', array('id' => $id)));
+            return redirect($response, route('user.edit', ['id' => $id]));
         }
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', array(param($request, 'username'), $user->username))->fetch()->count > 0) {
+        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count > 0) {
             $this->session->alert(lang('username_taken'), 'danger');
 
-            return redirect($response, route('user.edit', array('id' => $id)));
+            return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if ($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null) {
             $this->session->alert(lang('cannot_demote'), 'danger');
 
-            return redirect($response, route('user.edit', array('id' => $id)));
+            return redirect($response, route('user.edit', ['id' => $id]));
         }
 
         if (param($request, 'password') !== null && !empty(param($request, 'password'))) {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', array(
+            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 param($request, 'username'),
                 password_hash(param($request, 'password'), PASSWORD_DEFAULT),
                 param($request, 'is_admin') !== null ? 1 : 0,
                 param($request, 'is_active') !== null ? 1 : 0,
                 $user->id,
-            ));
+            ]);
         } else {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', array(
+            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 param($request, 'username'),
                 param($request, 'is_admin') !== null ? 1 : 0,
                 param($request, 'is_active') !== null ? 1 : 0,
                 $user->id,
-            ));
+            ]);
         }
 
-        $this->session->alert(lang('user_updated', array(param($request, 'username'))), 'success');
-        $this->logger->info('User '.$this->session->get('username')." updated $user->id.", array(
-            array_diff_key((array) $user, array_flip(array('password'))),
-            array_diff_key($request->getParsedBody(), array_flip(array('password'))),
-        ));
+        $this->session->alert(lang('user_updated', [param($request, 'username')]), 'success');
+        $this->logger->info('User '.$this->session->get('username')." updated $user->id.", [
+            array_diff_key((array) $user, array_flip(['password'])),
+            array_diff_key($request->getParsedBody(), array_flip(['password'])),
+        ]);
 
         return redirect($response, route('user.index'));
     }
@@ -273,10 +253,10 @@ class UserController extends Controller
     {
         $user = $this->getUser($request, $this->session->get('user_id'), true);
 
-        return view()->render($response, 'user/edit.twig', array(
+        return view()->render($response, 'user/edit.twig', [
             'profile' => true,
             'user'    => $user,
-        ));
+        ]);
     }
 
     /**
@@ -299,23 +279,23 @@ class UserController extends Controller
 
         $user = $this->getUser($request, $id, true);
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', array(param($request, 'email'), $user->email))->fetch()->count > 0) {
+        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
 
             return redirect($response, route('profile'));
         }
 
         if (param($request, 'password') !== null && !empty(param($request, 'password'))) {
-            $this->database->query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', array(
+            $this->database->query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 password_hash(param($request, 'password'), PASSWORD_DEFAULT),
                 $user->id,
-            ));
+            ]);
         } else {
-            $this->database->query('UPDATE `users` SET `email`=? WHERE `id` = ?', array(
+            $this->database->query('UPDATE `users` SET `email`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 $user->id,
-            ));
+            ]);
         }
 
         $this->session->alert(lang('profile_updated'), 'success');
@@ -340,10 +320,10 @@ class UserController extends Controller
 
         $token = $this->generateNewToken();
 
-        $this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', array(
+        $this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
             $token,
             $user->id,
-        ));
+        ]);
 
         $this->logger->info('User '.$this->session->get('username')." refreshed token of user $user->id.");
 
