@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -29,19 +49,19 @@ class ClientController extends Controller
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
-        $json = [
+        $json = array(
             'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
             'RequestURL'      => route('upload'),
             'FileFormName'    => 'upload',
-            'Arguments'       => [
+            'Arguments'       => array(
                 'file'  => '$filename$',
                 'text'  => '$input$',
                 'token' => $user->token,
-            ],
+            ),
             'URL'          => '$json:url$',
             'ThumbnailURL' => '$json:url$/raw',
             'DeletionURL'  => '$json:url$/delete/'.$user->token,
-        ];
+        );
 
         return json($response, $json, 200, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
             ->withHeader('Content-Disposition', 'attachment;filename="'.$user->username.'-ShareX.sxcu"');
@@ -72,11 +92,11 @@ class ClientController extends Controller
 
         return view()->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_'.$user->username.'.sh"'),
             'scripts/xbackbone_uploader.sh.twig',
-            [
+            array(
                 'username'   => $user->username,
                 'upload_url' => route('upload'),
                 'token'      => $user->token,
-            ]
+            )
         );
     }
 }

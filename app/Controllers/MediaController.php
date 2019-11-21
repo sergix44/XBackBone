@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Controllers;
 
 use GuzzleHttp\Psr7\Stream;
@@ -66,12 +86,12 @@ class MediaController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        return view()->render($response, 'upload/public.twig', [
+        return view()->render($response, 'upload/public.twig', array(
             'delete_token' => $token,
             'media'        => $media,
             'type'         => $type,
             'url'          => urlFor("/{$userCode}/{$mediaCode}"),
-        ]);
+        ));
     }
 
     /**
@@ -159,14 +179,14 @@ class MediaController extends Controller
         if ($this->session->get('admin')) {
             $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
         } else {
-            $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$id, $this->session->get('user_id')])->fetch();
+            $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', array($id, $this->session->get('user_id')))->fetch();
         }
 
         if (!$media) {
             throw new HttpNotFoundException($request);
         }
 
-        $this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [$media->published ? 0 : 1, $media->id]);
+        $this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', array($media->published ? 0 : 1, $media->id));
 
         return $response;
     }
@@ -191,7 +211,7 @@ class MediaController extends Controller
 
         if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
             $this->deleteMedia($request, $media->storage_path, $id);
-            $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
+            $this->logger->info('User '.$this->session->get('username').' deleted a media.', array($id));
             $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
         } else {
             throw new HttpUnauthorizedException($request);
@@ -240,7 +260,7 @@ class MediaController extends Controller
 
         if ($this->session->get('admin', false) || $user->id === $media->user_id) {
             $this->deleteMedia($request, $media->storage_path, $media->mediaId);
-            $this->logger->info('User '.$user->username.' deleted a media via token.', [$media->mediaId]);
+            $this->logger->info('User '.$user->username.' deleted a media via token.', array($media->mediaId));
         } else {
             throw new HttpUnauthorizedException($request);
         }
@@ -276,10 +296,10 @@ class MediaController extends Controller
     {
         $mediaCode = pathinfo($mediaCode)['filename'];
 
-        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
+        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', array(
             $userCode,
             $mediaCode,
-        ])->fetch();
+        ))->fetch();
 
         return $media;
     }
@@ -305,7 +325,7 @@ class MediaController extends Controller
         } else {
             $stream = new Stream($storage->readStream($media->storage_path));
 
-            if (!in_array(explode('/', $mime)[0], ['image', 'video', 'audio']) || $disposition === 'attachment') {
+            if (!in_array(explode('/', $mime)[0], array('image', 'video', 'audio')) || $disposition === 'attachment') {
                 return $response->withHeader('Content-Type', $mime)
                     ->withHeader('Content-Disposition', $disposition.'; filename="'.$media->filename.'"')
                     ->withHeader('Content-Length', $stream->getSize())
