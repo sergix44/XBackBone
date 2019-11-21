@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Controllers;
 
 use League\Flysystem\FileNotFoundException;
@@ -34,7 +54,7 @@ class AdminController extends Controller
             $totalSize += $filesystem->getSize($media->storage_path);
         }
 
-        return view()->render($response, 'dashboard/system.twig', [
+        return view()->render($response, 'dashboard/system.twig', array(
             'usersCount'          => $usersCount,
             'mediasCount'         => $mediasCount,
             'orphanFilesCount'    => $orphanFilesCount,
@@ -43,7 +63,7 @@ class AdminController extends Controller
             'upload_max_filesize' => ini_get('upload_max_filesize'),
             'installed_lang'      => $this->lang->getList(),
             'forced_lang'         => $request->getAttribute('forced_lang'),
-        ]);
+        ));
     }
 
     /**
@@ -69,7 +89,7 @@ class AdminController extends Controller
 
         $this->database->query('DELETE FROM `uploads` WHERE `user_id` IS NULL');
 
-        $this->session->alert(lang('deleted_orphans', [$deleted]));
+        $this->session->alert(lang('deleted_orphans', array($deleted)));
 
         return redirect($response, route('system'));
     }
@@ -92,7 +112,7 @@ class AdminController extends Controller
             $this->database->query('DELETE FROM `settings` WHERE `key` = \'lang\'');
         }
 
-        $this->session->alert(lang('lang_set', [param($request, 'lang')]));
+        $this->session->alert(lang('lang_set', array(param($request, 'lang'))));
 
         return redirect($response, route('system'));
     }

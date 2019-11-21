@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Web;
 
 use Exception;
@@ -33,13 +53,13 @@ class Session
                 );
             }
 
-            $started = @session_start([
+            $started = @session_start(array(
                 'name'            => $name,
                 'save_path'       => $path,
                 'cookie_httponly' => true,
                 'gc_probability'  => 25,
                 'cookie_samesite' => 'Lax', // works only for php  >= 7.3
-            ]);
+            ));
 
             if (!$started) {
                 throw new Exception("Cannot start the HTTP session. That the session path '{$path}' is writable and your PHP settings.");
@@ -70,7 +90,7 @@ class Session
      */
     public function clear(): void
     {
-        $_SESSION = [];
+        $_SESSION = array();
     }
 
     /**
@@ -127,7 +147,7 @@ class Session
      */
     public function alert($message, string $type = 'info'): void
     {
-        $_SESSION['_flash'][] = [$type => $message];
+        $_SESSION['_flash'][] = array($type => $message);
     }
 
     /**
@@ -138,7 +158,7 @@ class Session
     public function getAlert(): ?array
     {
         $flash = self::get('_flash');
-        self::set('_flash', []);
+        self::set('_flash', array());
 
         return $flash;
     }

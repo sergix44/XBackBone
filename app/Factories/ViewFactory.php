@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Factories;
 
 use App\Web\View;
@@ -16,12 +36,12 @@ class ViewFactory
         $config = $container->get('config');
         $loader = new FilesystemLoader(BASE_DIR.'resources/templates');
 
-        $twig = new Environment($loader, [
+        $twig = new Environment($loader, array(
             'cache'       => BASE_DIR.'resources/cache/twig',
             'autoescape'  => 'html',
             'debug'       => $config['debug'],
             'auto_reload' => $config['debug'],
-        ]);
+        ));
 
         $request = ServerRequestCreatorFactory::determineServerRequestCreator()->createServerRequestFromGlobals();
 
@@ -47,14 +67,14 @@ class ViewFactory
     public static function createInstallerInstance(Container $container)
     {
         $config = $container->get('config');
-        $loader = new FilesystemLoader([BASE_DIR.'install/templates', BASE_DIR.'resources/templates']);
+        $loader = new FilesystemLoader(array(BASE_DIR.'install/templates', BASE_DIR.'resources/templates'));
 
-        $twig = new Environment($loader, [
+        $twig = new Environment($loader, array(
             'cache'       => false,
             'autoescape'  => 'html',
             'debug'       => $config['debug'],
             'auto_reload' => $config['debug'],
-        ]);
+        ));
 
         $request = ServerRequestCreatorFactory::determineServerRequestCreator()->createServerRequestFromGlobals();
 

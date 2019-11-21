@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Middleware;
 
 use GuzzleHttp\Psr7\Response;
@@ -23,7 +43,7 @@ class AuthMiddleware extends Middleware
             return redirect(new Response(), route('login.show'));
         }
 
-        if (!$this->database->query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', [$this->session->get('user_id')])->fetch()->active) {
+        if (!$this->database->query('SELECT `id`, `active` FROM `users` WHERE `id` = ? LIMIT 1', array($this->session->get('user_id')))->fetch()->active) {
             $this->session->alert(lang('account_disabled'), 'danger');
             $this->session->set('logged', false);
 

@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * @copyright Copyright (c) 2019 Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @author Sergio Brighenti <sergio@brighenti.me>
+ *
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace App\Database\Queries;
 
 use App\Database\DB;
@@ -112,7 +132,7 @@ class MediaQuery
         }
 
         $orderAndSearch = '';
-        $params = [];
+        $params = array();
 
         if ($this->text !== null) {
             $orderAndSearch = $this->isAdmin ? 'WHERE `uploads`.`filename` LIKE ? ' : 'AND `uploads`.`filename` LIKE ? ';
@@ -133,11 +153,11 @@ class MediaQuery
         $queryMedia = sprintf($queryMedia, $orderAndSearch);
 
         if ($this->isAdmin) {
-            $this->media = $this->db->query($queryMedia, array_merge($params, [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN]))->fetchAll();
+            $this->media = $this->db->query($queryMedia, array_merge($params, array(self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN)))->fetchAll();
             $this->pages = $this->db->query($queryPages, $params)->fetch()->count / self::PER_PAGE_ADMIN;
         } else {
-            $this->media = $this->db->query($queryMedia, array_merge([$this->userId], $params, [self::PER_PAGE, $page * self::PER_PAGE]))->fetchAll();
-            $this->pages = $this->db->query($queryPages, array_merge([$this->userId], $params))->fetch()->count / self::PER_PAGE;
+            $this->media = $this->db->query($queryMedia, array_merge(array($this->userId), $params, array(self::PER_PAGE, $page * self::PER_PAGE)))->fetchAll();
+            $this->pages = $this->db->query($queryPages, array_merge(array($this->userId), $params))->fetch()->count / self::PER_PAGE;
         }
 
         foreach ($this->media as $media) {
@@ -166,7 +186,7 @@ class MediaQuery
             $offset = $page * self::PER_PAGE_ADMIN;
             $limit = self::PER_PAGE_ADMIN;
         } else {
-            $userCode = $this->db->query('SELECT `user_code` FROM `users` WHERE `id` = ?', [$this->userId])->fetch()->user_code;
+            $userCode = $this->db->query('SELECT `user_code` FROM `users` WHERE `id` = ?', array($this->userId))->fetch()->user_code;
             $files = $this->storage->listFiles($userCode);
             $this->pages = count($files) / self::PER_PAGE;
 
@@ -178,9 +198,9 @@ class MediaQuery
 
         if ($this->text !== null) {
             if ($this->isAdmin) {
-                $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`filename` LIKE ? ', ['%'.htmlentities($this->text).'%'])->fetchAll();
+                $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`filename` LIKE ? ', array('%'.htmlentities($this->text).'%'))->fetchAll();
             } else {
-                $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? AND `uploads`.`filename` LIKE ? ', [$this->userId, '%'.htmlentities($this->text).'%'])->fetchAll();
+                $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? AND `uploads`.`filename` LIKE ? ', array($this->userId, '%'.htmlentities($this->text).'%'))->fetchAll();
             }
 
             $paths = array_column($files, 'path');
@@ -196,7 +216,7 @@ class MediaQuery
             $paths[$media->storage_path] = $media;
         }
 
-        $this->media = [];
+        $this->media = array();
         foreach ($files as $file) {
             $media = $paths[$file['path']];
             if (!is_object($media)) {
