@@ -9,8 +9,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class DashboardController extends Controller
 {
     /**
-     * @Inject
-     *
      * @param Request  $request
      * @param Response $response
      *
