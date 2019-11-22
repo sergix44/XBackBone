@@ -97,13 +97,15 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
 
     // Check if there is a previous installation, if not, setup the config file
     $installed = true;
+
+    // disable debug in production
+    unset($config['debug']);
     if (!file_exists(__DIR__.'/../config.php')) {
         $installed = false;
 
         // config file setup
         $config['base_url'] = param($request, 'base_url');
         $config['storage']['driver'] = param($request, 'storage_driver');
-        unset($config['debug']);
         $config['db']['connection'] = param($request, 'connection');
         $config['db']['dsn'] = param($request, 'dsn');
         $config['db']['username'] = param($request, 'db_user');

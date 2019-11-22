@@ -8,6 +8,6 @@ class AppErrorHandler extends ErrorHandler
 {
     protected function logError(string $error): void
     {
-        resolve('logger')->critical($error);
+        resolve('logger')->error($error);
     }
 }
