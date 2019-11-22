@@ -101,6 +101,12 @@ module.exports = function (grunt) {
                         src: ['dropzone.min.css', 'dropzone.min.js'],
                         dest: 'static/dropzone'
                     },
+                    {
+                        expand: true,
+                        cwd: 'src/images',
+                        src: ['**/*'],
+                        dest: 'static/images'
+                    },
                     {expand: true, cwd: 'node_modules/jquery/dist', src: ['jquery.min.js'], dest: 'static/jquery'}
                 ],
             },

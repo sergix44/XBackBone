@@ -5,6 +5,7 @@
 + Added ability to show a preview of PDF files.
 + Added remember me functionality.
 + Added delete button on the preview page if the user is logged in.
++ New project icon (by [@SerenaItalia](https://www.deviantart.com/serenaitalia)).
 + Raw URL now accept file extensions.
 + The linux script can be used on headless systems.
 + Improved installer.

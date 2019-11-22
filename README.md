@@ -1,28 +1,36 @@
 
-# XBackBone 📤 [![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg)](https://hosted.weblate.org/engage/xbackbone/?utm_source=widget) <a href="https://codeclimate.com/github/SergiX44/XBackBone/maintainability"><img src="https://api.codeclimate.com/v1/badges/bf8ee4a8df9c9f0dfa08/maintainability" /></a> [![Donations](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url)
+# [![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg)](https://hosted.weblate.org/engage/xbackbone/?utm_source=widget) <a href="https://codeclimate.com/github/SergiX44/XBackBone/maintainability"><img src="https://api.codeclimate.com/v1/badges/bf8ee4a8df9c9f0dfa08/maintainability" /></a> [![Donations](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url)
+
+<p align="center">
+  <img src=".github/xbackbone.png" width="750px">
+</p>
 
 XBackBone is a simple, self-hosted, lightweight PHP file manager that support the instant sharing tool ShareX and *NIX systems. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management, past uploads history and search support.
 
 ## Features
 
 + Supports every upload type from ShareX.
++ Config generator for ShareX.
 + Low memory footprint.
 + Multiple backends support: Local storage, AWS S3, Google Cloud, Dropbox, FTP(s).
++ Web file upload.
 + Code uploads syntax highlighting.
 + Video and audio uploads webplayer.
++ PDF viewer.
 + Files preview page.
 + Bootswatch themes support.
-+ Responsive theme.
++ Responsive theme for mobile use.
 + Multi language support.
 + User management, multi user features and roles.
 + Public and private uploads.
 + Web UI for each user.
 + Logging system.
-+ Auto config generator for ShareX.
 + Share to Telegram.
-+ Linux supported via a per-user custom generated script.
++ Linux supported via a per-user custom generated script (server and desktop).
 + Direct downloads using curl or wget commands.
 + Direct images links support on Discord, Telegram, Facebook, etc.
++ System updates without FTP or CLI.
++ Easy web installer.
 
 ## How to Install
 #### Prerequisites
@@ -32,6 +40,7 @@ XBackBone require PHP >= `7.1`, with installed the required extensions:
 + `php-gd` image manipualtion library.
 + `php-json` json file support.
 + `php-intl` internationalization functions.
++ `php-fileinfo` file related functions.
 
 ### Web installation
 + **[release, stable]** Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
@@ -73,7 +82,7 @@ php bin/migrate --install
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
 ## How to update
-Self-update (since v2.5) **[BETA]**:
+Self-update (since v2.5):
 + Navigate to the system page as admin.
 + Click the check for update button, and finally the upgrade button.
 + Wait until the browser redirect to the install page.
@@ -132,7 +141,7 @@ Since ShareX does not support Linux, XBackBone can generate a script that allows
 Now, to upload a media, just use the right click on the file > "Open with ..." > search XBackBone Uploader (XXX) in the app list.
 You can use this feature in combination with tools like [Flameshot](https://github.com/lupoDharkael/flameshot), just use the "Open with ..." button once you have done the screenshot.
 
-The script requires `xclip`, `curl`, and `notify-send`.
+The script requires `xclip`, `curl`, and `notify-send` on a desktop distribution.
 
 *Note: XXX is the username of your XBackBone account.*
 
@@ -159,11 +168,12 @@ This software is licensed under the <a href="https://choosealicense.com/licenses
 As a "copyright notice" it is sufficient to keep the small footer at the bottom of the page, also to help other people to learn about this project!
 
 ## Built with
-+ Slim 3, since `v2.0` (https://www.slimframework.com/) and some great PHP packages (Flysystem, Intervention Image, Twig, etc)
++ Slim 3 since `v2.0`, and Slim 4 since `v3.0` (https://www.slimframework.com/) and some great PHP packages (Flysystem, Intervention Image, Twig, etc)
 + FlightPHP, up to `v1.x` (http://flightphp.com/)
 + Bootstrap 4 (https://getbootstrap.com/)
 + Font Awesome 5 (http://fontawesome.com)
 + ClipboardJS (https://clipboardjs.com/)
 + HighlightJS (https://highlightjs.org/)
 + JQuery (https://jquery.com/)
-+ video.js (https://videojs.com/)
++ Plyr.io (https://plyr.io/)
++ Dropzone.js (https://www.dropzonejs.com/)
