@@ -38,10 +38,10 @@ abstract class Controller
     /**
      * @param $name
      *
-     * @throws DependencyException
+     * @return mixed|null
      * @throws NotFoundException
      *
-     * @return mixed|null
+     * @throws DependencyException
      */
     public function __get($name)
     {
@@ -74,14 +74,14 @@ abstract class Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @param $id
-     * @param bool $authorize
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  bool  $authorize
      *
      * @return mixed
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     protected function getUser(Request $request, $id, $authorize = false)
     {
@@ -96,5 +96,34 @@ abstract class Controller
         }
 
         return $user;
+    }
+
+    /**
+     * @param $userId
+     * @throws \Exception
+     */
+    protected function refreshRememberCookie($userId)
+    {
+        $selector = bin2hex(random_bytes(8));
+        $token = bin2hex(random_bytes(32));
+        $expire = time() + 604800; // a week
+
+        $this->database->query('UPDATE `users` SET `remember_selector`=?, `remember_token`=?, `remember_expire`=? WHERE `id`=?', [
+            $selector,
+            password_hash($token, PASSWORD_DEFAULT),
+            date('Y-m-d\TH:i:s', $expire),
+            $userId,
+        ]);
+
+        // Workaround for php <= 7.3
+        if (PHP_VERSION_ID < 70300) {
+            setcookie('remember', "{$selector}:{$token}", $expire, '; SameSite=Lax', '', false, true);
+        } else {
+            setcookie('remember', "{$selector}:{$token}", [
+                'expires' => $expire,
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+        }
     }
 }

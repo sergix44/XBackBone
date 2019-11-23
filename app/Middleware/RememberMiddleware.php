@@ -9,10 +9,11 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 class RememberMiddleware extends Middleware
 {
     /**
-     * @param Request        $request
-     * @param RequestHandler $handler
+     * @param  Request  $request
+     * @param  RequestHandler  $handler
      *
      * @return Response
+     * @throws \Exception
      */
     public function __invoke(Request $request, RequestHandler $handler)
     {
@@ -30,6 +31,8 @@ class RememberMiddleware extends Middleware
                 $this->session->set('admin', $result->is_admin);
                 $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($result->id)));
             }
+
+            $this->refreshRememberCookie($result->id);
         }
 
         return $handler->handle($request);

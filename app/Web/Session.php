@@ -42,7 +42,7 @@ class Session
             ]);
 
             if (!$started) {
-                throw new Exception("Cannot start the HTTP session. That the session path '{$path}' is writable and your PHP settings.");
+                throw new Exception("Cannot start the HTTP session. The session path '{$path}' is not writable.");
             }
         }
     }
