@@ -200,16 +200,13 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $db->query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [param($request, 'email'), password_hash(param($request, 'password'), PASSWORD_DEFAULT), humanRandomString(5)]);
     }
 
-    // post install cleanup
-    cleanDirectory(__DIR__.'/../resources/cache');
-    cleanDirectory(__DIR__.'/../resources/sessions');
-
-    removeDirectory(__DIR__.'/../install');
-
     // if is upgrading and existing installation, put it out maintenance
     if ($installed) {
         unset($config['maintenance']);
+
+        // remove old config from old versions
         unset($config['lang']);
+        unset($config['displayErrorDetails']);
     }
 
     // Finally write the config
@@ -219,6 +216,12 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
 
         return redirect($response, '/install');
     }
+
+    // post install cleanup
+    cleanDirectory(__DIR__.'/../resources/cache');
+    cleanDirectory(__DIR__.'/../resources/sessions');
+
+    removeDirectory(__DIR__.'/../install');
 
     // Installed successfully, destroy the installer session
     $session->destroy();

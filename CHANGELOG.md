@@ -1,4 +1,8 @@
-## v.3.0 (WIP)
+## v.3.0.1
++ Fixed error with older mysql versions.
++ Small installer update.
+
+## v.3.0
 + Upgraded from Slim3 to Slim 4.
 + Added web upload.
 + Added ability to add custom HTML in \<head\> tag.
