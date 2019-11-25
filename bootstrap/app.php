@@ -27,31 +27,30 @@ if (!file_exists('config.php') && is_dir('install/')) {
 
 // Load the config
 $config = array_replace_recursive([
-    'app_name'    => 'XBackBone',
-    'base_url'    => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
-    'debug'       => false,
+    'app_name' => 'XBackBone',
+    'base_url' => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
+    'debug' => false,
     'maintenance' => false,
-    'db'          => [
+    'db' => [
         'connection' => 'sqlite',
-        'dsn'        => BASE_DIR.'resources/database/xbackbone.db',
-        'username'   => null,
-        'password'   => null,
+        'dsn' => BASE_DIR.'resources/database/xbackbone.db',
+        'username' => null,
+        'password' => null,
     ],
     'storage' => [
         'driver' => 'local',
-        'path'   => realpath(__DIR__.'/').DIRECTORY_SEPARATOR.'storage',
+        'path' => realpath(__DIR__.'/').DIRECTORY_SEPARATOR.'storage',
     ],
 ], require BASE_DIR.'config.php');
 
 $builder = new ContainerBuilder();
 
 if (!$config['debug']) {
-    $builder->enableCompilation(BASE_DIR.'/resources/cache/di/');
-    $builder->writeProxiesToFile(true, BASE_DIR.'/resources/cache/proxies');
+    $builder->enableCompilation(BASE_DIR.'/resources/cache/di');
+    $builder->writeProxiesToFile(true, BASE_DIR.'/resources/cache/di');
 }
 
 $builder->addDefinitions([
-    'config'    => value($config),
     View::class => factory(function (Container $container) {
         return ViewFactory::createAppInstance($container);
     }),
@@ -61,6 +60,7 @@ $builder->addDefinitions([
 $builder->addDefinitions(__DIR__.'/container.php');
 
 $app = Bridge::create($builder->build());
+$app->getContainer()->set('config', $config);
 $app->setBasePath(parse_url($config['base_url'], PHP_URL_PATH) ?: '');
 
 if (!$config['debug']) {

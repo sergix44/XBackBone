@@ -1,5 +1,6 @@
 ## v.3.0.1
 + Fixed error with older mysql versions.
++ Fixed config is compiled with the di container.
 + Small installer update.
 
 ## v.3.0
