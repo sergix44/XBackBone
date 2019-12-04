@@ -436,13 +436,14 @@ if (!function_exists('dsnFromConfig')) {
     /**
      * Return the database DSN from config.
      *
-     * @param array $config
+     * @param  array  $config
      *
+     * @param  string  $baseDir
      * @return string
      */
-    function dsnFromConfig(array $config): string
+    function dsnFromConfig(array $config, $baseDir = BASE_DIR): string
     {
-        $dsn = $config['db']['connection'] === 'sqlite' ? BASE_DIR.$config['db']['dsn'] : $config['db']['dsn'];
+        $dsn = $config['db']['connection'] === 'sqlite' ? $baseDir.$config['db']['dsn'] : $config['db']['dsn'];
 
         return $config['db']['connection'].':'.$dsn;
     }

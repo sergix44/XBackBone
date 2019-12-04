@@ -1,6 +1,6 @@
 {
   "name": "sergix44/xbackbone",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {

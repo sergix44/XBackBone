@@ -1,3 +1,7 @@
+## v.3.0.2
++ Fixed error with migrate command.
++ Updated translations.
+
 ## v.3.0.1
 + Fixed error with older mysql versions.
 + Fixed config is compiled with the di container.
