@@ -1,6 +1,6 @@
 <?php
 return [
-    'lang' => 'English',
+    'lang' => 'Japanese',
     'enforce_language' => '言語設定',
     'yes' => 'はい',
     'no' => 'いいえ',
