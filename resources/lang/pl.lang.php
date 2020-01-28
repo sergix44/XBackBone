@@ -1,0 +1,21 @@
+<?php
+return [
+    'lang' => 'Polski',
+    'yes' => 'Tak',
+    'no' => 'Nie',
+    'send' => 'Wyślij',
+    'no_media' => 'Nie znaleziono pliku.',
+    'login.username' => 'Nazwa użytkownika lub E-Mail',
+    'password' => 'Hasło',
+    'login' => 'Login',
+    'username' => 'Nazwa użytkownika',
+    'users' => 'Użytkownicy',
+    'system' => 'System',
+    'profile' => 'Profil',
+    'logout' => 'Wyloguj',
+    'pager.next' => 'Następna',
+    'pager.previous' => 'Poprzednia',
+    'copy_link' => 'Skopiuj link',
+    'public.telegram' => 'Udostępnij na Telegram',
+    'public.delete_text' => 'Jesteś pewien, że chcesz usunąć ten element? Nie będzie się dało go już odzyskać!',
+];
