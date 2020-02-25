@@ -103,6 +103,18 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'node_modules/bootstrap4-toggle/css',
+                        src: ['bootstrap4-toggle.min.css'],
+                        dest: 'static/bootstrap/css'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'node_modules/bootstrap4-toggle/js',
+                        src: ['bootstrap4-toggle.min.js'],
+                        dest: 'static/bootstrap/js'
+                    },
+                    {
+                        expand: true,
                         cwd: 'src/images',
                         src: ['**/*'],
                         dest: 'static/images'

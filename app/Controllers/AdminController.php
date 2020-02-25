@@ -43,6 +43,7 @@ class AdminController extends Controller
             'upload_max_filesize' => ini_get('upload_max_filesize'),
             'installed_lang'      => $this->lang->getList(),
             'forced_lang'         => $request->getAttribute('forced_lang'),
+            'php_version'         => phpversion(),
         ]);
     }
 

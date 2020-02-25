@@ -1,3 +1,6 @@
+## v.3.1 (WIP)
++ Updated translations
+
 ## v.3.0.2
 + Fixed error with migrate command.
 + Updated translations.

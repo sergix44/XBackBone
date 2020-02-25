@@ -120,6 +120,12 @@ class MediaController extends Controller
             throw new HttpBadRequestException($request);
         }
 
+        // If contains html, return it as text/plain
+        if (strpos($this->storage->getMimetype($media->storage_path), 'text/htm') !== false) {
+            $response = $this->streamMedia($request, $response, $this->storage, $media);
+            return $response->withHeader('Content-Type', 'text/plain');
+        }
+
         return $this->streamMedia($request, $response, $this->storage, $media);
     }
 
@@ -358,7 +364,7 @@ class MediaController extends Controller
     protected function handlePartialRequest(Response $response, Stream $stream, string $range, string $disposition, $media, $mime)
     {
         $end = $stream->getSize() - 1;
-        list(, $range) = explode('=', $range, 2);
+        [, $range] = explode('=', $range, 2);
 
         if (strpos($range, ',') !== false) {
             return $response->withHeader('Content-Type', $mime)
