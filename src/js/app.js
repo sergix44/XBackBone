@@ -34,16 +34,6 @@ var app = {
 
         $('.footer').fadeIn(600);
 
-        $('.same-height-container').each(function () {
-            var highestBox = 0;
-            $('.same-height', this).each(function () {
-                if ($(this).height() > highestBox) {
-                    highestBox = $(this).height();
-                }
-            });
-            $('.same-height', this).height(highestBox);
-        });
-
         console.log('Application is ready.');
     },
     modalDelete: function () {
@@ -109,7 +99,6 @@ var app = {
                 opt.innerHTML = key;
                 $themes.append(opt);
             });
-            $('#themes-apply').prop('disabled', false);
         });
         $themes.unbind('mousedown');
     },
@@ -117,7 +106,7 @@ var app = {
         window.open($('#telegram-share-button').data('url') + $('#telegram-share-text').val(), '_blank');
     },
     checkForUpdates: function () {
-        $('#checkForUpdatesMessage').empty().text('...');
+        $('#checkForUpdatesMessage').empty().html('<i class="fas fa-sync fa-spin"></i>');
         $('#doUpgradeButton').prop('disabled', true);
         $.get(window.AppConfig.base_url + '/system/checkForUpdates?prerelease=' + $(this).data('prerelease'), function (data) {
             $('#checkForUpdatesMessage').empty().text(data.message);

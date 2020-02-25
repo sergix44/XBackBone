@@ -6,6 +6,7 @@ use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
 use App\Controllers\LoginController;
 use App\Controllers\MediaController;
+use App\Controllers\SettingController;
 use App\Controllers\ThemeController;
 use App\Controllers\UpgradeController;
 use App\Controllers\UploadController;
@@ -25,12 +26,9 @@ $app->group('', function (RouteCollectorProxy $group) {
 
         $group->get('/system/deleteOrphanFiles', [AdminController::class, 'deleteOrphanFiles'])->setName('system.deleteOrphanFiles');
 
-        $group->get('/system/themes', [ThemeController::class, 'getThemes'])->setName('theme');
-        $group->post('/system/theme/apply', [ThemeController::class, 'applyTheme'])->setName('theme.apply');
+        $group->get('/system/themes', [AdminController::class, 'getThemes'])->setName('theme');
 
-        $group->post('/system/lang/apply', [AdminController::class, 'applyLang'])->setName('lang.apply');
-
-        $group->post('/system/customHead', [AdminController::class, 'applyCustomHead'])->setName('customHead.apply');
+        $group->post('/system/settings/save', [SettingController::class, 'saveSettings'])->setName('settings.save');
 
         $group->post('/system/upgrade', [UpgradeController::class, 'upgrade'])->setName('system.upgrade');
         $group->get('/system/checkForUpdates', [UpgradeController::class, 'checkForUpdates'])->setName('system.checkForUpdates');

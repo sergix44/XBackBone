@@ -9,15 +9,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class AdminController extends Controller
 {
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
-     * @throws FileNotFoundException
+     * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      *
-     * @return Response
+     * @throws FileNotFoundException
      */
     public function system(Request $request, Response $response): Response
     {
@@ -34,22 +34,30 @@ class AdminController extends Controller
             $totalSize += $filesystem->getSize($media->storage_path);
         }
 
+        $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value;
+        $hideByDefault = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value;
+        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value;
+
         return view()->render($response, 'dashboard/system.twig', [
-            'usersCount'          => $usersCount,
-            'mediasCount'         => $mediasCount,
-            'orphanFilesCount'    => $orphanFilesCount,
-            'totalSize'           => humanFileSize($totalSize),
-            'post_max_size'       => ini_get('post_max_size'),
+            'usersCount' => $usersCount,
+            'mediasCount' => $mediasCount,
+            'orphanFilesCount' => $orphanFilesCount,
+            'totalSize' => humanFileSize($totalSize),
+            'post_max_size' => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'installed_lang'      => $this->lang->getList(),
-            'forced_lang'         => $request->getAttribute('forced_lang'),
-            'php_version'         => phpversion(),
+            'installed_lang' => $this->lang->getList(),
+            'forced_lang' => $request->getAttribute('forced_lang'),
+            'php_version' => phpversion(),
+            'max_memory' => ini_get('memory_limit'),
+            'register_enabled' => $registerEnabled,
+            'hide_by_default' => $hideByDefault,
+            'copy_url_behavior' => $copyUrl,
         ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
      */
@@ -76,44 +84,21 @@ class AdminController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Response  $response
      *
      * @return Response
      */
-    public function applyLang(Request $request, Response $response): Response
+    public function getThemes(Response $response): Response
     {
-        if (param($request, 'lang') !== 'auto') {
-            if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'lang\'')->fetch()) {
-                $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES (\'lang\', ?)', param($request, 'lang'));
-            } else {
-                $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = \'lang\'', param($request, 'lang'));
-            }
-        } else {
-            $this->database->query('DELETE FROM `settings` WHERE `key` = \'lang\'');
+        $apiJson = json_decode(file_get_contents('https://bootswatch.com/api/4.json'));
+
+        $out = [];
+
+        $out['Default - Bootstrap 4 default theme'] = 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css';
+        foreach ($apiJson->themes as $theme) {
+            $out["{$theme->name} - {$theme->description}"] = $theme->cssMin;
         }
 
-        $this->session->alert(lang('lang_set', [param($request, 'lang')]));
-
-        return redirect($response, route('system'));
-    }
-
-    /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @return Response
-     */
-    public function applyCustomHead(Request $request, Response $response): Response
-    {
-        if ($request->getAttribute('custom_head_key_present')) {
-            $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = \'custom_head\'', param($request, 'custom_head'));
-        } else {
-            $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES (\'custom_head\', ?)', param($request, 'custom_head'));
-        }
-
-        $this->session->alert(lang('custom_head_set'));
-
-        return redirect($response, route('system'));
+        return json($response, $out);
     }
 }

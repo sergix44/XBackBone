@@ -100,16 +100,22 @@ class UploadController extends Controller
             $code = humanRandomString();
         } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
+        $published = 1;
+        if ($this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value === 'on') {
+            $published = 0;
+        }
+
         $fileInfo = pathinfo($file->getClientFilename());
         $storagePath = "$user->user_code/$code.$fileInfo[extension]";
 
         $this->storage->writeStream($storagePath, $file->getStream()->detach());
 
-        $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', [
+        $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`, `published`) VALUES (?, ?, ?, ?, ?)', [
             $user->id,
             $code,
             $file->getClientFilename(),
             $storagePath,
+            $published,
         ]);
 
         $json['message'] = 'OK.';

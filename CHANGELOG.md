@@ -1,5 +1,7 @@
 ## v.3.1 (WIP)
-+ Updated translations
++ Updated system settings page.
++ Added hide by default option.
++ Updated translations.
 
 ## v.3.0.2
 + Fixed error with migrate command.

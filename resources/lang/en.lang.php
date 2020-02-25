@@ -100,7 +100,6 @@ return [
     'cancel'                  => 'Cancel',
     'auto_set'                => 'Set automatically',
     'default_lang_behavior'   => 'XBackBone will try to match the browser language by default (the fallback is English).',
-    'lang_set'                => 'System language enforced to "%s"',
     'prerelease_channel'      => 'Prerelease Channel',
     'no_upload_token'         => 'You don\'t have a personal upload token. (Generate one and try again.)',
     'drop_to_upload'          => 'Click or drop your files here to upload.',
@@ -112,4 +111,8 @@ return [
     'remember_me'             => 'Remember me',
     'please_wait'             => 'Please wait…',
     'dont_close'              => 'Do not close this tab until completion.',
+    'register_enabled'              => 'Registration Enabled',
+    'hide_by_default'              => 'Hide uploads by default',
+    'copy_url_behavior'              => 'Copy URL mode',
+    'settings_saved'              => 'System settings saved!',
 ];
