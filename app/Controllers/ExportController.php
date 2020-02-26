@@ -3,7 +3,6 @@
 
 namespace App\Controllers;
 
-
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -46,5 +45,4 @@ class ExportController extends Controller
         $zip->finish();
         exit(0);
     }
-
 }
