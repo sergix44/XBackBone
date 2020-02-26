@@ -1,5 +1,4 @@
 <?php
-
 return [
     'lang' => 'English',
     'enforce_language' => 'Enforce language',
@@ -115,7 +114,7 @@ return [
     'hide_by_default' => 'Hide media by default',
     'copy_url_behavior' => 'Copy URL mode',
     'settings_saved' => 'System settings saved!',
-    'export_data' => 'Export Data',
+    'export_data' => 'Export data',
     'password_recovery' => 'Recover password',
     'no_account' => 'Don\'t have an account?',
     'register' => 'Register',
