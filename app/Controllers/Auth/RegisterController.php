@@ -3,7 +3,6 @@
 
 namespace App\Controllers\Auth;
 
-
 use App\Controllers\Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -115,6 +114,5 @@ class RegisterController extends Controller
      */
     public function activateUser(Request $request, Response $response, string $activateToken): Response
     {
-
     }
 }
