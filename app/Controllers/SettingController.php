@@ -17,13 +17,13 @@ class SettingController extends Controller
      */
     public function saveSettings(Request $request, Response $response): Response
     {
-        $this->settingUpdate('register_enabled', param($request, 'register_enabled', 'off'));
-        $this->settingUpdate('hide_by_default', param($request, 'hide_by_default', 'off'));
-        $this->settingUpdate('copy_url_behavior', param($request, 'copy_url_behavior', 'off'));
+        $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
+        $this->updateSetting('hide_by_default', param($request, 'hide_by_default', 'off'));
+        $this->updateSetting('copy_url_behavior', param($request, 'copy_url_behavior') === null ? 'default' : 'raw');
 
         $this->applyTheme($request);
         $this->applyLang($request);
-        $this->saveCustomHead($request);
+        $this->updateSetting('custom_head', param($request, 'custom_head'));
 
         $this->session->alert(lang('settings_saved'));
 
@@ -36,25 +36,9 @@ class SettingController extends Controller
     public function applyLang(Request $request)
     {
         if (param($request, 'lang') !== 'auto') {
-            if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'lang\'')->fetch()) {
-                $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES (\'lang\', ?)', param($request, 'lang'));
-            } else {
-                $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = \'lang\'', param($request, 'lang'));
-            }
+            $this->updateSetting('copy_url_behavior', param($request, 'lang'));
         } else {
             $this->database->query('DELETE FROM `settings` WHERE `key` = \'lang\'');
-        }
-    }
-
-    /**
-     * @param  Request  $request
-     */
-    public function saveCustomHead(Request $request)
-    {
-        if ($request->getAttribute('custom_head_key_present')) {
-            $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = \'custom_head\'', param($request, 'custom_head'));
-        } else {
-            $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES (\'custom_head\', ?)', param($request, 'custom_head'));
         }
     }
 
@@ -72,7 +56,12 @@ class SettingController extends Controller
                 file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css', file_get_contents(param($request, 'css')));
             }
 
-            $this->settingUpdate('css', param($request, 'css'));
+            // if is default, remove setting
+            if (param($request, 'css') !== 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css'){
+                $this->updateSetting('css', param($request, 'css'));
+            } else {
+                $this->database->query('DELETE FROM `settings` WHERE `key` = \'css\'');
+            }
         }
     }
 
@@ -80,7 +69,7 @@ class SettingController extends Controller
      * @param $key
      * @param  null  $value
      */
-    private function settingUpdate($key, $value = null)
+    private function updateSetting($key, $value = null)
     {
         if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database->getPdo()->quote($key))->fetch()) {
             $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)', $value);

@@ -23,7 +23,7 @@
                                         <div class="col-12">
                                             <span class="badge badge-dark shadow-lg">{{ media.size }}</span>
                                             <div class="btn-group shadow-lg float-right">
-                                                <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}">
+                                                <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}{{ copy_url_behavior == 'raw' ? '/raw' }}">
                                                     <i class="fas fa-link"></i>
                                                 </button>
                                                 <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>

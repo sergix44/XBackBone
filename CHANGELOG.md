@@ -1,6 +1,8 @@
 ## v.3.1 (WIP)
-+ Updated system settings page.
++ The theme is now re-applied after every system update.
++ Added ability to choose between default and raw url on copy.
 + Added hide by default option.
++ Updated system settings page.
 + Updated translations.
 
 ## v.3.0.2

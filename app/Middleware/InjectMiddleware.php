@@ -19,6 +19,6 @@ class InjectMiddleware extends Middleware
         $head = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'custom_head\'')->fetch();
         $this->view->getTwig()->addGlobal('customHead', $head->value ?? null);
 
-        return $handler->handle($request->withAttribute('custom_head_key_present', isset($head->value)));
+        return $handler->handle($request);
     }
 }

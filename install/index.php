@@ -217,6 +217,12 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         return redirect($response, '/install');
     }
 
+    // re-apply the previous theme if is present
+    $css = $db->query('SELECT `value` FROM `settings` WHERE `key` = \'css\'')->fetch()->value;
+    if ($css) {
+        file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css', file_get_contents($css));
+    }
+
     // post install cleanup
     cleanDirectory(__DIR__.'/../resources/cache');
     cleanDirectory(__DIR__.'/../resources/sessions');

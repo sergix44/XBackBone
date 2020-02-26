@@ -115,4 +115,5 @@ return [
     'hide_by_default'              => 'Hide uploads by default',
     'copy_url_behavior'              => 'Copy URL mode',
     'settings_saved'              => 'System settings saved!',
+    'export_data' => 'Export Data'
 ];

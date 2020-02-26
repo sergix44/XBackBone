@@ -66,11 +66,14 @@ class MediaController extends Controller
             throw new HttpNotFoundException($request);
         }
 
+        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value;
+
         return view()->render($response, 'upload/public.twig', [
             'delete_token' => $token,
             'media' => $media,
             'type' => $type,
             'url' => urlFor("/{$userCode}/{$mediaCode}"),
+            'copy_url_behavior' => $copyUrl,
         ]);
     }
 

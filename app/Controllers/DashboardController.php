@@ -58,6 +58,8 @@ class DashboardController extends Controller
             ->search(param($request, 'search', null))
             ->run($page);
 
+        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value;
+
         return view()->render(
             $response,
             ($this->session->get('admin', false) && $this->session->get('gallery_view', true)) ? 'dashboard/list.twig' : 'dashboard/grid.twig',
@@ -66,6 +68,7 @@ class DashboardController extends Controller
                 'next'         => $page < floor($query->getPages()),
                 'previous'     => $page >= 1,
                 'current_page' => ++$page,
+                'copy_url_behavior' => $copyUrl,
             ]
         );
     }

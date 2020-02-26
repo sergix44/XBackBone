@@ -4,8 +4,10 @@
 use App\Controllers\AdminController;
 use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
+use App\Controllers\ExportController;
 use App\Controllers\LoginController;
 use App\Controllers\MediaController;
+use App\Controllers\ProfileController;
 use App\Controllers\SettingController;
 use App\Controllers\ThemeController;
 use App\Controllers\UpgradeController;
@@ -46,11 +48,13 @@ $app->group('', function (RouteCollectorProxy $group) {
         $group->get('/{id}/delete', [UserController::class, 'delete'])->setName('user.delete');
     })->add(AdminMiddleware::class);
 
-    $group->get('/profile', [UserController::class, 'profile'])->setName('profile');
-    $group->post('/profile/{id}', [UserController::class, 'profileEdit'])->setName('profile.update');
+    $group->get('/profile', [ProfileController::class, 'profile'])->setName('profile');
+    $group->post('/profile/{id}', [ProfileController::class, 'profileEdit'])->setName('profile.update');
     $group->post('/user/{id}/refreshToken', [UserController::class, 'refreshToken'])->setName('refreshToken');
     $group->get('/user/{id}/config/sharex', [ClientController::class, 'getShareXConfig'])->setName('config.sharex');
     $group->get('/user/{id}/config/script', [ClientController::class, 'getBashScript'])->setName('config.script');
+
+    $group->get('/user/{id}/export', [ExportController::class, 'downloadData'])->setName('export.data');
 
     $group->post('/upload/{id}/publish', [MediaController::class, 'togglePublish'])->setName('upload.publish');
     $group->post('/upload/{id}/unpublish', [MediaController::class, 'togglePublish'])->setName('upload.unpublish');
