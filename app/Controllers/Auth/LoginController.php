@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Auth;
 
+use App\Controllers\Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class LoginController extends Controller
 {
     /**
-     * @param Response $response
+     * @param  Response  $response
      *
-     * @throws \Twig\Error\LoaderError
+     * @return Response
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      *
-     * @return Response
+     * @throws \Twig\Error\LoaderError
      */
     public function show(Response $response): Response
     {
@@ -22,16 +23,20 @@ class LoginController extends Controller
             return redirect($response, route('home'));
         }
 
-        return view()->render($response, 'auth/login.twig');
+        $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
+
+        return view()->render($response, 'auth/login.twig', [
+            'register_enabled' => $registerEnabled,
+        ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @throws \Exception
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
+     * @throws \Exception
+     *
      */
     public function login(Request $request, Response $response): Response
     {
@@ -74,8 +79,8 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
      */

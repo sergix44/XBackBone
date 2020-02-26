@@ -22,7 +22,7 @@ if (!function_exists('humanFileSize')) {
         for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
         }
 
-        return round($size, $precision).' '.['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
+        return round($size, $precision).' '.['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
     }
 }
 
@@ -88,6 +88,8 @@ if (!function_exists('stringToBytes')) {
 
         $val = (float) $val;
         switch ($last) {
+            case 't':
+                $val *= 1024;
             case 'g':
                 $val *= 1024;
             case 'm':

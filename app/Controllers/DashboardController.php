@@ -58,7 +58,7 @@ class DashboardController extends Controller
             ->search(param($request, 'search', null))
             ->run($page);
 
-        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value;
+        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value ?? 'off';
 
         return view()->render(
             $response,

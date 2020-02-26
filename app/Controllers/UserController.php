@@ -62,7 +62,7 @@ class UserController extends Controller
      */
     public function store(Request $request, Response $response): Response
     {
-        if (param($request, 'email') === null) {
+        if (param($request, 'email') === null && !filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL)) {
             $this->session->alert(lang('email_required'), 'danger');
 
             return redirect($response, route('user.create'));
@@ -96,7 +96,7 @@ class UserController extends Controller
             $userCode = humanRandomString(5);
         } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
-        $token = $this->generateNewToken();
+        $token = $this->generateUserUploadToken();
 
         $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', [
             param($request, 'email'),
@@ -151,7 +151,7 @@ class UserController extends Controller
     {
         $user = $this->getUser($request, $id, false);
 
-        if (param($request, 'email') === null) {
+        if (param($request, 'email') === null && !filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL)) {
             $this->session->alert(lang('email_required'), 'danger');
 
             return redirect($response, route('user.edit', ['id' => $id]));
@@ -251,7 +251,7 @@ class UserController extends Controller
     {
         $user = $this->getUser($request, $id, true);
 
-        $token = $this->generateNewToken();
+        $token = $this->generateUserUploadToken();
 
         $this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
             $token,
@@ -263,17 +263,5 @@ class UserController extends Controller
         $response->getBody()->write($token);
 
         return $response;
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateNewToken(): string
-    {
-        do {
-            $token = 'token_'.md5(uniqid('', true));
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
-
-        return $token;
     }
 }

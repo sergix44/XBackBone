@@ -106,7 +106,7 @@ var app = {
         window.open($('#telegram-share-button').data('url') + $('#telegram-share-text').val(), '_blank');
     },
     checkForUpdates: function () {
-        $('#checkForUpdatesMessage').empty().html('<i class="fas fa-sync fa-spin"></i>');
+        $('#checkForUpdatesMessage').empty().html('<i class="fas fa-spinner fa-pulse fa-3x"></i>');
         $('#doUpgradeButton').prop('disabled', true);
         $.get(window.AppConfig.base_url + '/system/checkForUpdates?prerelease=' + $(this).data('prerelease'), function (data) {
             $('#checkForUpdatesMessage').empty().text(data.message);

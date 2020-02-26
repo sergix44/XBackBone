@@ -126,4 +126,17 @@ abstract class Controller
             ]);
         }
     }
+
+
+    /**
+     * @return string
+     */
+    protected function generateUserUploadToken(): string
+    {
+        do {
+            $token = 'token_'.md5(uniqid('', true));
+        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
+
+        return $token;
+    }
 }

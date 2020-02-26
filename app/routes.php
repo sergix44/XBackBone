@@ -2,14 +2,14 @@
 
 // Auth routes
 use App\Controllers\AdminController;
+use App\Controllers\Auth\RegisterController;
 use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
 use App\Controllers\ExportController;
-use App\Controllers\LoginController;
+use App\Controllers\Auth\LoginController;
 use App\Controllers\MediaController;
 use App\Controllers\ProfileController;
 use App\Controllers\SettingController;
-use App\Controllers\ThemeController;
 use App\Controllers\UpgradeController;
 use App\Controllers\UploadController;
 use App\Controllers\UserController;
@@ -63,6 +63,8 @@ $app->group('', function (RouteCollectorProxy $group) {
 })->add(App\Middleware\CheckForMaintenanceMiddleware::class)->add(AuthMiddleware::class);
 
 $app->get('/', [DashboardController::class, 'redirects'])->setName('root');
+$app->get('/register', [RegisterController::class, 'registerForm'])->setName('register.show');
+$app->post('/register', [RegisterController::class, 'register'])->setName('register');
 $app->get('/login', [LoginController::class, 'show'])->setName('login.show');
 $app->post('/login', [LoginController::class, 'login'])->setName('login');
 $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setName('logout');

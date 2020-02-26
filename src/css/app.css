@@ -34,6 +34,11 @@ body {
     border-bottom-left-radius: 0;
 }
 
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
 .form-signin input[type="password"] {
     margin-bottom: .50rem;
     border-top-left-radius: 0;

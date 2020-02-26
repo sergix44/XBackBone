@@ -26,7 +26,7 @@
 
 {% block content %}
     <div class="container-fluid">
-        <form class="form-signin" method="post" action="{{ route('login') }}">
+        <form class="form-signin" method="post" action="{{ route('register') }}">
             <div class="row text-center">
                 <div class="col-md-12">
                     <h1 class="h3 mb-3 font-weight-normal">{{ config.app_name }}</h1>
@@ -35,28 +35,20 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <label for="username" class="sr-only">{{ lang('login.username') }}</label>
-                    <input type="text" id="username" class="form-control" placeholder="{{ lang('login.username') }}" name="username" required autofocus>
+                    <label for="username" class="sr-only">{{ lang('username') }}</label>
+                    <input type="text" id="username" class="form-control" placeholder="{{ lang('username') }}" name="username" required autofocus>
+                    <label for="email" class="sr-only">E-Mail</label>
+                    <input type="email" id="email" class="form-control" placeholder="mail@example.com" name="password" required>
                     <label for="password" class="sr-only">{{ lang('password') }}</label>
                     <input type="password" id="password" class="form-control" placeholder="{{ lang('password') }}" name="password" required>
-                    <div class="d-flex justify-content-between">
-                        <div class="form-check">
-                            <input type="checkbox" name="remember" class="form-check-input float-left" id="remember">
-                            <label class="form-check-label" for="remember">{{ lang('remember_me') }}</label>
-                        </div>
-                        <a href="#" class="">{{ lang('password_recovery') }}</a>
-                    </div>
-
                 </div>
             </div>
             <div class="row mt-2">
                 <div class="col-md-12">
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ lang('login') }}</button>
-                    {% if register_enabled == 'on' %}
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ lang('register') }}</button>
                     <div class="text-center mt-2">
-                        {{ lang('no_account') }} <a href="{{ route('register.show') }}">{{ lang('register') }}</a>.
+                        <a href="{{ route('login.show') }}">{{ lang('cancel') }}</a>
                     </div>
-                    {% endif %}
                 </div>
             </div>
         </form>

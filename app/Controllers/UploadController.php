@@ -101,7 +101,7 @@ class UploadController extends Controller
         } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
         $published = 1;
-        if ($this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value === 'on') {
+        if (($this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off') === 'on') {
             $published = 0;
         }
 

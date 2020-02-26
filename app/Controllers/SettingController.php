@@ -16,8 +16,14 @@ class SettingController extends Controller
      */
     public function saveSettings(Request $request, Response $response): Response
     {
+        if (!preg_match('/[0-9]+[K|M|G|T]/i', param($request, 'default_user_quota', '1G'))) {
+            $this->session->alert(lang('invalid_quota', 'danger'));
+            return redirect($response, route('system'));
+        }
+
         $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
         $this->updateSetting('hide_by_default', param($request, 'hide_by_default', 'off'));
+        $this->updateSetting('default_user_quota', param($request, 'default_user_quota', '1G'));
         $this->updateSetting('copy_url_behavior', param($request, 'copy_url_behavior') === null ? 'default' : 'raw');
 
         $this->applyTheme($request);
