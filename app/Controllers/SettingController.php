@@ -3,7 +3,6 @@
 
 namespace App\Controllers;
 
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -51,13 +50,12 @@ class SettingController extends Controller
         if (param($request, 'css') !== null) {
             if (!is_writable(BASE_DIR.'static/bootstrap/css/bootstrap.min.css')) {
                 $this->session->alert(lang('cannot_write_file'), 'danger');
-
             } else {
                 file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css', file_get_contents(param($request, 'css')));
             }
 
             // if is default, remove setting
-            if (param($request, 'css') !== 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css'){
+            if (param($request, 'css') !== 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css') {
                 $this->updateSetting('css', param($request, 'css'));
             } else {
                 $this->database->query('DELETE FROM `settings` WHERE `key` = \'css\'');
