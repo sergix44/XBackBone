@@ -2,6 +2,7 @@
 
 // Auth routes
 use App\Controllers\AdminController;
+use App\Controllers\Auth\PasswordRecoveryController;
 use App\Controllers\Auth\RegisterController;
 use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
@@ -66,6 +67,10 @@ $app->get('/', [DashboardController::class, 'redirects'])->setName('root');
 $app->get('/register', [RegisterController::class, 'registerForm'])->setName('register.show');
 $app->post('/register', [RegisterController::class, 'register'])->setName('register');
 $app->get('/activate/{activateToken}', [RegisterController::class, 'activateUser'])->setName('activate');
+$app->get('/recover', [PasswordRecoveryController::class, 'recover'])->setName('recover');
+$app->post('/recover/mail', [PasswordRecoveryController::class, 'recoverMail'])->setName('recover.mail');
+$app->get('/recover/password/{resetToken}', [PasswordRecoveryController::class, 'recoverPasswordForm'])->setName('recover.password.view');
+$app->post('/recover/password/{resetToken}', [PasswordRecoveryController::class, 'recoverPassword'])->setName('recover.password');
 $app->get('/login', [LoginController::class, 'show'])->setName('login.show');
 $app->post('/login', [LoginController::class, 'login'])->setName('login');
 $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setName('logout');

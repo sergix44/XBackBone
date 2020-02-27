@@ -36,17 +36,16 @@
             <div class="row">
                 <div class="col-md-12">
                     <label for="username" class="sr-only">{{ lang('login.username') }}</label>
-                    <input type="text" id="username" class="form-control" placeholder="{{ lang('login.username') }}" name="username" required autofocus>
+                    <input type="text" id="username" class="form-control first" placeholder="{{ lang('login.username') }}" name="username" required autofocus>
                     <label for="password" class="sr-only">{{ lang('password') }}</label>
-                    <input type="password" id="password" class="form-control" placeholder="{{ lang('password') }}" name="password" required>
+                    <input type="password" id="password" class="form-control last" placeholder="{{ lang('password') }}" name="password" required>
                     <div class="d-flex justify-content-between">
                         <div class="form-check">
                             <input type="checkbox" name="remember" class="form-check-input float-left" id="remember">
                             <label class="form-check-label" for="remember">{{ lang('remember_me') }}</label>
                         </div>
-                        <a href="#" class="">{{ lang('password_recovery') }}</a>
+                        <a href="{{ route('recover') }}" class="">{{ lang('password_recovery') }}</a>
                     </div>
-
                 </div>
             </div>
             <div class="row mt-2">
