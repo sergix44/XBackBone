@@ -121,4 +121,5 @@ return [
     'register' => 'Register',
     'default_user_quota' => 'Default User Quota',
     'invalid_quota' => 'Invalid values as default user quota.',
+    'mail.activate_text' => "Hi %s!\nthank you for creating your account on %s (%s), click on the following link to activate it:\n\n%s"
 ];

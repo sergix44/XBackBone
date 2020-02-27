@@ -37,6 +37,7 @@ class AdminController extends Controller
         $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
         $hideByDefault = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off';
         $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value ?? 'off';
+        $quotaEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'quota_enabled\'')->fetch()->value ?? 'off';
         $defaultUserQuota = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'default_user_quota\'')->fetch()->value ?? '1G';
 
         return view()->render($response, 'dashboard/system.twig', [
@@ -53,7 +54,8 @@ class AdminController extends Controller
             'register_enabled' => $registerEnabled,
             'hide_by_default' => $hideByDefault,
             'copy_url_behavior' => $copyUrl,
-            'default_user_quota' => $defaultUserQuota,
+            'quota_enabled' => $quotaEnabled,
+            'default_user_quota' => humanFileSize($defaultUserQuota, 0, true),
         ]);
     }
 

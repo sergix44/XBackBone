@@ -13,13 +13,18 @@ if (!function_exists('humanFileSize')) {
      * Generate a human readable file size.
      *
      * @param $size
-     * @param int $precision
+     * @param  int  $precision
      *
+     * @param  bool  $iniMode
      * @return string
      */
-    function humanFileSize($size, $precision = 2): string
+    function humanFileSize($size, $precision = 2, $iniMode = false): string
     {
         for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
+        }
+
+        if ($iniMode) {
+            return round($size, $precision).['B', 'K', 'M', 'G', 'T'][$i];
         }
 
         return round($size, $precision).' '.['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
@@ -28,7 +33,7 @@ if (!function_exists('humanFileSize')) {
 
 if (!function_exists('humanRandomString')) {
     /**
-     * @param int $length
+     * @param  int  $length
      *
      * @return string
      */
@@ -49,7 +54,7 @@ if (!function_exists('humanRandomString')) {
 
 if (!function_exists('isDisplayableImage')) {
     /**
-     * @param string $mime
+     * @param  string  $mime
      *
      * @return bool
      */
@@ -140,7 +145,7 @@ if (!function_exists('resolve')) {
     /**
      * Resolve a service from de DI container.
      *
-     * @param string $service
+     * @param  string  $service
      *
      * @return mixed
      */
@@ -168,9 +173,9 @@ if (!function_exists('redirect')) {
     /**
      * Set the redirect response.
      *
-     * @param Response $response
-     * @param string   $url
-     * @param int      $status
+     * @param  Response  $response
+     * @param  string  $url
+     * @param  int  $status
      *
      * @return Response
      */
@@ -186,7 +191,7 @@ if (!function_exists('asset')) {
     /**
      * Get the asset link with timestamp.
      *
-     * @param string $path
+     * @param  string  $path
      *
      * @return string
      */
@@ -200,8 +205,8 @@ if (!function_exists('urlFor')) {
     /**
      * Generate the app url given a path.
      *
-     * @param string $path
-     * @param string $append
+     * @param  string  $path
+     * @param  string  $append
      *
      * @return string
      */
@@ -217,9 +222,9 @@ if (!function_exists('route')) {
     /**
      * Generate the app url given a path.
      *
-     * @param string $path
-     * @param array  $args
-     * @param string $append
+     * @param  string  $path
+     * @param  array  $args
+     * @param  string  $append
      *
      * @return string
      */
@@ -236,9 +241,9 @@ if (!function_exists('param')) {
     /**
      * Get a parameter from the request.
      *
-     * @param Request $request
-     * @param string  $name
-     * @param null    $default
+     * @param  Request  $request
+     * @param  string  $name
+     * @param  null  $default
      *
      * @return string
      */
@@ -262,10 +267,10 @@ if (!function_exists('json')) {
     /**
      * Return a json response.
      *
-     * @param Response $response
+     * @param  Response  $response
      * @param $data
-     * @param int $status
-     * @param int $options
+     * @param  int  $status
+     * @param  int  $options
      *
      * @return Response
      */
@@ -281,8 +286,8 @@ if (!function_exists('json')) {
 
 if (!function_exists('lang')) {
     /**
-     * @param string $key
-     * @param array  $args
+     * @param  string  $key
+     * @param  array  $args
      *
      * @return string
      */
@@ -294,7 +299,7 @@ if (!function_exists('lang')) {
 
 if (!function_exists('isBot')) {
     /**
-     * @param string $userAgent
+     * @param  string  $userAgent
      *
      * @return bool
      */
@@ -331,27 +336,27 @@ if (!function_exists('mime2font')) {
     function mime2font($mime)
     {
         $classes = [
-            'image'                                                          => 'fa-file-image',
-            'audio'                                                          => 'fa-file-audio',
-            'video'                                                          => 'fa-file-video',
-            'application/pdf'                                                => 'fa-file-pdf',
-            'application/msword'                                             => 'fa-file-word',
-            'application/vnd.ms-word'                                        => 'fa-file-word',
-            'application/vnd.oasis.opendocument.text'                        => 'fa-file-word',
+            'image' => 'fa-file-image',
+            'audio' => 'fa-file-audio',
+            'video' => 'fa-file-video',
+            'application/pdf' => 'fa-file-pdf',
+            'application/msword' => 'fa-file-word',
+            'application/vnd.ms-word' => 'fa-file-word',
+            'application/vnd.oasis.opendocument.text' => 'fa-file-word',
             'application/vnd.openxmlformats-officedocument.wordprocessingml' => 'fa-file-word',
-            'application/vnd.ms-excel'                                       => 'fa-file-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml'    => 'fa-file-excel',
-            'application/vnd.oasis.opendocument.spreadsheet'                 => 'fa-file-excel',
-            'application/vnd.ms-powerpoint'                                  => 'fa-file-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml'   => 'fa-file-powerpoint',
-            'application/vnd.oasis.opendocument.presentation'                => 'fa-file-powerpoint',
-            'text/plain'                                                     => 'fa-file-alt',
-            'text/html'                                                      => 'fa-file-code',
-            'text/x-php'                                                     => 'fa-file-code',
-            'application/json'                                               => 'fa-file-code',
-            'application/gzip'                                               => 'fa-file-archive',
-            'application/zip'                                                => 'fa-file-archive',
-            'application/octet-stream'                                       => 'fa-file-alt',
+            'application/vnd.ms-excel' => 'fa-file-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml' => 'fa-file-excel',
+            'application/vnd.oasis.opendocument.spreadsheet' => 'fa-file-excel',
+            'application/vnd.ms-powerpoint' => 'fa-file-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml' => 'fa-file-powerpoint',
+            'application/vnd.oasis.opendocument.presentation' => 'fa-file-powerpoint',
+            'text/plain' => 'fa-file-alt',
+            'text/html' => 'fa-file-code',
+            'text/x-php' => 'fa-file-code',
+            'application/json' => 'fa-file-code',
+            'application/gzip' => 'fa-file-archive',
+            'application/zip' => 'fa-file-archive',
+            'application/octet-stream' => 'fa-file-alt',
         ];
 
         foreach ($classes as $fullMime => $class) {
@@ -383,7 +388,7 @@ if (!function_exists('queryParams')) {
     /**
      * Get the query parameters of the current request.
      *
-     * @param array $replace
+     * @param  array  $replace
      *
      * @return string
      */
@@ -401,8 +406,8 @@ if (!function_exists('inPath')) {
     /**
      * Check if uri start with a path.
      *
-     * @param string $uri
-     * @param string $path
+     * @param  string  $uri
+     * @param  string  $path
      *
      * @return bool
      */
@@ -410,7 +415,7 @@ if (!function_exists('inPath')) {
     {
         $path = parse_url(urlFor($path), PHP_URL_PATH);
 
-        return substr($uri, 0, strlen($uri)) === $path;
+        return substr($uri, 0, strlen($path)) === $path;
     }
 }
 
@@ -419,7 +424,7 @@ if (!function_exists('glob_recursive')) {
      * Does not support flag GLOB_BRACE.
      *
      * @param $pattern
-     * @param int $flags
+     * @param  int  $flags
      *
      * @return array|false
      */

@@ -61,32 +61,39 @@
                         <form method="post" action="{{ route('settings.save') }}">
 
                             <div class="form-group row">
-                                <label for="custom_head" class="col-sm-4 col-form-label">{{ lang('register_enabled') }}</label>
+                                <label for="register_enabled" class="col-sm-4 col-form-label">{{ lang('register_enabled') }}</label>
                                 <div class="col-sm-8">
                                     <input type="checkbox" name="register_enabled" data-toggle="toggle" {{ register_enabled == 'on' ? 'checked' }}>
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                <label for="custom_head" class="col-sm-4 col-form-label">{{ lang('hide_by_default') }}</label>
+                                <label for="hide_by_default" class="col-sm-4 col-form-label">{{ lang('hide_by_default') }}</label>
                                 <div class="col-sm-8">
                                     <input type="checkbox" name="hide_by_default" data-toggle="toggle" {{ hide_by_default == 'on' ? 'checked' }}>
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                <label for="custom_head" class="col-sm-4 col-form-label">{{ lang('copy_url_behavior') }}</label>
+                                <label for="copy_url_behavior" class="col-sm-4 col-form-label">{{ lang('copy_url_behavior') }}</label>
                                 <div class="col-sm-8">
                                     <input type="checkbox" name="copy_url_behavior" data-toggle="toggle" data-off="Default URL" data-on="Raw URL" data-onstyle="primary" data-offstyle="secondary" {{ copy_url_behavior == 'raw' ? 'checked' }}>
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                <label for="custom_head" class="col-sm-4 col-form-label">{{ lang('theme') }}</label>
+                                <label for="themes" class="col-sm-4 col-form-label">{{ lang('theme') }}</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="themes" name="css">
                                         <option id="theme-load" selected disabled hidden>{{ lang('click_to_load') }}</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="quota_enabled" class="col-sm-4 col-form-label">{{ lang('quota_enabled') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="quota_enabled" data-toggle="toggle" {{ quota_enabled == 'on' ? 'checked' }}>
                                 </div>
                             </div>
 
@@ -98,7 +105,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="custom_head" class="col-sm-4 col-form-label">{{ lang('enforce_language') }}</label>
+                                <label for="lang" class="col-sm-4 col-form-label">{{ lang('enforce_language') }}</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="lang" name="lang">
                                         <option value="auto">({{ lang('auto_set') }})</option>

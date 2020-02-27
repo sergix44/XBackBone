@@ -18,7 +18,7 @@
                 </li>
                 {% if session.get('admin') %}
                     <li class="nav-item">
-                        <a href="{{ route('user.index') }}" class="nav-link {{ inPath(request.uri.path, '/users') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                        <a href="{{ route('user.index') }}" class="nav-link {{ inPath(request.uri.path, '/user') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
                             {{ lang('users') }}
                         </a>
                     </li>

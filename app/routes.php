@@ -65,6 +65,7 @@ $app->group('', function (RouteCollectorProxy $group) {
 $app->get('/', [DashboardController::class, 'redirects'])->setName('root');
 $app->get('/register', [RegisterController::class, 'registerForm'])->setName('register.show');
 $app->post('/register', [RegisterController::class, 'register'])->setName('register');
+$app->get('/activate/{activateToken}', [RegisterController::class, 'activateUser'])->setName('activate');
 $app->get('/login', [LoginController::class, 'show'])->setName('login.show');
 $app->post('/login', [LoginController::class, 'login'])->setName('login');
 $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setName('logout');

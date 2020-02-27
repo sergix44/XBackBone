@@ -23,7 +23,8 @@ class SettingController extends Controller
 
         $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
         $this->updateSetting('hide_by_default', param($request, 'hide_by_default', 'off'));
-        $this->updateSetting('default_user_quota', param($request, 'default_user_quota', '1G'));
+        $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));
+        $this->updateSetting('default_user_quota', stringToBytes(param($request, 'default_user_quota', '1G')));
         $this->updateSetting('copy_url_behavior', param($request, 'copy_url_behavior') === null ? 'default' : 'raw');
 
         $this->applyTheme($request);
