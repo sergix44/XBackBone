@@ -89,6 +89,5 @@ class PasswordRecoveryController extends Controller
      */
     public function recoverPassword(Request $request, Response $response, string $resetToken): Response
     {
-
     }
 }
