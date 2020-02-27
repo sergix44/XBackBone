@@ -3,7 +3,6 @@
 
 namespace App\Web;
 
-
 use InvalidArgumentException;
 
 class Mail
