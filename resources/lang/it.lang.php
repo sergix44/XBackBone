@@ -121,4 +121,22 @@ return [
     'no_account' => 'Non hai un account?',
     'register' => 'Registrati',
     'default_user_quota' => 'Quota utente predefinita',
+    'invalid_quota' => 'Valore non valido per la quota utente predefinita.',
+    'mail.activate_text' => 'Ciao %s!
+grazie per aver creato il tuo account su %s (%s), fai clic sul seguente link per attivarlo:
+
+%s',
+    'register_success' => 'L\'account è stato creato, è stata inviata un\'e-mail di conferma.',
+    'mail.activate_account' => '%s - Attivazione account',
+    'mail.recover_text' => 'Ciao %s,
+è stata richiesta una reimpostazione della password per il tuo account. Per completare la procedura clicca sul seguente link:
+
+%s
+
+Se non sei stato tu a richiedere la reimpostazione della password, ignora semplicemente questa e-mail.',
+    'mail.recover_password' => '%s - Recupero password',
+    'recover_email_sent' => 'Se presente, è stata inviata un\'e-mail di recupero all\'account specificato.',
+    'account_activated' => 'Account attivato, ora è possibile effettuare il login!',
+    'quota_enabled' => 'Abilita quota utente',
+    'password_repeat' => 'Ripeti la password',
 ];
