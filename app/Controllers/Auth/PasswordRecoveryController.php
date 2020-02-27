@@ -7,6 +7,7 @@ use App\Controllers\Controller;
 use App\Web\Mail;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 
 class PasswordRecoveryController extends Controller
 {
@@ -73,9 +74,16 @@ class PasswordRecoveryController extends Controller
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     * @throws HttpNotFoundException
      */
     public function recoverPasswordForm(Request $request, Response $response, string $resetToken): Response
     {
+        $user = $this->database->query('SELECT `id` FROM `users` WHERE `reset_token` = ? LIMIT 1', $resetToken)->fetch();
+
+        if (!$user) {
+            throw new HttpNotFoundException($request);
+        }
+
         return view()->render($response, 'auth/recover_password.twig', [
             'reset_token' => $resetToken
         ]);
@@ -86,8 +94,35 @@ class PasswordRecoveryController extends Controller
      * @param  Response  $response
      * @param  string  $resetToken
      * @return Response
+     * @throws HttpNotFoundException
      */
     public function recoverPassword(Request $request, Response $response, string $resetToken): Response
     {
+        $user = $this->database->query('SELECT `id` FROM `users` WHERE `reset_token` = ? LIMIT 1', $resetToken)->fetch();
+
+        if (!$user) {
+            throw new HttpNotFoundException($request);
+        }
+
+        if (param($request, 'password') === null) {
+            $this->session->alert(lang('password_required'), 'danger');
+
+            return redirect($response, route('recover.password', ['resetToken' => $resetToken]));
+        }
+
+        if (param($request, 'password') !== param($request, 'password_repeat')) {
+            $this->session->alert(lang('password_match'), 'danger');
+
+            return redirect($response, route('recover.password', ['resetToken' => $resetToken]));
+        }
+
+        $this->database->query('UPDATE `users` SET `password`=?, `reset_token`=? WHERE `id` = ?', [
+            password_hash(param($request, 'password'), PASSWORD_DEFAULT),
+            null,
+            $user->id,
+        ]);
+
+        $this->session->alert(lang('password_restored'), 'success');
+        return redirect($response, route('login.show'));
     }
 }

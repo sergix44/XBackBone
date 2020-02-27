@@ -129,4 +129,6 @@ return [
     'account_activated' => 'Account activated, now you can login!',
     'quota_enabled' => 'Enable user quota',
     'password_repeat' => 'Repeat Password',
+    'password_match' => 'Password and repeat password must be the same.',
+    'password_restored' => 'Password has been reset.',
 ];
