@@ -28,6 +28,7 @@ $app->group('', function (RouteCollectorProxy $group) {
         $group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');
 
         $group->get('/system/deleteOrphanFiles', [AdminController::class, 'deleteOrphanFiles'])->setName('system.deleteOrphanFiles');
+        $group->get('/system/recalculateUserQuota', [AdminController::class, 'recalculateUserQuota'])->setName('system.recalculateUserQuota');
 
         $group->get('/system/themes', [AdminController::class, 'getThemes'])->setName('theme');
 

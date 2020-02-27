@@ -24,16 +24,7 @@ class AdminController extends Controller
         $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count;
         $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
         $orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count;
-
-        $medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads`')->fetchAll();
-
-        $totalSize = 0;
-
-        $filesystem = $this->storage;
-        foreach ($medias as $media) {
-            $totalSize += $filesystem->getSize($media->storage_path);
-        }
-
+        $totalSize = $this->database->query('SELECT SUM(`current_disk_quota`) AS `sum` FROM `users`')->fetch()->sum ?? 0;
         $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
         $hideByDefault = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off';
         $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value ?? 'off';
@@ -60,7 +51,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @param  Request  $request
      * @param  Response  $response
      *
      * @return Response
@@ -104,5 +94,38 @@ class AdminController extends Controller
         }
 
         return json($response, $out);
+    }
+
+    /**
+     * @param  Response  $response
+     * @return Response
+     */
+    public function recalculateUserQuota(Response $response): Response
+    {
+        $uploads = $this->database->query('SELECT `id`,`user_id`, `storage_path` FROM `uploads`')->fetchAll();
+
+        $usersQuotas = [];
+
+        $filesystem = $this->storage;
+        foreach ($uploads as $upload) {
+            if (!array_key_exists($upload->user_id, $usersQuotas)) {
+                $usersQuotas[$upload->user_id] = 0;
+            }
+            try {
+                $usersQuotas[$upload->user_id] += $filesystem->getSize($upload->storage_path);
+            } catch (FileNotFoundException $e) {
+                $this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $upload->id);
+            }
+        }
+
+        foreach ($usersQuotas as $userId => $quota) {
+            $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
+                $quota,
+                $userId,
+            ]);
+        }
+
+        $this->session->alert(lang('quota_recalculated'));
+        return redirect($response, route('system'));
     }
 }

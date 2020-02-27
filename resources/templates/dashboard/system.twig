@@ -173,7 +173,8 @@
                 <div class="card shadow-sm mt-3">
                     <div class="card-header"><i class="fas fa-tools fa-fw"></i> {{ lang('maintenance') }}</div>
                     <div class="card-body">
-                        <a href="{{ route('system.deleteOrphanFiles') }}" class="btn btn-outline-dark btn-block"><i class="fas fa-broom fa-fw"></i> {{ lang('clean_orphaned_uploads') }}</a>
+                        <a href="{{ route('system.deleteOrphanFiles') }}" class="btn btn-outline-danger btn-block"><i class="fas fa-broom fa-fw"></i> {{ lang('clean_orphaned_uploads') }}</a>
+                        <a href="{{ route('system.recalculateUserQuota') }}" class="btn btn-outline-info btn-block"><i class="fas fa-calculator fa-fw"></i> {{ lang('recalculate_user_quota') }}</a>
                     </div>
                 </div>
                 <div class="card shadow-sm mt-3">

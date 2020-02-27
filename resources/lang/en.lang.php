@@ -131,4 +131,6 @@ return [
     'password_repeat' => 'Repeat Password',
     'password_match' => 'Password and repeat password must be the same.',
     'password_restored' => 'Password has been reset.',
+    'recalculate_user_quota' => 'Recalculate user quota from disk',
+    'quota_recalculated' => 'User quota recalculated from the disk successfully.',
 ];
