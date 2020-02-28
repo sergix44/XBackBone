@@ -6,6 +6,7 @@ require __DIR__.'/../vendor/autoload.php';
 use App\Database\DB;
 use App\Database\Migrator;
 use App\Factories\ViewFactory;
+use App\Web\Media;
 use App\Web\Session;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
@@ -25,16 +26,16 @@ define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
 // default config
 $config = [
     'base_url' => str_replace('/install/', '', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"),
-    'debug'    => true,
-    'db'       => [
+    'debug' => true,
+    'db' => [
         'connection' => 'sqlite',
-        'dsn'        => realpath(__DIR__.'/../').implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
-        'username'   => null,
-        'password'   => null,
+        'dsn' => realpath(__DIR__.'/../').implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
+        'username' => null,
+        'password' => null,
     ],
     'storage' => [
         'driver' => 'local',
-        'path'   => realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.'storage',
+        'path' => realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.'storage',
     ],
 ];
 
@@ -45,7 +46,7 @@ if (file_exists(__DIR__.'/../config.php')) {
 $builder = new ContainerBuilder();
 
 $builder->addDefinitions([
-    'config'    => value($config),
+    'config' => value($config),
     View::class => factory(function (Container $container) {
         return ViewFactory::createInstallerInstance($container);
     }),
@@ -93,7 +94,7 @@ $app->get('/', function (Response $response, View $view, Session $session) use (
     ]);
 })->setName('install');
 
-$app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session) use (&$config) {
+$app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session, DB $db) use (&$config) {
 
     // Check if there is a previous installation, if not, setup the config file
     $installed = true;
@@ -185,8 +186,6 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
             $firstMigrate = true;
         }
 
-        $db = new DB(dsnFromConfig($config), $config['db']['username'], $config['db']['password']);
-
         $migrator = new Migrator($db, __DIR__.'/../resources/schemas', $firstMigrate);
         $migrator->migrate();
     } catch (PDOException $e) {
@@ -199,6 +198,18 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     if (!$installed) {
         $db->query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, 'admin', ?, 1, ?)", [param($request, 'email'), password_hash(param($request, 'password'), PASSWORD_DEFAULT), humanRandomString(5)]);
     }
+
+    // re-apply the previous theme if is present
+    $css = $db->query('SELECT `value` FROM `settings` WHERE `key` = \'css\'')->fetch()->value;
+    if ($css) {
+        $content = file_get_contents($css);
+        if ($content !== false) {
+            file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css', $content);
+        }
+    }
+
+    // recalculate user quota
+    Media::recalculateQuotas($db, $storage);
 
     // if is upgrading and existing installation, put it out maintenance
     if ($installed) {
@@ -215,12 +226,6 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $session->alert('The config folder is not writable ('.__DIR__.'/../config.php'.')', 'danger');
 
         return redirect($response, '/install');
-    }
-
-    // re-apply the previous theme if is present
-    $css = $db->query('SELECT `value` FROM `settings` WHERE `key` = \'css\'')->fetch()->value;
-    if ($css) {
-        file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css', file_get_contents($css));
     }
 
     // post install cleanup

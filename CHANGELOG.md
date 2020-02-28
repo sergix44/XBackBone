@@ -1,9 +1,15 @@
 ## v.3.1 (WIP)
-+ The theme is now re-applied after every system update.
++ Added registration system.
++ Added password recovery system.
++ Added ability to export all media of an account.
 + Added ability to choose between default and raw url on copy.
 + Added hide by default option.
++ Added user disk quota.
++ Fixed bug html files raws are rendered in a browser.
++ The theme is now re-applied after every system update.
 + Updated system settings page.
 + Updated translations.
++ Small fixes and improvements.
 
 ## v.3.0.2
 + Fixed error with migrate command.

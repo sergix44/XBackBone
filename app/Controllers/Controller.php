@@ -75,6 +75,38 @@ abstract class Controller
 
     /**
      * @param  Request  $request
+     * @param $userId
+     * @param $fileSize
+     * @param  bool  $dec
+     * @return bool
+     * @throws HttpNotFoundException
+     * @throws HttpUnauthorizedException
+     */
+    protected function updateUserQuota(Request $request, $userId, $fileSize, $dec = false)
+    {
+        $user = $this->getUser($request, $userId);
+
+        if ($dec) {
+            $tot = max($user->current_disk_quota - $fileSize, 0);
+        } else {
+            $tot = $user->current_disk_quota + $fileSize;
+
+            $quotaEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'quota_enabled\'')->fetch()->value ?? 'off';
+            if ($quotaEnabled === 'on' && $user->max_disk_quota > 0 && $user->max_disk_quota < $tot) {
+                return false;
+            }
+        }
+
+        $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
+            $tot,
+            $user->id
+        ]);
+
+        return true;
+    }
+
+    /**
+     * @param  Request  $request
      * @param $id
      * @param  bool  $authorize
      *

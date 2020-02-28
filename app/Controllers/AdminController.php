@@ -2,7 +2,10 @@
 
 namespace App\Controllers;
 
+use App\Database\DB;
+use App\Web\Media;
 use League\Flysystem\FileNotFoundException;
+use League\Flysystem\Filesystem;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -102,29 +105,7 @@ class AdminController extends Controller
      */
     public function recalculateUserQuota(Response $response): Response
     {
-        $uploads = $this->database->query('SELECT `id`,`user_id`, `storage_path` FROM `uploads`')->fetchAll();
-
-        $usersQuotas = [];
-
-        $filesystem = $this->storage;
-        foreach ($uploads as $upload) {
-            if (!array_key_exists($upload->user_id, $usersQuotas)) {
-                $usersQuotas[$upload->user_id] = 0;
-            }
-            try {
-                $usersQuotas[$upload->user_id] += $filesystem->getSize($upload->storage_path);
-            } catch (FileNotFoundException $e) {
-                $this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $upload->id);
-            }
-        }
-
-        foreach ($usersQuotas as $userId => $quota) {
-            $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
-                $quota,
-                $userId,
-            ]);
-        }
-
+        Media::recalculateQuotas($this->database, $this->storage);
         $this->session->alert(lang('quota_recalculated'));
         return redirect($response, route('system'));
     }

@@ -189,6 +189,7 @@ class MediaController extends Controller
      * @throws HttpUnauthorizedException
      *
      * @throws HttpNotFoundException
+     * @throws FileNotFoundException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -199,7 +200,8 @@ class MediaController extends Controller
         }
 
         if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
-            $this->deleteMedia($request, $media->storage_path, $id);
+            $size = $this->deleteMedia($request, $media->storage_path, $id);
+            $this->updateUserQuota($request, $media->user_id, $size, true);
             $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
             $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
         } else {
@@ -248,7 +250,8 @@ class MediaController extends Controller
         }
 
         if ($this->session->get('admin', false) || $user->id === $media->user_id) {
-            $this->deleteMedia($request, $media->storage_path, $media->mediaId);
+            $size = $this->deleteMedia($request, $media->storage_path, $media->mediaId);
+            $this->updateUserQuota($request, $media->user_id, $size, true);
             $this->logger->info('User '.$user->username.' deleted a media via token.', [$media->mediaId]);
         } else {
             throw new HttpUnauthorizedException($request);
@@ -262,12 +265,15 @@ class MediaController extends Controller
      * @param  string  $storagePath
      * @param  int  $id
      *
+     * @return bool|false|int
      * @throws HttpNotFoundException
      */
     protected function deleteMedia(Request $request, string $storagePath, int $id)
     {
         try {
+            $size = $this->storage->getSize($storagePath);
             $this->storage->delete($storagePath);
+            return $size;
         } catch (FileNotFoundException $e) {
             throw new HttpNotFoundException($request);
         } finally {

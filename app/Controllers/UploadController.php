@@ -39,6 +39,7 @@ class UploadController extends Controller
      *
      * @return Response
      * @throws FileExistsException
+     * @throws \Exception
      *
      */
     public function upload(Request $request, Response $response): Response
@@ -96,33 +97,44 @@ class UploadController extends Controller
             return json($response, $json, 401);
         }
 
-        do {
-            $code = humanRandomString();
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
+        if (!$this->updateUserQuota($request, $user->id, $file->getSize())) {
+            $json['message'] = 'User disk quota exceeded.';
 
-        $published = 1;
-        if (($this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off') === 'on') {
-            $published = 0;
+            return json($response, $json, 507);
         }
 
-        $fileInfo = pathinfo($file->getClientFilename());
-        $storagePath = "$user->user_code/$code.$fileInfo[extension]";
+        try {
+            do {
+                $code = humanRandomString();
+            } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
-        $this->storage->writeStream($storagePath, $file->getStream()->detach());
+            $published = 1;
+            if (($this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off') === 'on') {
+                $published = 0;
+            }
 
-        $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`, `published`) VALUES (?, ?, ?, ?, ?)', [
-            $user->id,
-            $code,
-            $file->getClientFilename(),
-            $storagePath,
-            $published,
-        ]);
+            $fileInfo = pathinfo($file->getClientFilename());
+            $storagePath = "$user->user_code/$code.$fileInfo[extension]";
 
-        $json['message'] = 'OK.';
-        $json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
+            $this->storage->writeStream($storagePath, $file->getStream()->detach());
 
-        $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
+            $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`, `published`) VALUES (?, ?, ?, ?, ?)', [
+                $user->id,
+                $code,
+                $file->getClientFilename(),
+                $storagePath,
+                $published,
+            ]);
 
-        return json($response, $json, 201);
+            $json['message'] = 'OK.';
+            $json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
+
+            $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
+
+            return json($response, $json, 201);
+        } catch (\Exception $e) {
+            $this->updateUserQuota($request, $user->id, $file->getSize(), false);
+            throw $e;
+        }
     }
 }
