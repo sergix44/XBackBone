@@ -133,7 +133,7 @@ class UploadController extends Controller
 
             return json($response, $json, 201);
         } catch (\Exception $e) {
-            $this->updateUserQuota($request, $user->id, $file->getSize(), false);
+            $this->updateUserQuota($request, $user->id, $file->getSize(), true);
             throw $e;
         }
     }
