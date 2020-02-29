@@ -126,7 +126,7 @@ return [
     'default_user_quota' => 'Standard Speicherplatz',
     'invalid_quota' => 'Ungültiger Wert für den Speicherplatz.',
     'mail.activate_text' => 'Hey %s!
-Vielen Dank, dass Sie Ihr Konto auf % s (% s) erstellt haben. Klicken Sie auf den folgenden Link, um es zu aktivieren:
+Vielen Dank, dass Sie Ihr Konto auf %s (%s) erstellt haben. Klicken Sie auf den folgenden Link, um es zu aktivieren:
 
 %s',
     'register_success' => 'Das Konto wurde erstellt, eine Bestätigungs-E-Mail wurde gesendet.',
