@@ -203,6 +203,7 @@ class MediaController extends Controller
             $size = $this->deleteMedia($request, $media->storage_path, $id);
             $this->updateUserQuota($request, $media->user_id, $size, true);
             $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
+            //TODO update
             $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
         } else {
             throw new HttpUnauthorizedException($request);

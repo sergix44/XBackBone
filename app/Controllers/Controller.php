@@ -48,29 +48,18 @@ abstract class Controller
         if ($this->container->has($name)) {
             return $this->container->get($name);
         }
+
+        return null;
     }
 
     /**
      * @param $id
      *
-     * @return int
+     * @return object
      */
-    protected function getUsedSpaceByUser($id): int
+    protected function getUsedSpaceByUser($id)
     {
-        $medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $id);
-
-        $totalSize = 0;
-
-        $filesystem = $this->storage;
-        foreach ($medias as $media) {
-            try {
-                $totalSize += $filesystem->getSize($media->storage_path);
-            } catch (FileNotFoundException $e) {
-                $this->logger->error('Error calculating file size', ['exception' => $e]);
-            }
-        }
-
-        return $totalSize;
+        return $this->database->query('SELECT `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `id` = ?', $id)->fetch();
     }
 
     /**
@@ -99,7 +88,7 @@ abstract class Controller
 
         $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
             $tot,
-            $user->id
+            $user->id,
         ]);
 
         return true;

@@ -133,4 +133,5 @@ return [
     'password_restored' => 'Password has been reset.',
     'recalculate_user_quota' => 'Recalculate user quota from disk',
     'quota_recalculated' => 'User quota recalculated from the disk successfully.',
+    'used_space' => 'Used Space',
 ];

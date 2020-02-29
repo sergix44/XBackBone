@@ -19,6 +19,7 @@
                             <th>Email</th>
                             <th>{{ lang('username') }}</th>
                             <th>{{ lang('user_code') }}</th>
+                            <th>{{ lang('used_space') }}</th>
                             <th>{{ lang('active') }}</th>
                             <th>{{ lang('admin') }}</th>
                             <th>{{ lang('reg_date') }}</th>
@@ -34,6 +35,7 @@
                                 <td>
                                     <pre>{{ user.user_code|default(lang('none')) }}</pre>
                                 </td>
+                                <td>{{ humanFileSize(user.current_disk_quota) }}</td>
                                 <td>
                                     {% if user.active %}
                                         <span class="badge badge-success"><i class="fas fa-check"></i></span>

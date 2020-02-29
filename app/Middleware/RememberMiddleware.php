@@ -29,6 +29,7 @@ class RememberMiddleware extends Middleware
                 $this->session->set('user_id', $result->id);
                 $this->session->set('username', $result->username);
                 $this->session->set('admin', $result->is_admin);
+                // TODO: update
                 $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($result->id)));
             }
 

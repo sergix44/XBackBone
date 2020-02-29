@@ -188,6 +188,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
 
         $migrator = new Migrator($db, __DIR__.'/../resources/schemas', $firstMigrate);
         $migrator->migrate();
+        $migrator->reSyncQuotas($storage);
     } catch (PDOException $e) {
         $session->alert("Cannot connect to the database: {$e->getMessage()} [{$e->getCode()}]", 'danger');
 
@@ -207,9 +208,6 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
             file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css', $content);
         }
     }
-
-    // recalculate user quota
-    Media::recalculateQuotas($db, $storage);
 
     // if is upgrading and existing installation, put it out maintenance
     if ($installed) {

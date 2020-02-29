@@ -2,6 +2,8 @@
 
 namespace App\Database;
 
+use League\Flysystem\FileNotFoundException;
+use League\Flysystem\Filesystem;
 use PDOException;
 
 class Migrator
@@ -26,7 +28,7 @@ class Migrator
      * @param string $schemaPath
      * @param bool   $firstMigrate
      */
-    public function __construct(DB $db, string $schemaPath, bool $firstMigrate = false)
+    public function __construct(DB $db, ?string $schemaPath, bool $firstMigrate = false)
     {
         $this->db = $db;
         $this->schemaPath = $schemaPath;
@@ -90,6 +92,34 @@ class Migrator
 
                 throw $exception;
             }
+        }
+    }
+
+    /**
+     * @param  Filesystem  $filesystem
+     */
+    public function reSyncQuotas(Filesystem $filesystem)
+    {
+        $uploads = $this->db->query('SELECT `id`,`user_id`, `storage_path` FROM `uploads`')->fetchAll();
+
+        $usersQuotas = [];
+
+        foreach ($uploads as $upload) {
+            if (!array_key_exists($upload->user_id, $usersQuotas)) {
+                $usersQuotas[$upload->user_id] = 0;
+            }
+            try {
+                $usersQuotas[$upload->user_id] += $filesystem->getSize($upload->storage_path);
+            } catch (FileNotFoundException $e) {
+                $this->db->query('DELETE FROM `uploads` WHERE `id` = ?', $upload->id);
+            }
+        }
+
+        foreach ($usersQuotas as $userId => $quota) {
+            $this->db->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
+                $quota,
+                $userId,
+            ]);
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database\DB;
+use App\Database\Migrator;
 use App\Web\Media;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
@@ -32,7 +33,7 @@ class AdminController extends Controller
         $hideByDefault = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off';
         $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value ?? 'off';
         $quotaEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'quota_enabled\'')->fetch()->value ?? 'off';
-        $defaultUserQuota = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'default_user_quota\'')->fetch()->value ?? '1G';
+        $defaultUserQuota = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'default_user_quota\'')->fetch()->value ?? stringToBytes('1G');
 
         return view()->render($response, 'dashboard/system.twig', [
             'usersCount' => $usersCount,
@@ -105,7 +106,8 @@ class AdminController extends Controller
      */
     public function recalculateUserQuota(Response $response): Response
     {
-        Media::recalculateQuotas($this->database, $this->storage);
+        $migrator = new Migrator($this->database, null);
+        $migrator->reSyncQuotas($this->storage);
         $this->session->alert(lang('quota_recalculated'));
         return redirect($response, route('system'));
     }
