@@ -9,7 +9,6 @@ use App\Web\View;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
-use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface as Request;

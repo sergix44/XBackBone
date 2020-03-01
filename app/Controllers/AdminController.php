@@ -2,11 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Database\DB;
 use App\Database\Migrator;
-use App\Web\Media;
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\Filesystem;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

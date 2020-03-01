@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use League\Flysystem\FileExistsException;
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -62,7 +62,7 @@ class UploadController extends Controller
 
         $file = array_values($request->getUploadedFiles());
         /** @var \Psr\Http\Message\UploadedFileInterface|null $file */
-        $file = isset($file[0]) ? $file[0] : null;
+        $file = $file[0] ?? null;
 
         if ($file === null) {
             $json['message'] = 'Request without file attached.';
@@ -125,13 +125,13 @@ class UploadController extends Controller
                 $published,
             ]);
 
-            $json['message'] = 'OK.';
+            $json['message'] = 'OK';
             $json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
 
             $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
 
             return json($response, $json, 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->updateUserQuota($request, $user->id, $file->getSize(), true);
             throw $e;
         }

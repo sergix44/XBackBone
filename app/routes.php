@@ -2,12 +2,12 @@
 
 // Auth routes
 use App\Controllers\AdminController;
+use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\PasswordRecoveryController;
 use App\Controllers\Auth\RegisterController;
 use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
 use App\Controllers\ExportController;
-use App\Controllers\Auth\LoginController;
 use App\Controllers\MediaController;
 use App\Controllers\ProfileController;
 use App\Controllers\SettingController;
