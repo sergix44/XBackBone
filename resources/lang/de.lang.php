@@ -146,4 +146,5 @@ Wenn Sie nicht das Zurücksetzen des Passworts angefordert haben, ignorieren Sie
     'password_restored' => 'Passwort wurde zurückgesetzt.',
     'recalculate_user_quota' => 'Benutzer Speicher wird neu berechnet',
     'quota_recalculated' => 'Die Berechnung vom Benutzer Speicher war erfolgreich.',
+    'used_space' => 'Belegter Speicherplatz',
 ];
