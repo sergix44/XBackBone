@@ -25,32 +25,22 @@ class AdminController extends Controller
      */
     public function system(Request $request, Response $response): Response
     {
-        $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count;
-        $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
-        $orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count;
-        $totalSize = $this->database->query('SELECT SUM(`current_disk_quota`) AS `sum` FROM `users`')->fetch()->sum ?? 0;
-        $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
-        $hideByDefault = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off';
-        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value ?? 'off';
-        $quotaEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'quota_enabled\'')->fetch()->value ?? 'off';
-        $defaultUserQuota = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'default_user_quota\'')->fetch()->value ?? stringToBytes('1G');
-
         return view()->render($response, 'dashboard/system.twig', [
-            'usersCount' => $usersCount,
-            'mediasCount' => $mediasCount,
-            'orphanFilesCount' => $orphanFilesCount,
-            'totalSize' => humanFileSize($totalSize),
+            'usersCount' => $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,
+            'mediasCount' => $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count,
+            'orphanFilesCount' => $orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count,
+            'totalSize' => humanFileSize($totalSize = $this->database->query('SELECT SUM(`current_disk_quota`) AS `sum` FROM `users`')->fetch()->sum ?? 0),
             'post_max_size' => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
             'installed_lang' => $this->lang->getList(),
             'forced_lang' => $request->getAttribute('forced_lang'),
             'php_version' => phpversion(),
             'max_memory' => ini_get('memory_limit'),
-            'register_enabled' => $registerEnabled,
-            'hide_by_default' => $hideByDefault,
-            'copy_url_behavior' => $copyUrl,
-            'quota_enabled' => $quotaEnabled,
-            'default_user_quota' => humanFileSize($defaultUserQuota, 0, true),
+            'register_enabled' => $this->getSetting('register_enabled', 'off'),
+            'hide_by_default' => $this->getSetting('hide_by_default', 'off'),
+            'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
+            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
+            'default_user_quota' => humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0, true),
         ]);
     }
 

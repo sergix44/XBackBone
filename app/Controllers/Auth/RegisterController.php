@@ -27,8 +27,7 @@ class RegisterController extends Controller
             return redirect($response, route('home'));
         }
 
-        $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
-        if ($registerEnabled === 'off') {
+        if ($this->getSetting('register_enabled', 'off') === 'off') {
             throw new HttpNotFoundException($request);
         }
 
@@ -48,8 +47,7 @@ class RegisterController extends Controller
             return redirect($response, route('home'));
         }
 
-        $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
-        if ($registerEnabled === 'off') {
+        if ($this->getSetting('register_enabled', 'off') === 'off') {
             throw new HttpNotFoundException($request);
         }
 

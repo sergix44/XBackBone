@@ -16,10 +16,10 @@ class LangMiddleware extends Middleware
      */
     public function __invoke(Request $request, RequestHandler $handler)
     {
-        $forcedLang = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'lang\'')->fetch();
-        if ($forcedLang) {
-            $this->lang::setLang($forcedLang->value);
-            $request = $request->withAttribute('forced_lang', $forcedLang->value);
+        $forcedLang = $this->getSetting('lang');
+        if ($forcedLang !== null) {
+            $this->lang::setLang($forcedLang);
+            $request = $request->withAttribute('forced_lang', $forcedLang);
         }
 
         return $handler->handle($request);

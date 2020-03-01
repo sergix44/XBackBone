@@ -23,10 +23,8 @@ class LoginController extends Controller
             return redirect($response, route('home'));
         }
 
-        $registerEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'register_enabled\'')->fetch()->value ?? 'off';
-
         return view()->render($response, 'auth/login.twig', [
-            'register_enabled' => $registerEnabled,
+            'register_enabled' => $this->getSetting('register_enabled', 'off'),
         ]);
     }
 
@@ -41,35 +39,34 @@ class LoginController extends Controller
     public function login(Request $request, Response $response): Response
     {
         $username = param($request, 'username');
-        $result = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
+        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
-        if (!$result || !password_verify(param($request, 'password'), $result->password)) {
+        if (!$user || !password_verify(param($request, 'password'), $user->password)) {
             $this->session->alert(lang('bad_login'), 'danger');
             return redirect($response, route('login'));
         }
 
-        if (isset($this->config['maintenance']) && $this->config['maintenance'] && !$result->is_admin) {
+        if (isset($this->config['maintenance']) && $this->config['maintenance'] && !$user->is_admin) {
             $this->session->alert(lang('maintenance_in_progress'), 'info');
             return redirect($response, route('login'));
         }
 
-        if (!$result->active) {
+        if (!$user->active) {
             $this->session->alert(lang('account_disabled'), 'danger');
             return redirect($response, route('login'));
         }
 
         $this->session->set('logged', true);
-        $this->session->set('user_id', $result->id);
-        $this->session->set('username', $result->username);
-        $this->session->set('admin', $result->is_admin);
-        // TODO: update
-        $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($result->id)));
+        $this->session->set('user_id', $user->id);
+        $this->session->set('username', $user->username);
+        $this->session->set('admin', $user->is_admin);
+        $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
 
-        $this->session->alert(lang('welcome', [$result->username]), 'info');
-        $this->logger->info("User $result->username logged in.");
+        $this->session->alert(lang('welcome', [$user->username]), 'info');
+        $this->logger->info("User $user->username logged in.");
 
         if (param($request, 'remember') === 'on') {
-            $this->refreshRememberCookie($result->id);
+            $this->refreshRememberCookie($user->id);
         }
 
         if ($this->session->has('redirectTo')) {

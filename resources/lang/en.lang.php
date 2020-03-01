@@ -120,6 +120,7 @@ return [
     'register' => 'Register',
     'register_success' => 'The account has been created, a confirmation email has been sent.',
     'default_user_quota' => 'Default User Quota',
+    'max_user_quota' => 'Max User Quota',
     'invalid_quota' => 'Invalid values as default user quota.',
     'mail.activate_text' => "Hi %s!\nthank you for creating your account on %s (%s), click on the following link to activate it:\n\n%s",
     'mail.activate_account' => '%s - Account Activation',

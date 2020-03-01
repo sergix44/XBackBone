@@ -12,14 +12,14 @@ class UserController extends Controller
     const PER_PAGE = 15;
 
     /**
-     * @param Response $response
-     * @param int|null $page
+     * @param  Response  $response
+     * @param  int|null  $page
      *
-     * @throws \Twig\Error\LoaderError
+     * @return Response
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      *
-     * @return Response
+     * @throws \Twig\Error\LoaderError
      */
     public function index(Response $response, int $page = 0): Response
     {
@@ -32,31 +32,35 @@ class UserController extends Controller
         return view()->render($response,
             'user/index.twig',
             [
-                'users'        => $users,
-                'next'         => $page < floor($pages),
-                'previous'     => $page >= 1,
+                'users' => $users,
+                'next' => $page < floor($pages),
+                'previous' => $page >= 1,
                 'current_page' => ++$page,
+                'quota_enabled' => $this->getSetting('quota_enabled'),
             ]
         );
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      *
-     * @throws \Twig\Error\LoaderError
+     * @return Response
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      *
-     * @return Response
+     * @throws \Twig\Error\LoaderError
      */
     public function create(Response $response): Response
     {
-        return view()->render($response, 'user/create.twig');
+        return view()->render($response, 'user/create.twig', [
+            'default_user_quota' => humanFileSize($this->getSetting('default_user_quota'), 0, true),
+            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
+        ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
      */
@@ -92,13 +96,26 @@ class UserController extends Controller
             return redirect($response, route('user.create'));
         }
 
+        $maxUserQuota = -1;
+        if ($this->getSetting('quota_enabled') === 'on') {
+            $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
+            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+                $this->session->alert(lang('invalid_quota', 'danger'));
+                return redirect($response, route('user.create'));
+            }
+
+            if ($maxUserQuota !== '-1') {
+                $maxUserQuota = stringToBytes($maxUserQuota);
+            }
+        }
+
         do {
             $userCode = humanRandomString(5);
         } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
         $token = $this->generateUserUploadToken();
 
-        $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+        $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
             param($request, 'email'),
             param($request, 'username'),
             password_hash(param($request, 'password'), PASSWORD_DEFAULT),
@@ -106,6 +123,7 @@ class UserController extends Controller
             param($request, 'is_active') !== null ? 1 : 0,
             $userCode,
             $token,
+            $maxUserQuota,
         ]);
 
         $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
@@ -115,17 +133,17 @@ class UserController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      * @param $id
      *
-     * @throws HttpNotFoundException
+     * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      * @throws HttpUnauthorizedException
      *
-     * @return Response
+     * @throws HttpNotFoundException
      */
     public function edit(Request $request, Response $response, int $id): Response
     {
@@ -133,19 +151,21 @@ class UserController extends Controller
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => false,
-            'user'    => $user,
+            'user' => $user,
+            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
+            'max_disk_quota' => $user->max_disk_quota > 0 ? humanFileSize($user->max_disk_quota, 0, true) : -1,
         ]);
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function update(Request $request, Response $response, int $id): Response
     {
@@ -181,21 +201,35 @@ class UserController extends Controller
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
+        if ($this->getSetting('quota_enabled') === 'on') {
+            $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
+            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+                $this->session->alert(lang('invalid_quota', 'danger'));
+                return redirect($response, route('user.create'));
+            }
+
+            if ($maxUserQuota !== '-1') {
+                $user->max_disk_quota = stringToBytes($maxUserQuota);
+            }
+        }
+
         if (param($request, 'password') !== null && !empty(param($request, 'password'))) {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
+            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 param($request, 'username'),
                 password_hash(param($request, 'password'), PASSWORD_DEFAULT),
                 param($request, 'is_admin') !== null ? 1 : 0,
                 param($request, 'is_active') !== null ? 1 : 0,
+                $user->max_disk_quota,
                 $user->id,
             ]);
         } else {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
+            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 param($request, 'username'),
                 param($request, 'is_admin') !== null ? 1 : 0,
                 param($request, 'is_active') !== null ? 1 : 0,
+                $user->max_disk_quota,
                 $user->id,
             ]);
         }
@@ -210,14 +244,14 @@ class UserController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -238,14 +272,14 @@ class UserController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
+     * @throws HttpUnauthorizedException
+     *
+     * @throws HttpNotFoundException
      */
     public function refreshToken(Request $request, Response $response, int $id): Response
     {

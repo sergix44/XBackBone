@@ -38,9 +38,8 @@ class UploadController extends Controller
      * @param  Response  $response
      *
      * @return Response
-     * @throws FileExistsException
-     * @throws \Exception
-     *
+     * @throws \Slim\Exception\HttpNotFoundException
+     * @throws \Slim\Exception\HttpUnauthorizedException
      */
     public function upload(Request $request, Response $response): Response
     {
@@ -109,7 +108,7 @@ class UploadController extends Controller
             } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
             $published = 1;
-            if (($this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'hide_by_default\'')->fetch()->value ?? 'off') === 'on') {
+            if ($this->getSetting('hide_by_default') === 'on') {
                 $published = 0;
             }
 

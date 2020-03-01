@@ -35,7 +35,7 @@
                                 <td>
                                     <pre>{{ user.user_code|default(lang('none')) }}</pre>
                                 </td>
-                                <td>{{ humanFileSize(user.current_disk_quota) }}</td>
+                                <td>{{ humanFileSize(user.current_disk_quota) }}{% if quota_enabled == 'on' %}/{{ user.max_disk_quota > 0 ? humanFileSize(user.max_disk_quota) : '∞' }}{% endif %}</td>
                                 <td>
                                     {% if user.active %}
                                         <span class="badge badge-success"><i class="fas fa-check"></i></span>

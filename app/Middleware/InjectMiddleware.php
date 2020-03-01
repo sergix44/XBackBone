@@ -16,8 +16,7 @@ class InjectMiddleware extends Middleware
      */
     public function __invoke(Request $request, RequestHandler $handler)
     {
-        $head = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'custom_head\'')->fetch();
-        $this->view->getTwig()->addGlobal('customHead', $head->value ?? null);
+        $this->view->getTwig()->addGlobal('customHead', $this->getSetting('custom_head'));
 
         return $handler->handle($request);
     }

@@ -35,8 +35,16 @@
                         <i class="fas fa-fw fa-user"></i> {{ session.get('username') }}
                     </a>
                     <div class="dropdown-menu shadow-sm" aria-labelledby="userDropdown">
-                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.get('used_space') }}</a>
+                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.get('current_disk_quota') }}{% if session.get('max_disk_quota') %}/{{ session.get('max_disk_quota') }}{% endif %}</a>
+                        {% if session.get('percent_disk_quota') is not null %}
+                            <a class="dropdown-item disabled" href="javascript:void(0)">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ session.get('percent_disk_quota') }}%" aria-valuenow="{{ session.get('percent_disk_quota') }}" aria-valuemin="0" aria-valuemax="100">{{ session.get('percent_disk_quota') }}%</div>
+                                </div>
+                            </a>
+                        {% endif %}
                         {% if session.get('admin') %}
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.get('gallery_view') is null or session.get('gallery_view') ? lang('gallery') : lang('table') }}</a>
                         {% endif %}
                         <div class="dropdown-divider"></div>

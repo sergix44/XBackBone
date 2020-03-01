@@ -66,14 +66,12 @@ class MediaController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        $copyUrl = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'copy_url_behavior\'')->fetch()->value ?? 'off';
-
         return view()->render($response, 'upload/public.twig', [
             'delete_token' => $token,
             'media' => $media,
             'type' => $type,
             'url' => urlFor("/{$userCode}/{$mediaCode}"),
-            'copy_url_behavior' => $copyUrl,
+            'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
         ]);
     }
 
@@ -203,8 +201,10 @@ class MediaController extends Controller
             $size = $this->deleteMedia($request, $media->storage_path, $id);
             $this->updateUserQuota($request, $media->user_id, $size, true);
             $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
-            //TODO update
-            $this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
+            if ($media->user_id === $this->session->get('user_id')) {
+                $user = $this->getUser($request, $media->user_id, true);
+                $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
+            }
         } else {
             throw new HttpUnauthorizedException($request);
         }

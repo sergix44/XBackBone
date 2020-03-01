@@ -53,13 +53,33 @@ abstract class Controller
     }
 
     /**
-     * @param $id
-     *
+     * @param $key
+     * @param  null  $default
      * @return object
      */
-    protected function getUsedSpaceByUser($id)
+    protected function getSetting($key, $default = null)
     {
-        return $this->database->query('SELECT `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `id` = ?', $id)->fetch();
+        return $this->database->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database->getPdo()->quote($key))->fetch()->value ?? $default;
+    }
+
+    /**
+     * @param $current
+     * @param $max
+     */
+    protected function setSessionQuotaInfo($current, $max)
+    {
+        $this->session->set('current_disk_quota', humanFileSize($current));
+        if ($this->getSetting('quota_enabled', 'off') === 'on') {
+            if ($max < 0) {
+                $this->session->set('max_disk_quota', '∞');
+            } else {
+                $this->session->set('max_disk_quota', humanFileSize($max));
+                $this->session->set('percent_disk_quota', round(($current * 100) / $max));
+            }
+        } else {
+            $this->session->set('max_disk_quota', null);
+            $this->session->set('percent_disk_quota', null);
+        }
     }
 
     /**
@@ -80,8 +100,7 @@ abstract class Controller
         } else {
             $tot = $user->current_disk_quota + $fileSize;
 
-            $quotaEnabled = $this->database->query('SELECT `value` FROM `settings` WHERE `key` = \'quota_enabled\'')->fetch()->value ?? 'off';
-            if ($quotaEnabled === 'on' && $user->max_disk_quota > 0 && $user->max_disk_quota < $tot) {
+            if ($this->getSetting('quota_enabled') === 'on' && $user->max_disk_quota > 0 && $user->max_disk_quota < $tot) {
                 return false;
             }
         }

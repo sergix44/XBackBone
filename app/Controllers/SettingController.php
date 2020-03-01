@@ -13,6 +13,8 @@ class SettingController extends Controller
      * @param  Response  $response
      *
      * @return Response
+     * @throws \Slim\Exception\HttpNotFoundException
+     * @throws \Slim\Exception\HttpUnauthorizedException
      */
     public function saveSettings(Request $request, Response $response): Response
     {
@@ -24,6 +26,10 @@ class SettingController extends Controller
         $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
         $this->updateSetting('hide_by_default', param($request, 'hide_by_default', 'off'));
         $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));
+
+        $user = $this->getUser($request, $this->session->get('user_id'));
+        $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
+
         $this->updateSetting('default_user_quota', stringToBytes(param($request, 'default_user_quota', '1G')));
         $this->updateSetting('copy_url_behavior', param($request, 'copy_url_behavior') === null ? 'default' : 'raw');
 
