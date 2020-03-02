@@ -71,6 +71,7 @@ abstract class Controller
         if ($this->getSetting('quota_enabled', 'off') === 'on') {
             if ($max < 0) {
                 $this->session->set('max_disk_quota', '∞');
+                $this->session->set('percent_disk_quota', null);
             } else {
                 $this->session->set('max_disk_quota', humanFileSize($max));
                 $this->session->set('percent_disk_quota', round(($current * 100) / $max));

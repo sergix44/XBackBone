@@ -98,14 +98,14 @@ class UserController extends Controller
 
         $maxUserQuota = -1;
         if ($this->getSetting('quota_enabled') === 'on') {
-            $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
-            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+            $maxUserQuotaStr = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
+            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuotaStr)) {
                 $this->session->alert(lang('invalid_quota', 'danger'));
                 return redirect($response, route('user.create'));
             }
 
-            if ($maxUserQuota !== '-1') {
-                $maxUserQuota = stringToBytes($maxUserQuota);
+            if ($maxUserQuotaStr !== '-1') {
+                $maxUserQuota = stringToBytes($maxUserQuotaStr);
             }
         }
 
@@ -201,6 +201,7 @@ class UserController extends Controller
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
+        $user->max_disk_quota = -1;
         if ($this->getSetting('quota_enabled') === 'on') {
             $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
             if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
@@ -232,6 +233,10 @@ class UserController extends Controller
                 $user->max_disk_quota,
                 $user->id,
             ]);
+        }
+
+        if ($user->id === $this->session->get('user_id')) {
+            $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
         }
 
         $this->session->alert(lang('user_updated', [param($request, 'username')]), 'success');

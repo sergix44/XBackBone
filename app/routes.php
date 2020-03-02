@@ -22,7 +22,8 @@ use Slim\Routing\RouteCollectorProxy;
 global $app;
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/home[/page/{page}]', [DashboardController::class, 'home'])->setName('home');
-    $group->get('/upload', [UploadController::class, 'webUpload'])->setName('upload.web');
+    $group->get('/upload', [UploadController::class, 'uploadWebPage'])->setName('upload.web.show');
+    $group->post('/upload/web', [UploadController::class, 'uploadWeb'])->setName('upload.web');
 
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');
@@ -76,7 +77,7 @@ $app->get('/login', [LoginController::class, 'show'])->setName('login.show');
 $app->post('/login', [LoginController::class, 'login'])->setName('login');
 $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setName('logout');
 
-$app->post('/upload', [UploadController::class, 'upload'])->setName('upload');
+$app->post('/upload', [UploadController::class, 'uploadEndpoint'])->setName('upload');
 
 $app->get('/{userCode}/{mediaCode}', [MediaController::class, 'show'])->setName('public');
 $app->get('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'show'])->setName('public.delete.show')->add(CheckForMaintenanceMiddleware::class);

@@ -20,11 +20,10 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <form action="{{ route('upload') }}?web=1" method="post" id="upload-dropzone" class="dropzone">
+                        <form action="{{ route('upload.web') }}" method="post" id="upload-dropzone" class="dropzone">
                             <div class="fallback">
                                 <input name="file" type="file" multiple>
                             </div>
-                            <input type="hidden" name="token" value="{{ user.token }}">
                         </form>
                     </div>
                 </div>
