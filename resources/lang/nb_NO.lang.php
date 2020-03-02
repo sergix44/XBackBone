@@ -125,4 +125,6 @@ return [
     'register' => 'Registrer deg',
     'default_user_quota' => 'Forvalgt brukerkvote',
     'invalid_quota' => 'Forvalgt brukerkvote har ugyldige verdier',
+    'mail.activate_account' => '%s - Kontoaktivering',
+    'mail.recover_password' => '%s - Passordgjenoppretting',
 ];

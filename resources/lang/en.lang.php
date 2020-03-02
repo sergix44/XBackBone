@@ -122,16 +122,24 @@ return [
     'default_user_quota' => 'Default User Quota',
     'max_user_quota' => 'Max User Quota',
     'invalid_quota' => 'Invalid values as default user quota.',
-    'mail.activate_text' => "Hi %s!\nthank you for creating your account on %s (%s), click on the following link to activate it:\n\n%s",
+    'mail.activate_text' => 'Hi %s!
+thank you for creating your account on %s (%s), click on the following link to activate it:
+
+%s',
     'mail.activate_account' => '%s - Account Activation',
-    'mail.recover_text' => "Hi %s,\na password reset has been requested for your account. To complete the procedure click on the following link:\n\n%s\n\nIf it wasn't you who requested the password reset, simply ignore this email.",
+    'mail.recover_text' => 'Hi %s,
+a password reset has been requested for your account. To complete the procedure click on the following link:
+
+%s
+
+If it wasn\'t you who requested the password reset, simply ignore this email.',
     'mail.recover_password' => '%s - Password Recovery',
     'recover_email_sent' => 'If present, a recovery email was sent to the specified account.',
     'account_activated' => 'Account activated, now you can login!',
     'quota_enabled' => 'Enable user quota',
     'password_repeat' => 'Repeat Password',
     'password_match' => 'Password and repeat password must be the same.',
-    'password_restored' => 'Password has been reset.',
+    'password_restored' => 'Password reset.',
     'recalculate_user_quota' => 'Recalculate user quota from disk',
     'quota_recalculated' => 'User quota recalculated from the disk successfully.',
     'used_space' => 'Used Space',

@@ -113,4 +113,38 @@ return [
     'remember_me' => 'Erinnere mich daran',
     'please_wait' => 'Bitte warten…',
     'dont_close' => 'Schließe diesen Tab erst wenn fertig.',
+    'php_info' => 'PHP Informationen',
+    'system_settings' => 'Systemeinstellungen',
+    'register_enabled' => 'Registrierungen aktivieren',
+    'hide_by_default' => 'Medien standardmäßig ausblenden',
+    'copy_url_behavior' => 'URL kopieren Mode',
+    'settings_saved' => 'Systemeinstellungen gespeichert!',
+    'export_data' => 'Daten exportieren',
+    'password_recovery' => 'Passwort wiederherstellen',
+    'no_account' => 'Du hast noch kein Account?',
+    'register' => 'Registrieren',
+    'default_user_quota' => 'Standard Speicherplatz',
+    'invalid_quota' => 'Ungültiger Wert für den Speicherplatz.',
+    'mail.activate_text' => 'Hey %s!
+Vielen Dank, dass Sie Ihr Konto auf %s (%s) erstellt haben. Klicken Sie auf den folgenden Link, um es zu aktivieren:
+
+%s',
+    'register_success' => 'Das Konto wurde erstellt, eine Bestätigungs-E-Mail wurde gesendet.',
+    'mail.activate_account' => '%s - Konto Aktivierung',
+    'mail.recover_text' => 'Hey %s,
+Für Ihr Konto wurde ein Zurücksetzen des Passworts angefordert. Um den Vorgang abzuschließen, klicken Sie auf den folgenden Link:
+
+%s
+
+Wenn Sie nicht das Zurücksetzen des Passworts angefordert haben, ignorieren Sie diese E-Mail einfach.',
+    'mail.recover_password' => '%s - Passwort Zurücksetzung',
+    'recover_email_sent' => 'Falls vorhanden, wurde eine Wiederherstellungs-E-Mail an das angegebene Konto gesendet.',
+    'account_activated' => 'Account wurde aktiviert, du kannst dich jetzt einloggen!',
+    'quota_enabled' => 'Aktiviere Speicherlimit',
+    'password_repeat' => 'Passwort wiederholen',
+    'password_match' => 'Das Passwort und das wiederholte Passwort muss das gleiche sein.',
+    'password_restored' => 'Passwort wurde zurückgesetzt.',
+    'recalculate_user_quota' => 'Benutzer Speicher wird neu berechnet',
+    'quota_recalculated' => 'Die Berechnung vom Benutzer Speicher war erfolgreich.',
+    'used_space' => 'Belegter Speicherplatz',
 ];
