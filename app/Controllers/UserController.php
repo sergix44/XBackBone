@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Exceptions\ValidationException;
+use App\Validators\ValidateUser;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
@@ -9,6 +11,8 @@ use Slim\Exception\HttpUnauthorizedException;
 
 class UserController extends Controller
 {
+    use ValidateUser;
+
     const PER_PAGE = 15;
 
     /**
@@ -66,26 +70,14 @@ class UserController extends Controller
      */
     public function store(Request $request, Response $response): Response
     {
-        if (param($request, 'email') === null && !filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL)) {
-            $this->session->alert(lang('email_required'), 'danger');
-
-            return redirect($response, route('user.create'));
+        try {
+            $this->validateUser($request, $response, route('user.create'));
+        } catch (ValidationException $e) {
+            return $e->response();
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
-
-            return redirect($response, route('user.create'));
-        }
-
-        if (param($request, 'username') === null) {
-            $this->session->alert(lang('username_required'), 'danger');
-
-            return redirect($response, route('user.create'));
-        }
-
-        if (param($request, 'password') === null) {
-            $this->session->alert(lang('password_required'), 'danger');
 
             return redirect($response, route('user.create'));
         }
@@ -169,22 +161,16 @@ class UserController extends Controller
      */
     public function update(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, false);
-
-        if (param($request, 'email') === null && !filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL)) {
-            $this->session->alert(lang('email_required'), 'danger');
-
-            return redirect($response, route('user.edit', ['id' => $id]));
+        try {
+            $this->validateUser($request, $response, route('user.edit', ['id' => $id]));
+        } catch (ValidationException $e) {
+            return $e->response();
         }
+
+        $user = $this->getUser($request, $id, false);
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
-
-            return redirect($response, route('user.edit', ['id' => $id]));
-        }
-
-        if (param($request, 'username') === null) {
-            $this->session->alert(lang('username_required'), 'danger');
 
             return redirect($response, route('user.edit', ['id' => $id]));
         }

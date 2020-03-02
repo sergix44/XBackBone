@@ -3,7 +3,9 @@
 
 namespace App\Controllers\Auth;
 
+use App\Controllers\Common\ValidateUser;
 use App\Controllers\Controller;
+use App\Exceptions\ValidationException;
 use App\Web\Mail;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -11,6 +13,7 @@ use Slim\Exception\HttpNotFoundException;
 
 class RegisterController extends Controller
 {
+    use ValidateUser;
 
     /**
      * @param  Request  $request
@@ -51,26 +54,14 @@ class RegisterController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        if (param($request, 'email') === null && !filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL)) {
-            $this->session->alert(lang('email_required'), 'danger');
-
-            return redirect($response, route('register.show'));
+        try {
+            $this->validateUser($request, $response, route('register.show'));
+        } catch (ValidationException $e) {
+            return $e->response();
         }
 
         if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count > 0) {
             $this->session->alert(lang('email_taken'), 'danger');
-
-            return redirect($response, route('register.show'));
-        }
-
-        if (param($request, 'username') === null) {
-            $this->session->alert(lang('username_required'), 'danger');
-
-            return redirect($response, route('register.show'));
-        }
-
-        if (param($request, 'password') === null) {
-            $this->session->alert(lang('password_required'), 'danger');
 
             return redirect($response, route('register.show'));
         }

@@ -16,9 +16,9 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
 
 /**
- * @property Session|null session
+ * @property Session session
  * @property View view
- * @property DB|null database
+ * @property DB database
  * @property Logger|null logger
  * @property Filesystem|null storage
  * @property Lang lang
