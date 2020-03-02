@@ -3,7 +3,6 @@
 
 namespace App\Exceptions;
 
-
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Throwable;
@@ -28,5 +27,4 @@ class ValidationException extends Exception
     {
         return $this->response;
     }
-
 }
