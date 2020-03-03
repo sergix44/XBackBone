@@ -3,7 +3,6 @@
 
 namespace App\Database\Queries;
 
-
 use App\Database\DB;
 use App\Web\Session;
 use Psr\Http\Message\ServerRequestInterface as Request;

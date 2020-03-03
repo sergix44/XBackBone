@@ -3,7 +3,6 @@
 
 namespace App\Web;
 
-
 class ValidationChecker
 {
     protected $rules = [];
