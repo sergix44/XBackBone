@@ -119,7 +119,7 @@ class PasswordRecoveryController extends Controller
                 $this->session->alert($alerts[$rule], 'danger');
             });
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return redirect($response, route('recover.password', ['resetToken' => $resetToken]));
         }
 

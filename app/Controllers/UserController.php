@@ -9,7 +9,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UserController extends Controller
 {
-
     const PER_PAGE = 15;
 
     /**
