@@ -5,6 +5,7 @@ namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 use App\Web\Mail;
+use App\Web\ValidationChecker;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
@@ -53,7 +54,7 @@ class PasswordRecoveryController extends Controller
         ]);
 
         Mail::make()
-            ->from('no-reply@'.str_ireplace('www.', '', parse_url($this->config['base_url'], PHP_URL_HOST)), $this->config['app_name'])
+            ->from(platform_mail(), $this->config['app_name'])
             ->to(param($request, 'email'))
             ->subject(lang('mail.recover_password', [$this->config['app_name']]))
             ->message(lang('mail.recover_text', [
@@ -104,15 +105,21 @@ class PasswordRecoveryController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        if (param($request, 'password') === null) {
-            $this->session->alert(lang('password_required'), 'danger');
+        $validator = ValidationChecker::make()
+            ->rules([
+                'password.required' => !empty(param($request, 'password')),
+                'password.match' => param($request, 'password') === param($request, 'password_repeat'),
+            ])
+            ->onFail(function ($rule) {
+                $alerts = [
+                    'password.required' => lang('password_required'),
+                    'password.match' => lang('password_match'),
+                ];
 
-            return redirect($response, route('recover.password', ['resetToken' => $resetToken]));
-        }
+                $this->session->alert($alerts[$rule], 'danger');
+            });
 
-        if (param($request, 'password') !== param($request, 'password_repeat')) {
-            $this->session->alert(lang('password_match'), 'danger');
-
+        if ($validator->fails()){
             return redirect($response, route('recover.password', ['resetToken' => $resetToken]));
         }
 

@@ -2,26 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\UserQuery;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpUnauthorizedException;
 
 class ClientController extends Controller
 {
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
      */
     public function getShareXConfig(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, true);
+        $user = make(UserQuery::class)->get($request, $id, true);
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');
@@ -48,21 +44,18 @@ class ClientController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
-     *
-     * @return Response
      */
     public function getBashScript(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, true);
+        $user = make(UserQuery::class)->get($request, $id, true);
 
         if ($user->token === null || $user->token === '') {
             $this->session->alert(lang('no_upload_token'), 'danger');

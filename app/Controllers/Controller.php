@@ -3,17 +3,18 @@
 namespace App\Controllers;
 
 use App\Database\DB;
+use App\Database\Queries\UserQuery;
 use App\Web\Lang;
 use App\Web\Session;
+use App\Web\ValidationChecker;
 use App\Web\View;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Exception;
 use League\Flysystem\Filesystem;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpUnauthorizedException;
 
 /**
  * @property Session session
@@ -88,12 +89,10 @@ abstract class Controller
      * @param $fileSize
      * @param  bool  $dec
      * @return bool
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
      */
     protected function updateUserQuota(Request $request, $userId, $fileSize, $dec = false)
     {
-        $user = $this->getUser($request, $userId);
+        $user = make(UserQuery::class)->get($request, $userId);
 
         if ($dec) {
             $tot = max($user->current_disk_quota - $fileSize, 0);
@@ -114,33 +113,8 @@ abstract class Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param $id
-     * @param  bool  $authorize
-     *
-     * @return mixed
-     * @throws HttpUnauthorizedException
-     *
-     * @throws HttpNotFoundException
-     */
-    protected function getUser(Request $request, $id, $authorize = false)
-    {
-        $user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        if (!$user) {
-            throw new HttpNotFoundException($request);
-        }
-
-        if ($authorize && $user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
-            throw new HttpUnauthorizedException($request);
-        }
-
-        return $user;
-    }
-
-    /**
      * @param $userId
-     * @throws \Exception
+     * @throws Exception
      */
     protected function refreshRememberCookie($userId)
     {
@@ -167,16 +141,30 @@ abstract class Controller
         }
     }
 
-
     /**
-     * @return string
+     * @param  Request  $request
+     * @return ValidationChecker
      */
-    protected function generateUserUploadToken(): string
+    public function getUserCreateValidator(Request $request)
     {
-        do {
-            $token = 'token_'.md5(uniqid('', true));
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
+        return ValidationChecker::make()
+            ->rules([
+                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL) !== false,
+                'username.required' => !empty(param($request, 'username')),
+                'password.required' => !empty(param($request, 'password')),
+                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count == 0,
+                'username.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count == 0,
+            ])
+            ->onFail(function ($rule) {
+                $alerts = [
+                    'email.required' => lang('email_required'),
+                    'username.required' => lang('username_required'),
+                    'password.required' => lang('password_required'),
+                    'email.unique' => lang('email_taken'),
+                    'username.unique' => lang('username_taken'),
+                ];
 
-        return $token;
+                $this->session->alert($alerts[$rule], 'danger');
+            });
     }
 }

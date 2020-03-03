@@ -42,15 +42,26 @@ class MediaQuery
     /**
      * MediaQuery constructor.
      *
-     * @param DB         $db
-     * @param bool       $isAdmin
-     * @param Filesystem $storage
+     * @param  DB  $db
+     * @param  bool  $isAdmin
+     * @param  Filesystem  $storage
      */
-    public function __construct(DB $db, bool $isAdmin, Filesystem $storage)
+    public function __construct(DB $db, Filesystem $storage, bool $isAdmin)
     {
         $this->db = $db;
         $this->isAdmin = $isAdmin;
         $this->storage = $storage;
+    }
+
+    /**
+     * @param  DB  $db
+     * @param  bool  $isAdmin
+     * @param  Filesystem  $storage
+     * @return MediaQuery
+     */
+    public static function make(DB $db, Filesystem $storage, bool $isAdmin)
+    {
+        return new self($db, $storage, $isAdmin);
     }
 
     /**
@@ -66,8 +77,8 @@ class MediaQuery
     }
 
     /**
-     * @param string|null $type
-     * @param string      $mode
+     * @param  string|null  $type
+     * @param  string  $mode
      *
      * @return $this
      */
@@ -80,7 +91,7 @@ class MediaQuery
     }
 
     /**
-     * @param string $text
+     * @param  string  $text
      *
      * @return $this
      */
@@ -92,7 +103,8 @@ class MediaQuery
     }
 
     /**
-     * @param int $page
+     * @param  int  $page
+     * @return MediaQuery|void
      */
     public function run(int $page)
     {
@@ -150,10 +162,12 @@ class MediaQuery
             }
             $media->extension = pathinfo($media->filename, PATHINFO_EXTENSION);
         }
+
+        return $this;
     }
 
     /**
-     * @param int $page
+     * @param  int  $page
      */
     private function runWithOrderBySize(int $page)
     {

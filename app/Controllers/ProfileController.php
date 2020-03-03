@@ -3,28 +3,25 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\UserQuery;
+use App\Web\ValidationChecker;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpUnauthorizedException;
 
 class ProfileController extends Controller
 {
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
-     *
-     * @return Response
      */
     public function profile(Request $request, Response $response): Response
     {
-        $user = $this->getUser($request, $this->session->get('user_id'), true);
+        $user = make(UserQuery::class)->get($request, $this->session->get('user_id'), true);
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => true,
@@ -33,28 +30,31 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param int      $id
-     *
-     * @throws HttpNotFoundException
-     * @throws HttpUnauthorizedException
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
      *
      * @return Response
      */
     public function profileEdit(Request $request, Response $response, int $id): Response
     {
-        if (param($request, 'email') === null) {
-            $this->session->alert(lang('email_required'), 'danger');
+        $user = make(UserQuery::class)->get($request, $id, true);
 
-            return redirect($response, route('profile'));
-        }
+        $validator = ValidationChecker::make()
+            ->rules([
+                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL),
+                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count == 0,
+            ])
+            ->onFail(function ($rule) {
+                $alerts = [
+                    'email.required' => lang('email_required'),
+                    'email.unique' => lang('email_taken'),
+                ];
 
-        $user = $this->getUser($request, $id, true);
+                $this->session->alert($alerts[$rule], 'danger');
+            });
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
-            $this->session->alert(lang('email_taken'), 'danger');
-
+        if ($validator->fails()) {
             return redirect($response, route('profile'));
         }
 

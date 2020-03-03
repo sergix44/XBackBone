@@ -2,16 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Exceptions\ValidationException;
-use App\Validators\ValidateUser;
+use App\Database\Queries\UserQuery;
+use App\Web\ValidationChecker;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpUnauthorizedException;
 
 class UserController extends Controller
 {
-    use ValidateUser;
 
     const PER_PAGE = 15;
 
@@ -70,27 +67,15 @@ class UserController extends Controller
      */
     public function store(Request $request, Response $response): Response
     {
-        try {
-            $this->validateUser($request, $response, route('user.create'));
-        } catch (ValidationException $e) {
-            return $e->response();
-        }
+        $validator = $this->getUserCreateValidator($request);
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count > 0) {
-            $this->session->alert(lang('email_taken'), 'danger');
-
-            return redirect($response, route('user.create'));
-        }
-
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count > 0) {
-            $this->session->alert(lang('username_taken'), 'danger');
-
+        if ($validator->fails()) {
             return redirect($response, route('user.create'));
         }
 
         $maxUserQuota = -1;
         if ($this->getSetting('quota_enabled') === 'on') {
-            $maxUserQuotaStr = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
+            $maxUserQuotaStr = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota', -1), 0, true));
             if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuotaStr)) {
                 $this->session->alert(lang('invalid_quota', 'danger'));
                 return redirect($response, route('user.create'));
@@ -101,22 +86,14 @@ class UserController extends Controller
             }
         }
 
-        do {
-            $userCode = humanRandomString(5);
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
-
-        $token = $this->generateUserUploadToken();
-
-        $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
+        make(UserQuery::class)->create(
             param($request, 'email'),
             param($request, 'username'),
-            password_hash(param($request, 'password'), PASSWORD_DEFAULT),
+            param($request, 'password'),
             param($request, 'is_admin') !== null ? 1 : 0,
             param($request, 'is_active') !== null ? 1 : 0,
-            $userCode,
-            $token,
-            $maxUserQuota,
-        ]);
+            $maxUserQuota
+        );
 
         $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
         $this->logger->info('User '.$this->session->get('username').' created a new user.', [array_diff_key($request->getParsedBody(), array_flip(['password']))]);
@@ -127,19 +104,16 @@ class UserController extends Controller
     /**
      * @param  Request  $request
      * @param  Response  $response
-     * @param $id
+     * @param  int  $id
      *
      * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
-     * @throws HttpUnauthorizedException
-     *
-     * @throws HttpNotFoundException
      */
     public function edit(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, false);
+        $user = make(UserQuery::class)->get($request, $id);
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => false,
@@ -155,35 +129,32 @@ class UserController extends Controller
      * @param  int  $id
      *
      * @return Response
-     * @throws HttpUnauthorizedException
-     *
-     * @throws HttpNotFoundException
      */
     public function update(Request $request, Response $response, int $id): Response
     {
-        try {
-            $this->validateUser($request, $response, route('user.edit', ['id' => $id]));
-        } catch (ValidationException $e) {
-            return $e->response();
-        }
+        $user = make(UserQuery::class)->get($request, $id);
 
-        $user = $this->getUser($request, $id, false);
+        $validator = ValidationChecker::make()
+            ->rules([
+                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL),
+                'username.required' => !empty(param($request, 'username')),
+                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count == 0,
+                'username.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count == 0,
+                'demote' => !($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null),
+            ])
+            ->onFail(function ($rule) {
+                $alerts = [
+                    'email.required' => lang('email_required'),
+                    'username.required' => lang('username_required'),
+                    'email.unique' => lang('email_taken'),
+                    'username.unique' => lang('username_taken'),
+                    'demote' => lang('cannot_demote'),
+                ];
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count > 0) {
-            $this->session->alert(lang('email_taken'), 'danger');
+                $this->session->alert($alerts[$rule], 'danger');
+            });
 
-            return redirect($response, route('user.edit', ['id' => $id]));
-        }
-
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count > 0) {
-            $this->session->alert(lang('username_taken'), 'danger');
-
-            return redirect($response, route('user.edit', ['id' => $id]));
-        }
-
-        if ($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null) {
-            $this->session->alert(lang('cannot_demote'), 'danger');
-
+        if ($validator->fails()) {
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
@@ -200,26 +171,15 @@ class UserController extends Controller
             }
         }
 
-        if (param($request, 'password') !== null && !empty(param($request, 'password'))) {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
-                param($request, 'email'),
-                param($request, 'username'),
-                password_hash(param($request, 'password'), PASSWORD_DEFAULT),
-                param($request, 'is_admin') !== null ? 1 : 0,
-                param($request, 'is_active') !== null ? 1 : 0,
-                $user->max_disk_quota,
-                $user->id,
-            ]);
-        } else {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
-                param($request, 'email'),
-                param($request, 'username'),
-                param($request, 'is_admin') !== null ? 1 : 0,
-                param($request, 'is_active') !== null ? 1 : 0,
-                $user->max_disk_quota,
-                $user->id,
-            ]);
-        }
+        make(UserQuery::class)->update(
+            $user->id,
+            param($request, 'email'),
+            param($request, 'username'),
+            param($request, 'password'),
+            param($request, 'is_admin') !== null ? 1 : 0,
+            param($request, 'is_active') !== null ? 1 : 0,
+            $user->max_disk_quota
+        );
 
         if ($user->id === $this->session->get('user_id')) {
             $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
@@ -240,13 +200,10 @@ class UserController extends Controller
      * @param  int  $id
      *
      * @return Response
-     * @throws HttpUnauthorizedException
-     *
-     * @throws HttpNotFoundException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, false);
+        $user = make(UserQuery::class)->get($request, $id);
 
         if ($user->id === $this->session->get('user_id')) {
             $this->session->alert(lang('cannot_delete'), 'danger');
@@ -268,24 +225,15 @@ class UserController extends Controller
      * @param  int  $id
      *
      * @return Response
-     * @throws HttpUnauthorizedException
-     *
-     * @throws HttpNotFoundException
      */
     public function refreshToken(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, true);
-
-        $token = $this->generateUserUploadToken();
-
-        $this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
-            $token,
-            $user->id,
-        ]);
+        $query = make(UserQuery::class);
+        $user = $query->get($request, $id, true);
 
         $this->logger->info('User '.$this->session->get('username')." refreshed token of user $user->id.");
 
-        $response->getBody()->write($token);
+        $response->getBody()->write($query->refreshToken($user->id));
 
         return $response;
     }

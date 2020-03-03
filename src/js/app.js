@@ -25,7 +25,7 @@ var app = {
         $('#themes').mousedown(app.loadThemes);
         $('.checkForUpdatesButton').click(app.checkForUpdates);
 
-        $('.alert').fadeTo(4000, 500).slideUp(500, function () {
+        $('.alert').fadeTo(10000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
         });
 

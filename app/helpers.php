@@ -157,6 +157,22 @@ if (!function_exists('resolve')) {
     }
 }
 
+if (!function_exists('make')) {
+    /**
+     * Resolve a service from de DI container.
+     *
+     * @param  string  $class
+     * @param  array  $params
+     * @return mixed
+     */
+    function make(string $class, array $params = [])
+    {
+        global $app;
+
+        return $app->getContainer()->make($class, $params);
+    }
+}
+
 if (!function_exists('view')) {
     /**
      * Render a view to the response body.
@@ -453,5 +469,18 @@ if (!function_exists('dsnFromConfig')) {
         $dsn = $config['db']['connection'] === 'sqlite' ? $baseDir.$config['db']['dsn'] : $config['db']['dsn'];
 
         return $config['db']['connection'].':'.$dsn;
+    }
+}
+
+if (!function_exists('platform_mail')) {
+    /**
+     * Return the system no-reply mail.
+     *
+     * @param  string  $mailbox
+     * @return string
+     */
+    function platform_mail($mailbox = 'no-reply'): string
+    {
+        return $mailbox.'@'.str_ireplace('www.', '', parse_url(resolve('config')['base_url'], PHP_URL_HOST));
     }
 }

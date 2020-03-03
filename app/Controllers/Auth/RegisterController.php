@@ -3,9 +3,8 @@
 
 namespace App\Controllers\Auth;
 
-use App\Controllers\Common\ValidateUser;
 use App\Controllers\Controller;
-use App\Exceptions\ValidationException;
+use App\Database\Queries\UserQuery;
 use App\Web\Mail;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,7 +12,6 @@ use Slim\Exception\HttpNotFoundException;
 
 class RegisterController extends Controller
 {
-    use ValidateUser;
 
     /**
      * @param  Request  $request
@@ -54,44 +52,26 @@ class RegisterController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        try {
-            $this->validateUser($request, $response, route('register.show'));
-        } catch (ValidationException $e) {
-            return $e->response();
-        }
+        $validator = $this->getUserCreateValidator($request);
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count > 0) {
-            $this->session->alert(lang('email_taken'), 'danger');
-
+        if ($validator->fails()) {
             return redirect($response, route('register.show'));
         }
 
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count > 0) {
-            $this->session->alert(lang('username_taken'), 'danger');
-
-            return redirect($response, route('register.show'));
-        }
-
-        do {
-            $userCode = humanRandomString(5);
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
-
-        $token = $this->generateUserUploadToken();
         $activateToken = bin2hex(random_bytes(16));
 
-        $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `activate_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
+        make(UserQuery::class)->create(
             param($request, 'email'),
             param($request, 'username'),
-            password_hash(param($request, 'password'), PASSWORD_DEFAULT),
+            param($request, 'password'),
             0,
             0,
-            $userCode,
-            $token,
-            $activateToken,
-        ]);
+            (int) $this->getSetting('default_user_quota', -1),
+            $activateToken
+        );
 
         Mail::make()
-            ->from('no-reply@'.str_ireplace('www.', '', parse_url($this->config['base_url'], PHP_URL_HOST)), $this->config['app_name'])
+            ->from(platform_mail(), $this->config['app_name'])
             ->to(param($request, 'email'))
             ->subject(lang('mail.activate_account', [$this->config['app_name']]))
             ->message(lang('mail.activate_text', [
@@ -109,12 +89,11 @@ class RegisterController extends Controller
     }
 
     /**
-     * @param  Request  $request
      * @param  Response  $response
      * @param  string  $activateToken
      * @return Response
      */
-    public function activateUser(Request $request, Response $response, string $activateToken): Response
+    public function activateUser(Response $response, string $activateToken): Response
     {
         if ($this->session->get('logged', false)) {
             return redirect($response, route('home'));

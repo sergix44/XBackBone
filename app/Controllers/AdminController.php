@@ -18,7 +18,6 @@ class AdminController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      *
-     * @throws FileNotFoundException
      */
     public function system(Request $request, Response $response): Response
     {

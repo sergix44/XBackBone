@@ -38,8 +38,6 @@ class DashboardController extends Controller
     {
         $page = max(0, --$page);
 
-        $query = new MediaQuery($this->database, $this->session->get('admin', false), $this->storage);
-
         switch (param($request, 'sort', 'time')) {
             case 'size':
                 $order = MediaQuery::ORDER_SIZE;
@@ -53,7 +51,9 @@ class DashboardController extends Controller
                 break;
         }
 
-        $query->orderBy($order, param($request, 'order', 'DESC'))
+        /** @var MediaQuery $query */
+        $query = make(MediaQuery::class, ['isAdmin' => (bool) $this->session->get('admin', false)])
+            ->orderBy($order, param($request, 'order', 'DESC'))
             ->withUserId($this->session->get('user_id'))
             ->search(param($request, 'search', null))
             ->run($page);

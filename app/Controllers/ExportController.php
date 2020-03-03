@@ -3,6 +3,7 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\UserQuery;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -16,13 +17,11 @@ class ExportController extends Controller
      * @param  Response  $response
      * @param  int|null  $id
      * @return Response
-     * @throws \Slim\Exception\HttpNotFoundException
-     * @throws \Slim\Exception\HttpUnauthorizedException
      * @throws \ZipStream\Exception\OverflowException
      */
     public function downloadData(Request $request, Response $response, int $id): Response
     {
-        $user = $this->getUser($request, $id, true);
+        $user = make(UserQuery::class)->get($request, $id, true);
 
         $medias = $this->database->query('SELECT `uploads`.`filename`, `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $user->id);
 

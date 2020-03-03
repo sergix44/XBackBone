@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\UserQuery;
 use App\Exceptions\ValidationException;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -32,8 +33,6 @@ class UploadController extends Controller
      * @param  Request  $request
      * @param  Response  $response
      * @return Response
-     * @throws \Slim\Exception\HttpNotFoundException
-     * @throws \Slim\Exception\HttpUnauthorizedException
      * @throws Exception
      */
     public function uploadWeb(Request $request, Response $response): Response
@@ -47,7 +46,7 @@ class UploadController extends Controller
         try {
             $file = $this->validateFile($request, $response);
 
-            $user = $this->getUser($request, $this->session->get('user_id'));
+            $user = make(UserQuery::class)->get($request, $this->session->get('user_id'));
 
             $this->validateUser($request, $response, $file, $user);
         } catch (ValidationException $e) {
@@ -76,8 +75,6 @@ class UploadController extends Controller
      * @param  Response  $response
      *
      * @return Response
-     * @throws \Slim\Exception\HttpNotFoundException
-     * @throws \Slim\Exception\HttpUnauthorizedException
      * @throws Exception
      */
     public function uploadEndpoint(Request $request, Response $response): Response
@@ -181,7 +178,6 @@ class UploadController extends Controller
 
 
     /**
-     * @param  Request  $request
      * @param  Response  $response
      * @param  UploadedFileInterface  $file
      * @param $user

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\UserQuery;
 use GuzzleHttp\Psr7\Stream;
 use Intervention\Image\Constraint;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -202,7 +203,7 @@ class MediaController extends Controller
             $this->updateUserQuota($request, $media->user_id, $size, true);
             $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
             if ($media->user_id === $this->session->get('user_id')) {
-                $user = $this->getUser($request, $media->user_id, true);
+                $user = make(UserQuery::class)->get($request, $id, true);
                 $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
             }
         } else {
