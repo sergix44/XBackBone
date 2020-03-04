@@ -122,17 +122,9 @@ return [
     'default_user_quota' => 'Default User Quota',
     'max_user_quota' => 'Max User Quota',
     'invalid_quota' => 'Invalid values as default user quota.',
-    'mail.activate_text' => 'Hi %s!
-thank you for creating your account on %s (%s), click on the following link to activate it:
-
-%s',
+    'mail.activate_text' => "Hi %s!\nthank you for creating your account on %s (%s), click on the following link to activate it:\n\n%s",
     'mail.activate_account' => '%s - Account Activation',
-    'mail.recover_text' => 'Hi %s,
-a password reset has been requested for your account. To complete the procedure click on the following link:
-
-%s
-
-If it wasn\'t you who requested the password reset, simply ignore this email.',
+    'mail.recover_text' => "Hi %s,\na password reset has been requested for your account. To complete the procedure click on the following link:\n\n%s\n\nIf it wasn\'t you who requested the password reset, simply ignore this email.",
     'mail.recover_password' => '%s - Password Recovery',
     'recover_email_sent' => 'If present, a recovery email was sent to the specified account.',
     'account_activated' => 'Account activated, now you can login!',
@@ -152,6 +144,6 @@ If it wasn\'t you who requested the password reset, simply ignore this email.',
     'recaptcha_enabled' => 'reCAPTCHA Enabled',
     'recaptcha_keys_required' => 'All reCAPTCHA keys are required.',
     'only_recaptcha_v3' => 'Only reCAPTCHA v3 is supported.',
-    'recaptcha_site_key' => 'reCAPTCHA Site Key.',
-    'recaptcha_secret_key' => 'reCAPTCHA Secret Key.',
+    'recaptcha_site_key' => 'reCAPTCHA Site Key',
+    'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
 ];
