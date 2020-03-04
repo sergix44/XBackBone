@@ -110,4 +110,9 @@ return [
     'remember_me' => 'Zapamiętaj mnie',
     'please_wait' => 'Proszę czekać…',
     'dont_close' => 'Nie zamykaj tej zakładki do czasu ukończenia.',
+    'php_info' => 'Informacje PHP',
+    'system_settings' => 'Ustawienia systemu',
+    'register_enabled' => 'Rejestracje włączone',
+    'hide_by_default' => 'Domyślnie ukrywaj pliki',
+    'copy_url_behavior' => 'Tryb kopiowania URL',
 ];
