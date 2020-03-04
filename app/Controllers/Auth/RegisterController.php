@@ -32,7 +32,9 @@ class RegisterController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        return view()->render($response, 'auth/register.twig');
+        return view()->render($response, 'auth/register.twig', [
+            'recaptcha_site_key' => $this->getSetting('recaptcha_enabled') === 'on' ? $this->getSetting('recaptcha_site_key') : null,
+        ]);
     }
 
     /**
@@ -50,6 +52,15 @@ class RegisterController extends Controller
 
         if ($this->getSetting('register_enabled', 'off') === 'off') {
             throw new HttpNotFoundException($request);
+        }
+
+        if ($this->getSetting('recaptcha_enabled') === 'on') {
+            $recaptcha = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$this->getSetting('recaptcha_secret_key').'&response='.param($request, 'recaptcha_token')));
+
+            if ($recaptcha->success && $recaptcha->score < 0.5) {
+                $this->session->alert(lang('recaptcha_failed'), 'danger');
+                return redirect($response, route('login'));
+            }
         }
 
         $validator = $this->getUserCreateValidator($request);

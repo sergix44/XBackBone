@@ -37,6 +37,9 @@ class AdminController extends Controller
             'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
             'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
             'default_user_quota' => humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0, true),
+            'recaptcha_enabled' => $this->getSetting('recaptcha_enabled', 'off'),
+            'recaptcha_site_key' => $this->getSetting('recaptcha_site_key'),
+            'recaptcha_secret_key' => $this->getSetting('recaptcha_secret_key'),
         ]);
     }
 

@@ -28,7 +28,7 @@
                                     </thead>
                                     <tbody>
                                     {% for media in medias %}
-                                        <tr id="media_{{ media.id }}">
+                                        <tr id="media_{{ media.id }}" class="bulk-selector" data-id="{{ media.id }}">
                                             <td class="text-center">
                                                 {% if isDisplayableImage(media.mimetype) %}
                                                     {% if media.username is not null %}

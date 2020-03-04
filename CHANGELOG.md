@@ -5,6 +5,10 @@
 + Added ability to choose between default and raw url on copy.
 + Added hide by default option.
 + Added user disk quota.
++ Added reCAPTCHA login protection.
++ Added bulk delete.
++ Added account clean function.
++ Added user disk quota system.
 + Fixed bug html files raws are rendered in a browser.
 + The theme is now re-applied after every system update.
 + Updated system settings page.

@@ -185,10 +185,8 @@ class MediaController extends Controller
      * @param  int  $id
      *
      * @return Response
-     * @throws HttpUnauthorizedException
-     *
      * @throws HttpNotFoundException
-     * @throws FileNotFoundException
+     * @throws HttpUnauthorizedException
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
@@ -199,11 +197,12 @@ class MediaController extends Controller
         }
 
         if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
-            $size = $this->deleteMedia($request, $media->storage_path, $id);
-            $this->updateUserQuota($request, $media->user_id, $size, true);
+            $this->deleteMedia($request, $media->storage_path, $id, $media->user_id);
+
             $this->logger->info('User '.$this->session->get('username').' deleted a media.', [$id]);
+
             if ($media->user_id === $this->session->get('user_id')) {
-                $user = make(UserQuery::class)->get($request, $id, true);
+                $user = make(UserQuery::class)->get($request, $media->user_id, true);
                 $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
             }
         } else {
@@ -252,8 +251,7 @@ class MediaController extends Controller
         }
 
         if ($this->session->get('admin', false) || $user->id === $media->user_id) {
-            $size = $this->deleteMedia($request, $media->storage_path, $media->mediaId);
-            $this->updateUserQuota($request, $media->user_id, $size, true);
+            $this->deleteMedia($request, $media->storage_path, $media->mediaId, $user->id);
             $this->logger->info('User '.$user->username.' deleted a media via token.', [$media->mediaId]);
         } else {
             throw new HttpUnauthorizedException($request);
@@ -264,18 +262,48 @@ class MediaController extends Controller
 
     /**
      * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
+     * @return Response
+     */
+    public function clearUserMedia(Request $request, Response $response, int $id): Response
+    {
+        $user = make(UserQuery::class)->get($request, $id, true);
+
+        $medias = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` = ?', $user->id);
+
+        foreach ($medias as $media) {
+            try {
+                $this->storage->delete($media->storage_path);
+            } catch (FileNotFoundException $e) {
+            }
+        }
+
+        $this->database->query('DELETE FROM `uploads` WHERE `user_id` = ?', $user->id);
+        $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
+            0,
+            $user->id,
+        ]);
+
+        $this->session->alert(lang('account_media_deleted'), 'success');
+        return redirect($response, route('user.edit', ['id' => $id]));
+    }
+
+    /**
+     * @param  Request  $request
      * @param  string  $storagePath
      * @param  int  $id
      *
-     * @return bool|false|int
+     * @param  int  $userId
+     * @return void
      * @throws HttpNotFoundException
      */
-    protected function deleteMedia(Request $request, string $storagePath, int $id)
+    protected function deleteMedia(Request $request, string $storagePath, int $id, int $userId)
     {
         try {
             $size = $this->storage->getSize($storagePath);
             $this->storage->delete($storagePath);
-            return $size;
+            $this->updateUserQuota($request, $userId, $size, true);
         } catch (FileNotFoundException $e) {
             throw new HttpNotFoundException($request);
         } finally {
@@ -293,12 +321,10 @@ class MediaController extends Controller
     {
         $mediaCode = pathinfo($mediaCode)['filename'];
 
-        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
+        return $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
             $userCode,
             $mediaCode,
         ])->fetch();
-
-        return $media;
     }
 
     /**

@@ -49,6 +49,7 @@ $app->group('', function (RouteCollectorProxy $group) {
         $group->get('/{id}/edit', [UserController::class, 'edit'])->setName('user.edit');
         $group->post('/{id}', [UserController::class, 'update'])->setName('user.update');
         $group->get('/{id}/delete', [UserController::class, 'delete'])->setName('user.delete');
+        $group->get('/{id}/clear', [MediaController::class, 'clearUserMedia'])->setName('user.clear');
     })->add(AdminMiddleware::class);
 
     $group->get('/profile', [ProfileController::class, 'profile'])->setName('profile');

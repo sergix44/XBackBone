@@ -22,6 +22,11 @@ class SettingController extends Controller
             return redirect($response, route('system'));
         }
 
+        if (param($request, 'recaptcha_enabled', 'off') === 'on' && (empty(param($request, 'recaptcha_site_key')) || empty(param($request, 'recaptcha_secret_key')))) {
+            $this->session->alert(lang('recaptcha_keys_required', 'danger'));
+            return redirect($response, route('system'));
+        }
+
         $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
         $this->updateSetting('hide_by_default', param($request, 'hide_by_default', 'off'));
         $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));
@@ -35,6 +40,11 @@ class SettingController extends Controller
         $this->applyTheme($request);
         $this->applyLang($request);
         $this->updateSetting('custom_head', param($request, 'custom_head'));
+
+
+        $this->updateSetting('recaptcha_enabled', param($request, 'recaptcha_enabled', 'off'));
+        $this->updateSetting('recaptcha_site_key', param($request, 'recaptcha_site_key'));
+        $this->updateSetting('recaptcha_secret_key', param($request, 'recaptcha_secret_key'));
 
         $this->session->alert(lang('settings_saved'));
 

@@ -66,6 +66,8 @@
                                 </div>
                             </div>
                             {% if not profile %}
+                                <h6 class="text-danger">{{ lang('danger_zone') }}</h6>
+                                <hr>
                                 {% if quota_enabled == 'on' %}
                                     <div class="form-group row">
                                         <label for="max_user_quota" class="col-sm-2 col-form-label">{{ lang('max_user_quota') }}</label>
@@ -85,6 +87,14 @@
                                     <label for="is_active" class="col-sm-2 col-form-label">{{ lang('is_active') }}</label>
                                     <div class="col-sm-10">
                                         <input type="checkbox" name="is_active" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.active ? 'checked' }}>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">{{ lang('delete_all') }}</label>
+                                    <div class="col-sm-10">
+                                        <div class="btn-group">
+                                            <a href="{{ route('user.clear', {'id': user.id}) }}" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-recycle"></i> {{ lang('clear_account') }}</a>
+                                        </div>
                                     </div>
                                 </div>
                             {% endif %}

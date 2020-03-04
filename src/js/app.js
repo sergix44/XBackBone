@@ -25,6 +25,9 @@ var app = {
         $('#themes').mousedown(app.loadThemes);
         $('.checkForUpdatesButton').click(app.checkForUpdates);
 
+        $('.bulk-selector').contextmenu(app.bulkSelect);
+        $('#bulk-delete').click(app.bulkDelete);
+
         $('.alert').fadeTo(10000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
         });
@@ -116,6 +119,24 @@ var app = {
                 $('#doUpgradeButton').prop('disabled', true);
             }
         });
+    },
+    bulkSelect: function (e) {
+        e.preventDefault();
+        $(this).toggleClass('bg-light').toggleClass('text-danger').toggleClass('bulk-selected');
+        var $bulkDelete = $('#bulk-delete');
+        if ($bulkDelete.hasClass('disabled')) {
+            $bulkDelete.removeClass('disabled');
+        }
+    },
+    bulkDelete: function () {
+        $('.bulk-selected').each(function (index, media) {
+            $.post(window.AppConfig.base_url + '/upload/' + $(media).data('id') + '/delete', function () {
+                $(media).fadeOut(200, function () {
+                    $(this).remove();
+                });
+            });
+        });
+        $(this).addClass('disabled');
     }
 };
 

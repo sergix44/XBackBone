@@ -2,7 +2,7 @@
     <div class="col-md-3">
         <form method="get" action="{{ route('home') }}">
             <div class="input-group mb-3">
-                <input type="text" name="search" class="form-control" placeholder="{{ lang('dotted_search') }}" aria-label="{{ lang('dotted_search') }}" value="{{ request.param('search', '') }}">
+                <input type="text" name="search" class="form-control" placeholder="{{ lang('dotted_search') }}" aria-label="{{ lang('dotted_search') }}" value="{{ param(request, 'search', '') }}">
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
                 </div>
@@ -28,5 +28,6 @@
                 <i class="fas {{ request.queryParams['order'] is same as('ASC') ? 'fa-sort-amount-up' : 'fa-sort-amount-down' }}"></i>
             </a>
         </div>
+        <a href="javascript:void(0)" id="bulk-delete" class="btn btn-outline-danger disabled" data-toggle="tooltip" title="{{ lang('delete_selected') }}"><i class="fas fa-trash"></i></a>
     </div>
 </div>

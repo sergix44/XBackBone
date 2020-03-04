@@ -41,6 +41,7 @@ class ViewFactory
         $twig->addFunction(new TwigFunction('isDisplayableImage', 'isDisplayableImage'));
         $twig->addFunction(new TwigFunction('inPath', 'inPath'));
         $twig->addFunction(new TwigFunction('humanFileSize', 'humanFileSize'));
+        $twig->addFunction(new TwigFunction('param', 'param'));
 
         return new View($twig);
     }
