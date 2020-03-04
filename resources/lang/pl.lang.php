@@ -115,4 +115,45 @@ return [
     'register_enabled' => 'Rejestracje włączone',
     'hide_by_default' => 'Domyślnie ukrywaj pliki',
     'copy_url_behavior' => 'Tryb kopiowania URL',
+    'settings_saved' => 'Zapisano ustawienia systemu!',
+    'export_data' => 'Eksportuj dane',
+    'password_recovery' => 'Odzyskaj hasło',
+    'no_account' => 'Nie posiadasz konta?',
+    'register' => 'Rejestracja',
+    'default_user_quota' => 'Domyślny przydział użytkownika',
+    'invalid_quota' => 'Nieprawidłowe wartości jako domyślny przydział użytkownika.',
+    'mail.activate_text' => 'Hej %s!
+dziękujemy za stworzenie konta na %s (%s), kliknij poniższy link w celu jego aktywacji:
+
+%s',
+    'register_success' => 'Konto zostało utworzone, email potwierdzający został wysłany.',
+    'mail.activate_account' => '%s - Aktywacja konta',
+    'mail.recover_text' => 'Hej %s,
+została wysłana prośba o zresetowanie hasła dla twojego konta. Aby ukończyć procedurę, kliknij w poniższy link:
+
+%s
+
+Jeżeli to nie ty zażądałeś zmiany hasła, po prostu zignoruj ten email.',
+    'mail.recover_password' => '%s - Odzyskiwanie hasła',
+    'recover_email_sent' => 'Jeżeli istnieje, wiadomość email do odzyskiwania hasła została wysłane na określone konto.',
+    'account_activated' => 'Konto aktywowane, teraz możesz się zalogować!',
+    'quota_enabled' => 'Włącz przydział użytkownika',
+    'password_repeat' => 'Powtórz hasło',
+    'password_match' => 'Hasło i powtórzone hasło muszą być takie same.',
+    'password_restored' => 'Zresetowanie hasła.',
+    'recalculate_user_quota' => 'Przelicz przydział użytkownika z dysku',
+    'quota_recalculated' => 'Pomyślnie przeliczono z dysku przydział użytkownika.',
+    'used_space' => 'Użyta przestrzeń',
+    'max_user_quota' => 'Maksymalny przydział użytkownika',
+    'delete_selected' => 'Usuń zaznaczone',
+    'delete_all' => 'Usuń wszystko',
+    'clear_account' => 'Wyczyść konto',
+    'account_media_deleted' => 'Wszystkie pliki na koncie zostały usunięte.',
+    'danger_zone' => 'Strefa niebezpieczeństwa',
+    'recaptcha_failed' => 'reCAPTCHA nieudana',
+    'recaptcha_enabled' => 'reCAPTCHA włączona',
+    'recaptcha_keys_required' => 'Wszystkie klucze reCAPTCHA są wymagane.',
+    'only_recaptcha_v3' => 'Tylko reCAPTCHA v3 jest obsługiwana.',
+    'recaptcha_site_key' => 'Klucz strony reCAPTCHA',
+    'recaptcha_secret_key' => 'Sekretny klucz reCAPTCHA',
 ];
