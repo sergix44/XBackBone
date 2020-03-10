@@ -262,35 +262,6 @@ class MediaController extends Controller
 
     /**
      * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
-     */
-    public function clearUserMedia(Request $request, Response $response, int $id): Response
-    {
-        $user = make(UserQuery::class)->get($request, $id, true);
-
-        $medias = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` = ?', $user->id);
-
-        foreach ($medias as $media) {
-            try {
-                $this->storage->delete($media->storage_path);
-            } catch (FileNotFoundException $e) {
-            }
-        }
-
-        $this->database->query('DELETE FROM `uploads` WHERE `user_id` = ?', $user->id);
-        $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
-            0,
-            $user->id,
-        ]);
-
-        $this->session->alert(lang('account_media_deleted'), 'success');
-        return redirect($response, route('user.edit', ['id' => $id]));
-    }
-
-    /**
-     * @param  Request  $request
      * @param  string  $storagePath
      * @param  int  $id
      *
