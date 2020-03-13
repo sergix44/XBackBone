@@ -130,3 +130,16 @@ body {
 .grecaptcha-badge {
     top: 5px !important;
 }
+
+.text-maxlen {
+    display: inline-block;
+    max-width: 330px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-maxlen:hover {
+    overflow: auto;
+    text-overflow: unset;
+}

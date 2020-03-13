@@ -230,7 +230,9 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     cleanDirectory(__DIR__.'/../resources/cache');
     cleanDirectory(__DIR__.'/../resources/sessions');
 
-    removeDirectory(__DIR__.'/../install');
+    if (!isset($config['debug']) || !$config['debug']) {
+        removeDirectory(__DIR__.'/../install');
+    }
 
     // Installed successfully, destroy the installer session
     $session->destroy();

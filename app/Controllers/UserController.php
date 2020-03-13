@@ -219,7 +219,6 @@ class UserController extends Controller
         return redirect($response, route('user.index'));
     }
 
-
     /**
      * @param  Request  $request
      * @param  Response  $response

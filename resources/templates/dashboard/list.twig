@@ -40,7 +40,7 @@
                                                     <i class="far {{ mime2font(media.mimetype) }} fa-2x"></i>
                                                 {% endif %}
                                             </td>
-                                            <td>{{ media.filename }}</td>
+                                            <td><span class="text-maxlen">{{ media.filename }}</span></td>
                                             <td>{{ media.size }}</td>
                                             <td id="published_{{ media.id }}">
                                                 {% if media.published %}
