@@ -71,7 +71,17 @@ class UserQuery
     }
 
 
-    public function create(string $email, string $username, string $password, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, string $activateToken = null)
+    /**
+     * @param  string  $email
+     * @param  string  $username
+     * @param  string|null  $password
+     * @param  int  $isAdmin
+     * @param  int  $isActive
+     * @param  int  $maxUserQuota
+     * @param  string|null  $activateToken
+     * @return bool|\PDOStatement|string
+     */
+    public function create(string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, string $activateToken = null)
     {
         do {
             $userCode = humanRandomString(5);
@@ -82,7 +92,7 @@ class UserQuery
         return $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             $email,
             $username,
-            password_hash($password, PASSWORD_DEFAULT),
+            $password !== null ? password_hash($password, PASSWORD_DEFAULT) : null,
             $isAdmin,
             $isActive,
             $userCode,
@@ -92,10 +102,20 @@ class UserQuery
         ]);
     }
 
+    /**
+     * @param $id
+     * @param  string  $email
+     * @param  string  $username
+     * @param  string|null  $password
+     * @param  int  $isAdmin
+     * @param  int  $isActive
+     * @param  int  $maxUserQuota
+     * @return bool|\PDOStatement|string
+     */
     public function update($id, string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1)
     {
         if (!empty($password)) {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
+            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
                 $email,
                 $username,
                 password_hash($password, PASSWORD_DEFAULT),
@@ -105,7 +125,7 @@ class UserQuery
                 $id,
             ]);
         } else {
-            $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
+            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
                 $email,
                 $username,
                 $isAdmin,

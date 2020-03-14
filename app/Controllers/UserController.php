@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database\Queries\UserQuery;
+use App\Web\Mail;
 use App\Web\ValidationChecker;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -64,10 +65,12 @@ class UserController extends Controller
      * @param  Response  $response
      *
      * @return Response
+     * @throws \Exception
      */
     public function store(Request $request, Response $response): Response
     {
         $validator = $this->getUserCreateValidator($request);
+        $hasPassword = $validator->removeRule('password.required');
 
         if ($validator->fails()) {
             return redirect($response, route('user.create'));
@@ -94,6 +97,40 @@ class UserController extends Controller
             param($request, 'is_active') !== null ? 1 : 0,
             $maxUserQuota
         );
+
+        if (param($request, 'send_notification') !== null) {
+            if ($hasPassword) {
+                $message = lang('mail.new_account_text_with_pw', [
+                    param($request, 'username'),
+                    $this->config['app_name'],
+                    $this->config['base_url'],
+                    param($request, 'username'),
+                    param($request, 'password'),
+                    route('login.show'),
+                ]);
+            } else {
+                $resetToken = bin2hex(random_bytes(16));
+
+                $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
+                    $resetToken,
+                    $this->database->getPdo()->lastInsertId(),
+                ]);
+
+                $message = lang('mail.new_account_text_with_reset', [
+                    param($request, 'username'),
+                    $this->config['app_name'],
+                    $this->config['base_url'],
+                    route('recover.password', ['resetToken' => $resetToken]),
+                ]);
+            }
+
+            Mail::make()
+                ->from(platform_mail(), $this->config['app_name'])
+                ->to(param($request, 'email'))
+                ->subject(lang('mail.new_account', [$this->config['app_name']]))
+                ->message($message)
+                ->send();
+        }
 
         $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
         $this->logger->info('User '.$this->session->get('username').' created a new user.', [array_diff_key($request->getParsedBody(), array_flip(['password']))]);

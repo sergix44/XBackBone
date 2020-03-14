@@ -51,4 +51,17 @@ class ValidationChecker
         }
         return false;
     }
+
+    /**
+     * @param  string  $key
+     * @return bool
+     */
+    public function removeRule(string $key)
+    {
+        $condition = $this->rules[$key];
+
+        unset($this->rules[$key]);
+
+        return $condition;
+    }
 }

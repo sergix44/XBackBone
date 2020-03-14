@@ -146,4 +146,9 @@ return [
     'only_recaptcha_v3' => 'Only reCAPTCHA v3 is supported.',
     'recaptcha_site_key' => 'reCAPTCHA Site Key',
     'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
+    'send_notification' => 'Send Mail Notification',
+    'mail.new_account' => '%s - New Account Creation',
+    'mail.new_account_text_with_reset' => "Hi %s!\na new account was created for you on %s (%s), click on the following link to set a password and activate it:\n\n%s",
+    'mail.new_account_text_with_pw' => "Hi %s!\na new account was created for you on %s (%s), with the following credentials:\n\nUsername: %s\nPassword: %s\n\nClick on the following link to go to the login page:\n%s",
+    'user_create_password' => 'If leaved empty, you might want to send a notification to the user email.',
 ];
