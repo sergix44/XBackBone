@@ -10,7 +10,8 @@ var app = {
             totaluploadprogress: function (uploadProgress) {
                 var text = Math.round(uploadProgress) + '%';
                 $('#uploadProgess').css({'width': text}).text(text);
-            }
+            },
+            timeout: 0
         };
     },
     run: function () {
