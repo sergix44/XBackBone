@@ -9,10 +9,12 @@
 + Added bulk delete.
 + Added account clean function.
 + Added user disk quota system.
++ Added notification option on account create.
 + Fixed bug html files raws are rendered in a browser.
 + The theme is now re-applied after every system update.
 + Updated system settings page.
 + Updated translations.
++ Improved grid layout.
 + Small fixes and improvements.
 
 ## v.3.0.2

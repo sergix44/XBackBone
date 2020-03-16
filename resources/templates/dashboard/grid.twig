@@ -12,38 +12,41 @@
                 {% for media in medias %}
                     <div class="col-md-4 bulk-selector" id="media_{{ media.id }}" data-id="{{ media.id }}">
                         <div class="card mb-4 shadow-sm">
-                            {% if isDisplayableImage(media.mimetype) %}
-                                <img class="card-img" src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=348&height=267') }}" alt="Card image">
-                            {% else %}
-                                <div class="text-center" style="font-size: 178px;"><i class="far {{ mime2font(media.mimetype) }} mb-4 mt-4"></i></div>
-                            {% endif %}
-                            <div class="card-img-overlay" title="{{ media.filename }}">
-                                <div class="user-img-overlay h-75">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <span class="badge badge-dark shadow-lg">{{ media.size }}</span>
-                                            <div class="btn-group shadow-lg float-right">
-                                                <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}{{ copy_url_behavior == 'raw' ? '/raw' }}">
-                                                    <i class="fas fa-link"></i>
-                                                </button>
-                                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>
-                                                {% if media.published %}
-                                                    <a href="javascript:void(0)" class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
-                                                {% else %}
-                                                    <a href="javascript:void(0)" class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
-                                                {% endif %}
-                                                <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                            <div class="card-body image-card p-0">
+                                <div class="overlay">
+                                    <div class="overlay-rows">
+                                        <div class="overlay-rows-top">
+                                            <div class="pl-3 pt-2d5"><span class="badge badge-dark shadow-lg">{{ media.size }}</span></div>
+                                            <div class="text-right pr-3 pt-2d5">
+                                                <div class="btn-group shadow-lg">
+                                                    <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}{{ copy_url_behavior == 'raw' ? '/raw' }}">
+                                                        <i class="fas fa-link"></i>
+                                                    </button>
+                                                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>
+                                                    {% if media.published %}
+                                                        <a href="javascript:void(0)" class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
+                                                    {% else %}
+                                                        <a href="javascript:void(0)" class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
+                                                    {% endif %}
+                                                    <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row h-100">
-                                        <div class="col-12 d-flex align-items-center">
-                                            <a class="btn btn-link btn-block btn-outlink text-secondary" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                                        <div class="overlay-rows-center">
+                                            <a class="btn btn-link btn-block text-light" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank"><i class="fas fa-external-link-alt fa-2x text-shadow-link"></i></a>
+                                        </div>
+                                        <div class="overlay-rows-bottom">
+                                            bottom
                                         </div>
                                     </div>
                                 </div>
+                                {% if isDisplayableImage(media.mimetype) %}
+                                    <div class="content-image rounded-top" style="background-image: url({{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw') }});"></div>
+                                {% else %}
+                                    <div class="text-center" style="font-size: 178px;"><i class="far {{ mime2font(media.mimetype) }} mb-4 mt-4"></i></div>
+                                {% endif %}
                             </div>
                             <div class="card-footer d-flex justify-content-between">
                                 <span class="user-title">{{ media.filename }}</span>
