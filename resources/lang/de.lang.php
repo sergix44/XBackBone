@@ -159,4 +159,19 @@ Wenn Sie nicht das Zurücksetzen des Passworts angefordert haben, ignorieren Sie
     'only_recaptcha_v3' => 'Es wird nur reCAPTCHA v3 unterstützt.',
     'recaptcha_site_key' => 'reCAPTCHA Websiteschlüssel',
     'recaptcha_secret_key' => 'reCAPTCHA geheimen Schlüssel',
+    'send_notification' => 'Mail-Benachrichtigung senden',
+    'mail.new_account' => '%s - Erstellung von Konto',
+    'mail.new_account_text_with_reset' => 'Hallo %s!
+Ein neues Konto wurde für Sie auf %s (%s) erstellt, klicken Sie auf den folgenden Link, um ein Passwort festzulegen und es zu aktivieren:
+
+%s',
+    'mail.new_account_text_with_pw' => 'Hallo %s!
+Ein neues Konto wurde für Sie auf %s (%s) mit den folgenden Anmeldeinformationen erstellt:
+
+Benutzername: %s
+Kennwort: %s
+
+Klicken Sie auf den folgenden Link, um zur Login-Seite zu gelangen:
+%s',
+    'user_create_password' => 'Wenn Sie keine Angaben gemacht haben, können Sie eine Benachrichtigung an die Benutzer-E-Mail senden.',
 ];
