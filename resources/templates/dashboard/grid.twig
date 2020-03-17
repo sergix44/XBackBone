@@ -34,11 +34,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="overlay-rows-center">
-                                            <a class="btn btn-link btn-block text-light" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank"><i class="fas fa-external-link-alt fa-2x text-shadow-link"></i></a>
-                                        </div>
-                                        <div class="overlay-rows-bottom">
-                                            bottom
+                                        <a class="btn btn-link btn-block text-light overlay-rows-center" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank">
+                                            <div>
+                                                <i class="fas fa-external-link-alt fa-2x text-shadow-link"></i>
+                                            </div>
+                                        </a>
+                                        <div class="overlay-rows-bottom pl-3 pr-3 pb-1">
+                                            <a href="javascript:void(0)" class="badge badge-pill badge-success shadow-sm tag-add"><i class="fas fa-plus fa-sm fa-fw"></i></a>
                                         </div>
                                     </div>
                                 </div>

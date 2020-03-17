@@ -185,3 +185,17 @@ body {
 .pt-2d5 {
     padding-top: .8rem
 }
+
+.bg-light {
+    border: 0 !important;
+}
+
+.form-control-verysm {
+    height: calc(1em + .2rem + 2px);
+    font-size: .8rem;
+}
+
+.tag-item {
+    user-select: none;
+    cursor: pointer;
+}

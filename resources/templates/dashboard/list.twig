@@ -40,9 +40,14 @@
                                                     <i class="far {{ mime2font(media.mimetype) }} fa-2x"></i>
                                                 {% endif %}
                                             </td>
-                                            <td><span class="text-maxlen">{{ media.filename }}</span></td>
+                                            <td>
+                                                <span class="text-maxlen">{{ media.filename }}</span>
+                                                <p>
+                                                    <a href="javascript:void(0)" class="badge badge-pill badge-success shadow-sm tag-add"><i class="fas fa-plus fa-sm fa-fw"></i></a>
+                                                </p>
+                                            </td>
                                             <td>{{ media.size }}</td>
-                                            <td id="published_{{ media.id }}">
+                                            <td id="published_{{ media.id }}" class="text-center">
                                                 {% if media.published %}
                                                     <span class="badge badge-success"><i class="fas fa-check"></i></span>
                                                 {% else %}

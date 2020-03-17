@@ -29,6 +29,9 @@ var app = {
         $('.bulk-selector').contextmenu(app.bulkSelect);
         $('#bulk-delete').click(app.bulkDelete);
 
+        $('.tag-add').click(app.addTag);
+        $('.tag-item').dblclick(app.removeTag);
+
         $('.alert').fadeTo(10000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
         });
@@ -138,6 +141,47 @@ var app = {
             });
         });
         $(this).addClass('disabled');
+    },
+    addTag: function (e) {
+        var $caller = $(this);
+        var $newAddTag = $caller.clone()
+            .click(app.addTag)
+            .appendTo($caller.parent());
+
+        var tagInput = $(document.createElement('input'))
+            .addClass('form-control form-control-verysm tag-input')
+            .keydown(function (e) {
+                if (e.keyCode === 13 || e.keyCode === 32) { // enter -> save tag
+                    app.saveTag.call($(this)); // change context
+                    if (e.keyCode === 32) { // space -> save and add new tag
+                        $newAddTag.click();
+                    }
+                    return false;
+                }
+            })
+            .focusout(app.saveTag);
+
+        $caller.off()
+            .removeClass('badge-success badge-light')
+            .html(tagInput)
+            .children()
+            .focus();
+    },
+    saveTag: function () {
+        var tag = $(this).val();
+        if (tag === '') {
+            $(this).parent().remove();
+        }
+        console.log(tag);
+        var $newTag = $(document.createElement('span'))
+            .addClass('badge badge-pill badge-light shadow-sm tag-item')
+            .dblclick(app.removeTag)
+            .text(tag);
+        $(this).parent().replaceWith($newTag);
+    },
+    removeTag: function (e) {
+        e.preventDefault();
+        $(this).remove();
     }
 };
 
