@@ -43,6 +43,9 @@
                                             <td>
                                                 <span class="text-maxlen">{{ media.filename }}</span>
                                                 <p>
+                                                    {% for tag_id, tag_name in media.tags %}
+                                                        <span class="badge badge-pill badge-light shadow-sm tag-item mr-1" data-id="{{ tag_id }}">{{ tag_name }}</span>
+                                                    {% endfor %}
                                                     <a href="javascript:void(0)" class="badge badge-pill badge-success shadow-sm tag-add" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
                                                 </p>
                                             </td>

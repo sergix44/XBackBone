@@ -145,6 +145,8 @@ class MediaQuery
             $this->pages = $this->db->query($queryPages, array_merge($params))->fetch()->count / self::PER_PAGE;
         }
 
+        $tags = $this->getTags(array_column($this->media, 'id'));
+
         foreach ($this->media as $media) {
             try {
                 $media->size = humanFileSize($this->storage->getSize($media->storage_path));
@@ -154,6 +156,11 @@ class MediaQuery
                 $media->mimetype = null;
             }
             $media->extension = pathinfo($media->filename, PATHINFO_EXTENSION);
+            if (array_key_exists($media->id, $tags)) {
+                $media->tags = $tags[$media->id];
+            } else {
+                $media->tags = [];
+            }
         }
 
         return $this;
@@ -206,6 +213,8 @@ class MediaQuery
             $paths[$media->storage_path] = $media;
         }
 
+        $tags = $this->getTags(array_column($medias, 'id'));
+
         $this->media = [];
         foreach ($files as $file) {
             $media = $paths[$file['path']];
@@ -214,6 +223,11 @@ class MediaQuery
                 $media->extension = $file['extension'];
                 $media->mimetype = $file['mimetype'];
                 $this->media[] = $media;
+                if (array_key_exists($media->id, $tags)) {
+                    $media->tags = $tags[$media->id];
+                } else {
+                    $media->tags = [];
+                }
             }
         }
 
@@ -261,6 +275,16 @@ class MediaQuery
             default:
                 return '';
         }
+    }
+
+    protected function getTags(array $mediaIds)
+    {
+        $allTags = $this->db->query('SELECT `uploads_tags`.`upload_id`,`tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` IN ("'.implode('","', $mediaIds).'") ORDER BY `tags`.`timestamp`')->fetchAll();
+        $tags = [];
+        foreach ($allTags as $tag) {
+            $tags[$tag->upload_id][$tag->id] = $tag->name;
+        }
+        return $tags;
     }
 
     /**
