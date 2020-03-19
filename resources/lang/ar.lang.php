@@ -1,5 +1,6 @@
 <?php
 return [
+    'lang' => 'Arabian',
     'yes' => 'نعم',
     'no' => 'لا',
     'send' => 'إرسال',

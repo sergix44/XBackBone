@@ -329,6 +329,9 @@ if (!function_exists('isBot')) {
             'Facebot',
             'curl/',
             'wget/',
+            'WhatsApp/',
+            'Slackbot',
+            'Slack-ImgProxy',
         ];
 
         foreach ($bots as $bot) {

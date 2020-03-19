@@ -64,4 +64,15 @@ class ValidationChecker
 
         return $condition;
     }
+
+    /**
+     * @param  string  $key
+     * @param $condition
+     * @return ValidationChecker
+     */
+    public function addRule(string $key, $condition)
+    {
+        $this->rules[$key] = $condition;
+        return $this;
+    }
 }

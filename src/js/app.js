@@ -150,12 +150,15 @@ var app = {
 
         var tagInput = $(document.createElement('input'))
             .addClass('form-control form-control-verysm tag-input')
+            .attr('data-id', $caller.data('id'))
+            .attr('maxlength', 32)
             .keydown(function (e) {
-                if (e.keyCode === 13 || e.keyCode === 32) { // enter -> save tag
+                if (e.keyCode === 13) { // enter -> save tag
                     app.saveTag.call($(this)); // change context
-                    if (e.keyCode === 32) { // space -> save and add new tag
-                        $newAddTag.click();
-                    }
+                    return false;
+                }
+                if (e.keyCode === 32) { // space -> save and add new tag
+                    $newAddTag.click();
                     return false;
                 }
             })
@@ -169,15 +172,30 @@ var app = {
     },
     saveTag: function () {
         var tag = $(this).val();
+        var $parent = $(this).parent();
         if (tag === '') {
-            $(this).parent().remove();
+            $parent.remove();
+            return false;
         }
-        console.log(tag);
-        var $newTag = $(document.createElement('span'))
-            .addClass('badge badge-pill badge-light shadow-sm tag-item')
-            .dblclick(app.removeTag)
-            .text(tag);
-        $(this).parent().replaceWith($newTag);
+        $.ajax({
+            type: 'POST',
+            url: window.AppConfig.base_url + '/tag/add',
+            data: {'tag': tag, 'mediaId': $(this).data('id')},
+            dataType: 'json',
+            success: function (data) {
+                if (!data.limitReached) {
+                    $parent.replaceWith(
+                        $(document.createElement('span'))
+                            .addClass('badge badge-pill badge-light shadow-sm tag-item mr-1')
+                            .attr('data-id', data.tagId)
+                            .dblclick(app.removeTag)
+                            .text(tag)
+                    );
+                } else {
+                    $parent.remove();
+                }
+            }
+        });
     },
     removeTag: function (e) {
         e.preventDefault();

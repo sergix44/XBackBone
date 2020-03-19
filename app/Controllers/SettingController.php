@@ -57,7 +57,7 @@ class SettingController extends Controller
     public function applyLang(Request $request)
     {
         if (param($request, 'lang') !== 'auto') {
-            $this->updateSetting('copy_url_behavior', param($request, 'lang'));
+            $this->updateSetting('lang', param($request, 'lang'));
         } else {
             $this->database->query('DELETE FROM `settings` WHERE `key` = \'lang\'');
         }

@@ -10,6 +10,7 @@ use App\Controllers\ExportController;
 use App\Controllers\MediaController;
 use App\Controllers\ProfileController;
 use App\Controllers\SettingController;
+use App\Controllers\TagController;
 use App\Controllers\UpgradeController;
 use App\Controllers\UploadController;
 use App\Controllers\UserController;
@@ -63,6 +64,9 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/upload/{id}/unpublish', [MediaController::class, 'togglePublish'])->setName('upload.unpublish');
     $group->get('/upload/{id}/raw', [MediaController::class, 'getRawById'])->add(AdminMiddleware::class)->setName('upload.raw');
     $group->map(['GET', 'POST'], '/upload/{id}/delete', [MediaController::class, 'delete'])->setName('upload.delete');
+
+    $group->post('/tag/add', [TagController::class, 'addTag'])->setName('tag.add');
+    $group->post('/tag/remove', [TagController::class, 'removeTag'])->setName('tag.remove');
 })->add(App\Middleware\CheckForMaintenanceMiddleware::class)->add(AuthMiddleware::class);
 
 $app->get('/', [DashboardController::class, 'redirects'])->setName('root');

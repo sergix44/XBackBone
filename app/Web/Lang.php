@@ -92,7 +92,7 @@ class Lang
         foreach (glob(self::$langPath.'*.lang.php') as $file) {
             $dict = include $file;
 
-            if (!is_array($dict)) {
+            if (!is_array($dict) || !isset($dict['lang'])) {
                 continue;
             }
 
