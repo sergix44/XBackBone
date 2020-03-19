@@ -99,37 +99,7 @@ class UserController extends Controller
         );
 
         if (param($request, 'send_notification') !== null) {
-            if ($hasPassword) {
-                $message = lang('mail.new_account_text_with_pw', [
-                    param($request, 'username'),
-                    $this->config['app_name'],
-                    $this->config['base_url'],
-                    param($request, 'username'),
-                    param($request, 'password'),
-                    route('login.show'),
-                ]);
-            } else {
-                $resetToken = bin2hex(random_bytes(16));
-
-                $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
-                    $resetToken,
-                    $this->database->getPdo()->lastInsertId(),
-                ]);
-
-                $message = lang('mail.new_account_text_with_reset', [
-                    param($request, 'username'),
-                    $this->config['app_name'],
-                    $this->config['base_url'],
-                    route('recover.password', ['resetToken' => $resetToken]),
-                ]);
-            }
-
-            Mail::make()
-                ->from(platform_mail(), $this->config['app_name'])
-                ->to(param($request, 'email'))
-                ->subject(lang('mail.new_account', [$this->config['app_name']]))
-                ->message($message)
-                ->send();
+            $this->sendCreateNotification($hasPassword, $request);
         }
 
         $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
@@ -302,5 +272,45 @@ class UserController extends Controller
         $response->getBody()->write($query->refreshToken($user->id));
 
         return $response;
+    }
+
+    /**
+     * @param $hasPassword
+     * @param $request
+     * @throws \Exception
+     */
+    private function sendCreateNotification($hasPassword, $request)
+    {
+        if ($hasPassword) {
+            $message = lang('mail.new_account_text_with_pw', [
+                param($request, 'username'),
+                $this->config['app_name'],
+                $this->config['base_url'],
+                param($request, 'username'),
+                param($request, 'password'),
+                route('login.show'),
+            ]);
+        } else {
+            $resetToken = bin2hex(random_bytes(16));
+
+            $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
+                $resetToken,
+                $this->database->getPdo()->lastInsertId(),
+            ]);
+
+            $message = lang('mail.new_account_text_with_reset', [
+                param($request, 'username'),
+                $this->config['app_name'],
+                $this->config['base_url'],
+                route('recover.password', ['resetToken' => $resetToken]),
+            ]);
+        }
+
+        Mail::make()
+            ->from(platform_mail(), $this->config['app_name'])
+            ->to(param($request, 'email'))
+            ->subject(lang('mail.new_account', [$this->config['app_name']]))
+            ->message($message)
+            ->send();
     }
 }
