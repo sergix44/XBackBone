@@ -3,7 +3,6 @@
 
 namespace App\Controllers;
 
-
 use App\Web\ValidationChecker;
 use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -113,5 +112,4 @@ class TagController extends Controller
                 'same.userOrAdmin' => $this->session->get('admin', false) || $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', param($request, 'mediaId'))->fetch()->user_id === $this->session->get('user_id'),
             ]);
     }
-
 }
