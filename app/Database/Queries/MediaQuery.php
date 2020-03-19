@@ -6,6 +6,8 @@ use App\Database\DB;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Plugin\ListFiles;
+use League\Flysystem\Plugin\ListWith;
+use PDO;
 
 class MediaQuery
 {
@@ -102,54 +104,45 @@ class MediaQuery
         return $this;
     }
 
-    /**
-     * @param  int  $page
-     * @return MediaQuery|void
-     */
+
     public function run(int $page)
     {
         if ($this->orderBy == self::ORDER_SIZE) {
-            $this->runWithOrderBySize($page);
-
-            return;
-        }
-
-        $queryPages = 'SELECT COUNT(*) AS `count` FROM `uploads`';
-
-        if ($this->isAdmin) {
-            $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` %s LIMIT ? OFFSET ?';
+            $this->runWithFileSort($page);
         } else {
-            $queryMedia = 'SELECT `uploads`.*,`users`.`user_code`, `users`.`username` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? %s LIMIT ? OFFSET ?';
-            $queryPages .= ' WHERE `user_id` = ?';
+            $this->runWithDbSort($page);
         }
 
-        $orderAndSearch = '';
-        $params = [];
+        return $this;
+    }
 
-        if ($this->text !== null) {
-            $orderAndSearch = $this->isAdmin ? 'WHERE `uploads`.`filename` LIKE ? ' : 'AND `uploads`.`filename` LIKE ? ';
-            $queryPages .= $this->isAdmin ? ' WHERE `filename` LIKE ?' : ' AND `filename` LIKE ?';
-            $params[] = '%'.htmlentities($this->text).'%';
-        }
-
-        switch ($this->orderBy) {
-            case self::ORDER_NAME:
-                $orderAndSearch .= 'ORDER BY `filename` '.$this->orderMode;
-                break;
-            default:
-            case self::ORDER_TIME:
-                $orderAndSearch .= 'ORDER BY `timestamp` '.$this->orderMode;
-                break;
-        }
-
-        $queryMedia = sprintf($queryMedia, $orderAndSearch);
-
+    public function runWithDbSort(int $page)
+    {
         if ($this->isAdmin) {
+            [$queryMedia, $queryPages] = $this->buildAdminQueries();
+
+            $params = [];
+            if ($this->text !== null) {
+                $params[] = '%'.htmlentities($this->text).'%';
+            }
+
+            $queryMedia .= $this->buildOrderBy().' LIMIT ? OFFSET ?';
+
             $this->media = $this->db->query($queryMedia, array_merge($params, [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN]))->fetchAll();
             $this->pages = $this->db->query($queryPages, $params)->fetch()->count / self::PER_PAGE_ADMIN;
         } else {
-            $this->media = $this->db->query($queryMedia, array_merge([$this->userId], $params, [self::PER_PAGE, $page * self::PER_PAGE]))->fetchAll();
-            $this->pages = $this->db->query($queryPages, array_merge([$this->userId], $params))->fetch()->count / self::PER_PAGE;
+            [$queryMedia, $queryPages] = $this->buildUserQueries();
+
+            if ($this->text !== null) {
+                $params = [$this->userId, '%'.htmlentities($this->text).'%'];
+            } else {
+                $params = [$this->userId];
+            }
+
+            $queryMedia .= $this->buildOrderBy().' LIMIT ? OFFSET ?';
+
+            $this->media = $this->db->query($queryMedia, array_merge($params, [self::PER_PAGE, $page * self::PER_PAGE]))->fetchAll();
+            $this->pages = $this->db->query($queryPages, array_merge($params))->fetch()->count / self::PER_PAGE;
         }
 
         foreach ($this->media as $media) {
@@ -166,44 +159,47 @@ class MediaQuery
         return $this;
     }
 
-    /**
-     * @param  int  $page
-     */
-    private function runWithOrderBySize(int $page)
+    public function runWithFileSort(int $page)
     {
-        $this->storage->addPlugin(new ListFiles());
+        $this->storage->addPlugin(new ListWith());
 
         if ($this->isAdmin) {
-            $files = $this->storage->listFiles('/', true);
+            $files = $this->storage->listWith(['size', 'mimetype'], '/', true);
             $this->pages = count($files) / self::PER_PAGE_ADMIN;
-
             $offset = $page * self::PER_PAGE_ADMIN;
             $limit = self::PER_PAGE_ADMIN;
         } else {
-            $userCode = $this->db->query('SELECT `user_code` FROM `users` WHERE `id` = ?', [$this->userId])->fetch()->user_code;
-            $files = $this->storage->listFiles($userCode);
+            $userCode = $this->db->query('SELECT `user_code` FROM `users` WHERE `id` = ?', $this->userId)->fetch()->user_code;
+            $files = $this->storage->listWith(['size', 'mimetype'], $userCode);
             $this->pages = count($files) / self::PER_PAGE;
-
             $offset = $page * self::PER_PAGE;
             $limit = self::PER_PAGE;
         }
 
-        array_multisort(array_column($files, 'size'), ($this->orderMode === 'ASC') ? SORT_ASC : SORT_DESC, SORT_NUMERIC, $files);
+        $files = array_filter($files, function ($file) {
+            return $file['type'] !== 'dir';
+        });
 
+        array_multisort(array_column($files, 'size'), $this->buildOrderBy(), SORT_NUMERIC, $files);
+
+        $params = [];
         if ($this->text !== null) {
             if ($this->isAdmin) {
-                $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`filename` LIKE ? ', ['%'.htmlentities($this->text).'%'])->fetchAll();
+                [$queryMedia,] = $this->buildAdminQueries();
             } else {
-                $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ? AND `uploads`.`filename` LIKE ? ', [$this->userId, '%'.htmlentities($this->text).'%'])->fetchAll();
+                [$queryMedia,] = $this->buildUserQueries();
+                $params = [$this->userId];
             }
 
+            $params[] = '%'.htmlentities($this->text).'%';
             $paths = array_column($files, 'path');
         } else {
             $files = array_slice($files, $offset, $limit);
             $paths = array_column($files, 'path');
-
-            $medias = $this->db->query('SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")')->fetchAll();
+            $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")';
         }
+
+        $medias = $this->db->query($queryMedia, $params)->fetchAll();
 
         $paths = array_flip($paths);
         foreach ($medias as $media) {
@@ -213,22 +209,57 @@ class MediaQuery
         $this->media = [];
         foreach ($files as $file) {
             $media = $paths[$file['path']];
-            if (!is_object($media)) {
-                continue;
+            if (is_object($media)) {
+                $media->size = humanFileSize($file['size']);
+                $media->extension = $file['extension'];
+                $media->mimetype = $file['mimetype'];
+                $this->media[] = $media;
             }
-            $media->size = humanFileSize($file['size']);
-
-            try {
-                $media->mimetype = $this->storage->getMimetype($file['path']);
-            } catch (FileNotFoundException $e) {
-                $media->mimetype = null;
-            }
-            $media->extension = $file['extension'];
-            $this->media[] = $media;
         }
 
         if ($this->text !== null) {
             $this->media = array_slice($this->media, $offset, $limit);
+        }
+        return $this;
+    }
+
+    protected function buildAdminQueries()
+    {
+        $queryPages = 'SELECT COUNT(*) AS `count` FROM `uploads`';
+        $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id`';
+
+        if ($this->text !== null) {
+            $queryMedia .= ' WHERE `uploads`.`filename` LIKE ? ';
+            $queryPages .= ' WHERE `filename` LIKE ?';
+        }
+
+        return [$queryMedia, $queryPages];
+    }
+
+    protected function buildUserQueries()
+    {
+        $queryPages = 'SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` = ?';
+        $queryMedia = 'SELECT `uploads`.*,`users`.`user_code`, `users`.`username` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_id` = ?';
+
+        if ($this->text !== null) {
+            $queryMedia .= ' AND `uploads`.`filename` LIKE ? ';
+            $queryPages .= ' AND `filename` LIKE ?';
+        }
+
+        return [$queryMedia, $queryPages];
+    }
+
+    protected function buildOrderBy()
+    {
+        switch ($this->orderBy) {
+            case self::ORDER_NAME:
+                return ' ORDER BY `filename` '.$this->orderMode;
+            case self::ORDER_TIME:
+                return ' ORDER BY `timestamp` '.$this->orderMode;
+            case self::ORDER_SIZE:
+                return ($this->orderMode === 'ASC') ? SORT_ASC : SORT_DESC;
+            default:
+                return '';
         }
     }
 
