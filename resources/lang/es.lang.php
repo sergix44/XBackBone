@@ -40,7 +40,7 @@ return [
     'system_info' => 'Información del Sistema',
     'user.create' => 'Crear Usuario',
     'user.edit' => 'Editar Usuario',
-    'is_active' => 'Está activo',
+    'is_active' => 'Es activo',
     'is_admin' => 'Es administrador',
     'your_profile' => 'Tu Perfil',
     'token' => 'Ficha',
@@ -103,4 +103,6 @@ return [
     'delete_all' => 'Borrar Todo',
     'danger_zone' => 'Zona De Peligro',
     'recaptcha_failed' => 'reCAPTCHA Falló',
+    'php_info' => 'Información PHP',
+    'system_settings' => 'Configuracion de Systema',
 ];
