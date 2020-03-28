@@ -78,7 +78,7 @@ class TagController extends Controller
     public function removeTag(Request $request, Response $response): Response
     {
         $validator = $this->validateTag($request)
-            ->addRule('tag.exists', false);
+            ->addRule('tag.exists', false); // TODO: set correct rule, the tag must exists
 
         if ($validator->fails()) {
             throw new HttpBadRequestException($request);

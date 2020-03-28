@@ -196,6 +196,8 @@ body {
 }
 
 .tag-item {
-    user-select: none;
     cursor: pointer;
+    max-width: 145px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

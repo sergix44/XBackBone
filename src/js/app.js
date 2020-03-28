@@ -30,7 +30,13 @@ var app = {
         $('#bulk-delete').click(app.bulkDelete);
 
         $('.tag-add').click(app.addTag);
-        $('.tag-item').dblclick(app.removeTag);
+        $('.tag-item').popover({
+            html: true,
+            placement: 'top',
+            trigger: 'hover',
+            content: '<a href="javascript:void(0)" class="text-danger tag-delete" data-id=""><i class="fas fa-trash"></i></a>'
+        });
+
 
         $('.alert').fadeTo(10000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
@@ -152,6 +158,7 @@ var app = {
             .addClass('form-control form-control-verysm tag-input')
             .attr('data-id', $caller.data('id'))
             .attr('maxlength', 32)
+            .css('width', '90px')
             .keydown(function (e) {
                 if (e.keyCode === 13) { // enter -> save tag
                     app.saveTag.call($(this)); // change context
