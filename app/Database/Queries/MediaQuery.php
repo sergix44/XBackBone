@@ -42,6 +42,11 @@ class MediaQuery
     private $media;
 
     /**
+     * @var int
+     */
+    private $tagId;
+
+    /**
      * MediaQuery constructor.
      *
      * @param  DB  $db
@@ -100,6 +105,15 @@ class MediaQuery
     public function search(?string $text)
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function filterByTag($tagId)
+    {
+        if ($tagId !== null) {
+            $this->tagId = (int) $tagId;
+        }
 
         return $this;
     }
@@ -242,9 +256,25 @@ class MediaQuery
         $queryPages = 'SELECT COUNT(*) AS `count` FROM `uploads`';
         $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id`';
 
+        if ($this->text !== null || $this->tagId !== null) {
+            $queryMedia .= ' WHERE';
+            $queryPages .= ' WHERE';
+        }
+
         if ($this->text !== null) {
-            $queryMedia .= ' WHERE `uploads`.`filename` LIKE ? ';
-            $queryPages .= ' WHERE `filename` LIKE ?';
+            $queryMedia .= ' `uploads`.`filename` LIKE ?';
+            $queryPages .= ' `filename` LIKE ?';
+        }
+
+        if ($this->tagId !== null) {
+            if ($this->text !== null) {
+                $queryMedia .= ' AND';
+                $queryPages .= ' AND';
+            }
+
+            $ids = $this->getMediaIdsByTagId($this->tagId);
+            $queryMedia .= ' `uploads`.`id` IN ('.implode(',', $ids).')';
+            $queryPages .= ' `uploads`.`id` IN ('.implode(',', $ids).')';
         }
 
         return [$queryMedia, $queryPages];
@@ -258,6 +288,12 @@ class MediaQuery
         if ($this->text !== null) {
             $queryMedia .= ' AND `uploads`.`filename` LIKE ? ';
             $queryPages .= ' AND `filename` LIKE ?';
+        }
+
+        if ($this->tagId !== null) {
+            $ids = $this->getMediaIdsByTagId($this->tagId);
+            $queryMedia .= ' AND `uploads`.`id` IN ('.implode(',', $ids).')';
+            $queryPages .= ' AND `uploads`.`id` IN ('.implode(',', $ids).')';
         }
 
         return [$queryMedia, $queryPages];
@@ -277,6 +313,10 @@ class MediaQuery
         }
     }
 
+    /**
+     * @param  array  $mediaIds
+     * @return array
+     */
     protected function getTags(array $mediaIds)
     {
         $allTags = $this->db->query('SELECT `uploads_tags`.`upload_id`,`tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` IN ("'.implode('","', $mediaIds).'") ORDER BY `tags`.`timestamp`')->fetchAll();
@@ -285,6 +325,20 @@ class MediaQuery
             $tags[$tag->upload_id][$tag->id] = $tag->name;
         }
         return $tags;
+    }
+
+    /**
+     * @param $tagId
+     * @return array
+     */
+    protected function getMediaIdsByTagId($tagId)
+    {
+        $mediaIds = $this->db->query('SELECT `upload_id` FROM `uploads_tags` WHERE `tag_id` = ?', $tagId)->fetchAll();
+        $ids = [];
+        foreach ($mediaIds as $pivot) {
+            $ids[] = $pivot->upload_id;
+        }
+        return $ids;
     }
 
     /**

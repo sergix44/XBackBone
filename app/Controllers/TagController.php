@@ -35,7 +35,7 @@ class TagController extends Controller
         ])->fetchAll(PDO::FETCH_COLUMN, 0);
 
         if (!$tag && count($connectedIds) < self::PER_MEDIA_LIMIT) {
-            $this->database->query('INSERT INTO `tags`(`name`) VALUES (?)', param($request, 'tag'));
+            $this->database->query('INSERT INTO `tags`(`name`) VALUES (?)', strtolower(param($request, 'tag')));
 
             $tagId = $this->database->getPdo()->lastInsertId();
 
@@ -47,6 +47,7 @@ class TagController extends Controller
             return json($response, [
                 'limitReached' => false,
                 'tagId' => $tagId,
+                'href' => queryParams(['tag' => $tagId]),
             ]);
         }
 
@@ -54,6 +55,7 @@ class TagController extends Controller
             return json($response, [
                 'limitReached' => true,
                 'tagId' => null,
+                'href' => null,
             ]);
         }
 
@@ -65,6 +67,7 @@ class TagController extends Controller
         return json($response, [
             'limitReached' => false,
             'tagId' => $tag->id,
+            'href' => queryParams(['tag' => $tag->id]),
         ]);
     }
 
@@ -78,7 +81,7 @@ class TagController extends Controller
     public function removeTag(Request $request, Response $response): Response
     {
         $validator = $this->validateTag($request)
-        ->removeRule('tag.notEmpty');
+            ->removeRule('tag.notEmpty');
 
         if ($validator->fails()) {
             throw new HttpBadRequestException($request);

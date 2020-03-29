@@ -56,6 +56,7 @@ class DashboardController extends Controller
             ->orderBy($order, param($request, 'order', 'DESC'))
             ->withUserId($this->session->get('user_id'))
             ->search(param($request, 'search', null))
+            ->filterByTag(param($request, 'tag'))
             ->run($page);
 
         return view()->render(

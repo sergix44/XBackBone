@@ -154,6 +154,7 @@ var app = {
             .attr('data-id', $caller.data('id'))
             .attr('maxlength', 32)
             .css('width', '90px')
+            .attr('onchange', 'this.value = this.value.toLowerCase();')
             .keydown(function (e) {
                 if (e.keyCode === 13) { // enter -> save tag
                     app.saveTag.call($(this)); // change context
@@ -192,6 +193,7 @@ var app = {
                             .addClass('badge badge-pill badge-light shadow-sm tag-item mr-1')
                             .attr('data-id', data.tagId)
                             .attr('data-media', mediaId)
+                            .attr('href', data.href)
                             .contextmenu(app.removeTag)
                             .text(tag)
                     );
