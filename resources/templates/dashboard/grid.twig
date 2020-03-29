@@ -41,9 +41,9 @@
                                         </a>
                                         <div class="overlay-rows-bottom pl-3 pr-3 pb-1">
                                             {% for tag_id, tag_name in media.tags %}
-                                                <a class="badge badge-pill badge-light shadow-sm tag-item mr-1" data-id="{{ tag_id }}" data-media="{{ media.id }}" title="{{ tag_name }}">{{ tag_name }}</a>
+                                                <a href="{{ queryParams({'tag':tag_id}) }}" class="badge badge-pill badge-light shadow-sm tag-item mr-1" data-id="{{ tag_id }}" data-media="{{ media.id }}" title="{{ tag_name }}">{{ tag_name }}</a>
                                             {% endfor %}
-                                            <a class="badge badge-pill badge-success shadow-sm tag-add mr-1" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
+                                            <a href="javascript:void(0);" class="badge badge-pill badge-success shadow-sm tag-add mr-1" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
                                         </div>
                                     </div>
                                 </div>

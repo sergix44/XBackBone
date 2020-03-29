@@ -174,6 +174,7 @@ var app = {
     },
     saveTag: function () {
         var tag = $(this).val();
+        var mediaId = $(this).data('id');
         var $parent = $(this).parent();
         if (tag === '') {
             $parent.remove();
@@ -182,7 +183,7 @@ var app = {
         $.ajax({
             type: 'POST',
             url: window.AppConfig.base_url + '/tag/add',
-            data: {'tag': tag, 'mediaId': $(this).data('id')},
+            data: {'tag': tag, 'mediaId': mediaId},
             dataType: 'json',
             success: function (data) {
                 if (!data.limitReached) {
@@ -190,7 +191,8 @@ var app = {
                         $(document.createElement('a'))
                             .addClass('badge badge-pill badge-light shadow-sm tag-item mr-1')
                             .attr('data-id', data.tagId)
-                            .dblclick(app.removeTag)
+                            .attr('data-media', mediaId)
+                            .contextmenu(app.removeTag)
                             .text(tag)
                     );
                 } else {
