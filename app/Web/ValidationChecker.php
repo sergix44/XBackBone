@@ -7,6 +7,7 @@ class ValidationChecker
 {
     protected $rules = [];
     protected $failClosure;
+    protected $lastRule;
 
     /**
      * @return ValidationChecker
@@ -43,6 +44,7 @@ class ValidationChecker
     {
         foreach ($this->rules as $rule => $condition) {
             if (!$condition) {
+                $this->lastRule = $rule;
                 if (is_callable($this->failClosure)) {
                     ($this->failClosure)($rule);
                 }
@@ -54,15 +56,15 @@ class ValidationChecker
 
     /**
      * @param  string  $key
-     * @return bool
+     * @return ValidationChecker
      */
     public function removeRule(string $key)
     {
-        $condition = $this->rules[$key];
+        $this->rules[$key];
 
         unset($this->rules[$key]);
 
-        return $condition;
+        return $this;
     }
 
     /**
@@ -74,5 +76,13 @@ class ValidationChecker
     {
         $this->rules[$key] = $condition;
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastRule()
+    {
+        return $this->lastRule;
     }
 }

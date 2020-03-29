@@ -30,12 +30,7 @@ var app = {
         $('#bulk-delete').click(app.bulkDelete);
 
         $('.tag-add').click(app.addTag);
-        $('.tag-item').popover({
-            html: true,
-            placement: 'top',
-            trigger: 'hover',
-            content: '<a href="javascript:void(0)" class="text-danger tag-delete" data-id=""><i class="fas fa-trash"></i></a>'
-        });
+        $('.tag-item').contextmenu(app.removeTag);
 
 
         $('.alert').fadeTo(10000, 500).slideUp(500, function () {
@@ -192,7 +187,7 @@ var app = {
             success: function (data) {
                 if (!data.limitReached) {
                     $parent.replaceWith(
-                        $(document.createElement('span'))
+                        $(document.createElement('a'))
                             .addClass('badge badge-pill badge-light shadow-sm tag-item mr-1')
                             .attr('data-id', data.tagId)
                             .dblclick(app.removeTag)
@@ -206,7 +201,12 @@ var app = {
     },
     removeTag: function (e) {
         e.preventDefault();
-        $(this).remove();
+        e.stopPropagation();
+        var $tag = $(this);
+
+        $.post(window.AppConfig.base_url + '/tag/remove', {'tagId': $tag.data('id'), 'mediaId': $tag.data('media')}, function (){
+            $tag.remove();
+        });
     }
 };
 

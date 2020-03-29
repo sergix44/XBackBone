@@ -24,9 +24,9 @@
                                                     </button>
                                                     <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>
                                                     {% if media.published %}
-                                                        <a href="javascript:void(0)" class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
+                                                        <a class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
                                                     {% else %}
-                                                        <a href="javascript:void(0)" class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
+                                                        <a class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
                                                     {% endif %}
                                                     <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
                                                         <i class="fas fa-trash"></i>
@@ -41,9 +41,9 @@
                                         </a>
                                         <div class="overlay-rows-bottom pl-3 pr-3 pb-1">
                                             {% for tag_id, tag_name in media.tags %}
-                                                <span class="badge badge-pill badge-light shadow-sm tag-item mr-1 d-inline-block" data-id="{{ tag_id }}" title="{{ tag_name }}">{{ tag_name }}</span>
+                                                <a class="badge badge-pill badge-light shadow-sm tag-item mr-1" data-id="{{ tag_id }}" data-media="{{ media.id }}" title="{{ tag_name }}">{{ tag_name }}</a>
                                             {% endfor %}
-                                            <a href="javascript:void(0)" class="badge badge-pill badge-success shadow-sm tag-add mr-1" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
+                                            <a class="badge badge-pill badge-success shadow-sm tag-add mr-1" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
                                         </div>
                                     </div>
                                 </div>

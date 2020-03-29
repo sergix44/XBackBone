@@ -78,13 +78,13 @@ class TagController extends Controller
     public function removeTag(Request $request, Response $response): Response
     {
         $validator = $this->validateTag($request)
-            ->addRule('tag.exists', false); // TODO: set correct rule, the tag must exists
+        ->removeRule('tag.notEmpty');
 
         if ($validator->fails()) {
             throw new HttpBadRequestException($request);
         }
 
-        $tag = $this->database->query('SELECT * FROM `tags` WHERE `name` = ? LIMIT 1', param($request, 'tag'))->fetch();
+        $tag = $this->database->query('SELECT * FROM `tags` WHERE `id` = ? LIMIT 1', param($request, 'tagId'))->fetch();
 
         if (!$tag) {
             throw new HttpNotFoundException($request);
@@ -109,7 +109,7 @@ class TagController extends Controller
                 'tag.notEmpty' => !empty(param($request, 'tag')),
                 'mediaId.notEmpty' => !empty(param($request, 'mediaId')),
                 'media.exists' => $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `id` = ?', param($request, 'mediaId'))->fetch()->count > 0,
-                'same.userOrAdmin' => $this->session->get('admin', false) || $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', param($request, 'mediaId'))->fetch()->user_id === $this->session->get('user_id'),
+                'sameUserOrAdmin' => $this->session->get('admin', false) || $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', param($request, 'mediaId'))->fetch()->user_id === $this->session->get('user_id'),
             ]);
     }
 }
