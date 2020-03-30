@@ -1,4 +1,5 @@
 ## v.3.1 (WIP)
++ Added tagging system (add, delete, search of tagged files).
 + Added registration system.
 + Added password recovery system.
 + Added ability to export all media of an account.
@@ -15,7 +16,7 @@
 + Updated system settings page.
 + Updated translations.
 + Improved grid layout.
-+ Small fixes and improvements.
++ Fixes and improvements.
 
 ## v.3.0.2
 + Fixed error with migrate command.
