@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\TagQuery;
 use App\Database\Queries\UserQuery;
 use App\Exceptions\ValidationException;
 use Exception;
@@ -183,6 +184,7 @@ class UploadController extends Controller
      * @param $user
      * @return Response
      * @throws \League\Flysystem\FileExistsException
+     * @throws \League\Flysystem\FileNotFoundException
      */
     protected function saveMedia(Response $response, UploadedFileInterface $file, $user)
     {
@@ -207,12 +209,35 @@ class UploadController extends Controller
             $storagePath,
             $published,
         ]);
+        $mediaId = $this->database->getPdo()->lastInsertId();
+
+        $this->autoTag($mediaId, $storagePath);
 
         $this->json['message'] = 'OK';
         $this->json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
 
-        $this->logger->info("User $user->username uploaded new media.", [$this->database->getPdo()->lastInsertId()]);
+        $this->logger->info("User $user->username uploaded new media.", [$mediaId]);
 
         return json($response, $this->json, 201);
+    }
+
+    /**
+     * @param $mediaId
+     * @param $storagePath
+     * @throws \League\Flysystem\FileNotFoundException
+     */
+    protected function autoTag($mediaId, $storagePath)
+    {
+        $mime = $this->storage->getMimetype($storagePath);
+
+        [$type, $subtype] = explode('/', $mime);
+
+        /** @var TagQuery $query */
+        $query = make(TagQuery::class);
+        $query->addTag($type, $mediaId);
+
+        if ($type === 'application') {
+            $query->addTag($subtype, $mediaId);
+        }
     }
 }

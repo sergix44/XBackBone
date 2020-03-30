@@ -1,5 +1,6 @@
 ## v.3.1 (WIP)
 + Added tagging system (add, delete, search of tagged files).
++ Added basic media auto-tagging on upload.
 + Added registration system.
 + Added password recovery system.
 + Added ability to export all media of an account.

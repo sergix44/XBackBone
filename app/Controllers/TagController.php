@@ -3,6 +3,7 @@
 
 namespace App\Controllers;
 
+use App\Database\Queries\TagQuery;
 use App\Web\ValidationChecker;
 use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -28,46 +29,12 @@ class TagController extends Controller
             throw new HttpBadRequestException($request);
         }
 
-        $tag = $this->database->query('SELECT * FROM `tags` WHERE `name` = ? LIMIT 1', param($request, 'tag'))->fetch();
-
-        $connectedIds = $this->database->query('SELECT `tag_id` FROM `uploads_tags` WHERE `upload_id` = ?', [
-            param($request, 'mediaId'),
-        ])->fetchAll(PDO::FETCH_COLUMN, 0);
-
-        if (!$tag && count($connectedIds) < self::PER_MEDIA_LIMIT) {
-            $this->database->query('INSERT INTO `tags`(`name`) VALUES (?)', strtolower(param($request, 'tag')));
-
-            $tagId = $this->database->getPdo()->lastInsertId();
-
-            $this->database->query('INSERT INTO `uploads_tags`(`upload_id`, `tag_id`) VALUES (?, ?)', [
-                param($request, 'mediaId'),
-                $tagId,
-            ]);
-
-            return json($response, [
-                'limitReached' => false,
-                'tagId' => $tagId,
-                'href' => queryParams(['tag' => $tagId]),
-            ]);
-        }
-
-        if (count($connectedIds) >= self::PER_MEDIA_LIMIT || in_array($tag->id, $connectedIds)) {
-            return json($response, [
-                'limitReached' => true,
-                'tagId' => null,
-                'href' => null,
-            ]);
-        }
-
-        $this->database->query('INSERT INTO `uploads_tags`(`upload_id`, `tag_id`) VALUES (?, ?)', [
-            param($request, 'mediaId'),
-            $tag->id,
-        ]);
+        [$id, $limit] = make(TagQuery::class)->addTag(param($request, 'tag'), param($request, 'mediaId'));
 
         return json($response, [
-            'limitReached' => false,
-            'tagId' => $tag->id,
-            'href' => queryParams(['tag' => $tag->id]),
+            'limitReached' => $limit,
+            'tagId' => $id,
+            'href' => queryParams(['tag' => $id]),
         ]);
     }
 
@@ -80,26 +47,16 @@ class TagController extends Controller
      */
     public function removeTag(Request $request, Response $response): Response
     {
-        $validator = $this->validateTag($request)
-            ->removeRule('tag.notEmpty');
+        $validator = $this->validateTag($request)->removeRule('tag.notEmpty');
 
         if ($validator->fails()) {
             throw new HttpBadRequestException($request);
         }
 
-        $tag = $this->database->query('SELECT * FROM `tags` WHERE `id` = ? LIMIT 1', param($request, 'tagId'))->fetch();
+        $result = make(TagQuery::class)->removeTag(param($request, 'tagId'), param($request, 'mediaId'));
 
-        if (!$tag) {
+        if (!$result) {
             throw new HttpNotFoundException($request);
-        }
-
-        $this->database->query('DELETE FROM `uploads_tags` WHERE `upload_id` = ? AND `tag_id` = ?', [
-            param($request, 'mediaId'),
-            $tag->id,
-        ]);
-
-        if ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads_tags` WHERE `tag_id` = ?', $tag->id)->fetch()->count == 0) {
-            $this->database->query('DELETE FROM `tags` WHERE `id` = ? ', $tag->id);
         }
 
         return $response;
