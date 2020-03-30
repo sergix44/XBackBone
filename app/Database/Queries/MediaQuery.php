@@ -5,9 +5,7 @@ namespace App\Database\Queries;
 use App\Database\DB;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Plugin\ListFiles;
 use League\Flysystem\Plugin\ListWith;
-use PDO;
 
 class MediaQuery
 {
@@ -186,13 +184,11 @@ class MediaQuery
 
         if ($this->isAdmin) {
             $files = $this->storage->listWith(['size', 'mimetype'], '/', true);
-            $this->pages = count($files) / self::PER_PAGE_ADMIN;
             $offset = $page * self::PER_PAGE_ADMIN;
             $limit = self::PER_PAGE_ADMIN;
         } else {
             $userCode = $this->db->query('SELECT `user_code` FROM `users` WHERE `id` = ?', $this->userId)->fetch()->user_code;
             $files = $this->storage->listWith(['size', 'mimetype'], $userCode);
-            $this->pages = count($files) / self::PER_PAGE;
             $offset = $page * self::PER_PAGE;
             $limit = self::PER_PAGE;
         }
@@ -215,9 +211,15 @@ class MediaQuery
             $params[] = '%'.htmlentities($this->text).'%';
             $paths = array_column($files, 'path');
         } else {
-            $files = array_slice($files, $offset, $limit);
-            $paths = array_column($files, 'path');
-            $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")';
+            if ($this->tagId !== null) {
+                $paths = array_column($files, 'path');
+                $ids = $this->getMediaIdsByTagId($this->tagId);
+                $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'") AND `uploads`.`id` IN ('.implode(',', $ids).')';
+            } else {
+                $files = array_slice($files, $offset, $limit, true);
+                $paths = array_column($files, 'path');
+                $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")';
+            }
         }
 
         $medias = $this->db->query($queryMedia, $params)->fetchAll();
@@ -245,9 +247,12 @@ class MediaQuery
             }
         }
 
-        if ($this->text !== null) {
-            $this->media = array_slice($this->media, $offset, $limit);
+        $this->pages = count($this->media) / $limit;
+
+        if ($this->text !== null || $this->tagId !== null) {
+            $this->media = array_slice($this->media, $offset, $limit, true);
         }
+
         return $this;
     }
 

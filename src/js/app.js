@@ -183,7 +183,7 @@ var app = {
         }
         $.ajax({
             type: 'POST',
-            url: window.AppConfig.base_url + '/tag/add',
+            url: window.AppConfig.base_url + '/tag/add' + window.location.search,
             data: {'tag': tag, 'mediaId': mediaId},
             dataType: 'json',
             success: function (data) {
@@ -208,7 +208,10 @@ var app = {
         e.stopPropagation();
         var $tag = $(this);
 
-        $.post(window.AppConfig.base_url + '/tag/remove', {'tagId': $tag.data('id'), 'mediaId': $tag.data('media')}, function (){
+        $.post(window.AppConfig.base_url + '/tag/remove', {
+            'tagId': $tag.data('id'),
+            'mediaId': $tag.data('media')
+        }, function () {
             $tag.remove();
         });
     }
