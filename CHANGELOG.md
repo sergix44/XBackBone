@@ -12,6 +12,7 @@
 + Added account clean function.
 + Added user disk quota system.
 + Added notification option on account create.
++ Added LDAP authentication.
 + Fixed bug html files raws are rendered in a browser.
 + The theme is now re-applied after every system update.
 + Updated system settings page.
