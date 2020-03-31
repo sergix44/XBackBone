@@ -34,7 +34,7 @@ if (isset($argv[1]) && $argv[1] === '--install') {
 }
 
 if (file_exists(__DIR__.'/../install') && (!isset($config['debug']) || !$config['debug'])) {
-    //removeDirectory(__DIR__.'/../install');
+    removeDirectory(__DIR__.'/../install');
 }
 
 echo 'If you are upgrading from a previous version, please run a "php bin\clean".'.PHP_EOL;

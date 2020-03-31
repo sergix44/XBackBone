@@ -79,9 +79,10 @@ class UserQuery
      * @param  int  $isActive
      * @param  int  $maxUserQuota
      * @param  string|null  $activateToken
+     * @param  int  $ldap
      * @return bool|\PDOStatement|string
      */
-    public function create(string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, string $activateToken = null)
+    public function create(string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, string $activateToken = null, int $ldap =0)
     {
         do {
             $userCode = humanRandomString(5);
@@ -89,7 +90,7 @@ class UserQuery
 
         $token = $this->generateUserUploadToken();
 
-        return $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        return $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`, `ldap`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             $email,
             $username,
             $password !== null ? password_hash($password, PASSWORD_DEFAULT) : null,
@@ -99,6 +100,7 @@ class UserQuery
             $token,
             $maxUserQuota,
             $activateToken,
+            $ldap
         ]);
     }
 
@@ -110,27 +112,30 @@ class UserQuery
      * @param  int  $isAdmin
      * @param  int  $isActive
      * @param  int  $maxUserQuota
+     * @param  int  $ldap
      * @return bool|\PDOStatement|string
      */
-    public function update($id, string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1)
+    public function update($id, string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, int $ldap = 0)
     {
         if (!empty($password)) {
-            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
+            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=? WHERE `id` = ?', [
                 $email,
                 $username,
                 password_hash($password, PASSWORD_DEFAULT),
                 $isAdmin,
                 $isActive,
                 $maxUserQuota,
+                $ldap,
                 $id,
             ]);
         } else {
-            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=? WHERE `id` = ?', [
+            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=? WHERE `id` = ?', [
                 $email,
                 $username,
                 $isAdmin,
                 $isActive,
                 $maxUserQuota,
+                $ldap,
                 $id,
             ]);
         }

@@ -51,20 +51,17 @@ class LoginController extends Controller
         }
 
         $username = param($request, 'username');
-        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
+        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
         if ($this->config['ldap']['enabled']) {
-            $result = $this->ldapLogin($username, param($request, 'password'), $user);
-            if ($result) {
-                $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
-            }
+            $user = $this->ldapLogin($request, $username, param($request, 'password'), $user);
         }
 
         $validator = ValidationChecker::make()
             ->rules([
                 'login' => $user && password_verify(param($request, 'password'), $user->password),
-                'maintenance' => !isset($this->config['maintenance']) || !$this->config['maintenance'] || $user->is_admin,
-                'user_active' => $user->active,
+                'maintenance' => !isset($this->config['maintenance']) || !$this->config['maintenance'] || $user->is_admin ?? false,
+                'user_active' => $user->active ?? false,
             ])
             ->onFail(function ($rule) {
                 $alerts = [
@@ -119,29 +116,55 @@ class LoginController extends Controller
     }
 
     /**
+     * @param  Request  $request
      * @param  string  $username
      * @param  string  $password
      * @param $dbUser
      * @return bool
+     * @throws \Slim\Exception\HttpNotFoundException
+     * @throws \Slim\Exception\HttpUnauthorizedException
      */
-    protected function ldapLogin(string $username, string $password, $dbUser)
+    protected function ldapLogin(Request $request, string $username, string $password, $dbUser)
     {
-        if (!extension_loaded('ldap')) {
-            $this->logger->error('The LDAP extension is not loaded.');
-            return false;
-        }
-
-        $server = ldap_connect($this->config['ldap']['host'], $this->config['ldap']['port']);
-
+        $server = $this->ldapConnect();
         if (!$server) {
             $this->session->alert(lang('ldap_cant_connect'), 'warning');
-            return false;
+            return $dbUser;
+        }
+        if (!@ldap_bind($server, $this->getLdapRdn($username), $password)) {
+            if ($dbUser && !$dbUser->ldap) {
+                return $dbUser;
+            }
+            return null;
+        }
+        if (!$dbUser) {
+            $email = $username;
+            if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+                $search = ldap_search($server, $this->config['ldap']['user_domain'].','.$this->config['ldap']['base_domain'], 'uid='.addslashes($username), ['mail']);
+                $entry = ldap_first_entry($server, $search);
+                $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.rand(0, 100)); // if the mail is not set, generate a placeholder
+            }
+            /** @var UserQuery $userQuery */
+            $userQuery = make(UserQuery::class);
+            $userQuery->create($email, $username, $password, 0, 1, (int) $this->getSetting('default_user_quota', -1), null, 1);
+            return $userQuery->get($request, $this->database->getPdo()->lastInsertId());
         }
 
-        ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
-        ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
+        if (!password_verify($password, $dbUser->password)) {
+            $userQuery = make(UserQuery::class);
+            $userQuery->update($dbUser->id, $dbUser->email, $username, $password, $dbUser->is_admin, $dbUser->active, $dbUser->max_disk_quota, $dbUser->ldap);
+            return $userQuery->get($request, $dbUser->id);
+        }
 
+        return $dbUser;
+    }
+
+    /**
+     * @param  string  $username
+     * @return string
+     */
+    private function getLdapRdn(string $username)
+    {
         $bindString = 'uid='.addslashes($username);
         if ($this->config['ldap']['user_domain'] !== null) {
             $bindString .= ','.$this->config['ldap']['user_domain'];
@@ -151,40 +174,6 @@ class LoginController extends Controller
             $bindString .= ','.$this->config['ldap']['base_domain'];
         }
 
-        if (!@ldap_bind($server, $bindString, $password)) {
-            return false;
-        }
-
-        if (!$dbUser) {
-            $email = $username;
-            if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                $search = ldap_search($server, $this->config['ldap']['user_domain'].','.$this->config['ldap']['base_domain'], 'uid='.addslashes($username), ['mail']);
-                $entry = ldap_first_entry($server, $search);
-                $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.uniqid());
-            }
-            make(UserQuery::class)->create(
-                $email,
-                $username,
-                $password,
-                0,
-                1,
-                (int) $this->getSetting('default_user_quota', -1)
-            );
-            return true;
-        }
-
-        if (!password_verify($password, $dbUser->password)) {
-            make(UserQuery::class)->update(
-                $dbUser->id,
-                $dbUser->email,
-                $username,
-                $password,
-                $dbUser->is_admin,
-                $dbUser->active,
-                $dbUser->max_disk_quota
-            );
-        }
-
-        return true;
+        return $bindString;
     }
 }

@@ -167,4 +167,25 @@ abstract class Controller
                 $this->session->alert($alerts[$rule], 'danger');
             });
     }
+
+    /**
+     * @return bool|false|resource
+     */
+    public function ldapConnect()
+    {
+        if (!extension_loaded('ldap')) {
+            $this->logger->error('The LDAP extension is not loaded.');
+            return false;
+        }
+
+        $server = ldap_connect($this->config['ldap']['host'], $this->config['ldap']['port']);
+
+        if ($server) {
+            ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
+            ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
+        }
+
+        return $server;
+    }
 }
