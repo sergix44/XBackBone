@@ -53,8 +53,11 @@ class LoginController extends Controller
         $username = param($request, 'username');
         $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
-        if ($this->config['ldap']['enabled'] && !$user) {
-            $this->ldapLogin($username, param($request, 'password'), $user);
+        if ($this->config['ldap']['enabled']) {
+            $result = $this->ldapLogin($username, param($request, 'password'), $user);
+            if ($result) {
+                $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
+            }
         }
 
         $validator = ValidationChecker::make()
@@ -124,6 +127,7 @@ class LoginController extends Controller
     protected function ldapLogin(string $username, string $password, $dbUser)
     {
         if (!extension_loaded('ldap')) {
+            $this->logger->error('The LDAP extension is not loaded.');
             return false;
         }
 
@@ -152,8 +156,14 @@ class LoginController extends Controller
         }
 
         if (!$dbUser) {
+            $email = $username;
+            if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+                $search = ldap_search($server, $this->config['ldap']['user_domain'].','.$this->config['ldap']['base_domain'], 'uid='.addslashes($username), ['mail']);
+                $entry = ldap_first_entry($server, $search);
+                $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.uniqid());
+            }
             make(UserQuery::class)->create(
-                filter_var($username, FILTER_VALIDATE_EMAIL) ? $username : $username.$this->config['ldap']['user_domain'],
+                $email,
                 $username,
                 $password,
                 0,

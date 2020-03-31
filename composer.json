@@ -21,7 +21,8 @@
     "slim/slim": "^4.0",
     "spatie/flysystem-dropbox": "^1.0",
     "superbalist/flysystem-google-storage": "^7.2",
-    "twig/twig": "^2.12"
+    "twig/twig": "^2.12",
+    "ext-ldap": "*"
   },
   "config": {
     "optimize-autoloader": true,
