@@ -3,13 +3,11 @@
 
 namespace App\Database\Queries;
 
-
 use App\Database\DB;
 use PDO;
 
 class TagQuery
 {
-
     const PER_MEDIA_LIMIT = 10;
 
     /**
@@ -82,5 +80,4 @@ class TagQuery
 
         return false;
     }
-
 }
