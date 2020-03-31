@@ -41,6 +41,13 @@ $config = array_replace_recursive([
         'driver' => 'local',
         'path' => realpath(__DIR__.'/').DIRECTORY_SEPARATOR.'storage',
     ],
+    'ldap' => [
+        'enabled' => false,
+        'host' => null,
+        'port' => null,
+        'base_domain' => null,
+        'user_domain' => null,
+    ],
 ], require BASE_DIR.'config.php');
 
 $builder = new ContainerBuilder();

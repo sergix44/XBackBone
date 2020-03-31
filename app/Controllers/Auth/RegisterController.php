@@ -59,7 +59,7 @@ class RegisterController extends Controller
 
             if ($recaptcha->success && $recaptcha->score < 0.5) {
                 $this->session->alert(lang('recaptcha_failed'), 'danger');
-                return redirect($response, route('login'));
+                return redirect($response, route('register.show'));
             }
         }
 

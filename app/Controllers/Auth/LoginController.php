@@ -3,6 +3,7 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
+use App\Database\Queries\UserQuery;
 use App\Web\ValidationChecker;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -51,6 +52,10 @@ class LoginController extends Controller
 
         $username = param($request, 'username');
         $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
+
+        if ($this->config['ldap']['enabled'] && !$user) {
+            $this->ldapLogin($username, param($request, 'password'), $user);
+        }
 
         $validator = ValidationChecker::make()
             ->rules([
@@ -108,5 +113,68 @@ class LoginController extends Controller
         }
 
         return redirect($response, route('login.show'));
+    }
+
+    /**
+     * @param  string  $username
+     * @param  string  $password
+     * @param $dbUser
+     * @return bool
+     */
+    protected function ldapLogin(string $username, string $password, $dbUser)
+    {
+        if (!extension_loaded('ldap')) {
+            return false;
+        }
+
+        $server = ldap_connect($this->config['ldap']['host'], $this->config['ldap']['port']);
+
+        if (!$server) {
+            $this->session->alert(lang('ldap_cant_connect'), 'warning');
+            return false;
+        }
+
+        ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
+        ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
+
+        $bindString = 'uid='.addslashes($username);
+        if ($this->config['ldap']['user_domain'] !== null) {
+            $bindString .= ','.$this->config['ldap']['user_domain'];
+        }
+
+        if ($this->config['ldap']['base_domain'] !== null) {
+            $bindString .= ','.$this->config['ldap']['base_domain'];
+        }
+
+        if (!@ldap_bind($server, $bindString, $password)) {
+            return false;
+        }
+
+        if (!$dbUser) {
+            make(UserQuery::class)->create(
+                filter_var($username, FILTER_VALIDATE_EMAIL) ? $username : $username.$this->config['ldap']['user_domain'],
+                $username,
+                $password,
+                0,
+                1,
+                (int) $this->getSetting('default_user_quota', -1)
+            );
+            return true;
+        }
+
+        if (!password_verify($password, $dbUser->password)) {
+            make(UserQuery::class)->update(
+                $dbUser->id,
+                $dbUser->email,
+                $username,
+                $password,
+                $dbUser->is_admin,
+                $dbUser->active,
+                $dbUser->max_disk_quota
+            );
+        }
+
+        return true;
     }
 }
