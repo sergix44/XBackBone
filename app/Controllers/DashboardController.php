@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database\Queries\MediaQuery;
+use App\Database\Queries\TagQuery;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -59,6 +60,11 @@ class DashboardController extends Controller
             ->filterByTag(param($request, 'tag'))
             ->run($page);
 
+        $tags = make(TagQuery::class, [
+            'isAdmin' => (bool) $this->session->get('admin', false),
+            'userId' => $this->session->get('user_id')
+        ])->all();
+
         return view()->render(
             $response,
             ($this->session->get('admin', false) && $this->session->get('gallery_view', true)) ? 'dashboard/list.twig' : 'dashboard/grid.twig',
@@ -68,6 +74,7 @@ class DashboardController extends Controller
                 'previous' => $page >= 1,
                 'current_page' => ++$page,
                 'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
+                'tags' => $tags,
             ]
         );
     }

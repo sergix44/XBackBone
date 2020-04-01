@@ -152,4 +152,6 @@ return [
     'mail.new_account_text_with_pw' => "Hi %s!\na new account was created for you on %s (%s), with the following credentials:\n\nUsername: %s\nPassword: %s\n\nClick on the following link to go to the login page:\n%s",
     'user_create_password' => 'If leaved empty, you might want to send a notification to the user email.',
     'ldap_cant_connect' => 'Can\'t connect to the LDAP auth server.',
+    'upload_max_file_size' => 'The max file size is currently %s.',
+    'no_tags' => 'No tags added'
 ];

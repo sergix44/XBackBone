@@ -185,7 +185,8 @@ class UserController extends Controller
             param($request, 'password'),
             param($request, 'is_admin') !== null ? 1 : 0,
             param($request, 'is_active') !== null ? 1 : 0,
-            $user->max_disk_quota
+            $user->max_disk_quota,
+            param($request, 'ldap') !== null ? 1 : 0
         );
 
         if ($user->id === $this->session->get('user_id')) {

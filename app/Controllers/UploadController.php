@@ -27,7 +27,11 @@ class UploadController extends Controller
      */
     public function uploadWebPage(Response $response): Response
     {
-        return view()->render($response, 'upload/web.twig');
+        $maxFileSize = min(stringToBytes(ini_get('post_max_size')), stringToBytes(ini_get('upload_max_filesize')));
+
+        return view()->render($response, 'upload/web.twig', [
+            'max_file_size' => humanFileSize($maxFileSize)
+        ]);
     }
 
     /**

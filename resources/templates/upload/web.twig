@@ -6,6 +6,9 @@
     {% include 'comp/navbar.twig' %}
     <div class="container">
         {% include 'comp/alert.twig' %}
+        <div class="alert alert-info alert-permanent">
+            {{ lang('upload_max_file_size', [max_file_size]) }}
+        </div>
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="row mb-3">

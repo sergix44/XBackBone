@@ -14,10 +14,32 @@ class TagQuery
      * @var DB
      */
     private $db;
+    /**
+     * @var null|bool
+     */
+    private $isAdmin;
+    /**
+     * @var null|int|string
+     */
+    private $userId;
 
-    public function __construct(DB $db)
+    public function __construct(DB $db, $isAdmin = null, $userId = null)
     {
         $this->db = $db;
+        $this->isAdmin = $isAdmin;
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return array
+     */
+    public function all()
+    {
+        if ($this->isAdmin) {
+            return $this->db->query('SELECT * FROM `tags` ORDER BY `name`')->fetchAll();
+        }
+
+        return $this->db->query('SELECT `tags`.* FROM `tags` INNER JOIN `uploads_tags` ON `tags`.`id` = `uploads_tags`.`tag_id` INNER JOIN `uploads` ON `uploads`.`id` = `uploads_tags`.`upload_id` WHERE `uploads`.`user_id` = ? ORDER BY `tags`.`name`', $this->userId)->fetchAll();
     }
 
     /**

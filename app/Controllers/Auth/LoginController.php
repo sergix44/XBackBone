@@ -53,7 +53,7 @@ class LoginController extends Controller
         $username = param($request, 'username');
         $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
-        if ($this->config['ldap']['enabled']) {
+        if ($this->config['ldap']['enabled'] && ($user->ldap ?? true)) {
             $user = $this->ldapLogin($request, $username, param($request, 'password'), $user);
         }
 
@@ -140,7 +140,7 @@ class LoginController extends Controller
         if (!$dbUser) {
             $email = $username;
             if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                $search = ldap_search($server, $this->config['ldap']['user_domain'].','.$this->config['ldap']['base_domain'], 'uid='.addslashes($username), ['mail']);
+                $search = ldap_search($server, $this->config['ldap']['base_domain'], 'uid='.addslashes($username), ['mail']);
                 $entry = ldap_first_entry($server, $search);
                 $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.rand(0, 100)); // if the mail is not set, generate a placeholder
             }

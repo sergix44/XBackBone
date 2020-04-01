@@ -21,6 +21,9 @@
                             <th>{{ lang('user_code') }}</th>
                             <th>{{ lang('used_space') }}</th>
                             <th>{{ lang('active') }}</th>
+                            {% if config.ldap.enabled %}
+                                <th>{{ lang('LDAP') }}</th>
+                            {% endif %}
                             <th>{{ lang('admin') }}</th>
                             <th>{{ lang('reg_date') }}</th>
                             <th></th>
@@ -43,6 +46,15 @@
                                         <span class="badge badge-danger"><i class="fas fa-times"></i></span>
                                     {% endif %}
                                 </td>
+                                {% if config.ldap.enabled %}
+                                    <td class="text-center">
+                                        {% if user.ldap %}
+                                            <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                                        {% else %}
+                                            <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
                                 <td class="text-center">
                                     {% if user.is_admin %}
                                         <span class="badge badge-success"><i class="fas fa-check"></i></span>
