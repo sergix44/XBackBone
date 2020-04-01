@@ -156,4 +156,22 @@ Se non sei stato tu a richiedere la reimpostazione della password, ignora sempli
     'only_recaptcha_v3' => 'È supportato solo reCAPTCHA v3.',
     'recaptcha_site_key' => 'reCAPTCHA Site Key',
     'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
+    'no_tags' => 'Nessun tag aggiunto',
+    'upload_max_file_size' => 'La dimensione massima del file è attualmente %s.',
+    'ldap_cant_connect' => 'Impossibile connettersi al server di autenticazione LDAP.',
+    'user_create_password' => 'Se lasciato vuoto, si consiglia di inviare una notifica all\'utente via e-mail.',
+    'mail.new_account_text_with_pw' => 'Ciao %s!
+un nuovo account è stato creato per te su %s (%s), con le seguenti credenziali:
+
+Username: %s
+Password: %s
+
+Clicca su questo link per andare alla pagina di login: 
+%s',
+    'mail.new_account_text_with_reset' => 'Ciao %s!
+un nuovo account è stato creato per te su %s (%s), clicca sul seguente link per impostare una password e attivarlo:
+
+%s',
+    'mail.new_account' => '%s - Nuovo account creato',
+    'send_notification' => 'Invia notifica e-mail',
 ];
