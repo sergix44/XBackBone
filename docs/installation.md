@@ -61,7 +61,7 @@ php bin/migrate --install
 
 For futher and advanced configurations, see the [configuration page](configuration.md).
 
-### Docker deployment
+## Docker deployment
 Alternatively, a docker container is available.
 
 [Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker){: .btn .btn-purple }

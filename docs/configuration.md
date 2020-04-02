@@ -133,6 +133,19 @@ return array(
 );
 ```
 
+## Changing themes
+XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
+
+From the web UI:
++ Navigate to the web interface as admin -> System Menu -> Choose a theme from the dropdown.
+
+From the CLI:
++ Run the command `php bin/theme` to see the available themes.
++ Use the same command with the argument name (`php bin/theme <THEME-NAME>`) to choose a theme.
++ If you want to revert back to the original bootstrap theme, run the command `php bin/theme default`.
+
+*Clear the browser cache once you have applied.*
+
 ## Change app install name
 Add to the `config.php` file an array element like this:
 ```php

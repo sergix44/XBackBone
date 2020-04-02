@@ -40,6 +40,8 @@ XBackBone is a simple and lightweight PHP file manager that support the instant 
 + LDAP authentication.
 + Registration system.
 + Automatic uploads tagging system.
++ Tag uploads with custom tags for categorization.
++ ... and more.
 
 ## Translations
 You can help translating the project on [Weblate](https://hosted.weblate.org/projects/xbackbone/xbackbone/).
