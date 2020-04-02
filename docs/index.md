@@ -50,6 +50,6 @@ You can help translating the project on [Weblate](https://hosted.weblate.org/pro
 <img src="https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/multi-auto.svg" alt="Stato traduzione" />
 </a>
 
-
+#### Demo GIF
 
 ![img](https://i.imgur.com/iV8Rirn.gif)

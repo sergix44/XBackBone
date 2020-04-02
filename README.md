@@ -7,6 +7,12 @@
 
 XBackBone is a simple, self-hosted, lightweight PHP file manager that support the instant sharing tool ShareX and *NIX systems. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management, past uploads history and search support.
 
+
+## Documentation
+All the installations, configuration, and usage instructions are available in the GitHub Pages:
+
+[XBackBone Documentation](https://sergix44.github.io/XBackBone/)
+
 ## Main Features
 
 + Supports every upload type from ShareX.
@@ -35,12 +41,6 @@ XBackBone is a simple, self-hosted, lightweight PHP file manager that support th
 + Automatic uploads tagging system.
 + Tag uploads with custom tags for categorization.
 + ... and more.
-
-## Documentation
-All the installations, configuration, and usage instructions are available in the GitHub Pages:
-
-[XBackBone Docs](https://sergix44.github.io/XBackBone/)
-
 
 ## License
 This software is licensed under the <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>, available in this repository.
