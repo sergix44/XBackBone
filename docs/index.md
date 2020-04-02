@@ -4,9 +4,6 @@ title: Home
 nav_order: 1
 ---
 
-# XBackBone
-{: .fs-9 }
-
 <p align="center">
   <img src="img/xbackbone.png" width="400px">
 </p>

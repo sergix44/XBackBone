@@ -23,7 +23,9 @@ XBackBone require PHP >= `7.1`, with installed the required extensions:
 + Navigate to the webspace root (ex. `http://example.com/xbackbone`, this should auto redirect your browser to the install page `http://example.com/xbackbone/install/`)
 + Follow the instructions.
 
-### Manual installation
+For futher and advanced configurations, see the [configuration page](configuration.md).
+
+## Manual installation
 + Download latest release from GitHub: [Latest Release](https://github.com/SergiX44/XBackBone/releases/latest)
 + Extract the release zip to your document root.
 + Copy and edit the config file:
