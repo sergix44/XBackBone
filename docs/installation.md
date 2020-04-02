@@ -57,4 +57,8 @@ php bin/migrate --install
 + Now just login with `admin/admin`, **be sure to change these credentials after your first login**.
 
 
-For futher and advanced configurations, see the [configuration page]('configuration.md').
+For futher and advanced configurations, see the [configuration page](configuration.md).
+
+#### Docker deployment
+Alternatively, a docker container is available.
+[Docker container](https://hub.docker.com/r/pe46dro/xbackbone-docker){: .btn .btn-purple }
