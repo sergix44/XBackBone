@@ -4,18 +4,16 @@ title: Home
 nav_order: 1
 ---
 
-## Welcome!
+# XBackBone
+{: .fs-9 }
 
-<p align="center">
-  <img src="img/xbackbone.png" width="350px">
-</p>
-
-XBackBone is a simple, self-hosted, lightweight PHP file manager that support the instant sharing tool ShareX and *NIX systems. It supports uploading and displaying images, GIF, video, code, formatted text, and file downloading and uploading. Also have a web UI with multi user management, past uploads history and search support.
+XBackBone is a simple and lightweight PHP file manager that support the instant sharing tool ShareX and *NIX systems. It supports uploading and displaying images, GIF, video, code, formatted text, pdf, and file downloading and uploading. Also have a web UI with multi user management, media gallery and search support.
+{: .fs-6 .fw-300 }
 
 [Download](https://github.com/SergiX44/XBackBone/releases/latest){: .btn .btn-green }
 [GitHub](https://github.com/SergiX44/XBackBone){: .btn .btn-blue }
 
-## Features
+## Main Features
 
 + Supports every upload type from ShareX.
 + Config generator for ShareX.
