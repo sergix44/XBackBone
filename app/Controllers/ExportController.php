@@ -25,6 +25,8 @@ class ExportController extends Controller
 
         $medias = $this->database->query('SELECT `uploads`.`filename`, `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $user->id);
 
+        $this->logger->info("User $user->id, $user->name, exporting data...");
+
         set_time_limit(0);
         ob_end_clean();
 

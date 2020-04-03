@@ -30,6 +30,8 @@ class TagController extends Controller
 
         [$id, $limit] = make(TagQuery::class)->addTag(param($request, 'tag'), param($request, 'mediaId'));
 
+        $this->logger->info("Tag added $id.");
+
         return json($response, [
             'limitReached' => $limit,
             'tagId' => $id,
@@ -57,6 +59,8 @@ class TagController extends Controller
         if (!$result) {
             throw new HttpNotFoundException($request);
         }
+
+        $this->logger->info("Tag removed ".param($request, 'tagId').', from media '.param($request, 'mediaId'));
 
         return $response;
     }

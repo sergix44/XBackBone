@@ -51,6 +51,7 @@ class UpgradeController extends Controller
 
             return redirect($response, route('system'));
         }
+        $this->logger->info('System update started.');
 
         $config = require BASE_DIR.'config.php';
         $config['maintenance'] = true;
@@ -88,6 +89,8 @@ class UpgradeController extends Controller
 
         $updateZip->close();
         unlink($tmpFile);
+
+        $this->logger->info('System update completed.');
 
         return redirect($response, urlFor('/install'));
     }

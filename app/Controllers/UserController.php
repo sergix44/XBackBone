@@ -95,7 +95,10 @@ class UserController extends Controller
             param($request, 'password'),
             param($request, 'is_admin') !== null ? 1 : 0,
             param($request, 'is_active') !== null ? 1 : 0,
-            $maxUserQuota
+            $maxUserQuota,
+            false,
+            param($request, 'hide_uploads') !== null ? 1 : 0,
+            param($request, 'copy_raw') !== null ? 1 : 0
         );
 
         if (param($request, 'send_notification') !== null) {
@@ -186,7 +189,9 @@ class UserController extends Controller
             param($request, 'is_admin') !== null ? 1 : 0,
             param($request, 'is_active') !== null ? 1 : 0,
             $user->max_disk_quota,
-            param($request, 'ldap') !== null ? 1 : 0
+            param($request, 'ldap') !== null ? 1 : 0,
+            param($request, 'hide_uploads') !== null ? 1 : 0,
+            param($request, 'copy_raw') !== null ? 1 : 0
         );
 
         if ($user->id === $this->session->get('user_id')) {

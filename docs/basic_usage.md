@@ -16,6 +16,8 @@ Some functions that every user that use XBackBone should know:
 + (`v3.1`+) With the right click on the uploaded media, you can select them, and then remove them in bulk.
 + (`v3.1`+) You can add additional tag to your uploads, clicking on the **+** button on the media.
 + (`v3.1`+) You can add you can delete tags, by right-click on them.
++ (`v3.1`+) You can choose in your profile options if hide the uploads by default.
++ (`v3.1`+) You can choose in your profile options if always copy the raw url (from the web interface).
 
 ## Administrator
 In addition, from the system page, and administrator can:

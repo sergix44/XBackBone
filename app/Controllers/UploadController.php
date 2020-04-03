@@ -30,7 +30,7 @@ class UploadController extends Controller
         $maxFileSize = min(stringToBytes(ini_get('post_max_size')), stringToBytes(ini_get('upload_max_filesize')));
 
         return view()->render($response, 'upload/web.twig', [
-            'max_file_size' => humanFileSize($maxFileSize)
+            'max_file_size' => humanFileSize($maxFileSize),
         ]);
     }
 
@@ -42,12 +42,6 @@ class UploadController extends Controller
      */
     public function uploadWeb(Request $request, Response $response): Response
     {
-        if ($this->config['maintenance']) {
-            $this->json['message'] = 'Endpoint under maintenance.';
-
-            return json($response, $this->json, 503);
-        }
-
         try {
             $file = $this->validateFile($request, $response);
 
@@ -92,25 +86,15 @@ class UploadController extends Controller
 
         try {
             $file = $this->validateFile($request, $response);
-        } catch (ValidationException $e) {
-            return $e->response();
-        }
 
-        if (param($request, 'token') === null) {
-            $this->json['message'] = 'Token not specified.';
+            if (param($request, 'token') === null) {
+                $this->json['message'] = 'Token not specified.';
 
-            return json($response, $this->json, 400);
-        }
+                return json($response, $this->json, 400);
+            }
 
-        $user = $this->database->query('SELECT * FROM `users` WHERE `token` = ? LIMIT 1', param($request, 'token'))->fetch();
+            $user = $this->database->query('SELECT * FROM `users` WHERE `token` = ? LIMIT 1', param($request, 'token'))->fetch();
 
-        if (!$user) {
-            $this->json['message'] = 'Token specified not found.';
-
-            return json($response, $this->json, 404);
-        }
-
-        try {
             $this->validateUser($request, $response, $file, $user);
         } catch (ValidationException $e) {
             return $e->response();
@@ -174,6 +158,12 @@ class UploadController extends Controller
      */
     protected function validateUser(Request $request, Response $response, UploadedFileInterface $file, $user)
     {
+        if (!$user) {
+            $this->json['message'] = 'Token specified not found.';
+
+            throw new ValidationException(json($response, $this->json, 404));
+        }
+
         if (!$user->active) {
             $this->json['message'] = 'Account disabled.';
 
@@ -196,11 +186,6 @@ class UploadController extends Controller
             $code = humanRandomString();
         } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
-        $published = 1;
-        if ($this->getSetting('hide_by_default') === 'on') {
-            $published = 0;
-        }
-
         $fileInfo = pathinfo($file->getClientFilename());
         $storagePath = "$user->user_code/$code.$fileInfo[extension]";
 
@@ -211,7 +196,7 @@ class UploadController extends Controller
             $code,
             $file->getClientFilename(),
             $storagePath,
-            $published,
+            $user->hide_uploads == '1' ? 0 : 1,
         ]);
         $mediaId = $this->database->getPdo()->lastInsertId();
 

@@ -70,7 +70,6 @@ class UserQuery
         return $user;
     }
 
-
     /**
      * @param  string  $email
      * @param  string  $username
@@ -80,9 +79,11 @@ class UserQuery
      * @param  int  $maxUserQuota
      * @param  string|null  $activateToken
      * @param  int  $ldap
+     * @param  int  $hideUploads
+     * @param  int  $copyRaw
      * @return bool|\PDOStatement|string
      */
-    public function create(string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, string $activateToken = null, int $ldap =0)
+    public function create(string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, string $activateToken = null, int $ldap = 0, int $hideUploads = 0, int $copyRaw = 0)
     {
         do {
             $userCode = humanRandomString(5);
@@ -90,7 +91,7 @@ class UserQuery
 
         $token = $this->generateUserUploadToken();
 
-        return $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`, `ldap`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        return $this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`, `ldap`, `hide_uploads`, `copy_raw`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             $email,
             $username,
             $password !== null ? password_hash($password, PASSWORD_DEFAULT) : null,
@@ -100,7 +101,9 @@ class UserQuery
             $token,
             $maxUserQuota,
             $activateToken,
-            $ldap
+            $ldap,
+            $hideUploads,
+            $copyRaw,
         ]);
     }
 
@@ -113,12 +116,14 @@ class UserQuery
      * @param  int  $isActive
      * @param  int  $maxUserQuota
      * @param  int  $ldap
+     * @param  int  $hideUploads
+     * @param  int  $copyRaw
      * @return bool|\PDOStatement|string
      */
-    public function update($id, string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, int $ldap = 0)
+    public function update($id, string $email, string $username, string $password = null, int $isAdmin = 0, int $isActive = 0, int $maxUserQuota = -1, int $ldap = 0, int $hideUploads = 0, int $copyRaw = 0)
     {
         if (!empty($password)) {
-            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=? WHERE `id` = ?', [
+            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=?, `hide_uploads`=?, `copy_raw`=? WHERE `id` = ?', [
                 $email,
                 $username,
                 password_hash($password, PASSWORD_DEFAULT),
@@ -126,16 +131,20 @@ class UserQuery
                 $isActive,
                 $maxUserQuota,
                 $ldap,
+                $hideUploads,
+                $copyRaw,
                 $id,
             ]);
         } else {
-            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=? WHERE `id` = ?', [
+            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=?, `hide_uploads`=?, `copy_raw`=? WHERE `id` = ?', [
                 $email,
                 $username,
                 $isAdmin,
                 $isActive,
                 $maxUserQuota,
                 $ldap,
+                $hideUploads,
+                $copyRaw,
                 $id,
             ]);
         }

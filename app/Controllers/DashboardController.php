@@ -73,7 +73,7 @@ class DashboardController extends Controller
                 'next' => $page < floor($query->getPages()),
                 'previous' => $page >= 1,
                 'current_page' => ++$page,
-                'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
+                'copy_raw' => $this->session->get('copy_raw', false),
                 'tags' => $tags,
             ]
         );

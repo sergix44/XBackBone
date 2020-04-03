@@ -19,7 +19,7 @@
                                             <div class="pl-3 pt-2d5"><span class="badge badge-dark shadow-lg">{{ media.size }}</span></div>
                                             <div class="text-right pr-3 pt-2d5">
                                                 <div class="btn-group shadow-lg">
-                                                    <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}{{ copy_url_behavior == 'raw' ? '/raw' }}">
+                                                    <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}{{ copy_raw ? '/raw' }}">
                                                         <i class="fas fa-link"></i>
                                                     </button>
                                                     <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>

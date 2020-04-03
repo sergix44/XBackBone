@@ -51,7 +51,7 @@ class LoginController extends Controller
         }
 
         $username = param($request, 'username');
-        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
+        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap`, `copy_raw` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
         if ($this->config['ldap']['enabled'] && ($user->ldap ?? true)) {
             $user = $this->ldapLogin($request, $username, param($request, 'password'), $user);
@@ -80,6 +80,7 @@ class LoginController extends Controller
         $this->session->set('user_id', $user->id);
         $this->session->set('username', $user->username);
         $this->session->set('admin', $user->is_admin);
+        $this->session->set('copy_raw', $user->copy_raw);
         $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
 
         $this->session->alert(lang('welcome', [$user->username]), 'info');

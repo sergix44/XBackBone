@@ -59,14 +59,18 @@ class ProfileController extends Controller
         }
 
         if (param($request, 'password') !== null && !empty(param($request, 'password'))) {
-            $this->database->query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', [
+            $this->database->query('UPDATE `users` SET `email`=?, `password`=?, `hide_uploads`=?, `copy_raw`=? WHERE `id` = ?', [
                 param($request, 'email'),
                 password_hash(param($request, 'password'), PASSWORD_DEFAULT),
+                param($request, 'hide_uploads') !== null ? 1 : 0,
+                param($request, 'copy_raw') !== null ? 1 : 0,
                 $user->id,
             ]);
         } else {
-            $this->database->query('UPDATE `users` SET `email`=? WHERE `id` = ?', [
+            $this->database->query('UPDATE `users` SET `email`=?, `hide_uploads`=?, `copy_raw`=? WHERE `id` = ?', [
                 param($request, 'email'),
+                param($request, 'hide_uploads') !== null ? 1 : 0,
+                param($request, 'copy_raw') !== null ? 1 : 0,
                 $user->id,
             ]);
         }

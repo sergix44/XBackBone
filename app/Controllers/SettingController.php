@@ -27,25 +27,24 @@ class SettingController extends Controller
             return redirect($response, route('system'));
         }
 
+        // registrations
         $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
-        $this->updateSetting('hide_by_default', param($request, 'hide_by_default', 'off'));
-        $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));
 
+        // quota
+        $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));
+        $this->updateSetting('default_user_quota', stringToBytes(param($request, 'default_user_quota', '1G')));
         $user = make(UserQuery::class)->get($request, $this->session->get('user_id'));
         $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
 
-        $this->updateSetting('default_user_quota', stringToBytes(param($request, 'default_user_quota', '1G')));
-        $this->updateSetting('copy_url_behavior', param($request, 'copy_url_behavior') === null ? 'default' : 'raw');
-
-        $this->applyTheme($request);
-        $this->applyLang($request);
         $this->updateSetting('custom_head', param($request, 'custom_head'));
-
-
         $this->updateSetting('recaptcha_enabled', param($request, 'recaptcha_enabled', 'off'));
         $this->updateSetting('recaptcha_site_key', param($request, 'recaptcha_site_key'));
         $this->updateSetting('recaptcha_secret_key', param($request, 'recaptcha_secret_key'));
 
+        $this->applyTheme($request);
+        $this->applyLang($request);
+
+        $this->logger->info("User $user->username updated the system settings.");
         $this->session->alert(lang('settings_saved'));
 
         return redirect($response, route('system'));
