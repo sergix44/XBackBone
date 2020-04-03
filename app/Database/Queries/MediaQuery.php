@@ -130,32 +130,24 @@ class MediaQuery
 
     public function runWithDbSort(int $page)
     {
+        $params = [];
         if ($this->isAdmin) {
             [$queryMedia, $queryPages] = $this->buildAdminQueries();
-
-            $params = [];
-            if ($this->text !== null) {
-                $params[] = '%'.htmlentities($this->text).'%';
-            }
-
-            $queryMedia .= $this->buildOrderBy().' LIMIT ? OFFSET ?';
-
-            $this->media = $this->db->query($queryMedia, array_merge($params, [self::PER_PAGE_ADMIN, $page * self::PER_PAGE_ADMIN]))->fetchAll();
-            $this->pages = $this->db->query($queryPages, $params)->fetch()->count / self::PER_PAGE_ADMIN;
+            $constPage = self::PER_PAGE_ADMIN;
         } else {
             [$queryMedia, $queryPages] = $this->buildUserQueries();
-
-            if ($this->text !== null) {
-                $params = [$this->userId, '%'.htmlentities($this->text).'%'];
-            } else {
-                $params = [$this->userId];
-            }
-
-            $queryMedia .= $this->buildOrderBy().' LIMIT ? OFFSET ?';
-
-            $this->media = $this->db->query($queryMedia, array_merge($params, [self::PER_PAGE, $page * self::PER_PAGE]))->fetchAll();
-            $this->pages = $this->db->query($queryPages, array_merge($params))->fetch()->count / self::PER_PAGE;
+            $params[] = $this->userId;
+            $constPage = self::PER_PAGE;
         }
+
+        if ($this->text !== null) {
+            $params[] = '%'.htmlentities($this->text).'%';
+        }
+
+        $queryMedia .= $this->buildOrderBy().' LIMIT ? OFFSET ?';
+
+        $this->media = $this->db->query($queryMedia, array_merge($params, [$constPage, $page * $constPage]))->fetchAll();
+        $this->pages = $this->db->query($queryPages, $params)->fetch()->count / $constPage;
 
         $tags = $this->getTags(array_column($this->media, 'id'));
 
@@ -205,7 +197,7 @@ class MediaQuery
                 [$queryMedia,] = $this->buildAdminQueries();
             } else {
                 [$queryMedia,] = $this->buildUserQueries();
-                $params = [$this->userId];
+                $params[] = $this->userId;
             }
 
             $params[] = '%'.htmlentities($this->text).'%';

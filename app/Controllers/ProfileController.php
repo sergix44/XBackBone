@@ -75,6 +75,7 @@ class ProfileController extends Controller
             ]);
         }
 
+        $this->session->set('copy_raw', param($request, 'copy_raw') !== null ? 1 : 0);
         $this->session->alert(lang('profile_updated'), 'success');
         $this->logger->info('User '.$this->session->get('username')." updated profile of $user->id.");
 
