@@ -8,10 +8,8 @@ use App\Web\Session;
 use App\Web\ValidationHelper;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-
 abstract class AuthController extends Controller
 {
-
     protected function checkRecaptcha(ValidationHelper $validator, Request $request)
     {
         $validator->callIf($this->getSetting('recaptcha_enabled') === 'on', function (Session $session) use (&$request) {

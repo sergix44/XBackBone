@@ -3,7 +3,6 @@
 
 namespace App\Web;
 
-
 class ValidationHelper
 {
     /**
@@ -31,7 +30,6 @@ class ValidationHelper
         if (!$this->failed && $condition) {
             $this->failed = true;
             $this->session->alert(lang($alert), $type);
-
         }
 
         return $this;
