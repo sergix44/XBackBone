@@ -2,231 +2,411 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\TagQuery;
-use App\Database\Queries\UserQuery;
-use App\Exceptions\ValidationException;
-use Exception;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\UploadedFileInterface;
+use App\Exceptions\UnauthorizedException;
+use Intervention\Image\ImageManagerStatic as Image;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
+use League\Flysystem\Filesystem;
+use Slim\Exception\NotFoundException;
+use Slim\Http\Request;
+use Slim\Http\Response;
+use Slim\Http\Stream;
 
 class UploadController extends Controller
 {
-    private $json = [
-        'message' => null,
-        'version' => PLATFORM_VERSION,
-    ];
 
-    /**
-     * @param  Response  $response
-     *
-     * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function uploadWebPage(Response $response): Response
-    {
-        $maxFileSize = min(stringToBytes(ini_get('post_max_size')), stringToBytes(ini_get('upload_max_filesize')));
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws FileExistsException
+	 */
+	public function upload(Request $request, Response $response): Response
+	{
 
-        return view()->render($response, 'upload/web.twig', [
-            'max_file_size' => humanFileSize($maxFileSize),
-        ]);
-    }
+		$json = [
+			'message' => null,
+			'version' => PLATFORM_VERSION,
+		];
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return Response
-     * @throws Exception
-     */
-    public function uploadWeb(Request $request, Response $response): Response
-    {
-        try {
-            $file = $this->validateFile($request, $response);
+		if ($this->settings['maintenance']) {
+			$json['message'] = 'Endpoint under maintenance.';
+			return $response->withJson($json, 503);
+		}
 
-            $user = make(UserQuery::class)->get($request, $this->session->get('user_id'));
+		if ($request->getServerParam('CONTENT_LENGTH') > stringToBytes(ini_get('post_max_size'))) {
+			$json['message'] = 'File too large (post_max_size too low?).';
+			return $response->withJson($json, 400);
+		}
 
-            $this->validateUser($request, $response, $file, $user);
-        } catch (ValidationException $e) {
-            return $e->response();
-        }
+		if (isset($request->getUploadedFiles()['upload']) && $request->getUploadedFiles()['upload']->getError() === UPLOAD_ERR_INI_SIZE) {
+			$json['message'] = 'File too large (upload_max_filesize too low?).';
+			return $response->withJson($json, 400);
+		}
 
-        if (!$this->updateUserQuota($request, $user->id, $file->getSize())) {
-            $this->json['message'] = 'User disk quota exceeded.';
+		if ($request->getParam('token') === null) {
+			$json['message'] = 'Token not specified.';
+			return $response->withJson($json, 400);
+		}
 
-            return json($response, $this->json, 507);
-        }
+		$user = $this->database->query('SELECT * FROM `users` WHERE `token` = ? LIMIT 1', $request->getParam('token'))->fetch();
 
-        try {
-            $response = $this->saveMedia($response, $file, $user);
-            $this->setSessionQuotaInfo($user->current_disk_quota + $file->getSize(), $user->max_disk_quota);
-        } catch (Exception $e) {
-            $this->updateUserQuota($request, $user->id, $file->getSize(), true);
-            throw $e;
-        }
+		if (!$user) {
+			$json['message'] = 'Token specified not found.';
+			return $response->withJson($json, 404);
+		}
 
-        return $response;
-    }
+		if (!$user->active) {
+			$json['message'] = 'Account disabled.';
+			return $response->withJson($json, 401);
+		}
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function uploadEndpoint(Request $request, Response $response): Response
-    {
-        if ($this->config['maintenance']) {
-            $this->json['message'] = 'Endpoint under maintenance.';
+		do {
+			$code = humanRandomString();
+		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
 
-            return json($response, $this->json, 503);
-        }
+		/** @var \Psr\Http\Message\UploadedFileInterface $file */
+		$file = $request->getUploadedFiles()['upload'];
 
-        try {
-            $file = $this->validateFile($request, $response);
+		$fileInfo = pathinfo($file->getClientFilename());
+		$storagePath = "$user->user_code/$code.$fileInfo[extension]";
 
-            if (param($request, 'token') === null) {
-                $this->json['message'] = 'Token not specified.';
+		$this->storage->writeStream($storagePath, $file->getStream()->detach());
 
-                return json($response, $this->json, 400);
-            }
+		$this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`) VALUES (?, ?, ?, ?)', [
+			$user->id,
+			$code,
+			$file->getClientFilename(),
+			$storagePath,
+		]);
 
-            $user = $this->database->query('SELECT * FROM `users` WHERE `token` = ? LIMIT 1', param($request, 'token'))->fetch();
+		$json['message'] = 'OK.';
+		$json['url'] = urlFor("/$user->user_code/$code.$fileInfo[extension]");
 
-            $this->validateUser($request, $response, $file, $user);
-        } catch (ValidationException $e) {
-            return $e->response();
-        }
+		$this->logger->info("User $user->username uploaded new media.", [$this->database->raw()->lastInsertId()]);
 
-        if (!$this->updateUserQuota($request, $user->id, $file->getSize())) {
-            $this->json['message'] = 'User disk quota exceeded.';
+		return $response->withJson($json, 201);
+	}
 
-            return json($response, $this->json, 507);
-        }
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws FileNotFoundException
+	 * @throws NotFoundException
+	 */
+	public function show(Request $request, Response $response, $args): Response
+	{
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-        try {
-            $response = $this->saveMedia($response, $file, $user);
-        } catch (Exception $e) {
-            $this->updateUserQuota($request, $user->id, $file->getSize(), true);
-            throw $e;
-        }
-        return $response;
-    }
+		if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
+			throw new NotFoundException($request, $response);
+		}
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @return UploadedFileInterface
-     * @throws ValidationException
-     */
-    protected function validateFile(Request $request, Response $response)
-    {
-        if ($request->getServerParams()['CONTENT_LENGTH'] > stringToBytes(ini_get('post_max_size'))) {
-            $this->json['message'] = 'File too large (post_max_size too low?).';
+		$filesystem = $this->storage;
 
-            throw new ValidationException(json($response, $this->json, 400));
-        }
+		if (isBot($request->getHeaderLine('User-Agent'))) {
+			return $this->streamMedia($request, $response, $filesystem, $media);
+		} else {
+			try {
+				$media->mimetype = $filesystem->getMimetype($media->storage_path);
+				$size = $filesystem->getSize($media->storage_path);
 
-        $file = array_values($request->getUploadedFiles());
-        /** @var UploadedFileInterface|null $file */
-        $file = $file[0] ?? null;
+				$type = explode('/', $media->mimetype)[0];
+				if ($type === 'image' && !isDisplayableImage($media->mimetype)) {
+					$type = 'application';
+					$media->mimetype = 'application/octet-stream';
+				}
+				if ($type === 'text') {
+					if ($size <= (200 * 1024)) { // less than 200 KB
+						$media->text = $filesystem->read($media->storage_path);
+					} else {
+						$type = 'application';
+						$media->mimetype = 'application/octet-stream';
+					}
+				}
+				$media->size = humanFileSize($size);
 
-        if ($file === null) {
-            $this->json['message'] = 'Request without file attached.';
+			} catch (FileNotFoundException $e) {
+				throw new NotFoundException($request, $response);
+			}
 
-            throw new ValidationException(json($response, $this->json, 400));
-        }
+			return $this->view->render($response, 'upload/public.twig', [
+				'delete_token' => isset($args['token']) ? $args['token'] : null,
+				'media' => $media,
+				'type' => $type,
+				'extension' => pathinfo($media->filename, PATHINFO_EXTENSION),
+			]);
+		}
+	}
 
-        if ($file->getError() === UPLOAD_ERR_INI_SIZE) {
-            $this->json['message'] = 'File too large (upload_max_filesize too low?).';
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function deleteByToken(Request $request, Response $response, $args): Response
+	{
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-            throw new ValidationException(json($response, $this->json, 400));
-        }
+		if (!$media) {
+			throw new NotFoundException($request, $response);
+		}
 
-        return $file;
-    }
+		$user = $this->database->query('SELECT `id`, `active` FROM `users` WHERE `token` = ? LIMIT 1', $args['token'])->fetch();
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  UploadedFileInterface  $file
-     * @param $user
-     * @return void
-     * @throws ValidationException
-     */
-    protected function validateUser(Request $request, Response $response, UploadedFileInterface $file, $user)
-    {
-        if (!$user) {
-            $this->json['message'] = 'Token specified not found.';
+		if (!$user) {
+			$this->session->alert(lang('token_not_found'), 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
 
-            throw new ValidationException(json($response, $this->json, 404));
-        }
+		if (!$user->active) {
+			$this->session->alert(lang('account_disabled'), 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
 
-        if (!$user->active) {
-            $this->json['message'] = 'Account disabled.';
+		if ($this->session->get('admin', false) || $user->id === $media->user_id) {
 
-            throw new ValidationException(json($response, $this->json, 401));
-        }
-    }
+			try {
+				$this->storage->delete($media->storage_path);
+			} catch (FileNotFoundException $e) {
+				throw new NotFoundException($request, $response);
+			} finally {
+				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $media->mediaId);
+				$this->logger->info('User ' . $user->username . ' deleted a media via token.', [$media->mediaId]);
+			}
+		} else {
+			throw new UnauthorizedException();
+		}
+
+		return redirect($response, 'home');
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws FileNotFoundException
+	 */
+	public function getRawById(Request $request, Response $response, $args): Response
+	{
+
+		$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
+
+		if (!$media) {
+			throw new NotFoundException($request, $response);
+		}
+
+		return $this->streamMedia($request, $response, $this->storage, $media);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws FileNotFoundException
+	 */
+	public function showRaw(Request $request, Response $response, $args): Response
+	{
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
+
+		if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
+			throw new NotFoundException($request, $response);
+		}
+		return $this->streamMedia($request, $response, $this->storage, $media);
+	}
 
 
-    /**
-     * @param  Response  $response
-     * @param  UploadedFileInterface  $file
-     * @param $user
-     * @return Response
-     * @throws \League\Flysystem\FileExistsException
-     * @throws \League\Flysystem\FileNotFoundException
-     */
-    protected function saveMedia(Response $response, UploadedFileInterface $file, $user)
-    {
-        do {
-            $code = humanRandomString();
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws FileNotFoundException
+	 */
+	public function download(Request $request, Response $response, $args): Response
+	{
+		$media = $this->getMedia($args['userCode'], $args['mediaCode']);
 
-        $fileInfo = pathinfo($file->getClientFilename());
-        $storagePath = "$user->user_code/$code.$fileInfo[extension]";
+		if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
+			throw new NotFoundException($request, $response);
+		}
+		return $this->streamMedia($request, $response, $this->storage, $media, 'attachment');
+	}
 
-        $this->storage->writeStream($storagePath, $file->getStream()->detach());
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function togglePublish(Request $request, Response $response, $args): Response
+	{
+		if ($this->session->get('admin')) {
+			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
+		} else {
+			$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$args['id'], $this->session->get('user_id')])->fetch();
+		}
 
-        $this->database->query('INSERT INTO `uploads`(`user_id`, `code`, `filename`, `storage_path`, `published`) VALUES (?, ?, ?, ?, ?)', [
-            $user->id,
-            $code,
-            $file->getClientFilename(),
-            $storagePath,
-            $user->hide_uploads == '1' ? 0 : 1,
-        ]);
-        $mediaId = $this->database->getPdo()->lastInsertId();
+		if (!$media) {
+			throw new NotFoundException($request, $response);
+		}
 
-        $this->autoTag($mediaId, $storagePath);
+		$this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [$media->published ? 0 : 1, $media->id]);
 
-        $this->json['message'] = 'OK';
-        $this->json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
+		return $response->withStatus(200);
+	}
 
-        $this->logger->info("User $user->username uploaded new media.", [$mediaId]);
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function delete(Request $request, Response $response, $args): Response
+	{
+		$media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
-        return json($response, $this->json, 201);
-    }
+		if (!$media) {
+			throw new NotFoundException($request, $response);
+		}
 
-    /**
-     * @param $mediaId
-     * @param $storagePath
-     * @throws \League\Flysystem\FileNotFoundException
-     */
-    protected function autoTag($mediaId, $storagePath)
-    {
-        $mime = $this->storage->getMimetype($storagePath);
+		if ($this->session->get('admin', false) || $media->user_id === $this->session->get('user_id')) {
 
-        [$type, $subtype] = explode('/', $mime);
+			try {
+				$this->storage->delete($media->storage_path);
+			} catch (FileNotFoundException $e) {
+				throw new NotFoundException($request, $response);
+			} finally {
+				$this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $args['id']);
+				$this->logger->info('User ' . $this->session->get('username') . ' deleted a media.', [$args['id']]);
+				$this->session->set('used_space', humanFileSize($this->getUsedSpaceByUser($this->session->get('user_id'))));
+			}
+		} else {
+			throw new UnauthorizedException();
+		}
 
-        /** @var TagQuery $query */
-        $query = make(TagQuery::class);
-        $query->addTag($type, $mediaId);
+		return $response->withStatus(200);
+	}
 
-        if ($type === 'application') {
-            $query->addTag($subtype, $mediaId);
-        }
-    }
+	/**
+	 * @param $userCode
+	 * @param $mediaCode
+	 * @return mixed
+	 */
+	protected function getMedia($userCode, $mediaCode)
+	{
+		$mediaCode = pathinfo($mediaCode)['filename'];
+
+		$media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
+			$userCode,
+			$mediaCode,
+		])->fetch();
+
+		return $media;
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param Filesystem $storage
+	 * @param $media
+	 * @param string $disposition
+	 * @return Response
+	 * @throws FileNotFoundException
+	 */
+	protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
+	{
+		set_time_limit(0);
+		$mime = $storage->getMimetype($media->storage_path);
+
+		if ($request->getParam('width') !== null && explode('/', $mime)[0] === 'image') {
+
+			$image = Image::make($storage->readStream($media->storage_path))
+				->resizeCanvas(
+					$request->getParam('width'),
+					$request->getParam('height'),
+					'center')
+				->encode('png');
+
+			return $response
+				->withHeader('Content-Type', 'image/png')
+				->withHeader('Content-Disposition', $disposition . ';filename="scaled-' . pathinfo($media->filename)['filename'] . '.png"')
+				->write($image);
+		} else {
+			$stream = new Stream($storage->readStream($media->storage_path));
+
+			if (!in_array(explode('/', $mime)[0], ['image', 'video', 'audio']) || $disposition === 'attachment') {
+				return $response->withHeader('Content-Type', $mime)
+					->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
+					->withHeader('Content-Length', $stream->getSize())
+					->withBody($stream);
+			}
+
+			$end = $stream->getSize() - 1;
+
+			if ($request->getServerParam('HTTP_RANGE') !== null) {
+				list(, $range) = explode('=', $request->getServerParam('HTTP_RANGE'), 2);
+
+				if (strpos($range, ',') !== false) {
+					return $response->withHeader('Content-Type', $mime)
+						->withHeader('Content-Disposition', $disposition . '; filename="' . $media->filename . '"')
+						->withHeader('Content-Length', $stream->getSize())
+						->withHeader('Accept-Ranges', 'bytes')
+						->withHeader('Content-Range', "0,{$stream->getSize()}")
+						->withStatus(416)
+						->withBody($stream);
+				}
+
+				if ($range === '-') {
+					$start = $stream->getSize() - (int)substr($range, 1);
+				} else {
+					$range = explode('-', $range);
+					$start = (int)$range[0];
+					$end = (isset($range[1]) && is_numeric($range[1])) ? (int)$range[1] : $stream->getSize();
+				}
+
+				$end = ($end > $stream->getSize() - 1) ? $stream->getSize() - 1 : $end;
+				$stream->seek($start);
+
+				header("Content-Type: $mime");
+				header('Content-Length: ' . ($end - $start + 1));
+				header('Accept-Ranges: bytes');
+				header("Content-Range: bytes $start-$end/{$stream->getSize()}");
+
+				http_response_code(206);
+				ob_end_clean();
+
+				$buffer = 16348;
+				$readed = $start;
+				while ($readed < $end) {
+					if ($readed + $buffer > $end) {
+						$buffer = $end - $readed + 1;
+					}
+					echo $stream->read($buffer);
+					$readed += $buffer;
+				}
+
+				exit(0);
+			}
+
+			return $response->withHeader('Content-Type', $mime)
+				->withHeader('Content-Length', $stream->getSize())
+				->withHeader('Accept-Ranges', 'bytes')
+				->withStatus(200)
+				->withBody($stream);
+		}
+	}
 }

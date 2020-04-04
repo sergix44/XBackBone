@@ -10,8 +10,7 @@ assignees: ''
 **System Info**
 + PHP Version:
 + XBackBone Version:
-+ Webserver: [Apache/Nginx/...]
-+ Database backend: [SQLite/Mysql/...]
++ Webserver:
 
 **Describe the bug**
 A clear and concise description of what the bug is.
@@ -28,6 +27,3 @@ A clear and concise description of what you expected to happen.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
-
-**Logs**
-XBackBone and/or webserver logs.

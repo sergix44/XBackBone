@@ -2,102 +2,92 @@
 
 namespace App\Controllers;
 
-use App\Database\Migrator;
+
 use League\Flysystem\FileNotFoundException;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class AdminController extends Controller
 {
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     *
-     * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     *
-     */
-    public function system(Request $request, Response $response): Response
-    {
-        return view()->render($response, 'dashboard/system.twig', [
-            'usersCount' => $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,
-            'mediasCount' => $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count,
-            'orphanFilesCount' => $orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count,
-            'totalSize' => humanFileSize($totalSize = $this->database->query('SELECT SUM(`current_disk_quota`) AS `sum` FROM `users`')->fetch()->sum ?? 0),
-            'post_max_size' => ini_get('post_max_size'),
-            'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'installed_lang' => $this->lang->getList(),
-            'forced_lang' => $request->getAttribute('forced_lang'),
-            'php_version' => phpversion(),
-            'max_memory' => ini_get('memory_limit'),
-            'register_enabled' => $this->getSetting('register_enabled', 'off'),
-            'hide_by_default' => $this->getSetting('hide_by_default', 'off'),
-            'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
-            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
-            'default_user_quota' => humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0, true),
-            'recaptcha_enabled' => $this->getSetting('recaptcha_enabled', 'off'),
-            'recaptcha_site_key' => $this->getSetting('recaptcha_site_key'),
-            'recaptcha_secret_key' => $this->getSetting('recaptcha_secret_key'),
-        ]);
-    }
 
-    /**
-     * @param  Response  $response
-     *
-     * @return Response
-     */
-    public function deleteOrphanFiles(Response $response): Response
-    {
-        $orphans = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` IS NULL')->fetchAll();
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws FileNotFoundException
+	 */
+	public function system(Request $request, Response $response): Response
+	{
+		$usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count;
+		$mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count;
+		$orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count;
 
-        $filesystem = $this->storage;
-        $deleted = 0;
+		$medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads`')->fetchAll();
 
-        foreach ($orphans as $orphan) {
-            try {
-                $filesystem->delete($orphan->storage_path);
-                $deleted++;
-            } catch (FileNotFoundException $e) {
-            }
-        }
+		$totalSize = 0;
 
-        $this->database->query('DELETE FROM `uploads` WHERE `user_id` IS NULL');
+		$filesystem = $this->storage;
+		foreach ($medias as $media) {
+			$totalSize += $filesystem->getSize($media->storage_path);
+		}
 
-        $this->session->alert(lang('deleted_orphans', [$deleted]));
+		return $this->view->render($response, 'dashboard/system.twig', [
+			'usersCount' => $usersCount,
+			'mediasCount' => $mediasCount,
+			'orphanFilesCount' => $orphanFilesCount,
+			'totalSize' => humanFileSize($totalSize),
+			'post_max_size' => ini_get('post_max_size'),
+			'upload_max_filesize' => ini_get('upload_max_filesize'),
+			'installed_lang' => $this->lang->getList(),
+		]);
+	}
 
-        return redirect($response, route('system'));
-    }
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function deleteOrphanFiles(Request $request, Response $response): Response
+	{
+		$orphans = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` IS NULL')->fetchAll();
 
-    /**
-     * @param  Response  $response
-     *
-     * @return Response
-     */
-    public function getThemes(Response $response): Response
-    {
-        $apiJson = json_decode(file_get_contents('https://bootswatch.com/api/4.json'));
+		$filesystem = $this->storage;
+		$deleted = 0;
 
-        $out = [];
+		foreach ($orphans as $orphan) {
+			try {
+				$filesystem->delete($orphan->storage_path);
+				$deleted++;
+			} catch (FileNotFoundException $e) {
+			}
+		}
 
-        $out['Default - Bootstrap 4 default theme'] = 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css';
-        foreach ($apiJson->themes as $theme) {
-            $out["{$theme->name} - {$theme->description}"] = $theme->cssMin;
-        }
+		$this->database->query('DELETE FROM `uploads` WHERE `user_id` IS NULL');
 
-        return json($response, $out);
-    }
+		$this->session->alert(lang('deleted_orphans', [$deleted]));
 
-    /**
-     * @param  Response  $response
-     * @return Response
-     */
-    public function recalculateUserQuota(Response $response): Response
-    {
-        $migrator = new Migrator($this->database, null);
-        $migrator->reSyncQuotas($this->storage);
-        $this->session->alert(lang('quota_recalculated'));
-        return redirect($response, route('system'));
-    }
+		return redirect($response, 'system');
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function applyLang(Request $request, Response $response): Response
+	{
+		$config = require BASE_DIR . 'config.php';
+
+		if ($request->getParam('lang') !== 'auto') {
+			$config['lang'] = $request->getParam('lang');
+		} else {
+			unset($config['lang']);
+		}
+
+		file_put_contents(BASE_DIR . 'config.php', '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
+
+		$this->session->alert(lang('lang_set', [$request->getParam('lang')]));
+
+		return redirect($response, 'system');
+	}
 }

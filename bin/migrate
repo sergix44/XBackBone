@@ -2,41 +2,96 @@
 <?php
 (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) ?: die('Sorry, PHP 7.1 or above is required to run XBackBone.');
 if (php_sapi_name() !== 'cli') {
-    die();
+	die();
 }
 
 use App\Database\DB;
-use App\Database\Migrator;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$config = include __DIR__.'/../config.php';
+$config = include __DIR__ . '/../config.php';
 
 if (!$config) {
-    die('config.php not found. Please create a new one.');
+	die('config.php not found. Please create a new one.');
 }
 
-chdir(__DIR__.'/../');
+chdir(__DIR__ . '/../');
+
+DB::setDsn($config['db']['connection'] . ':' . $config['db']['dsn'], $config['db']['username'], $config['db']['password']);
 
 $firstMigrate = false;
-if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__.'/../'.$config['db']['dsn'])) {
-    touch(__DIR__.'/../'.$config['db']['dsn']);
-    $firstMigrate = true;
+if (!file_exists($config['db']['dsn']) && DB::driver() === 'sqlite') {
+	touch($config['db']['dsn']);
+	$firstMigrate = true;
 }
 
-$db = new DB(dsnFromConfig($config, getcwd().DIRECTORY_SEPARATOR), $config['db']['username'], $config['db']['password']);
+try {
+	DB::doQuery('SELECT 1 FROM `migrations` LIMIT 1');
+} catch (PDOException $exception) {
+	$firstMigrate = true;
+}
 
-$migrator = new Migrator($db, 'resources/schemas', $firstMigrate);
-$migrator->migrate();
+echo 'Connected.' . PHP_EOL;
+
+if ($firstMigrate) {
+	echo 'Creating migrations table...' . PHP_EOL;
+	DB::raw()->exec(file_get_contents('resources/schemas/migrations.sql'));
+}
+
+$files = glob('resources/schemas/' . DB::driver() . '/*.sql');
+
+$names = array_map(function ($path) {
+	return basename($path);
+}, $files);
+
+$in = str_repeat('?, ', count($names) - 1) . '?';
+
+$inMigrationsTable = DB::doQuery("SELECT * FROM `migrations` WHERE `name` IN ($in)", $names)->fetchAll();
+
+
+foreach ($files as $file) {
+
+	$continue = false;
+	$exists = false;
+
+	foreach ($inMigrationsTable as $migration) {
+		if (basename($file) === $migration->name && $migration->migrated) {
+			$continue = true;
+			break;
+		} else if (basename($file) === $migration->name && !$migration->migrated) {
+			$exists = true;
+			break;
+		}
+	}
+	if ($continue) continue;
+
+	$sql = file_get_contents($file);
+	try {
+		DB::raw()->exec($sql);
+		if (!$exists) {
+			DB::doQuery('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 1]);
+		} else {
+			DB::doQuery('UPDATE `migrations` SET `migrated`=? WHERE `name`=?', [1, basename($file)]);
+		}
+		echo "Migrated '$file'" . PHP_EOL;
+	} catch (PDOException $exception) {
+		if (!$exists) {
+			DB::doQuery('INSERT INTO `migrations` VALUES (?,?)', [basename($file), 0]);
+		}
+		echo "Error migrating '$file' (" . $exception->getMessage() . ')' . PHP_EOL;
+		echo $exception->getTraceAsString() . PHP_EOL;
+
+	}
+}
 
 if (isset($argv[1]) && $argv[1] === '--install') {
-    $db->query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT), humanRandomString(5)]);
+	DB::doQuery("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT), humanRandomString(5)]);
 }
 
-if (file_exists(__DIR__.'/../install') && (!isset($config['debug']) || !$config['debug'])) {
-    removeDirectory(__DIR__.'/../install');
+if (file_exists(__DIR__ . '/../install')) {
+	removeDirectory(__DIR__ . '/../install');
 }
 
-echo 'If you are upgrading from a previous version, please run a "php bin\clean".'.PHP_EOL;
-echo 'Done.'.PHP_EOL;
+echo 'If you are upgrading from a previous version, please run a "php bin\clean".' . PHP_EOL;
+echo 'Done.' . PHP_EOL;
 exit(0);

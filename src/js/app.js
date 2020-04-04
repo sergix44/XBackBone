@@ -1,44 +1,26 @@
 var app = {
-    init: function () {
-        Dropzone.options.uploadDropzone = {
-            paramName: 'upload',
-            maxFilesize: window.AppConfig.max_upload_size / Math.pow(1024, 2), // MB
-            dictDefaultMessage: window.AppConfig.lang.dropzone,
-            error: function (file, response) {
-                this.defaultOptions.error(file, response.message);
-            },
-            totaluploadprogress: function (uploadProgress) {
-                var text = Math.round(uploadProgress) + '%';
-                $('#uploadProgess').css({'width': text}).text(text);
-            },
-            timeout: 0
-        };
-    },
     run: function () {
         $('[data-toggle="tooltip"]').tooltip();
         $('[data-toggle="popover"]').popover();
 
         $('.user-delete').click(app.modalDelete);
-        $('.public-delete').click(app.modalDelete);
         $('.media-delete').click(app.mediaDelete);
         $('.publish-toggle').click(app.publishToggle);
         $('.refresh-token').click(app.refreshToken);
         $('#themes').mousedown(app.loadThemes);
         $('.checkForUpdatesButton').click(app.checkForUpdates);
 
-        $('.bulk-selector').contextmenu(app.bulkSelect);
-        $('#bulk-delete').click(app.bulkDelete);
-
-        $('.tag-add').click(app.addTag);
-        $('.tag-item').contextmenu(app.removeTag);
-
-
-        $('.alert').not('.alert-permanent').fadeTo(10000, 500).slideUp(500, function () {
+        $('.alert').fadeTo(4000, 500).slideUp(500, function () {
             $('.alert').slideUp(500);
         });
 
         new ClipboardJS('.btn-clipboard');
-        new Plyr($('#player'), {ratio: '16:9'});
+
+        if ($('#player').length > 0) {
+            videojs('player').ready(function () {
+                this.volume(0.5);
+            });
+        }
 
         $('.footer').fadeIn(600);
 
@@ -101,12 +83,13 @@ var app = {
         var $themes = $('#themes');
         $.get(window.AppConfig.base_url + '/system/themes', function (data) {
             $themes.empty();
-            $.each(data, function (key, value) {
+            Object.keys(data).forEach(function (key) {
                 var opt = document.createElement('option');
-                opt.value = value;
+                opt.value = data[key];
                 opt.innerHTML = key;
                 $themes.append(opt);
             });
+            $('#themes-apply').prop('disabled', false);
         });
         $themes.unbind('mousedown');
     },
@@ -114,7 +97,7 @@ var app = {
         window.open($('#telegram-share-button').data('url') + $('#telegram-share-text').val(), '_blank');
     },
     checkForUpdates: function () {
-        $('#checkForUpdatesMessage').empty().html('<i class="fas fa-spinner fa-pulse fa-3x"></i>');
+        $('#checkForUpdatesMessage').empty().text('...');
         $('#doUpgradeButton').prop('disabled', true);
         $.get(window.AppConfig.base_url + '/system/checkForUpdates?prerelease=' + $(this).data('prerelease'), function (data) {
             $('#checkForUpdatesMessage').empty().text(data.message);
@@ -124,98 +107,7 @@ var app = {
                 $('#doUpgradeButton').prop('disabled', true);
             }
         });
-    },
-    bulkSelect: function (e) {
-        e.preventDefault();
-        $(this).toggleClass('bg-light').toggleClass('text-danger').toggleClass('bulk-selected');
-        var $bulkDelete = $('#bulk-delete');
-        if ($bulkDelete.hasClass('disabled')) {
-            $bulkDelete.removeClass('disabled');
-        }
-    },
-    bulkDelete: function () {
-        $('.bulk-selected').each(function (index, media) {
-            $.post(window.AppConfig.base_url + '/upload/' + $(media).data('id') + '/delete', function () {
-                $(media).fadeOut(200, function () {
-                    $(this).remove();
-                });
-            });
-        });
-        $(this).addClass('disabled');
-    },
-    addTag: function (e) {
-        var $caller = $(this);
-        var $newAddTag = $caller.clone()
-            .click(app.addTag)
-            .appendTo($caller.parent());
-
-        var tagInput = $(document.createElement('input'))
-            .addClass('form-control form-control-verysm tag-input')
-            .attr('data-id', $caller.data('id'))
-            .attr('maxlength', 32)
-            .css('width', '90px')
-            .attr('onchange', 'this.value = this.value.toLowerCase();')
-            .keydown(function (e) {
-                if (e.keyCode === 13) { // enter -> save tag
-                    app.saveTag.call($(this)); // change context
-                    return false;
-                }
-                if (e.keyCode === 32) { // space -> save and add new tag
-                    $newAddTag.click();
-                    return false;
-                }
-            })
-            .focusout(app.saveTag);
-
-        $caller.off()
-            .removeClass('badge-success badge-light')
-            .html(tagInput)
-            .children()
-            .focus();
-    },
-    saveTag: function () {
-        var tag = $(this).val();
-        var mediaId = $(this).data('id');
-        var $parent = $(this).parent();
-        if (tag === '') {
-            $parent.remove();
-            return false;
-        }
-        $.ajax({
-            type: 'POST',
-            url: window.AppConfig.base_url + '/tag/add' + window.location.search,
-            data: {'tag': tag, 'mediaId': mediaId},
-            dataType: 'json',
-            success: function (data) {
-                if (!data.limitReached) {
-                    $parent.replaceWith(
-                        $(document.createElement('a'))
-                            .addClass('badge badge-pill badge-light shadow-sm tag-item mr-1')
-                            .attr('data-id', data.tagId)
-                            .attr('data-media', mediaId)
-                            .attr('href', data.href)
-                            .contextmenu(app.removeTag)
-                            .text(tag)
-                    );
-                } else {
-                    $parent.remove();
-                }
-            }
-        });
-    },
-    removeTag: function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var $tag = $(this);
-
-        $.post(window.AppConfig.base_url + '/tag/remove', {
-            'tagId': $tag.data('id'),
-            'mediaId': $tag.data('media')
-        }, function () {
-            $tag.remove();
-        });
     }
 };
 
-app.init();
 $(document).ready(app.run);

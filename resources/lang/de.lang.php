@@ -21,7 +21,7 @@ return [
     'public.delete_text' => 'Möchtest du das wirklich löschen? Es wird dann für immer weg sein!',
     'preview' => 'Vorschau',
     'filename' => 'Dateiname',
-    'size' => 'Größe aller Datein',
+    'size' => 'Größe',
     'public' => 'Öffentlich',
     'owner' => 'Besitzer',
     'date' => 'Datum',
@@ -84,10 +84,10 @@ return [
     'maintenance' => 'Wartungsarbeiten',
     'clean_orphaned_uploads' => 'Leere verwaiste Uploads',
     'path_not_writable' => 'Der Speicherort ist nicht beschreibbar.',
-    'already_latest_version' => 'Du hast bereits die neueste Version.',
+    'already_latest_version' => 'Sie haben bereits die neueste Version.',
     'new_version_available' => 'Neue Version %s ist verfügbar!',
     'cannot_retrieve_file' => 'Die Datei kann nicht abgerufen werden.',
-    'file_size_no_match' => 'Die heruntergeladene Datei stimmt mit der richtigen Dateigröße nicht überein.',
+    'file_size_no_match' => 'Die heruntergeladene Datei stimmt nicht mit der richtigen Dateigröße überein.',
     'check_for_updates' => 'Auf Updates prüfen',
     'upgrade' => 'Aktualisierung',
     'updates' => 'Updates',
@@ -99,79 +99,6 @@ return [
     'translated_strings' => 'übersetzte Zeichen',
     'total_strings' => 'Übersetzt',
     'lang_name' => 'Name von der Sprache',
-    'default_lang_behavior' => 'XBackBone wird versuchen die Sprache deines Browsers herauszufinden (Standardsprache is Englisch).',
+    'default_lang_behavior' => 'XBackBone versucht von dein Browser die Sprache herauszufinden (Standard: English).',
     'lang_set' => 'Sprache ist jetzt "%s"',
-    'prerelease_channel' => 'Beta Channel',
-    'upload' => 'Hochladen',
-    'no_upload_token' => 'Du hast keinen persönlichen Token. (Erstelle einen und versuche es erneut.)',
-    'drop_to_upload' => 'Hier klicken oder Dateien hierher ziehen.',
-    'donation' => 'Spenden',
-    'donate_text' => 'Wenn dir XBackBone gefällt und du die Entwicklung unterstützen möchtest, spende einen kleinen Beitrag!',
-    'custom_head_html' => 'Eigenes HTML Head Content',
-    'custom_head_html_hint' => 'Dieser Inhalt wird auf jeder Seite am Tag <head> hinzugefügt.',
-    'custom_head_set' => 'Benutzerdefinierter HTML Head wurde angewendet.',
-    'remember_me' => 'Erinnere mich daran',
-    'please_wait' => 'Bitte warten…',
-    'dont_close' => 'Schließe diesen Tab erst wenn fertig.',
-    'php_info' => 'PHP Informationen',
-    'system_settings' => 'Systemeinstellungen',
-    'register_enabled' => 'Registrierungen aktivieren',
-    'hide_by_default' => 'Medien standardmäßig ausblenden',
-    'copy_url_behavior' => 'URL kopieren Mode',
-    'settings_saved' => 'Systemeinstellungen gespeichert!',
-    'export_data' => 'Daten exportieren',
-    'password_recovery' => 'Passwort wiederherstellen',
-    'no_account' => 'Du hast noch kein Account?',
-    'register' => 'Registrieren',
-    'default_user_quota' => 'Standard Speicherplatz',
-    'invalid_quota' => 'Ungültiger Wert für den Speicherplatz.',
-    'mail.activate_text' => 'Hey %s!
-Vielen Dank, dass Sie Ihr Konto auf %s (%s) erstellt haben. Klicken Sie auf den folgenden Link, um es zu aktivieren:
-
-%s',
-    'register_success' => 'Das Konto wurde erstellt, eine Bestätigungs-E-Mail wurde gesendet.',
-    'mail.activate_account' => '%s - Konto Aktivierung',
-    'mail.recover_text' => 'Hey %s,
-Für Ihr Konto wurde ein Zurücksetzen des Passworts angefordert. Um den Vorgang abzuschließen, klicken Sie auf den folgenden Link:
-
-%s
-
-Wenn Sie nicht das Zurücksetzen des Passworts angefordert haben, ignorieren Sie diese E-Mail einfach.',
-    'mail.recover_password' => '%s - Passwort Zurücksetzung',
-    'recover_email_sent' => 'Falls vorhanden, wurde eine Wiederherstellungs-E-Mail an das angegebene Konto gesendet.',
-    'account_activated' => 'Account wurde aktiviert, du kannst dich jetzt einloggen!',
-    'quota_enabled' => 'Aktiviere Speicherlimit',
-    'password_repeat' => 'Passwort wiederholen',
-    'password_match' => 'Das Passwort und das wiederholte Passwort muss das gleiche sein.',
-    'password_restored' => 'Passwort wurde zurückgesetzt.',
-    'recalculate_user_quota' => 'Benutzer Speicher wird neu berechnet',
-    'quota_recalculated' => 'Die Berechnung vom Benutzer Speicher war erfolgreich.',
-    'used_space' => 'Belegter Speicherplatz',
-    'max_user_quota' => 'Max. Benutzerkontingent',
-    'delete_selected' => 'Ausgewähltes löschen',
-    'delete_all' => 'Alle löschen',
-    'clear_account' => 'Konto löschen',
-    'account_media_deleted' => 'Alle Medien in dem Konto wurden gelöscht.',
-    'danger_zone' => 'Gefahrenzone',
-    'recaptcha_failed' => 'reCAPTCHA Fehlgeschlagen',
-    'recaptcha_enabled' => 'reCAPTCHA Aktiviert',
-    'recaptcha_keys_required' => 'reCAPTCHA-Schlüssel ist erforderlich.',
-    'only_recaptcha_v3' => 'Es wird nur reCAPTCHA v3 unterstützt.',
-    'recaptcha_site_key' => 'reCAPTCHA Websiteschlüssel',
-    'recaptcha_secret_key' => 'reCAPTCHA geheimen Schlüssel',
-    'send_notification' => 'Mail-Benachrichtigung senden',
-    'mail.new_account' => '%s - Erstellung von Konto',
-    'mail.new_account_text_with_reset' => 'Hallo %s!
-Ein neues Konto wurde für Sie auf %s (%s) erstellt, klicken Sie auf den folgenden Link, um ein Passwort festzulegen und es zu aktivieren:
-
-%s',
-    'mail.new_account_text_with_pw' => 'Hallo %s!
-Ein neues Konto wurde für Sie auf %s (%s) mit den folgenden Anmeldeinformationen erstellt:
-
-Benutzername: %s
-Kennwort: %s
-
-Klicken Sie auf den folgenden Link, um zur Login-Seite zu gelangen:
-%s',
-    'user_create_password' => 'Wenn Sie keine Angaben gemacht haben, können Sie eine Benachrichtigung an die Benutzer-E-Mail senden.',
 ];

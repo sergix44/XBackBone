@@ -14,7 +14,7 @@
     <script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="installer.js"></script>
 </head>
-<body class="bg-light">
+<body>
 <div class="container">
     <div class="mt-4">
         {% include 'comp/alert.twig' %}
@@ -24,7 +24,7 @@
             <div class="card mt-3">
                 <div class="card-header">Install XBackBone</div>
                 <div class="card-body">
-                    <form method="post" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                    <form method="post" action="">
                         {% if not installed %}
                             <div class="form-group row">
                                 <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
@@ -184,7 +184,7 @@
 
                             <div class="form-group row justify-content-md-end">
                                 <div class="col-sm-9">
-                                    <button type="submit" class="btn btn-outline-success">
+                                    <button type="submit" class="btn btn-outline-success" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
                                         <i class="fas fa-save fa-fw"></i> Install
                                     </button>
                                 </div>
@@ -193,7 +193,7 @@
                         {% else %}
                             <div class="form-group row">
                                 <div class="col-sm-12 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-lg btn-outline-primary">
+                                    <button type="submit" class="btn btn-lg btn-outline-primary" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
                                         <i class="fas fa-sync fa-fw"></i> Update database
                                     </button>
                                 </div>
@@ -205,7 +205,7 @@
         </div>
     </div>
 </div>
-<div class="modal" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
