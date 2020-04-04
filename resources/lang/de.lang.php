@@ -174,4 +174,7 @@ Kennwort: %s
 Klicken Sie auf den folgenden Link, um zur Login-Seite zu gelangen:
 %s',
     'user_create_password' => 'Wenn Sie keine Angaben gemacht haben, können Sie eine Benachrichtigung an die Benutzer-E-Mail senden.',
+    'no_tags' => 'Keine Tags hinzugefügt',
+    'upload_max_file_size' => 'Die maximale Dateigröße beträgt derzeit %s.',
+    'ldap_cant_connect' => 'Es kann keine Verbindung zum LDAP-Auth-Server hergestellt werden.',
 ];
