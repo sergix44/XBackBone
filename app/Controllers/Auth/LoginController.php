@@ -2,13 +2,12 @@
 
 namespace App\Controllers\Auth;
 
-use App\Controllers\Controller;
 use App\Database\Queries\UserQuery;
-use App\Web\ValidationChecker;
+use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class LoginController extends Controller
+class LoginController extends AuthController
 {
     /**
      * @param  Response  $response
@@ -41,13 +40,11 @@ class LoginController extends Controller
      */
     public function login(Request $request, Response $response): Response
     {
-        if ($this->getSetting('recaptcha_enabled') === 'on') {
-            $recaptcha = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$this->getSetting('recaptcha_secret_key').'&response='.param($request, 'recaptcha_token')));
+        /** @var ValidationHelper $validator */
+        $validator = make(ValidationHelper::class);
 
-            if ($recaptcha->success && $recaptcha->score < 0.5) {
-                $this->session->alert(lang('recaptcha_failed'), 'danger');
-                return redirect($response, route('login'));
-            }
+        if ($this->checkRecaptcha($validator, $request)->fails()) {
+            return redirect($response, route('login'));
         }
 
         $username = param($request, 'username');
@@ -57,30 +54,21 @@ class LoginController extends Controller
             $user = $this->ldapLogin($request, $username, param($request, 'password'), $user);
         }
 
-        $validator = ValidationChecker::make()
-            ->rules([
-                'login' => $user && password_verify(param($request, 'password'), $user->password),
-                'maintenance' => !isset($this->config['maintenance']) || !$this->config['maintenance'] || $user->is_admin ?? false,
-                'user_active' => $user->active ?? false,
-            ])
-            ->onFail(function ($rule) {
-                $alerts = [
-                    'login' => lang('bad_login'),
-                    'maintenance' => lang('maintenance_in_progress'),
-                    'user_active' => lang('account_disabled'),
-                ];
+        $validator
+            ->alertIf(!$user || !password_verify(param($request, 'password'), $user->password), 'bad_login')
+            ->alertIf(isset($this->config['maintenance']) && $this->config['maintenance'] && !($user->is_admin ?? true), 'maintenance_in_progress', 'info')
+            ->alertIf(!($user->active ?? false), 'account_disabled');
 
-                $this->session->alert($alerts[$rule], $rule === 'maintenance' ? 'info' : 'danger');
-            });
         if ($validator->fails()) {
             return redirect($response, route('login'));
         }
 
-        $this->session->set('logged', true);
-        $this->session->set('user_id', $user->id);
-        $this->session->set('username', $user->username);
-        $this->session->set('admin', $user->is_admin);
-        $this->session->set('copy_raw', $user->copy_raw);
+        $this->session->set('logged', true)
+            ->set('user_id', $user->id)
+            ->set('username', $user->username)
+            ->set('admin', $user->is_admin)
+            ->set('copy_raw', $user->copy_raw);
+
         $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
 
         $this->session->alert(lang('welcome', [$user->username]), 'info');
@@ -158,23 +146,5 @@ class LoginController extends Controller
         }
 
         return $dbUser;
-    }
-
-    /**
-     * @param  string  $username
-     * @return string
-     */
-    private function getLdapRdn(string $username)
-    {
-        $bindString = 'uid='.addslashes($username);
-        if ($this->config['ldap']['user_domain'] !== null) {
-            $bindString .= ','.$this->config['ldap']['user_domain'];
-        }
-
-        if ($this->config['ldap']['base_domain'] !== null) {
-            $bindString .= ','.$this->config['ldap']['base_domain'];
-        }
-
-        return $bindString;
     }
 }

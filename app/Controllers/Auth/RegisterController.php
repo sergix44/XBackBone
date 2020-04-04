@@ -63,7 +63,7 @@ class RegisterController extends Controller
             }
         }
 
-        $validator = $this->getUserCreateValidator($request);
+        $validator = $this->getUserCreateValidator($request)->alertIf(empty(param($request, 'password')), 'password_required');
 
         if ($validator->fails()) {
             return redirect($response, route('register.show'));

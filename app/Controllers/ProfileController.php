@@ -4,7 +4,7 @@
 namespace App\Controllers;
 
 use App\Database\Queries\UserQuery;
-use App\Web\ValidationChecker;
+use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -25,7 +25,7 @@ class ProfileController extends Controller
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => true,
-            'user'    => $user,
+            'user' => $user,
         ]);
     }
 
@@ -40,19 +40,10 @@ class ProfileController extends Controller
     {
         $user = make(UserQuery::class)->get($request, $id, true);
 
-        $validator = ValidationChecker::make()
-            ->rules([
-                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL),
-                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count == 0,
-            ])
-            ->onFail(function ($rule) {
-                $alerts = [
-                    'email.required' => lang('email_required'),
-                    'email.unique' => lang('email_taken'),
-                ];
-
-                $this->session->alert($alerts[$rule], 'danger');
-            });
+        /** @var ValidationHelper $validator */
+        $validator = make(ValidationHelper::class)
+            ->alertIf(!filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL), 'email_required')
+            ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count != 0, 'email_taken');
 
         if ($validator->fails()) {
             return redirect($response, route('profile'));
@@ -75,8 +66,7 @@ class ProfileController extends Controller
             ]);
         }
 
-        $this->session->set('copy_raw', param($request, 'copy_raw') !== null ? 1 : 0);
-        $this->session->alert(lang('profile_updated'), 'success');
+        $this->session->set('copy_raw', param($request, 'copy_raw') !== null ? 1 : 0)->alert(lang('profile_updated'), 'success');
         $this->logger->info('User '.$this->session->get('username')." updated profile of $user->id.");
 
         return redirect($response, route('profile'));

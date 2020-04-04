@@ -6,7 +6,7 @@ use App\Database\DB;
 use App\Database\Queries\UserQuery;
 use App\Web\Lang;
 use App\Web\Session;
-use App\Web\ValidationChecker;
+use App\Web\ValidationHelper;
 use App\Web\View;
 use DI\Container;
 use DI\DependencyException;
@@ -71,15 +71,12 @@ abstract class Controller
         $this->session->set('current_disk_quota', humanFileSize($current));
         if ($this->getSetting('quota_enabled', 'off') === 'on') {
             if ($max < 0) {
-                $this->session->set('max_disk_quota', '∞');
-                $this->session->set('percent_disk_quota', null);
+                $this->session->set('max_disk_quota', '∞')->set('percent_disk_quota', null);
             } else {
-                $this->session->set('max_disk_quota', humanFileSize($max));
-                $this->session->set('percent_disk_quota', round(($current * 100) / $max));
+                $this->session->set('max_disk_quota', humanFileSize($max))->set('percent_disk_quota', round(($current * 100) / $max));
             }
         } else {
-            $this->session->set('max_disk_quota', null);
-            $this->session->set('percent_disk_quota', null);
+            $this->session->set('max_disk_quota', null)->set('percent_disk_quota', null);
         }
     }
 
@@ -143,49 +140,14 @@ abstract class Controller
 
     /**
      * @param  Request  $request
-     * @return ValidationChecker
+     * @return ValidationHelper
      */
     public function getUserCreateValidator(Request $request)
     {
-        return ValidationChecker::make()
-            ->rules([
-                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL) !== false,
-                'username.required' => !empty(param($request, 'username')),
-                'password.required' => !empty(param($request, 'password')),
-                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count == 0,
-                'username.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count == 0,
-            ])
-            ->onFail(function ($rule) {
-                $alerts = [
-                    'email.required' => lang('email_required'),
-                    'username.required' => lang('username_required'),
-                    'password.required' => lang('password_required'),
-                    'email.unique' => lang('email_taken'),
-                    'username.unique' => lang('username_taken'),
-                ];
-
-                $this->session->alert($alerts[$rule], 'danger');
-            });
-    }
-
-    /**
-     * @return bool|false|resource
-     */
-    public function ldapConnect()
-    {
-        if (!extension_loaded('ldap')) {
-            $this->logger->error('The LDAP extension is not loaded.');
-            return false;
-        }
-
-        $server = ldap_connect($this->config['ldap']['host'], $this->config['ldap']['port']);
-
-        if ($server) {
-            ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
-            ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
-            ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
-        }
-
-        return $server;
+        return make(ValidationHelper::class)
+            ->alertIf(empty(param($request, 'username')), 'username_required')
+            ->alertIf(!filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL), 'email_required')
+            ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count != 0, 'email_taken')
+            ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count != 0, 'username_taken');
     }
 }

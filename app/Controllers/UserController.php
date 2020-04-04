@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Database\Queries\UserQuery;
 use App\Web\Mail;
-use App\Web\ValidationChecker;
+use App\Web\ValidationHelper;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -69,24 +69,24 @@ class UserController extends Controller
      */
     public function store(Request $request, Response $response): Response
     {
-        $validator = $this->getUserCreateValidator($request);
-        $hasPassword = $validator->removeRule('password.required');
+        $maxUserQuota = -1;
+        $validator = $this->getUserCreateValidator($request)
+            ->callIf($this->getSetting('quota_enabled') === 'on', function ($session) use (&$maxUserQuota, &$request) {
+                $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
+                if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+                    $session->alert(lang('invalid_quota', 'danger'));
+                    return false;
+                }
+
+                if ($maxUserQuota !== '-1') {
+                    $maxUserQuota = stringToBytes($maxUserQuota);
+                }
+
+                return true;
+            });
 
         if ($validator->fails()) {
             return redirect($response, route('user.create'));
-        }
-
-        $maxUserQuota = -1;
-        if ($this->getSetting('quota_enabled') === 'on') {
-            $maxUserQuotaStr = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota', -1), 0, true));
-            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuotaStr)) {
-                $this->session->alert(lang('invalid_quota', 'danger'));
-                return redirect($response, route('user.create'));
-            }
-
-            if ($maxUserQuotaStr !== '-1') {
-                $maxUserQuota = stringToBytes($maxUserQuotaStr);
-            }
         }
 
         make(UserQuery::class)->create(
@@ -102,7 +102,16 @@ class UserController extends Controller
         );
 
         if (param($request, 'send_notification') !== null) {
-            $this->sendCreateNotification($hasPassword, $request);
+            $resetToken = null;
+            if (!empty(param($request, 'password'))) {
+                $resetToken = bin2hex(random_bytes(16));
+
+                $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
+                    $resetToken,
+                    $this->database->getPdo()->lastInsertId(),
+                ]);
+            }
+            $this->sendCreateNotification($request, $resetToken);
         }
 
         $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
@@ -143,42 +152,31 @@ class UserController extends Controller
     public function update(Request $request, Response $response, int $id): Response
     {
         $user = make(UserQuery::class)->get($request, $id);
+        $user->max_disk_quota = -1;
 
-        $validator = ValidationChecker::make()
-            ->rules([
-                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL),
-                'username.required' => !empty(param($request, 'username')),
-                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count == 0,
-                'username.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count == 0,
-                'demote' => !($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null),
-            ])
-            ->onFail(function ($rule) {
-                $alerts = [
-                    'email.required' => lang('email_required'),
-                    'username.required' => lang('username_required'),
-                    'email.unique' => lang('email_taken'),
-                    'username.unique' => lang('username_taken'),
-                    'demote' => lang('cannot_demote'),
-                ];
+        /** @var ValidationHelper $validator */
+        $validator = make(ValidationHelper::class)
+            ->alertIf(!filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL), 'email_required')
+            ->alertIf(empty(param($request, 'username')), 'username_required')
+            ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count != 0, 'email_taken')
+            ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count != 0, 'username_taken')
+            ->alertIf($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null, 'cannot_demote')
+            ->callIf($this->getSetting('quota_enabled') === 'on', function ($session) use (&$user, &$request) {
+                $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
+                if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+                    $session->alert(lang('invalid_quota', 'danger'));
+                    return false;
+                }
 
-                $this->session->alert($alerts[$rule], 'danger');
+                if ($maxUserQuota !== '-1') {
+                    $user->max_disk_quota = stringToBytes($maxUserQuota);
+                }
+
+                return true;
             });
 
         if ($validator->fails()) {
             return redirect($response, route('user.edit', ['id' => $id]));
-        }
-
-        $user->max_disk_quota = -1;
-        if ($this->getSetting('quota_enabled') === 'on') {
-            $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
-            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
-                $this->session->alert(lang('invalid_quota', 'danger'));
-                return redirect($response, route('user.create'));
-            }
-
-            if ($maxUserQuota !== '-1') {
-                $user->max_disk_quota = stringToBytes($maxUserQuota);
-            }
         }
 
         make(UserQuery::class)->update(
@@ -281,13 +279,12 @@ class UserController extends Controller
     }
 
     /**
-     * @param $hasPassword
      * @param $request
-     * @throws \Exception
+     * @param  null  $resetToken
      */
-    private function sendCreateNotification($hasPassword, $request)
+    private function sendCreateNotification($request, $resetToken = null)
     {
-        if ($hasPassword) {
+        if (empty(param($request, 'password'))) {
             $message = lang('mail.new_account_text_with_pw', [
                 param($request, 'username'),
                 $this->config['app_name'],
@@ -297,13 +294,6 @@ class UserController extends Controller
                 route('login.show'),
             ]);
         } else {
-            $resetToken = bin2hex(random_bytes(16));
-
-            $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
-                $resetToken,
-                $this->database->getPdo()->lastInsertId(),
-            ]);
-
             $message = lang('mail.new_account_text_with_reset', [
                 param($request, 'username'),
                 $this->config['app_name'],

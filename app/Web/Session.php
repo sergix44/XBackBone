@@ -9,8 +9,8 @@ class Session
     /**
      * Session constructor.
      *
-     * @param string $name
-     * @param string $path
+     * @param  string  $name
+     * @param  string  $path
      *
      * @throws Exception
      */
@@ -34,10 +34,10 @@ class Session
             }
 
             $started = @session_start([
-                'name'            => $name,
-                'save_path'       => $path,
+                'name' => $name,
+                'save_path' => $path,
                 'cookie_httponly' => true,
-                'gc_probability'  => 25,
+                'gc_probability' => 25,
                 'cookie_samesite' => 'Lax', // works only for php  >= 7.3
             ]);
 
@@ -68,9 +68,10 @@ class Session
     /**
      * Clear all session stored values.
      */
-    public function clear(): void
+    public function clear(): Session
     {
         $_SESSION = [];
+        return $this;
     }
 
     /**
@@ -99,7 +100,7 @@ class Session
      * Returned a value given a key.
      *
      * @param $key
-     * @param null $default
+     * @param  null  $default
      *
      * @return mixed
      */
@@ -113,21 +114,25 @@ class Session
      *
      * @param $key
      * @param $value
+     * @return Session
      */
-    public function set($key, $value): void
+    public function set($key, $value): Session
     {
         $_SESSION[$key] = $value;
+        return $this;
     }
 
     /**
      * Set a flash alert.
      *
      * @param $message
-     * @param string $type
+     * @param  string  $type
+     * @return Session
      */
-    public function alert($message, string $type = 'info'): void
+    public function alert($message, string $type = 'info'): Session
     {
         $_SESSION['_flash'][] = [$type => $message];
+        return $this;
     }
 
     /**
