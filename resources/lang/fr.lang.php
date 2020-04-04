@@ -1,6 +1,6 @@
 <?php
 return [
-    'lang' => 'French',
+    'lang' => 'Français',
     'yes' => 'Oui',
     'no' => 'Non',
     'send' => 'Envoyer',
@@ -110,4 +110,68 @@ return [
     'deleted_orphans' => 'Fichiers orphelins supprimés avec succès.',
     'switch_to' => 'Changer à',
     'gallery' => 'Galerie',
+    'no_tags' => 'Aucun tag ajouté',
+    'upload_max_file_size' => 'La taille maximale du fichier est actuellement %s.',
+    'ldap_cant_connect' => 'Impossible de se connecter au serveur d\'authentification LDAP.',
+    'user_create_password' => 'Si laissé vide, vous souhaiterez peut-être envoyer une notification à l\'e-mail de l\'utilisateur.',
+    'mail.new_account_text_with_pw' => 'Bonjour %s!
+un nouveau compte a été créé pour vous sur %s (%s), avec les informations d\'identification suivantes:
+
+Nom d\'utilisateur: %s
+Mot de passe: %s
+
+Cliquez sur le lien suivant pour accéder à la page de connexion:
+%s',
+    'mail.new_account_text_with_reset' => 'Bonjour %s!
+un nouveau compte a été créé pour vous sur %s (%s), cliquez sur le lien suivant pour définir un mot de passe et l\'activer:
+
+%s',
+    'mail.new_account' => '%s - Création d\'un nouveau compte',
+    'send_notification' => 'Envoyer une notification par courrier électronique',
+    'recaptcha_secret_key' => 'Clé secrète reCAPTCHA',
+    'recaptcha_site_key' => 'Clé du site reCAPTCHA',
+    'only_recaptcha_v3' => 'Seul reCAPTCHA v3 est pris en charge.',
+    'recaptcha_keys_required' => 'Toutes les clés reCAPTCHA sont requises.',
+    'recaptcha_enabled' => 'reCAPTCHA activé',
+    'recaptcha_failed' => 'reCAPTCHA échouée',
+    'danger_zone' => 'Zone dangereuse',
+    'account_media_deleted' => 'Tous les médias du compte ont été supprimés.',
+    'clear_account' => 'Effacer le compte',
+    'delete_all' => 'Supprimer tout',
+    'delete_selected' => 'Supprimer sélectionnée',
+    'used_space' => 'Espace utilisé',
+    'quota_recalculated' => 'Quota utilisateur recalculé à partir du disque avec succès.',
+    'recalculate_user_quota' => 'Recalculer le quota utilisateur à partir du disque',
+    'password_restored' => 'Réinitialisation du mot de passe.',
+    'password_match' => 'Le mot de passe et le mot de passe de répétition doivent être identiques.',
+    'password_repeat' => 'Répéter le mot de passe',
+    'quota_enabled' => 'Activer le quota d\'utilisateurs',
+    'account_activated' => 'Compte activé, vous pouvez maintenant vous connecter!',
+    'recover_email_sent' => 'S\'il est présent, un e-mail de récupération a été envoyé au compte spécifié.',
+    'mail.recover_password' => '%s - Récupération de mot de passe',
+    'mail.recover_text' => 'Bonjour %s,
+une réinitialisation du mot de passe a été demandée pour votre compte. Pour terminer la procédure, cliquez sur le lien suivant:
+
+%s
+
+Si ce n\'est pas vous qui avez demandé la réinitialisation du mot de passe, ignorez simplement cet e-mail.',
+    'mail.activate_account' => '%s - Activation du compte',
+    'mail.activate_text' => 'Bonjour %s!
+merci d\'avoir créé votre compte sur %s (% s), cliquez sur le lien suivant pour l\'activer:
+
+%s',
+    'invalid_quota' => 'Valeurs non valides comme quota utilisateur par défaut.',
+    'max_user_quota' => 'Quota utilisateur maximum',
+    'default_user_quota' => 'Quota utilisateur par défaut',
+    'register_success' => 'Le compte a été créé, un email de confirmation a été envoyé.',
+    'register' => 'S\'inscrire',
+    'no_account' => 'Vous n\'avez pas de compte?',
+    'password_recovery' => 'Récupérer mot de passe',
+    'export_data' => 'Exporter les données',
+    'settings_saved' => 'Paramètres système enregistrés!',
+    'copy_url_behavior' => 'Mode copier l\'URL',
+    'hide_by_default' => 'Masquer les médias par défaut',
+    'register_enabled' => 'Inscriptions activées',
+    'system_settings' => 'Paramètres système',
+    'php_info' => 'Informations PHP',
 ];
