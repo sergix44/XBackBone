@@ -27,6 +27,7 @@ return [
     'date' => 'Data',
     'raw' => 'Vedi raw',
     'download' => 'Scarica',
+    'upload' => 'Carica',
     'delete' => 'Elimina',
     'publish' => 'Pubblica',
     'hide' => 'Nascondi',
@@ -96,10 +97,81 @@ return [
     'cancel' => 'Annulla',
     'enforce_language' => 'Imponi lingua',
     'auto_set' => 'Imposta automaticamente',
-    'translated_strings' => 'stringhe tradotte',
-    'total_strings' => 'stringhe totali',
-    'lang_name' => 'nome della lingua',
-    'default_lang_behavior' => 'Per impostazione predefinita, XBackbone cercherà di abbinare la lingua del browser (il fallback è l\'inglese).',
+    'default_lang_behavior' => 'Per impostazione predefinita, XBackbone cercherà di abbinare la lingua del browser (il fallback è l\'Inglese).',
     'lang_set' => 'Lingua di sistema applicata a "%s"',
     'prerelease_channel' => 'Canale prerelease',
+    'no_upload_token' => 'Non hai un token personale per l\'upload associato. (Generane uno e riprova)',
+    'drop_to_upload' => 'Clicca o lascia i tuoi file qui per caricarli.',
+    'donation' => 'Donazione',
+    'donate_text' => 'Se ti piace XBackBone, prendi in considerazione una donazione per sostenere lo sviluppo!',
+    'custom_head_html' => 'Contenuto Head HTML personalizzato',
+    'custom_head_html_hint' => 'Questo contenuto sarà aggiunto al tag <head> in ogni pagina.',
+    'custom_head_set' => 'Custom Head HTML applicato con successo.',
+    'remember_me' => 'Ricordami',
+    'please_wait' => 'Attendere prego...',
+    'dont_close' => 'Non chiudere questa scheda fino al completamento.',
+    'php_info' => 'Informazioni PHP',
+    'system_settings' => 'Impostazioni di sistema',
+    'register_enabled' => 'Registrazioni abilitate',
+    'hide_by_default' => 'Nascondi media per impostazione predefinita',
+    'copy_url_behavior' => 'Modalità di copia URL',
+    'settings_saved' => 'Impostazioni di sistema salvate!',
+    'export_data' => 'Esporta dati',
+    'password_recovery' => 'Recupera password',
+    'no_account' => 'Non hai un account?',
+    'register' => 'Registrati',
+    'default_user_quota' => 'Quota utente predefinita',
+    'invalid_quota' => 'Valore non valido per la quota utente predefinita.',
+    'mail.activate_text' => 'Ciao %s!
+grazie per aver creato il tuo account su %s (%s), fai clic sul seguente link per attivarlo:
+
+%s',
+    'register_success' => 'L\'account è stato creato, è stata inviata un\'e-mail di conferma.',
+    'mail.activate_account' => '%s - Attivazione account',
+    'mail.recover_text' => 'Ciao %s,
+è stata richiesta una reimpostazione della password per il tuo account. Per completare la procedura clicca sul seguente link:
+
+%s
+
+Se non sei stato tu a richiedere la reimpostazione della password, ignora semplicemente questa e-mail.',
+    'mail.recover_password' => '%s - Recupero password',
+    'recover_email_sent' => 'Se presente, è stata inviata un\'e-mail di recupero all\'account specificato.',
+    'account_activated' => 'Account attivato, ora è possibile effettuare il login!',
+    'quota_enabled' => 'Abilita quota utente',
+    'password_repeat' => 'Ripeti la password',
+    'password_match' => 'Le password devono coincidere.',
+    'password_restored' => 'Password reimpostata.',
+    'recalculate_user_quota' => 'Ricalcolare la quota utente dal disco',
+    'quota_recalculated' => 'Quota utente ricalcolata correttamente dal disco.',
+    'used_space' => 'Spazio usato',
+    'max_user_quota' => 'Quota massima utente',
+    'delete_selected' => 'Elimina selezionati',
+    'delete_all' => 'Elimina tutto',
+    'clear_account' => 'Pulisci account',
+    'account_media_deleted' => 'Tutti i media nell\'account sono stati eliminati.',
+    'danger_zone' => 'Zona Pericolosa',
+    'recaptcha_failed' => 'reCAPTCHA fallito',
+    'recaptcha_enabled' => 'reCAPTCHA Abilitato',
+    'recaptcha_keys_required' => 'Tutte le chiavi reCAPTCHA sono obbligatorie.',
+    'only_recaptcha_v3' => 'È supportato solo reCAPTCHA v3.',
+    'recaptcha_site_key' => 'reCAPTCHA Site Key',
+    'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
+    'no_tags' => 'Nessun tag aggiunto',
+    'upload_max_file_size' => 'La dimensione massima del file è attualmente %s.',
+    'ldap_cant_connect' => 'Impossibile connettersi al server di autenticazione LDAP.',
+    'user_create_password' => 'Se lasciato vuoto, si consiglia di inviare una notifica all\'utente via e-mail.',
+    'mail.new_account_text_with_pw' => 'Ciao %s!
+un nuovo account è stato creato per te su %s (%s), con le seguenti credenziali:
+
+Username: %s
+Password: %s
+
+Clicca su questo link per andare alla pagina di login: 
+%s',
+    'mail.new_account_text_with_reset' => 'Ciao %s!
+un nuovo account è stato creato per te su %s (%s), clicca sul seguente link per impostare una password e attivarlo:
+
+%s',
+    'mail.new_account' => '%s - Nuovo account creato',
+    'send_notification' => 'Invia notifica e-mail',
 ];

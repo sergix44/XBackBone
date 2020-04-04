@@ -2,115 +2,144 @@
 
 namespace App\Web;
 
-
 use Exception;
 
 class Session
 {
+    /**
+     * Session constructor.
+     *
+     * @param string $name
+     * @param string $path
+     *
+     * @throws Exception
+     */
+    public function __construct(string $name, $path = '')
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            if (!is_writable($path) && $path !== '') {
+                throw new Exception("The given path '{$path}' is not writable.");
+            }
 
-	/**
-	 * Session constructor.
-	 * @param string $name
-	 * @param string $path
-	 * @throws Exception
-	 */
-	public function __construct(string $name, $path = '')
-	{
-		if (session_status() === PHP_SESSION_NONE) {
-			if (!is_writable($path) && $path !== '') {
-				throw new Exception("The given path '{$path}' is not writable.");
-			}
+            // Workaround for php <= 7.3
+            if (PHP_VERSION_ID < 70300) {
+                $params = session_get_cookie_params();
+                session_set_cookie_params(
+                    $params['lifetime'],
+                    $params['path'].'; SameSite=Lax',
+                    $params['domain'],
+                    $params['secure'],
+                    $params['httponly']
+                );
+            }
 
-			$started = @session_start([
-				'name' => $name,
-				'save_path' => $path,
-				'cookie_httponly' => true,
-				'gc_probability' => 25,
-			]);
+            $started = @session_start([
+                'name'            => $name,
+                'save_path'       => $path,
+                'cookie_httponly' => true,
+                'gc_probability'  => 25,
+                'cookie_samesite' => 'Lax', // works only for php  >= 7.3
+            ]);
 
-			if (!$started) {
-				throw new Exception("Cannot start the HTTP session. That the session path '{$path}' is writable and your PHP settings.");
-			}
-		}
-	}
+            if (!$started) {
+                throw new Exception("Cannot start the HTTP session. The session path '{$path}' is not writable.");
+            }
+        }
+    }
 
-	/**
-	 * Destroy the current session
-	 * @return bool
-	 */
-	public function destroy(): bool
-	{
-		return session_destroy();
-	}
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return session_id();
+    }
 
-	/**
-	 * Clear all session stored values
-	 */
-	public function clear(): void
-	{
-		$_SESSION = [];
-	}
+    /**
+     * Destroy the current session.
+     *
+     * @return bool
+     */
+    public function destroy(): bool
+    {
+        return session_destroy();
+    }
 
-	/**
-	 * Check if session has a stored key
-	 * @param $key
-	 * @return bool
-	 */
-	public function has($key): bool
-	{
-		return isset($_SESSION[$key]);
-	}
+    /**
+     * Clear all session stored values.
+     */
+    public function clear(): void
+    {
+        $_SESSION = [];
+    }
 
-	/**
-	 * Get the content of the current session
-	 * @return array
-	 */
-	public function all(): array
-	{
-		return $_SESSION;
-	}
+    /**
+     * Check if session has a stored key.
+     *
+     * @param $key
+     *
+     * @return bool
+     */
+    public function has($key): bool
+    {
+        return isset($_SESSION[$key]);
+    }
 
-	/**
-	 * Returned a value given a key
-	 * @param $key
-	 * @param null $default
-	 * @return mixed
-	 */
-	public function get($key, $default = null)
-	{
-		return self::has($key) ? $_SESSION[$key] : $default;
-	}
+    /**
+     * Get the content of the current session.
+     *
+     * @return array
+     */
+    public function all(): array
+    {
+        return $_SESSION;
+    }
 
-	/**
-	 * Add a key-value pair to the session
-	 * @param $key
-	 * @param $value
-	 */
-	public function set($key, $value): void
-	{
-		$_SESSION[$key] = $value;
-	}
+    /**
+     * Returned a value given a key.
+     *
+     * @param $key
+     * @param null $default
+     *
+     * @return mixed
+     */
+    public function get($key, $default = null)
+    {
+        return self::has($key) ? $_SESSION[$key] : $default;
+    }
 
-	/**
-	 * Set a flash alert
-	 * @param $message
-	 * @param string $type
-	 */
-	public function alert($message, string $type = 'info'): void
-	{
-		$_SESSION['_flash'][] = [$type => $message];
-	}
+    /**
+     * Add a key-value pair to the session.
+     *
+     * @param $key
+     * @param $value
+     */
+    public function set($key, $value): void
+    {
+        $_SESSION[$key] = $value;
+    }
 
+    /**
+     * Set a flash alert.
+     *
+     * @param $message
+     * @param string $type
+     */
+    public function alert($message, string $type = 'info'): void
+    {
+        $_SESSION['_flash'][] = [$type => $message];
+    }
 
-	/**
-	 * Retrieve flash alerts
-	 * @return array
-	 */
-	public function getAlert(): ?array
-	{
-		$flash = self::get('_flash');
-		self::set('_flash', []);
-		return $flash;
-	}
+    /**
+     * Retrieve flash alerts.
+     *
+     * @return array
+     */
+    public function getAlert(): ?array
+    {
+        $flash = self::get('_flash');
+        self::set('_flash', []);
 
+        return $flash;
+    }
 }

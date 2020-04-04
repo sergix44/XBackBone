@@ -33,40 +33,58 @@ upload() {
     
     if jq -e . >/dev/null 2>&1 <<<"$RESPONSE"; then
         # Response is JSON
-        echo;
+        echo "Upload Completed.";
     else
-        notify-send "Error: Uploading returned unexpected response" "Response: ${RESPONSE}";
+        if [ "${DESKTOP_SESSION}" != "" ]; then
+            notify-send "Error: Uploading returned unexpected response" "Response: ${RESPONSE}";
+        else
+            echo "Error: Uploading returned unexpected response: ${RESPONSE}"
+        fi
         exit 1;
     fi
 
     if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK." ]]; then
         URL="$(echo "${RESPONSE}" | jq -r '.url')";
-        echo "${URL}" | xclip -selection c;
-        notify-send "Upload completed!" "${URL}";
+        if [ "${DESKTOP_SESSION}" != "" ]; then
+            echo "${URL}" | xclip -selection c;
+            notify-send "Upload completed!" "${URL}";
+        else
+            echo "${URL}";
+        fi
     else
-        notify-send "Error!" "$(echo "${RESPONSE}" | jq -r '.message')";
+        if [ "${DESKTOP_SESSION}" != "" ]; then
+            notify-send "Error!" "$(echo "${RESPONSE}" | jq -r '.message')";
+        else
+            echo "Error! $(echo "${RESPONSE}" | jq -r '.message')";
+        fi
     fi
 }
 
 check() {
-	if [ ! -x "$(command -v xclip)" ]; then
-        echo "xclip command not found."
-        exit;
-	fi	
-	
-	if [ ! -x "$(command -v jq)" ]; then
-        echo "jq command not found."
-        exit;
+    ERRORS=0;
+
+    if [ ! -x "$(command -v jq)" ]; then
+        echo "jq command not found.";
+        ERRORS=1;
 	fi	
 
 	if [ ! -x "$(command -v curl)" ]; then
-        echo "curl command not found."
-        exit;
+        echo "curl command not found.";
+        ERRORS=1;
 	fi
 
-	if [ ! -x "$(command -v notify-send)" ]; then
-        echo "notify-send command not found."
-        exit;
+	if [ ! -x "$(command -v xclip)" ] && [ "${DESKTOP_SESSION}" != "" ]; then
+        echo "xclip command not found.";
+        ERRORS=1;
+	fi
+
+	if [ ! -x "$(command -v notify-send)" ] && [ "${DESKTOP_SESSION}" != "" ]; then
+        echo "notify-send command not found.";
+        ERRORS=1;
+	fi
+
+	if [ "${ERRORS}" -eq 1 ]; then
+	  exit 1;
 	fi
 }
 
@@ -80,5 +98,9 @@ fi
 if [ -f "${1}" ]; then
     upload "${1}";
 else
-    notify-send "Error!" "File specified not exists.";
+    if [ "${DESKTOP_SESSION}" != "" ]; then
+        notify-send "Error!" "File specified not exists.";
+    else
+        echo "Error! File specified not exists.";
+    fi
 fi

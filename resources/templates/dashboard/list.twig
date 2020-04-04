@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% block title %}Admin Home{% endblock %}
+{% block title %}{{ lang('home') }}{% endblock %}
 
 {% block content %}
     {% include 'comp/navbar.twig' %}
@@ -28,21 +28,29 @@
                                     </thead>
                                     <tbody>
                                     {% for media in medias %}
-                                        <tr id="media_{{ media.id }}">
+                                        <tr id="media_{{ media.id }}" class="bulk-selector" data-id="{{ media.id }}">
                                             <td class="text-center">
                                                 {% if isDisplayableImage(media.mimetype) %}
                                                     {% if media.username is not null %}
-                                                        <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=256&height=128') }}" class="img-fluid rounded admin-img">
+                                                        <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=84&height=42') }}" class="img-fluid rounded">
                                                     {% else %}
-                                                        <img src="{{ route('upload.raw', {'id': media.id}) }}" class="img-fluid rounded admin-img">
+                                                        <img src="{{ route('upload.raw', {'id': media.id}) }}" class="img-fluid rounded">
                                                     {% endif %}
                                                 {% else %}
                                                     <i class="far {{ mime2font(media.mimetype) }} fa-2x"></i>
                                                 {% endif %}
                                             </td>
-                                            <td>{{ media.filename }}</td>
+                                            <td>
+                                                <span class="text-maxlen">{{ media.filename }}</span>
+                                                <p>
+                                                    {% for tag_id, tag_name in media.tags %}
+                                                        <a href="{{ queryParams({'tag':tag_id}) }}" class="badge badge-pill badge-light shadow-sm tag-item mr-1" data-id="{{ tag_id }}" data-media="{{ media.id }}" title="{{ tag_name }}">{{ tag_name }}</a>
+                                                    {% endfor %}
+                                                    <a href="javascript:void(0)" class="badge badge-pill badge-success shadow-sm tag-add" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
+                                                </p>
+                                            </td>
                                             <td>{{ media.size }}</td>
-                                            <td id="published_{{ media.id }}">
+                                            <td id="published_{{ media.id }}" class="text-center">
                                                 {% if media.published %}
                                                     <span class="badge badge-success"><i class="fas fa-check"></i></span>
                                                 {% else %}
@@ -56,7 +64,7 @@
                                                     {% if media.username is not null %}
                                                         <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="{{ lang('open') }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
                                                         <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>
-                                                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}"><i class="fas fa-link"></i></a>
+                                                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}{{ copy_raw ? '/raw' }}"><i class="fas fa-link"></i></a>
                                                     {% else %}
                                                         <a href="{{ route('upload.raw', {'id': media.id}) }}" class="btn btn-sm btn-outline-dark" data-toggle="tooltip" title="{{ lang('raw') }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
                                                     {% endif %}

@@ -7,18 +7,23 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link {{ is_current_path('home') ? 'active' }}"><i class="fas fa-fw fa-home"></i>
+                    <a href="{{ route('home') }}" class="nav-link {{ inPath(request.uri.path, '/home') ? 'active' }}"><i class="fas fa-fw fa-home"></i>
                         {{ lang('home') }}
                     </a>
                 </li>
-                {% if session.admin %}
+                <li class="nav-item">
+                    <a href="{{ route('upload.web.show') }}" class="nav-link {{ inPath(request.uri.path, '/upload') ? 'active' }}"><i class="fas fa-fw fa-upload"></i>
+                        {{ lang('upload') }}
+                    </a>
+                </li>
+                {% if session.get('admin') %}
                     <li class="nav-item">
-                        <a href="{{ route('user.index') }}" class="nav-link {{ is_current_path('user.index') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                        <a href="{{ route('user.index') }}" class="nav-link {{ inPath(request.uri.path, '/user') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
                             {{ lang('users') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('system') }}" class="nav-link {{ is_current_path('system') ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
+                        <a href="{{ route('system') }}" class="nav-link {{ inPath(request.uri.path, '/system') ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
                             {{ lang('system') }}
                         </a>
                     </li>
@@ -27,12 +32,20 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-fw fa-user"></i> {{ session.username }}
+                        <i class="fas fa-fw fa-user"></i> {{ session.get('username') }}
                     </a>
                     <div class="dropdown-menu shadow-sm" aria-labelledby="userDropdown">
-                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.used_space }}</a>
-                        {% if session.admin %}
-                            <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.gallery_view is null or session.gallery_view ? lang('gallery') : lang('table') }}</a>
+                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.get('current_disk_quota') }}{% if session.get('max_disk_quota') %}/{{ session.get('max_disk_quota') }}{% endif %}</a>
+                        {% if session.get('percent_disk_quota') is not null %}
+                            <a class="dropdown-item disabled" href="javascript:void(0)">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ session.get('percent_disk_quota') }}%" aria-valuenow="{{ session.get('percent_disk_quota') }}" aria-valuemin="0" aria-valuemax="100">{{ session.get('percent_disk_quota') }}%</div>
+                                </div>
+                            </a>
+                        {% endif %}
+                        {% if session.get('admin') %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.get('gallery_view') is null or session.get('gallery_view') ? lang('gallery') : lang('table') }}</a>
                         {% endif %}
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-fw fa-user"></i> {{ lang('profile') }}</a>

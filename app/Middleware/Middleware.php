@@ -2,37 +2,18 @@
 
 namespace App\Middleware;
 
-use Slim\Container;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use App\Controllers\Controller;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-abstract class Middleware
+abstract class Middleware extends Controller
 {
-	/** @var Container */
-	protected $container;
-
-	public function __construct(Container $container)
-	{
-		$this->container = $container;
-	}
-
-	/**
-	 * @param $name
-	 * @return mixed|null
-	 * @throws \Interop\Container\Exception\ContainerException
-	 */
-	public function __get($name)
-	{
-		if ($this->container->has($name)) {
-			return $this->container->get($name);
-		}
-		return null;
-	}
-
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @param callable $next
-	 */
-	public abstract function __invoke(Request $request, Response $response, callable $next);
+    /**
+     * @param Request        $request
+     * @param RequestHandler $handler
+     *
+     * @return Response
+     */
+    abstract public function __invoke(Request $request, RequestHandler $handler);
 }
