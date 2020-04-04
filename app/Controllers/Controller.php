@@ -3,189 +3,65 @@
 namespace App\Controllers;
 
 use App\Database\DB;
-use App\Database\Queries\UserQuery;
 use App\Web\Lang;
 use App\Web\Session;
-use App\Web\ValidationChecker;
-use App\Web\View;
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
-use Exception;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use Monolog\Logger;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Container;
 
 /**
- * @property Session session
- * @property View view
- * @property DB database
+ * @property Session|null session
+ * @property mixed|null view
+ * @property DB|null database
  * @property Logger|null logger
  * @property Filesystem|null storage
  * @property Lang lang
- * @property array config
+ * @property array settings
  */
 abstract class Controller
 {
-    /** @var Container */
-    protected $container;
 
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
+	/** @var Container */
+	protected $container;
 
-    /**
-     * @param $name
-     *
-     * @return mixed|null
-     * @throws NotFoundException
-     *
-     * @throws DependencyException
-     */
-    public function __get($name)
-    {
-        if ($this->container->has($name)) {
-            return $this->container->get($name);
-        }
+	public function __construct(Container $container)
+	{
+		$this->container = $container;
+	}
 
-        return null;
-    }
+	/**
+	 * @param $name
+	 * @return mixed|null
+	 * @throws \Interop\Container\Exception\ContainerException
+	 */
+	public function __get($name)
+	{
+		if ($this->container->has($name)) {
+			return $this->container->get($name);
+		}
+		return null;
+	}
 
-    /**
-     * @param $key
-     * @param  null  $default
-     * @return object
-     */
-    protected function getSetting($key, $default = null)
-    {
-        return $this->database->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database->getPdo()->quote($key))->fetch()->value ?? $default;
-    }
+	/**
+	 * @param $id
+	 * @return int
+	 */
+	protected function getUsedSpaceByUser($id): int
+	{
+		$medias = $this->database->query('SELECT `uploads`.`storage_path` FROM `uploads` WHERE `user_id` = ?', $id);
 
-    /**
-     * @param $current
-     * @param $max
-     */
-    protected function setSessionQuotaInfo($current, $max)
-    {
-        $this->session->set('current_disk_quota', humanFileSize($current));
-        if ($this->getSetting('quota_enabled', 'off') === 'on') {
-            if ($max < 0) {
-                $this->session->set('max_disk_quota', '∞');
-                $this->session->set('percent_disk_quota', null);
-            } else {
-                $this->session->set('max_disk_quota', humanFileSize($max));
-                $this->session->set('percent_disk_quota', round(($current * 100) / $max));
-            }
-        } else {
-            $this->session->set('max_disk_quota', null);
-            $this->session->set('percent_disk_quota', null);
-        }
-    }
+		$totalSize = 0;
 
-    /**
-     * @param  Request  $request
-     * @param $userId
-     * @param $fileSize
-     * @param  bool  $dec
-     * @return bool
-     */
-    protected function updateUserQuota(Request $request, $userId, $fileSize, $dec = false)
-    {
-        $user = make(UserQuery::class)->get($request, $userId);
+		$filesystem = $this->storage;
+		foreach ($medias as $media) {
+			try {
+				$totalSize += $filesystem->getSize($media->storage_path);
+			} catch (FileNotFoundException $e) {
+				$this->logger->error('Error calculating file size', ['exception' => $e]);
+			}
+		}
 
-        if ($dec) {
-            $tot = max($user->current_disk_quota - $fileSize, 0);
-        } else {
-            $tot = $user->current_disk_quota + $fileSize;
-
-            if ($this->getSetting('quota_enabled') === 'on' && $user->max_disk_quota > 0 && $user->max_disk_quota < $tot) {
-                return false;
-            }
-        }
-
-        $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
-            $tot,
-            $user->id,
-        ]);
-
-        return true;
-    }
-
-    /**
-     * @param $userId
-     * @throws Exception
-     */
-    protected function refreshRememberCookie($userId)
-    {
-        $selector = bin2hex(random_bytes(8));
-        $token = bin2hex(random_bytes(32));
-        $expire = time() + 604800; // a week
-
-        $this->database->query('UPDATE `users` SET `remember_selector`=?, `remember_token`=?, `remember_expire`=? WHERE `id`=?', [
-            $selector,
-            password_hash($token, PASSWORD_DEFAULT),
-            date('Y-m-d\TH:i:s', $expire),
-            $userId,
-        ]);
-
-        // Workaround for php <= 7.3
-        if (PHP_VERSION_ID < 70300) {
-            setcookie('remember', "{$selector}:{$token}", $expire, '; SameSite=Lax', '', false, true);
-        } else {
-            setcookie('remember', "{$selector}:{$token}", [
-                'expires' => $expire,
-                'httponly' => true,
-                'samesite' => 'Lax',
-            ]);
-        }
-    }
-
-    /**
-     * @param  Request  $request
-     * @return ValidationChecker
-     */
-    public function getUserCreateValidator(Request $request)
-    {
-        return ValidationChecker::make()
-            ->rules([
-                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL) !== false,
-                'username.required' => !empty(param($request, 'username')),
-                'password.required' => !empty(param($request, 'password')),
-                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count == 0,
-                'username.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count == 0,
-            ])
-            ->onFail(function ($rule) {
-                $alerts = [
-                    'email.required' => lang('email_required'),
-                    'username.required' => lang('username_required'),
-                    'password.required' => lang('password_required'),
-                    'email.unique' => lang('email_taken'),
-                    'username.unique' => lang('username_taken'),
-                ];
-
-                $this->session->alert($alerts[$rule], 'danger');
-            });
-    }
-
-    /**
-     * @return bool|false|resource
-     */
-    public function ldapConnect()
-    {
-        if (!extension_loaded('ldap')) {
-            $this->logger->error('The LDAP extension is not loaded.');
-            return false;
-        }
-
-        $server = ldap_connect($this->config['ldap']['host'], $this->config['ldap']['port']);
-
-        if ($server) {
-            ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
-            ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
-            ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
-        }
-
-        return $server;
-    }
+		return $totalSize;
+	}
 }

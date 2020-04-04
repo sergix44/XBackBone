@@ -1,8 +1,8 @@
 # These are supported funding model platforms
 
-github: [SergiX44]
+github: # Replace with up to 4 GitHub Sponsors-enabled usernames e.g., [user1, user2]
 patreon: # Replace with a single Patreon username
 open_collective: # Replace with a single Open Collective username
-ko_fi: #
+ko_fi: sergix44
 tidelift: # Replace with a single Tidelift platform-name/package-name e.g., npm/babel
-custom: http://bit.ly/XBackBonePaypal
+custom: http://bit.ly/XBackBoneDonate

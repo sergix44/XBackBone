@@ -2,321 +2,420 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\UserQuery;
-use App\Web\Mail;
-use App\Web\ValidationChecker;
-use League\Flysystem\FileNotFoundException;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+
+use App\Exceptions\UnauthorizedException;
+use Slim\Exception\NotFoundException;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class UserController extends Controller
 {
-    const PER_PAGE = 15;
+	const PER_PAGE = 15;
 
-    /**
-     * @param  Response  $response
-     * @param  int|null  $page
-     *
-     * @return Response
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     *
-     * @throws \Twig\Error\LoaderError
-     */
-    public function index(Response $response, int $page = 0): Response
-    {
-        $page = max(0, --$page);
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 */
+	public function index(Request $request, Response $response, $args): Response
+	{
+		$page = isset($args['page']) ? (int)$args['page'] : 0;
+		$page = max(0, --$page);
 
-        $users = $this->database->query('SELECT * FROM `users` LIMIT ? OFFSET ?', [self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
+		$users = $this->database->query('SELECT * FROM `users` LIMIT ? OFFSET ?', [self::PER_PAGE, $page * self::PER_PAGE])->fetchAll();
 
-        $pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count / self::PER_PAGE;
+		$pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count / self::PER_PAGE;
 
-        return view()->render($response,
-            'user/index.twig',
-            [
-                'users' => $users,
-                'next' => $page < floor($pages),
-                'previous' => $page >= 1,
-                'current_page' => ++$page,
-                'quota_enabled' => $this->getSetting('quota_enabled'),
-            ]
-        );
-    }
+		return $this->view->render($response,
+			'user/index.twig',
+			[
+				'users' => $users,
+				'next' => $page < floor($pages),
+				'previous' => $page >= 1,
+				'current_page' => ++$page,
+			]
+		);
+	}
 
-    /**
-     * @param  Response  $response
-     *
-     * @return Response
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     *
-     * @throws \Twig\Error\LoaderError
-     */
-    public function create(Response $response): Response
-    {
-        return view()->render($response, 'user/create.twig', [
-            'default_user_quota' => humanFileSize($this->getSetting('default_user_quota'), 0, true),
-            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
-        ]);
-    }
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function create(Request $request, Response $response): Response
+	{
+		return $this->view->render($response, 'user/create.twig');
+	}
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     *
-     * @return Response
-     * @throws \Exception
-     */
-    public function store(Request $request, Response $response): Response
-    {
-        $validator = $this->getUserCreateValidator($request);
-        $hasPassword = $validator->removeRule('password.required');
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function store(Request $request, Response $response): Response
+	{
+		if ($request->getParam('email') === null) {
+			$this->session->alert(lang('email_required'), 'danger');
+			return redirect($response, 'user.create');
+		}
 
-        if ($validator->fails()) {
-            return redirect($response, route('user.create'));
-        }
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', $request->getParam('email'))->fetch()->count > 0) {
+			$this->session->alert(lang('email_taken'), 'danger');
+			return redirect($response, 'user.create');
+		}
 
-        $maxUserQuota = -1;
-        if ($this->getSetting('quota_enabled') === 'on') {
-            $maxUserQuotaStr = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota', -1), 0, true));
-            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuotaStr)) {
-                $this->session->alert(lang('invalid_quota', 'danger'));
-                return redirect($response, route('user.create'));
-            }
+		if ($request->getParam('username') === null) {
+			$this->session->alert(lang('username_required'), 'danger');
+			return redirect($response, 'user.create');
+		}
 
-            if ($maxUserQuotaStr !== '-1') {
-                $maxUserQuota = stringToBytes($maxUserQuotaStr);
-            }
-        }
+		if ($request->getParam('password') === null) {
+			$this->session->alert(lang('password_required'), 'danger');
+			return redirect($response, 'user.create');
+		}
 
-        make(UserQuery::class)->create(
-            param($request, 'email'),
-            param($request, 'username'),
-            param($request, 'password'),
-            param($request, 'is_admin') !== null ? 1 : 0,
-            param($request, 'is_active') !== null ? 1 : 0,
-            $maxUserQuota,
-            false,
-            param($request, 'hide_uploads') !== null ? 1 : 0,
-            param($request, 'copy_raw') !== null ? 1 : 0
-        );
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', $request->getParam('username'))->fetch()->count > 0) {
+			$this->session->alert(lang('username_taken'), 'danger');
+			return redirect($response, 'user.create');
+		}
 
-        if (param($request, 'send_notification') !== null) {
-            $this->sendCreateNotification($hasPassword, $request);
-        }
+		do {
+			$userCode = humanRandomString(5);
+		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `user_code` = ?', $userCode)->fetch()->count > 0);
 
-        $this->session->alert(lang('user_created', [param($request, 'username')]), 'success');
-        $this->logger->info('User '.$this->session->get('username').' created a new user.', [array_diff_key($request->getParsedBody(), array_flip(['password']))]);
+		$token = $this->generateNewToken();
 
-        return redirect($response, route('user.index'));
-    }
+		$this->database->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+			$request->getParam('email'),
+			$request->getParam('username'),
+			password_hash($request->getParam('password'), PASSWORD_DEFAULT),
+			$request->getParam('is_admin') !== null ? 1 : 0,
+			$request->getParam('is_active') !== null ? 1 : 0,
+			$userCode,
+			$token,
+		]);
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     *
-     * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function edit(Request $request, Response $response, int $id): Response
-    {
-        $user = make(UserQuery::class)->get($request, $id);
+		$this->session->alert(lang('user_created', [$request->getParam('username')]), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . ' created a new user.', [array_diff_key($request->getParams(), array_flip(['password']))]);
 
-        return view()->render($response, 'user/edit.twig', [
-            'profile' => false,
-            'user' => $user,
-            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
-            'max_disk_quota' => $user->max_disk_quota > 0 ? humanFileSize($user->max_disk_quota, 0, true) : -1,
-        ]);
-    }
+		return redirect($response, 'user.index');
+	}
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     *
-     * @return Response
-     */
-    public function update(Request $request, Response $response, int $id): Response
-    {
-        $user = make(UserQuery::class)->get($request, $id);
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function edit(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
-        $validator = ValidationChecker::make()
-            ->rules([
-                'email.required' => filter_var(param($request, 'email'), FILTER_VALIDATE_EMAIL),
-                'username.required' => !empty(param($request, 'username')),
-                'email.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [param($request, 'email'), $user->email])->fetch()->count == 0,
-                'username.unique' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [param($request, 'username'), $user->username])->fetch()->count == 0,
-                'demote' => !($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null),
-            ])
-            ->onFail(function ($rule) {
-                $alerts = [
-                    'email.required' => lang('email_required'),
-                    'username.required' => lang('username_required'),
-                    'email.unique' => lang('email_taken'),
-                    'username.unique' => lang('username_taken'),
-                    'demote' => lang('cannot_demote'),
-                ];
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
 
-                $this->session->alert($alerts[$rule], 'danger');
-            });
+		return $this->view->render($response, 'user/edit.twig', [
+			'profile' => false,
+			'user' => $user,
+		]);
+	}
 
-        if ($validator->fails()) {
-            return redirect($response, route('user.edit', ['id' => $id]));
-        }
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function update(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
-        $user->max_disk_quota = -1;
-        if ($this->getSetting('quota_enabled') === 'on') {
-            $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
-            if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
-                $this->session->alert(lang('invalid_quota', 'danger'));
-                return redirect($response, route('user.create'));
-            }
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
 
-            if ($maxUserQuota !== '-1') {
-                $user->max_disk_quota = stringToBytes($maxUserQuota);
-            }
-        }
+		if ($request->getParam('email') === null) {
+			$this->session->alert(lang('email_required'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
+		}
 
-        make(UserQuery::class)->update(
-            $user->id,
-            param($request, 'email'),
-            param($request, 'username'),
-            param($request, 'password'),
-            param($request, 'is_admin') !== null ? 1 : 0,
-            param($request, 'is_active') !== null ? 1 : 0,
-            $user->max_disk_quota,
-            param($request, 'ldap') !== null ? 1 : 0,
-            param($request, 'hide_uploads') !== null ? 1 : 0,
-            param($request, 'copy_raw') !== null ? 1 : 0
-        );
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [$request->getParam('email'), $user->email])->fetch()->count > 0) {
+			$this->session->alert(lang('email_taken'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
+		}
 
-        if ($user->id === $this->session->get('user_id')) {
-            $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
-        }
+		if ($request->getParam('username') === null) {
+			$this->session->alert(lang('username_required'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
+		}
 
-        $this->session->alert(lang('user_updated', [param($request, 'username')]), 'success');
-        $this->logger->info('User '.$this->session->get('username')." updated $user->id.", [
-            array_diff_key((array) $user, array_flip(['password'])),
-            array_diff_key($request->getParsedBody(), array_flip(['password'])),
-        ]);
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ? AND `username` <> ?', [$request->getParam('username'), $user->username])->fetch()->count > 0) {
+			$this->session->alert(lang('username_taken'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
+		}
 
-        return redirect($response, route('user.index'));
-    }
+		if ($user->id === $this->session->get('user_id') && $request->getParam('is_admin') === null) {
+			$this->session->alert(lang('cannot_demote'), 'danger');
+			return redirect($response, 'user.edit', ['id' => $args['id']]);
+		}
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     *
-     * @return Response
-     */
-    public function delete(Request $request, Response $response, int $id): Response
-    {
-        $user = make(UserQuery::class)->get($request, $id);
+		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
+			$this->database->query('UPDATE `users` SET `email`=?, `username`=?, `password`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				$request->getParam('username'),
+				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
+				$request->getParam('is_admin') !== null ? 1 : 0,
+				$request->getParam('is_active') !== null ? 1 : 0,
+				$user->id,
+			]);
+		} else {
+			$this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				$request->getParam('username'),
+				$request->getParam('is_admin') !== null ? 1 : 0,
+				$request->getParam('is_active') !== null ? 1 : 0,
+				$user->id,
+			]);
+		}
 
-        if ($user->id === $this->session->get('user_id')) {
-            $this->session->alert(lang('cannot_delete'), 'danger');
+		$this->session->alert(lang('user_updated', [$request->getParam('username')]), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . " updated $user->id.", [
+			array_diff_key((array)$user, array_flip(['password'])),
+			array_diff_key($request->getParams(), array_flip(['password'])),
+		]);
 
-            return redirect($response, route('user.index'));
-        }
+		return redirect($response, 'user.index');
 
-        $this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
+	}
 
-        $this->session->alert(lang('user_deleted'), 'success');
-        $this->logger->info('User '.$this->session->get('username')." deleted $user->id.");
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 */
+	public function delete(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
-        return redirect($response, route('user.index'));
-    }
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     * @return Response
-     */
-    public function clearUserMedia(Request $request, Response $response, int $id): Response
-    {
-        $user = make(UserQuery::class)->get($request, $id, true);
+		if ($user->id === $this->session->get('user_id')) {
+			$this->session->alert(lang('cannot_delete'), 'danger');
+			return redirect($response, 'user.index');
+		}
 
-        $medias = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` = ?', $user->id);
+		$this->database->query('DELETE FROM `users` WHERE `id` = ?', $user->id);
 
-        foreach ($medias as $media) {
-            try {
-                $this->storage->delete($media->storage_path);
-            } catch (FileNotFoundException $e) {
-            }
-        }
+		$this->session->alert(lang('user_deleted'), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . " deleted $user->id.");
 
-        $this->database->query('DELETE FROM `uploads` WHERE `user_id` = ?', $user->id);
-        $this->database->query('UPDATE `users` SET `current_disk_quota`=? WHERE `id` = ?', [
-            0,
-            $user->id,
-        ]);
+		return redirect($response, 'user.index');
+	}
 
-        $this->session->alert(lang('account_media_deleted'), 'success');
-        return redirect($response, route('user.edit', ['id' => $id]));
-    }
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function profile(Request $request, Response $response): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $this->session->get('user_id'))->fetch();
 
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  int  $id
-     *
-     * @return Response
-     */
-    public function refreshToken(Request $request, Response $response, int $id): Response
-    {
-        $query = make(UserQuery::class);
-        $user = $query->get($request, $id, true);
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
 
-        $this->logger->info('User '.$this->session->get('username')." refreshed token of user $user->id.");
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
+			throw new UnauthorizedException();
+		}
 
-        $response->getBody()->write($query->refreshToken($user->id));
+		return $this->view->render($response, 'user/edit.twig', [
+			'profile' => true,
+			'user' => $user,
+		]);
+	}
 
-        return $response;
-    }
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function profileEdit(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
 
-    /**
-     * @param $hasPassword
-     * @param $request
-     * @throws \Exception
-     */
-    private function sendCreateNotification($hasPassword, $request)
-    {
-        if ($hasPassword) {
-            $message = lang('mail.new_account_text_with_pw', [
-                param($request, 'username'),
-                $this->config['app_name'],
-                $this->config['base_url'],
-                param($request, 'username'),
-                param($request, 'password'),
-                route('login.show'),
-            ]);
-        } else {
-            $resetToken = bin2hex(random_bytes(16));
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
 
-            $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
-                $resetToken,
-                $this->database->getPdo()->lastInsertId(),
-            ]);
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
+			throw new UnauthorizedException();
+		}
 
-            $message = lang('mail.new_account_text_with_reset', [
-                param($request, 'username'),
-                $this->config['app_name'],
-                $this->config['base_url'],
-                route('recover.password', ['resetToken' => $resetToken]),
-            ]);
-        }
+		if ($request->getParam('email') === null) {
+			$this->session->alert(lang('email_required'), 'danger');
+			return redirect($response, 'profile');
+		}
 
-        Mail::make()
-            ->from(platform_mail(), $this->config['app_name'])
-            ->to(param($request, 'email'))
-            ->subject(lang('mail.new_account', [$this->config['app_name']]))
-            ->message($message)
-            ->send();
-    }
+		if ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ? AND `email` <> ?', [$request->getParam('email'), $user->email])->fetch()->count > 0) {
+			$this->session->alert(lang('email_taken'), 'danger');
+			return redirect($response, 'profile');
+		}
+
+		if ($request->getParam('password') !== null && !empty($request->getParam('password'))) {
+			$this->database->query('UPDATE `users` SET `email`=?, `password`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				password_hash($request->getParam('password'), PASSWORD_DEFAULT),
+				$user->id,
+			]);
+		} else {
+			$this->database->query('UPDATE `users` SET `email`=? WHERE `id` = ?', [
+				$request->getParam('email'),
+				$user->id,
+			]);
+		}
+
+		$this->session->alert(lang('profile_updated'), 'success');
+		$this->logger->info('User ' . $this->session->get('username') . " updated profile of $user->id.");
+
+		return redirect($response, 'profile');
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function refreshToken(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
+
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
+
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
+			throw new UnauthorizedException();
+		}
+
+		$token = $this->generateNewToken();
+
+		$this->database->query('UPDATE `users` SET `token`=? WHERE `id` = ?', [
+			$token,
+			$user->id,
+		]);
+
+		$this->logger->info('User ' . $this->session->get('username') . " refreshed token of user $user->id.");
+
+		$response->getBody()->write($token);
+
+		return $response;
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function getShareXconfigFile(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
+
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
+
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
+			throw new UnauthorizedException();
+		}
+
+		if ($user->token === null || $user->token === '') {
+			$this->session->alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
+
+		$json = [
+			'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
+			'RequestURL' => route('upload'),
+			'FileFormName' => 'upload',
+			'Arguments' => [
+				'file' => '$filename$',
+				'text' => '$input$',
+				'token' => $user->token,
+			],
+			'URL' => '$json:url$',
+			'ThumbnailURL' => '$json:url$/raw',
+			'DeletionURL' => '$json:url$/delete/' . $user->token,
+		];
+
+		return $response
+			->withHeader('Content-Disposition', 'attachment;filename="' . $user->username . '-ShareX.sxcu"')
+			->withJson($json, 200, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $args
+	 * @return Response
+	 * @throws NotFoundException
+	 * @throws UnauthorizedException
+	 */
+	public function getUploaderScriptFile(Request $request, Response $response, $args): Response
+	{
+		$user = $this->database->query('SELECT * FROM `users` WHERE `id` = ? LIMIT 1', $args['id'])->fetch();
+
+		if (!$user) {
+			throw new NotFoundException($request, $response);
+		}
+
+		if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
+			throw new UnauthorizedException();
+		}
+
+		if ($user->token === null || $user->token === '') {
+			$this->session->alert('You don\'t have a personal upload token. (Click the update token button and try again)', 'danger');
+			return $response->withRedirect($request->getHeaderLine('HTTP_REFERER'));
+		}
+
+		return $this->view->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_' . $user->username . '.sh"'),
+			'scripts/xbackbone_uploader.sh.twig',
+			[
+				'username' => $user->username,
+				'upload_url' => route('upload'),
+				'token' => $user->token,
+			]
+		);
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function generateNewToken(): string
+	{
+		do {
+			$token = 'token_' . md5(uniqid('', true));
+		} while ($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `token` = ?', $token)->fetch()->count > 0);
+
+		return $token;
+	}
 }

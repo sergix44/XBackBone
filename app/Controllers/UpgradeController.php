@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use RuntimeException;
+
+use Slim\Http\Request;
+use Slim\Http\Response;
 use ZipArchive;
 
 class UpgradeController extends Controller
@@ -12,46 +12,40 @@ class UpgradeController extends Controller
     const GITHUB_SOURCE_API = 'https://api.github.com/repos/SergiX44/XBackBone/releases';
 
     /**
-     * @param Response $response
-     *
+     * @param  Request  $request
+     * @param  Response  $response
      * @return Response
      */
-    public function upgrade(Response $response): Response
+    public function upgrade(Request $request, Response $response): Response
     {
         if (!is_writable(BASE_DIR)) {
             $this->session->alert(lang('path_not_writable', BASE_DIR), 'warning');
-
-            return redirect($response, route('system'));
+            return redirect($response, 'system');
         }
 
         try {
             $json = $this->getApiJson();
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             $this->session->alert($e->getMessage(), 'danger');
-
-            return redirect($response, route('system'));
+            return redirect($response, 'system');
         }
 
         if (version_compare($json[0]->tag_name, PLATFORM_VERSION, '<=')) {
             $this->session->alert(lang('already_latest_version'), 'warning');
-
-            return redirect($response, route('system'));
+            return redirect($response, 'system');
         }
 
         $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'xbackbone_update.zip';
 
         if (file_put_contents($tmpFile, file_get_contents($json[0]->assets[0]->browser_download_url)) === false) {
             $this->session->alert(lang('cannot_retrieve_file'), 'danger');
-
-            return redirect($response, route('system'));
-        }
+            return redirect($response, 'system');
+        };
 
         if (filesize($tmpFile) !== $json[0]->assets[0]->size) {
             $this->session->alert(lang('file_size_no_match'), 'danger');
-
-            return redirect($response, route('system'));
+            return redirect($response, 'system');
         }
-        $this->logger->info('System update started.');
 
         $config = require BASE_DIR.'config.php';
         $config['maintenance'] = true;
@@ -69,6 +63,7 @@ class UpgradeController extends Controller
         );
 
         removeDirectory(BASE_DIR.'vendor/');
+
 
         $updateZip = new ZipArchive();
         $updateZip->open($tmpFile);
@@ -90,26 +85,23 @@ class UpgradeController extends Controller
         $updateZip->close();
         unlink($tmpFile);
 
-        $this->logger->info('System update completed.');
-
-        return redirect($response, urlFor('/install'));
+        return redirect($response, '/install');
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     *
+     * @param  Request  $request
+     * @param  Response  $response
      * @return Response
      */
     public function checkForUpdates(Request $request, Response $response): Response
     {
         $jsonResponse = [
-            'status'  => null,
+            'status' => null,
             'message' => null,
             'upgrade' => false,
         ];
 
-        $acceptPrerelease = param($request, 'prerelease', 'false') === 'true';
+        $acceptPrerelease = $request->getParam('prerelease', 'false') === 'true';
 
         try {
             $json = $this->getApiJson();
@@ -128,12 +120,11 @@ class UpgradeController extends Controller
                     break;
                 }
             }
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             $jsonResponse['status'] = 'ERROR';
             $jsonResponse['message'] = $e->getMessage();
         }
-
-        return json($response, $jsonResponse);
+        return $response->withJson($jsonResponse);
     }
 
     protected function getApiJson()
@@ -151,9 +142,10 @@ class UpgradeController extends Controller
         $data = @file_get_contents(self::GITHUB_SOURCE_API, false, stream_context_create($opts));
 
         if ($data === false) {
-            throw new RuntimeException('Cannot contact the Github API. Try again.');
+            throw new \RuntimeException('Cannot contact the Github API. Try again.');
         }
 
         return json_decode($data);
     }
+
 }

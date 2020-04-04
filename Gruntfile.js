@@ -85,39 +85,15 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'node_modules/plyr/dist',
-                        src: ['plyr.min.js', 'plyr.css'],
-                        dest: 'static/plyr'
+                        cwd: 'node_modules/video.js/dist',
+                        src: ['video.min.js', 'video-js.min.css'],
+                        dest: 'static/videojs'
                     },
                     {
                         expand: true,
                         cwd: 'node_modules/highlightjs',
                         src: ['styles/**/*', 'highlight.pack.min.js'],
                         dest: 'static/highlightjs'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'node_modules/dropzone/dist/min',
-                        src: ['dropzone.min.css', 'dropzone.min.js'],
-                        dest: 'static/dropzone'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'node_modules/bootstrap4-toggle/css',
-                        src: ['bootstrap4-toggle.min.css'],
-                        dest: 'static/bootstrap/css'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'node_modules/bootstrap4-toggle/js',
-                        src: ['bootstrap4-toggle.min.js'],
-                        dest: 'static/bootstrap/js'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'src/images',
-                        src: ['**/*'],
-                        dest: 'static/images'
                     },
                     {expand: true, cwd: 'node_modules/jquery/dist', src: ['jquery.min.js'], dest: 'static/jquery'}
                 ],
