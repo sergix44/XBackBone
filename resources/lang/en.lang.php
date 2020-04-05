@@ -19,7 +19,7 @@ return [
     'pager.previous' => 'Previous',
     'copy_link' => 'Copy link',
     'public.telegram' => 'Share on Telegram',
-    'public.delete_text' => 'Are you sure you want to delete this item? It will be gone forever!',
+    'public.delete_text' => 'Are you sure you want to delete this item? You will not be able to recover it',
     'preview' => 'Preview',
     'filename' => 'Filename',
     'size' => 'Size',
@@ -122,9 +122,17 @@ return [
     'default_user_quota' => 'Default User Quota',
     'max_user_quota' => 'Max User Quota',
     'invalid_quota' => 'Invalid values as default user quota.',
-    'mail.activate_text' => "Hi %s!\nthank you for creating your account on %s (%s), click on the following link to activate it:\n\n%s",
+    'mail.activate_text' => 'Hi %s!
+thank you for creating your account on %s (%s), click on the following link to activate it:
+
+%s',
     'mail.activate_account' => '%s - Account Activation',
-    'mail.recover_text' => "Hi %s,\na password reset has been requested for your account. To complete the procedure click on the following link:\n\n%s\n\nIf it wasn\'t you who requested the password reset, simply ignore this email.",
+    'mail.recover_text' => 'Hi %s,
+a password reset has been requested for your account. To complete the procedure click on the following link:
+
+%s
+
+If it wasn\'t you who requested the password reset, simply ignore this email.',
     'mail.recover_password' => '%s - Password Recovery',
     'recover_email_sent' => 'If present, a recovery email was sent to the specified account.',
     'account_activated' => 'Account activated, now you can login!',
@@ -148,10 +156,20 @@ return [
     'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
     'send_notification' => 'Send Mail Notification',
     'mail.new_account' => '%s - New Account Creation',
-    'mail.new_account_text_with_reset' => "Hi %s!\na new account was created for you on %s (%s), click on the following link to set a password and activate it:\n\n%s",
-    'mail.new_account_text_with_pw' => "Hi %s!\na new account was created for you on %s (%s), with the following credentials:\n\nUsername: %s\nPassword: %s\n\nClick on the following link to go to the login page:\n%s",
+    'mail.new_account_text_with_reset' => 'Hi %s!
+a new account was created for you on %s (%s), click on the following link to set a password and activate it:
+
+%s',
+    'mail.new_account_text_with_pw' => 'Hi %s!
+a new account was created for you on %s (%s), with the following credentials:
+
+Username: %s
+Password: %s
+
+Click on the following link to go to the login page:
+%s',
     'user_create_password' => 'If leaved empty, you might want to send a notification to the user email.',
     'ldap_cant_connect' => 'Can\'t connect to the LDAP auth server.',
     'upload_max_file_size' => 'The max file size is currently %s.',
-    'no_tags' => 'No tags added'
+    'no_tags' => 'No tags added',
 ];
