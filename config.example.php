@@ -4,7 +4,7 @@ return [
     'base_url' => 'https://localhost', // no trailing slash
     'db'       => [
         'connection' => 'sqlite',
-        'dsn'        => 'resources/database/xbackbone.db',
+        'dsn'        => realpath(__DIR__).'/resources/database/xbackbone.db',
         'username'   => null,
         'password'   => null,
     ],

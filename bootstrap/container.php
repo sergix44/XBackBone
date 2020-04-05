@@ -36,11 +36,6 @@ return [
     }),
     'logger' => get(Logger::class),
 
-    Session::class => factory(function () {
-        return new Session('xbackbone_session', BASE_DIR.'resources/sessions');
-    }),
-    'session' => get(Session::class),
-
     DB::class => factory(function (Container $container) {
         $config = $container->get('config');
 

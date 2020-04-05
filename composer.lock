@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17be54724e0928ed7049b18bbcb181b9",
+    "content-hash": "979e04cb72a48a50d7872132f8efa29f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.133.46",
+            "version": "3.134.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "98d359e61b365f3040ca61c66ae8883334cf5d74"
+                "reference": "3de2711a47e7c3f5e93a5c83f019188fd23f852f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/98d359e61b365f3040ca61c66ae8883334cf5d74",
-                "reference": "98d359e61b365f3040ca61c66ae8883334cf5d74",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3de2711a47e7c3f5e93a5c83f019188fd23f852f",
+                "reference": "3de2711a47e7c3f5e93a5c83f019188fd23f852f",
                 "shasum": ""
             },
             "require": {
@@ -88,7 +88,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2020-03-27T18:15:32+00:00"
+            "time": "2020-04-03T18:11:51+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -255,16 +255,16 @@
         },
         {
             "name": "google/cloud-storage",
-            "version": "v1.19.0",
+            "version": "v1.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-                "reference": "49dc19608ebea54023c2b3910e72b91393235d82"
+                "reference": "d09ef3d47079e4a3cac1419856302cc5c07c5e1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/49dc19608ebea54023c2b3910e72b91393235d82",
-                "reference": "49dc19608ebea54023c2b3910e72b91393235d82",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/d09ef3d47079e4a3cac1419856302cc5c07c5e1f",
+                "reference": "d09ef3d47079e4a3cac1419856302cc5c07c5e1f",
                 "shasum": ""
             },
             "require": {
@@ -302,7 +302,7 @@
                 "Apache-2.0"
             ],
             "description": "Cloud Storage Client for PHP",
-            "time": "2020-03-25T23:00:37+00:00"
+            "time": "2020-03-30T20:36:58+00:00"
         },
         {
             "name": "google/crc32",
@@ -765,6 +765,7 @@
                 "serialize",
                 "tokenizer"
             ],
+            "abandoned": "opis/closure",
             "time": "2018-03-21T22:21:57+00:00"
         },
         {

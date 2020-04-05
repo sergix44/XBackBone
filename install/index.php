@@ -29,7 +29,7 @@ $config = [
     'debug' => true,
     'db' => [
         'connection' => 'sqlite',
-        'dsn' => realpath(__DIR__.'/../').implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
+        'dsn' => realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
         'username' => null,
         'password' => null,
     ],
@@ -51,6 +51,10 @@ $builder->addDefinitions([
         return ViewFactory::createInstallerInstance($container);
     }),
     'view' => get(View::class),
+    Session::class => factory(function () {
+        return new Session('xbackbone_session');
+    }),
+    'session' => get(Session::class),
 ]);
 $builder->addDefinitions(__DIR__.'/../bootstrap/container.php');
 
@@ -95,7 +99,6 @@ $app->get('/', function (Response $response, View $view, Session $session) use (
 })->setName('install');
 
 $app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session, DB $db) use (&$config) {
-
     // Check if there is a previous installation, if not, setup the config file
     $installed = true;
 
@@ -180,13 +183,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
 
     // Build the dns string and run the migrations
     try {
-        $firstMigrate = false;
-        if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__.'/../'.$config['db']['dsn'])) {
-            touch(__DIR__.'/../'.$config['db']['dsn']);
-            $firstMigrate = true;
-        }
-
-        $migrator = new Migrator($db, __DIR__.'/../resources/schemas', $firstMigrate);
+        $migrator = new Migrator($db, __DIR__.'/../resources/schemas');
         $migrator->migrate();
         $migrator->reSyncQuotas($storage);
     } catch (PDOException $e) {
@@ -201,7 +198,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     }
 
     // re-apply the previous theme if is present
-    $css = $db->query('SELECT `value` FROM `settings` WHERE `key` = \'css\'')->fetch()->value;
+    $css = $db->query('SELECT `value` FROM `settings` WHERE `key` = \'css\'')->fetch()->value ?? null;
     if ($css) {
         $content = file_get_contents($css);
         if ($content !== false) {
@@ -230,9 +227,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     cleanDirectory(__DIR__.'/../resources/cache');
     cleanDirectory(__DIR__.'/../resources/sessions');
 
-    if (!isset($config['debug']) || !$config['debug']) {
-        removeDirectory(__DIR__.'/../install');
-    }
+    //removeDirectory(__DIR__.'/../install');
 
     // Installed successfully, destroy the installer session
     $session->destroy();

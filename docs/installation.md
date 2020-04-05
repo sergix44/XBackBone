@@ -44,7 +44,7 @@ return [
 	],
 	'db' => [
 		'connection' => 'sqlite', // current support for sqlite and mysql
-		'dsn' => 'resources/database/xbackbone.db',
+		'dsn' => realpath(__DIR__).'/resources/database/xbackbone.db', // if sqlite, this must be an absolute path
 		'username' => null, // username and password not needed for sqlite
 		'password' => null,
 	]

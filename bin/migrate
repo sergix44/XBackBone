@@ -18,15 +18,9 @@ if (!$config) {
 
 chdir(__DIR__.'/../');
 
-$firstMigrate = false;
-if ($config['db']['connection'] === 'sqlite' && !file_exists(__DIR__.'/../'.$config['db']['dsn'])) {
-    touch(__DIR__.'/../'.$config['db']['dsn']);
-    $firstMigrate = true;
-}
+$db = new DB(dsnFromConfig($config), $config['db']['username'], $config['db']['password']);
 
-$db = new DB(dsnFromConfig($config, getcwd().DIRECTORY_SEPARATOR), $config['db']['username'], $config['db']['password']);
-
-$migrator = new Migrator($db, 'resources/schemas', $firstMigrate);
+$migrator = new Migrator($db, 'resources/schemas');
 $migrator->migrate();
 
 if (isset($argv[1]) && $argv[1] === '--install') {
@@ -34,7 +28,7 @@ if (isset($argv[1]) && $argv[1] === '--install') {
 }
 
 if (file_exists(__DIR__.'/../install') && (!isset($config['debug']) || !$config['debug'])) {
-    removeDirectory(__DIR__.'/../install');
+    //removeDirectory(__DIR__.'/../install');
 }
 
 echo 'If you are upgrading from a previous version, please run a "php bin\clean".'.PHP_EOL;

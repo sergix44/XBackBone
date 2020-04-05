@@ -73,6 +73,6 @@ class TagController extends Controller
         return make(ValidationHelper::class)
             ->failIf(empty(param($request, 'mediaId')))
             ->failIf($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `id` = ?', param($request, 'mediaId'))->fetch()->count == 0)
-            ->failIf($this->session->get('admin', false) || $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', param($request, 'mediaId'))->fetch()->user_id !== $this->session->get('user_id'));
+            ->failIf(!$this->session->get('admin', false) && $this->database->query('SELECT `user_id` FROM `uploads` WHERE `id` = ? LIMIT 1', param($request, 'mediaId'))->fetch()->user_id != $this->session->get('user_id'));
     }
 }

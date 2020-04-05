@@ -6,6 +6,7 @@ use App\Factories\ViewFactory;
 use App\Middleware\InjectMiddleware;
 use App\Middleware\LangMiddleware;
 use App\Middleware\RememberMiddleware;
+use App\Web\Session;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
@@ -58,6 +59,10 @@ if (!$config['debug']) {
 }
 
 $builder->addDefinitions([
+    Session::class => factory(function () {
+        return new Session('xbackbone_session', BASE_DIR.'resources/sessions');
+    }),
+    'session' => get(Session::class),
     View::class => factory(function (Container $container) {
         return ViewFactory::createAppInstance($container);
     }),

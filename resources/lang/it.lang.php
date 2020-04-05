@@ -157,7 +157,7 @@ Se non sei stato tu a richiedere la reimpostazione della password, ignora sempli
     'recaptcha_site_key' => 'reCAPTCHA Site Key',
     'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
     'no_tags' => 'Nessun tag aggiunto',
-    'upload_max_file_size' => 'La dimensione massima del file è attualmente %s.',
+    'upload_max_file_size' => 'La dimensione massima di un file caricabile è %s.',
     'ldap_cant_connect' => 'Impossibile connettersi al server di autenticazione LDAP.',
     'user_create_password' => 'Se lasciato vuoto, si consiglia di inviare una notifica all\'utente via e-mail.',
     'mail.new_account_text_with_pw' => 'Ciao %s!

@@ -1,18 +1,19 @@
 $(document).ready(function () {
     var $connection = $('#connection');
-    var $all_database_options = $('.hook-database');
-    var $all_database_inputs = $('.hook-database-input');
+    var $allDatabaseOptions = $('.hook-database');
+    var $allDatabaseInputs = $('.hook-database-input');
+    var sqliteDSN = $('#dsn').val();
 
-    var $storage_driver = $('#storage_driver');
-    var $all_storage_inputs = $('.hook-storage-input');
-    var $all_storage_options = $('.hook-storage');
+    var $storageDriver = $('#storage_driver');
+    var $allStorageInputs = $('.hook-storage-input');
+    var $allStorageOptions = $('.hook-storage');
 
     $connection.change(function () {
-        $all_database_options.hide();
-        $all_database_inputs.prop('required', '');
+        $allDatabaseOptions.hide();
+        $allDatabaseInputs.prop('required', '');
         switch ($(this).val()) {
             case 'sqlite':
-                $('#dsn').val('resources/database/xbackbone.db');
+                $('#dsn').val(sqliteDSN);
                 break;
             case 'mysql':
                 $('#dsn').val('host=localhost;port=3306;dbname=xbackbone');
@@ -22,9 +23,9 @@ $(document).ready(function () {
         }
     });
 
-    $storage_driver.change(function () {
-        $all_storage_options.hide();
-        $all_storage_inputs.prop('required', '');
+    $storageDriver.change(function () {
+        $allStorageOptions.hide();
+        $allStorageInputs.prop('required', '');
         switch ($(this).val()) {
             case 'local':
                 $('#storage_path').val($('#storage_path').data('default-local')).prop('required', 'required').parent().parent().show();
@@ -56,8 +57,8 @@ $(document).ready(function () {
         }
     });
 
-    $all_database_options.hide();
-    $all_storage_options.hide();
-    $storage_driver.trigger('change');
+    $allDatabaseOptions.hide();
+    $allStorageOptions.hide();
+    $storageDriver.trigger('change');
     $connection.trigger('change');
 });

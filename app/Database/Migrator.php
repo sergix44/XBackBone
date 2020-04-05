@@ -16,23 +16,17 @@ class Migrator
      * @var string
      */
     private $schemaPath;
-    /**
-     * @var bool
-     */
-    private $firstMigrate;
 
     /**
      * Migrator constructor.
      *
-     * @param DB     $db
-     * @param string $schemaPath
-     * @param bool   $firstMigrate
+     * @param  DB  $db
+     * @param  string  $schemaPath
      */
-    public function __construct(DB $db, ?string $schemaPath, bool $firstMigrate = false)
+    public function __construct(DB $db, ?string $schemaPath)
     {
         $this->db = $db;
         $this->schemaPath = $schemaPath;
-        $this->firstMigrate = $firstMigrate;
     }
 
     public function migrate()
@@ -43,9 +37,7 @@ class Migrator
             $this->firstMigrate = true;
         }
 
-        if ($this->firstMigrate) {
-            $this->db->getPdo()->exec(file_get_contents($this->schemaPath.DIRECTORY_SEPARATOR.'migrations.sql'));
-        }
+        $this->db->getPdo()->exec(file_get_contents($this->schemaPath.DIRECTORY_SEPARATOR.'migrations.sql'));
 
         $files = glob($this->schemaPath.'/'.$this->db->getCurrentDriver().'/*.sql');
 
