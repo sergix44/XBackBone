@@ -201,3 +201,7 @@ body {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.tag-add {
+    overflow: hidden;
+}
