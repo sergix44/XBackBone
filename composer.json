@@ -1,6 +1,6 @@
 {
   "name": "sergix44/xbackbone",
-  "version": "3.1.RC1",
+  "version": "3.1.RC2",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
@@ -21,8 +21,7 @@
     "slim/slim": "^4.0",
     "spatie/flysystem-dropbox": "^1.0",
     "superbalist/flysystem-google-storage": "^7.2",
-    "twig/twig": "^2.12",
-    "avto-dev/composer-cleanup-plugin": "^2.0"
+    "twig/twig": "^2.12"
   },
   "config": {
     "optimize-autoloader": true,
