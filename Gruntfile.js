@@ -154,7 +154,7 @@ module.exports = function (grunt) {
                 command: '"./vendor/bin/phpstan" analyse app resources/lang bin install'
             },
             composer_no_dev: {
-                command: 'composer install --no-dev'
+                command: 'composer install --no-dev --prefer-dist'
             }
         }
 

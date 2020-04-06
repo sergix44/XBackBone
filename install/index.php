@@ -6,7 +6,6 @@ require __DIR__.'/../vendor/autoload.php';
 use App\Database\DB;
 use App\Database\Migrator;
 use App\Factories\ViewFactory;
-use App\Web\Media;
 use App\Web\Session;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
@@ -29,7 +28,7 @@ $config = [
     'debug' => true,
     'db' => [
         'connection' => 'sqlite',
-        'dsn' => realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
+        'dsn' => BASE_DIR.implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
         'username' => null,
         'password' => null,
     ],
@@ -227,7 +226,7 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
     cleanDirectory(__DIR__.'/../resources/cache');
     cleanDirectory(__DIR__.'/../resources/sessions');
 
-    //removeDirectory(__DIR__.'/../install');
+    removeDirectory(__DIR__.'/../install');
 
     // Installed successfully, destroy the installer session
     $session->destroy();

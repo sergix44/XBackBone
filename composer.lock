@@ -4,8 +4,58 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "979e04cb72a48a50d7872132f8efa29f",
+    "content-hash": "1963bb9b1a8f5fad240b9f85112ac008",
     "packages": [
+        {
+            "name": "avto-dev/composer-cleanup-plugin",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/avto-dev/composer-cleanup-plugin.git",
+                "reference": "62d55ce097b7ea4336fa89b872ef21cacd5f82cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/avto-dev/composer-cleanup-plugin/zipball/62d55ce097b7ea4336fa89b872ef21cacd5f82cd",
+                "reference": "62d55ce097b7ea4336fa89b872ef21cacd5f82cd",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "php": "^7.1.3"
+            },
+            "require-dev": {
+                "composer/composer": "^1.8.6",
+                "phpstan/phpstan": "~0.12",
+                "phpunit/phpunit": "~7.5",
+                "symfony/var-dumper": "~3.2 || ^4.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "AvtoDev\\Composer\\Cleanup\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "AvtoDev\\Composer\\Cleanup\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "avto-dev",
+                    "homepage": "https://github.com/avto-dev"
+                },
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "A composer cleanup plugin, to remove tests and documentation to save space",
+            "time": "2020-02-09T18:06:15+00:00"
+        },
         {
             "name": "aws/aws-sdk-php",
             "version": "3.134.3",

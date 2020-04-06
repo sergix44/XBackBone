@@ -4,7 +4,7 @@ title: Changelog
 nav_order: 8
 ---
 
-## v.3.1 (WIP)
+## v.3.1
 + Added tagging system (add, delete, search of tagged files).
 + Added basic media auto-tagging on upload.
 + Added registration system.

@@ -468,7 +468,12 @@ if (!function_exists('dsnFromConfig')) {
      */
     function dsnFromConfig(array $config): string
     {
-        return $config['db']['connection'].':'.$config['db']['dsn'];
+        $dsn = $config['db']['dsn'];
+        if ($config['db']['connection'] === 'sqlite' && file_exists($config['db']['dsn'])) {
+            $dsn = realpath($config['db']['dsn']);
+        }
+
+        return $config['db']['connection'].':'.$dsn;
     }
 }
 

@@ -10,15 +10,15 @@ $(document).ready(function () {
 
     $connection.change(function () {
         $allDatabaseOptions.hide();
-        $allDatabaseInputs.prop('required', '');
+        $allDatabaseInputs.prop('required', '').prop('disabled', 'disabled');
         switch ($(this).val()) {
             case 'sqlite':
                 $('#dsn').val(sqliteDSN);
                 break;
             case 'mysql':
                 $('#dsn').val('host=localhost;port=3306;dbname=xbackbone');
-                $('#db_user').prop('required', 'required').parent().parent().show();
-                $('#db_password').prop('required', 'required').parent().parent().show();
+                $('#db_user').prop('disabled', '').prop('required', 'required').parent().parent().show();
+                $('#db_password').prop('disabled', '').prop('required', 'required').parent().parent().show();
                 break;
         }
     });

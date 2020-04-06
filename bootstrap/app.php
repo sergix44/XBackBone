@@ -34,7 +34,7 @@ $config = array_replace_recursive([
     'maintenance' => false,
     'db' => [
         'connection' => 'sqlite',
-        'dsn' => BASE_DIR.'resources/database/xbackbone.db',
+        'dsn' => BASE_DIR.implode(DIRECTORY_SEPARATOR, ['resources', 'database', 'xbackbone.db']),
         'username' => null,
         'password' => null,
     ],
