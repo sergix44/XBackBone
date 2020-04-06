@@ -73,7 +73,7 @@ class UserController extends Controller
         $validator = $this->getUserCreateValidator($request)
             ->callIf($this->getSetting('quota_enabled') === 'on', function ($session) use (&$maxUserQuota, &$request) {
                 $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
-                if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+                if (!preg_match('/(^[0-9]+[B|K|M|G|T]$)|(^\-1$)/i', $maxUserQuota)) {
                     $session->alert(lang('invalid_quota', 'danger'));
                     return false;
                 }
@@ -163,7 +163,7 @@ class UserController extends Controller
             ->alertIf($user->id === $this->session->get('user_id') && param($request, 'is_admin') === null, 'cannot_demote')
             ->callIf($this->getSetting('quota_enabled') === 'on', function ($session) use (&$user, &$request) {
                 $maxUserQuota = param($request, 'max_user_quota', humanFileSize($this->getSetting('default_user_quota'), 0, true));
-                if (!preg_match('/([0-9]+[K|M|G|T])|(\-1)/i', $maxUserQuota)) {
+                if (!preg_match('/(^[0-9]+[B|K|M|G|T]$)|(^\-1$)/i', $maxUserQuota)) {
                     $session->alert(lang('invalid_quota', 'danger'));
                     return false;
                 }
