@@ -469,8 +469,13 @@ if (!function_exists('dsnFromConfig')) {
     function dsnFromConfig(array $config): string
     {
         $dsn = $config['db']['dsn'];
-        if ($config['db']['connection'] === 'sqlite' && file_exists($config['db']['dsn'])) {
-            $dsn = realpath($config['db']['dsn']);
+        if ($config['db']['connection'] === 'sqlite') {
+            if (getcwd() !== BASE_DIR) { // if in installer, change the working dir to the app dir
+                chdir(BASE_DIR);
+            }
+            if (file_exists($config['db']['dsn'])) {
+                $dsn = realpath($config['db']['dsn']);
+            }
         }
 
         return $config['db']['connection'].':'.$dsn;
