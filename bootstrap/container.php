@@ -2,7 +2,6 @@
 
 use App\Database\DB;
 use App\Web\Lang;
-use App\Web\Session;
 use Aws\S3\S3Client;
 use function DI\factory;
 use function DI\get;

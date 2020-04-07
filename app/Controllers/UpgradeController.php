@@ -2,24 +2,33 @@
 
 namespace App\Controllers;
 
+use App\Web\Session;
+use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use RuntimeException;
 use ZipArchive;
+use function glob_recursive;
+use function redirect;
+use function removeDirectory;
+use function route;
+use function urlFor;
 
 class UpgradeController extends Controller
 {
     const GITHUB_SOURCE_API = 'https://api.github.com/repos/SergiX44/XBackBone/releases';
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      *
+     * @param  Logger  $logger
+     * @param  Session  $session
      * @return Response
      */
-    public function upgrade(Response $response): Response
+    public function upgrade(Response $response, Logger $logger, Session $session): Response
     {
         if (!is_writable(BASE_DIR)) {
-            $this->session->alert(lang('path_not_writable', BASE_DIR), 'warning');
+            $session->alert(lang('path_not_writable', BASE_DIR), 'warning');
 
             return redirect($response, route('system'));
         }
@@ -27,13 +36,13 @@ class UpgradeController extends Controller
         try {
             $json = $this->getApiJson();
         } catch (RuntimeException $e) {
-            $this->session->alert($e->getMessage(), 'danger');
+            $session->alert($e->getMessage(), 'danger');
 
             return redirect($response, route('system'));
         }
 
         if (version_compare($json[0]->tag_name, PLATFORM_VERSION, '<=')) {
-            $this->session->alert(lang('already_latest_version'), 'warning');
+            $session->alert(lang('already_latest_version'), 'warning');
 
             return redirect($response, route('system'));
         }
@@ -41,17 +50,17 @@ class UpgradeController extends Controller
         $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'xbackbone_update.zip';
 
         if (file_put_contents($tmpFile, file_get_contents($json[0]->assets[0]->browser_download_url)) === false) {
-            $this->session->alert(lang('cannot_retrieve_file'), 'danger');
+            $session->alert(lang('cannot_retrieve_file'), 'danger');
 
             return redirect($response, route('system'));
         }
 
         if (filesize($tmpFile) !== $json[0]->assets[0]->size) {
-            $this->session->alert(lang('file_size_no_match'), 'danger');
+            $session->alert(lang('file_size_no_match'), 'danger');
 
             return redirect($response, route('system'));
         }
-        $this->logger->info('System update started.');
+        $logger->info('System update started.');
 
         $config = require BASE_DIR.'config.php';
         $config['maintenance'] = true;
@@ -90,7 +99,7 @@ class UpgradeController extends Controller
         $updateZip->close();
         unlink($tmpFile);
 
-        $this->logger->info('System update completed.');
+        $logger->info('System update completed.');
 
         return redirect($response, urlFor('/install'));
     }
