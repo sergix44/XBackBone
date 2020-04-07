@@ -117,10 +117,10 @@ class Mail
 
         $this->addRequiredHeader('X-Mailer: PHP/'.phpversion());
         $this->addRequiredHeader('MIME-Version: 1.0');
-        $this->addRequiredHeader('Content-Type: text/plain; charset=iso-8859-1');
+        $this->addRequiredHeader('Content-Type: text/plain; charset=utf-8');
 
         $this->headers .= $this->additionalHeaders;
 
-        return (int) mail($this->to, $this->subject, $this->message, $this->headers);
+        return (int) mail($this->to, $this->subject, utf8_encode($this->message), $this->headers);
     }
 }
