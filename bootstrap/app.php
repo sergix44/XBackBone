@@ -112,7 +112,7 @@ $errorHandler = new AppErrorHandler($app->getCallableResolver(), $app->getRespon
 $errorHandler->registerErrorRenderer('text/html', HtmlErrorRenderer::class);
 
 // Add Error Middleware
-$errorMiddleware = $app->addErrorMiddleware($config['debug'], true, true);
+$errorMiddleware = $app->addErrorMiddleware($config['debug'], false, true);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Load the application routes

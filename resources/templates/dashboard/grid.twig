@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                                 {% if isDisplayableImage(media.mimetype) %}
-                                    <div class="content-image rounded-top" style="background-image: url({{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?height=267') }});"></div>
+                                    <div class="content-image" style="background-image: url({{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?height=267') }});"></div>
                                 {% else %}
                                     <div class="text-center" style="font-size: 178px;"><i class="far {{ mime2font(media.mimetype) }} mb-4 mt-4"></i></div>
                                 {% endif %}

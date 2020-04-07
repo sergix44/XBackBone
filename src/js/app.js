@@ -11,6 +11,15 @@ var app = {
                 var text = Math.round(uploadProgress) + '%';
                 $('#uploadProgess').css({'width': text}).text(text);
             },
+            queuecomplete: function () {
+                $('#uploadProgess').css({'width': '0%'}).text('');
+            },
+            success: function (file, response) {
+                $(file.previewElement)
+                    .find('.dz-filename')
+                    .children()
+                    .html('<a href="' + response.url + '">' + file.name + '</a>');
+            },
             timeout: 0
         };
     },

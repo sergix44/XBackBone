@@ -172,4 +172,5 @@ Click on the following link to go to the login page:
     'ldap_cant_connect' => 'Can\'t connect to the LDAP auth server.',
     'upload_max_file_size' => 'The max file size is currently %s.',
     'no_tags' => 'No tags added',
+    'auto_tagging' => 'Auto upload tagging',
 ];

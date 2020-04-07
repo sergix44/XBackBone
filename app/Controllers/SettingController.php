@@ -29,6 +29,7 @@ class SettingController extends Controller
 
         // registrations
         $this->updateSetting('register_enabled', param($request, 'register_enabled', 'off'));
+        $this->updateSetting('auto_tagging', param($request, 'auto_tagging', 'off'));
 
         // quota
         $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));

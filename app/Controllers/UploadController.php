@@ -200,7 +200,9 @@ class UploadController extends Controller
         ]);
         $mediaId = $this->database->getPdo()->lastInsertId();
 
-        $this->autoTag($mediaId, $storagePath);
+        if ($this->getSetting('auto_tagging') === 'on') {
+            $this->autoTag($mediaId, $storagePath);
+        }
 
         $this->json['message'] = 'OK';
         $this->json['url'] = urlFor("/{$user->user_code}/{$code}.{$fileInfo['extension']}");
@@ -225,7 +227,7 @@ class UploadController extends Controller
         $query = make(TagQuery::class);
         $query->addTag($type, $mediaId);
 
-        if ($type === 'application') {
+        if ($type === 'application' || $subtype === 'gif') {
             $query->addTag($subtype, $mediaId);
         }
     }

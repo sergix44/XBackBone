@@ -103,7 +103,7 @@ class UserController extends Controller
 
         if (param($request, 'send_notification') !== null) {
             $resetToken = null;
-            if (!empty(param($request, 'password'))) {
+            if (empty(param($request, 'password'))) {
                 $resetToken = bin2hex(random_bytes(16));
 
                 $this->database->query('UPDATE `users` SET `reset_token`=? WHERE `id` = ?', [
@@ -284,7 +284,7 @@ class UserController extends Controller
      */
     private function sendCreateNotification($request, $resetToken = null)
     {
-        if (empty(param($request, 'password'))) {
+        if ($resetToken === null && !empty(param($request, 'password'))) {
             $message = lang('mail.new_account_text_with_pw', [
                 param($request, 'username'),
                 $this->config['app_name'],

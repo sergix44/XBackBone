@@ -21,6 +21,13 @@ class AdminController extends Controller
      */
     public function system(Request $request, Response $response): Response
     {
+        $settings = [];
+        foreach ($this->database->query('SELECT `key`, `value` FROM `settings`') as $setting) {
+            $settings[$setting->key] = $setting->value;
+        }
+
+        $settings['default_user_quota'] = humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0, true);
+
         return view()->render($response, 'dashboard/system.twig', [
             'usersCount' => $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,
             'mediasCount' => $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count,
@@ -32,14 +39,7 @@ class AdminController extends Controller
             'forced_lang' => $request->getAttribute('forced_lang'),
             'php_version' => phpversion(),
             'max_memory' => ini_get('memory_limit'),
-            'register_enabled' => $this->getSetting('register_enabled', 'off'),
-            'hide_by_default' => $this->getSetting('hide_by_default', 'off'),
-            'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
-            'quota_enabled' => $this->getSetting('quota_enabled', 'off'),
-            'default_user_quota' => humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0, true),
-            'recaptcha_enabled' => $this->getSetting('recaptcha_enabled', 'off'),
-            'recaptcha_site_key' => $this->getSetting('recaptcha_site_key'),
-            'recaptcha_secret_key' => $this->getSetting('recaptcha_secret_key'),
+            'settings' => $settings,
         ]);
     }
 

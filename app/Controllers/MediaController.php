@@ -33,7 +33,7 @@ class MediaController extends Controller
      */
     public function show(Request $request, Response $response, string $userCode, string $mediaCode, string $token = null): Response
     {
-        $media = $this->getMedia($userCode, $mediaCode);
+        $media = $this->getMedia($userCode, $mediaCode, true);
 
         if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
             throw new HttpNotFoundException($request);
@@ -112,7 +112,7 @@ class MediaController extends Controller
      */
     public function getRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
     {
-        $media = $this->getMedia($userCode, $mediaCode);
+        $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
             throw new HttpNotFoundException($request);
@@ -144,7 +144,7 @@ class MediaController extends Controller
      */
     public function download(Request $request, Response $response, string $userCode, string $mediaCode): Response
     {
-        $media = $this->getMedia($userCode, $mediaCode);
+        $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
             throw new HttpNotFoundException($request);
@@ -230,7 +230,7 @@ class MediaController extends Controller
      */
     public function deleteByToken(Request $request, Response $response, string $userCode, string $mediaCode, string $token): Response
     {
-        $media = $this->getMedia($userCode, $mediaCode);
+        $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media) {
             throw new HttpNotFoundException($request);
@@ -286,16 +286,28 @@ class MediaController extends Controller
      * @param $userCode
      * @param $mediaCode
      *
+     * @param  bool  $withTags
      * @return mixed
      */
-    protected function getMedia($userCode, $mediaCode)
+    protected function getMedia($userCode, $mediaCode, $withTags = false)
     {
         $mediaCode = pathinfo($mediaCode)['filename'];
 
-        return $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
+        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
             $userCode,
             $mediaCode,
         ])->fetch();
+
+        if (!$withTags || !$media) {
+            return $media;
+        }
+
+        $media->tags = [];
+        foreach ($this->database->query('SELECT `tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` = ?', $media->mediaId) as $tag) {
+            $media->tags[$tag->id] = $tag->name;
+        }
+
+        return $media;
     }
 
     /**

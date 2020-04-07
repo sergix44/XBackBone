@@ -43,29 +43,23 @@
                         </div>
                     </form>
                 {% endif %}
+                {% set typeMatched = false %}
                 {% if type is same as ('image') %}
+                    {% set typeMatched = true %}
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <img src="{{ url }}/raw" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            {{ media.filename }}
-                        </div>
-                    </div>
                 {% elseif type is same as ('text') %}
+                    {% set typeMatched = true %}
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <pre><code>{{ media.text }}</code></pre>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            {{ media.filename }}
-                        </div>
-                    </div>
                 {% elseif type is same as ('audio') %}
+                    {% set typeMatched = true %}
                     <div class="media-player media-audio">
                         <audio id="player" autoplay controls loop preload="auto">
                             <source src="{{ url }}/raw" type="{{ media.mimetype }}">
@@ -74,6 +68,7 @@
                         </audio>
                     </div>
                 {% elseif type is same as ('video') %}
+                    {% set typeMatched = true %}
                     <div class="media-player">
                         <video id="player" autoplay controls loop preload="auto">
                             <source src="{{ url }}/raw" type="{{ media.mimetype }}">
@@ -82,11 +77,13 @@
                         </video>
                     </div>
                 {% elseif media.mimetype is same as ('application/pdf') %}
+                    {% set typeMatched = true %}
                     <object type="{{ media.mimetype }}" data="{{ url }}/raw" class="pdf-viewer">
                         Your browser does not support PDF previews.
                         <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                     </object>
-                {% else %}
+                {% endif %}
+                {% if not typeMatched %}
                     <div class="text-center">
                         <div class="row mb-3">
                             <div class="col-md-12">
@@ -98,17 +95,41 @@
                                 <b>{{ media.filename }}</b>
                             </div>
                         </div>
-                        <div class="row mb-4">
+                        <div class="row">
                             <div class="col-md-12">
                                 {{ media.size }}
                             </div>
                         </div>
-                        <div class="row">
+                        {% if media.tags is not empty %}
+                            <div class="row mt-1 mb-2">
+                                <div class="col-md-12 text-center">
+                                    {% for tag_id, tag_name in media.tags %}
+                                        <span class="badge badge-pill badge-primary shadow-sm mr-1" title="{{ tag_name }}">{{ tag_name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row mt-3">
                             <div class="col-md-12">
                                 <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                             </div>
                         </div>
                     </div>
+                {% else %}
+                    <div class="row mt-1">
+                        <div class="col-md-12 text-center">
+                            {{ media.filename }}
+                        </div>
+                    </div>
+                    {% if media.tags is not empty %}
+                        <div class="row mt-2">
+                            <div class="col-md-12 text-center">
+                                {% for tag_id, tag_name in media.tags %}
+                                    <span class="badge badge-pill badge-primary shadow-sm mr-1" title="{{ tag_name }}">{{ tag_name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
