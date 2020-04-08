@@ -93,7 +93,11 @@ class UpgradeController extends Controller
         }
 
         foreach ($currentFiles as $extraneous) {
-            unlink($extraneous);
+            if (is_dir($extraneous)) {
+                removeDirectory($extraneous);
+            } else {
+                unlink($extraneous);
+            }
         }
 
         $updateZip->close();
@@ -105,15 +109,15 @@ class UpgradeController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
      */
     public function checkForUpdates(Request $request, Response $response): Response
     {
         $jsonResponse = [
-            'status'  => null,
+            'status' => null,
             'message' => null,
             'upgrade' => false,
         ];
