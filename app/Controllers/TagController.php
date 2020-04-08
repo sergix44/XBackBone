@@ -55,13 +55,15 @@ class TagController extends Controller
 
         $result = make(TagQuery::class)->removeTag(param($request, 'tagId'), param($request, 'mediaId'));
 
-        if (!$result) {
+        if ($result === null) {
             throw new HttpNotFoundException($request);
         }
 
         $this->logger->info("Tag removed ".param($request, 'tagId').', from media '.param($request, 'mediaId'));
 
-        return $response;
+        return json($response, [
+            'deleted' => $result,
+        ]);
     }
 
     /**

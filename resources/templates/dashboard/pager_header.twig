@@ -12,12 +12,12 @@
             <button class="btn btn-outline-dark dropdown-toggle" type="button" data-toggle="dropdown">
                 <i class="fas fa-tags"></i>
             </button>
-            <div class="dropdown-menu" style="max-height: 250px; overflow: auto">
+            <div class="dropdown-menu" id="dropdown-tag-list" style="max-height: 250px; overflow: auto">
                 {% if tags is empty %}
                     <h6 class="dropdown-header">{{ lang('no_tags') }}</h6>
                 {% else %}
                     {% for tag in tags %}
-                        <a class="dropdown-item {{ request.queryParams['tag'] == tag.id ? 'active' }}" href="{{ queryParams({'tag': tag.id}) }}">{{ tag.name }}</a>
+                        <a class="dropdown-item {{ request.queryParams['tag'] == tag.id ? 'active' }}" href="{{ queryParams({'tag': tag.id}) }}" data-id="{{ tag.id }}">{{ tag.name }}</a>
                     {% endfor %}
                 {% endif %}
             </div>

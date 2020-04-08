@@ -39,7 +39,7 @@ class TagQuery
             return $this->db->query('SELECT * FROM `tags` ORDER BY `name`')->fetchAll();
         }
 
-        return $this->db->query('SELECT `tags`.* FROM `tags` INNER JOIN `uploads_tags` ON `tags`.`id` = `uploads_tags`.`tag_id` INNER JOIN `uploads` ON `uploads`.`id` = `uploads_tags`.`upload_id` WHERE `uploads`.`user_id` = ? ORDER BY `tags`.`name`', $this->userId)->fetchAll();
+        return $this->db->query('SELECT DISTINCT `tags`.* FROM `tags` INNER JOIN `uploads_tags` ON `tags`.`id` = `uploads_tags`.`tag_id` INNER JOIN `uploads` ON `uploads`.`id` = `uploads_tags`.`upload_id` WHERE `uploads`.`user_id` = ? ORDER BY `tags`.`name`', $this->userId)->fetchAll();
     }
 
     /**
@@ -95,11 +95,12 @@ class TagQuery
 
             if ($this->db->query('SELECT COUNT(*) AS `count` FROM `uploads_tags` WHERE `tag_id` = ?', $tag->id)->fetch()->count == 0) {
                 $this->db->query('DELETE FROM `tags` WHERE `id` = ? ', $tag->id);
+                return true;
             }
 
-            return true;
+            return false;
         }
 
-        return false;
+        return null;
     }
 }

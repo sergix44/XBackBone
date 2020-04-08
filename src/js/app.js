@@ -220,8 +220,11 @@ var app = {
         $.post(window.AppConfig.base_url + '/tag/remove', {
             'tagId': $tag.data('id'),
             'mediaId': $tag.data('media')
-        }, function () {
+        }, function (data) {
             $tag.remove();
+            if (data.deleted) {
+                $('#dropdown-tag-list > a[data-id="' + $tag.data('id') + '"]').remove();
+            }
         });
     }
 };
