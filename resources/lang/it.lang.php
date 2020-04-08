@@ -122,18 +122,8 @@ return [
     'register' => 'Registrati',
     'default_user_quota' => 'Quota utente predefinita',
     'invalid_quota' => 'Valore non valido per la quota utente predefinita.',
-    'mail.activate_text' => 'Ciao %s!
-grazie per aver creato il tuo account su %s (%s), fai clic sul seguente link per attivarlo:
-
-%s',
     'register_success' => 'L\'account è stato creato, è stata inviata un\'e-mail di conferma.',
     'mail.activate_account' => '%s - Attivazione account',
-    'mail.recover_text' => 'Ciao %s,
-è stata richiesta una reimpostazione della password per il tuo account. Per completare la procedura clicca sul seguente link:
-
-%s
-
-Se non sei stato tu a richiedere la reimpostazione della password, ignora semplicemente questa e-mail.',
     'mail.recover_password' => '%s - Recupero password',
     'recover_email_sent' => 'Se presente, è stata inviata un\'e-mail di recupero all\'account specificato.',
     'account_activated' => 'Account attivato, ora è possibile effettuare il login!',
@@ -160,18 +150,6 @@ Se non sei stato tu a richiedere la reimpostazione della password, ignora sempli
     'upload_max_file_size' => 'La dimensione massima di un file caricabile è %s.',
     'ldap_cant_connect' => 'Impossibile connettersi al server di autenticazione LDAP.',
     'user_create_password' => 'Se lasciato vuoto, si consiglia di inviare una notifica all\'utente via e-mail.',
-    'mail.new_account_text_with_pw' => 'Ciao %s!
-un nuovo account è stato creato per te su %s (%s), con le seguenti credenziali:
-
-Username: %s
-Password: %s
-
-Clicca su questo link per andare alla pagina di login: 
-%s',
-    'mail.new_account_text_with_reset' => 'Ciao %s!
-un nuovo account è stato creato per te su %s (%s), clicca sul seguente link per impostare una password e attivarlo:
-
-%s',
     'mail.new_account' => '%s - Nuovo account creato',
     'send_notification' => 'Invia notifica e-mail',
 ];

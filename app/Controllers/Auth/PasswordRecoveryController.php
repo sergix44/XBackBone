@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 
-class PasswordRecoveryController extends Controller
+class PasswordRecoveryController extends AuthController
 {
 
     /**
@@ -23,7 +23,9 @@ class PasswordRecoveryController extends Controller
      */
     public function recover(Request $request, Response $response): Response
     {
-        return view()->render($response, 'auth/recover_mail.twig');
+        return view()->render($response, 'auth/recover_mail.twig', [
+            'recaptcha_site_key' => $this->getSetting('recaptcha_enabled') === 'on' ? $this->getSetting('recaptcha_site_key') : null,
+        ]);
     }
 
 
@@ -37,6 +39,10 @@ class PasswordRecoveryController extends Controller
     {
         if ($this->session->get('logged', false)) {
             return redirect($response, route('home'));
+        }
+
+        if ($this->checkRecaptcha(make(ValidationHelper::class), $request)->fails()) {
+            return redirect($response, route('recover'));
         }
 
         $user = $this->database->query('SELECT `id`, `username` FROM `users` WHERE `email` = ? AND NOT `ldap` LIMIT 1', param($request, 'email'))->fetch();
@@ -59,6 +65,7 @@ class PasswordRecoveryController extends Controller
             ->subject(lang('mail.recover_password', [$this->config['app_name']]))
             ->message(lang('mail.recover_text', [
                 $user->username,
+                route('recover.password', ['resetToken' => $resetToken]),
                 route('recover.password', ['resetToken' => $resetToken]),
             ]))
             ->send();

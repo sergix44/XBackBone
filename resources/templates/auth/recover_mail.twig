@@ -27,6 +27,9 @@
 {% block content %}
     <div class="container-fluid">
         <form class="form-signin" method="post" action="{{ route('recover.mail') }}">
+            {% if recaptcha_site_key is not null %}
+                <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+            {% endif %}
             <div class="row text-center">
                 <div class="col-md-12">
                     <h1 class="h3 mb-3 font-weight-normal">{{ config.app_name }}</h1>
@@ -49,4 +52,9 @@
             </div>
         </form>
     </div>
+{% endblock %}
+{% block js %}
+    {% if recaptcha_site_key is not null %}
+        {% include 'comp/recaptcha.twig' %}
+    {% endif %}
 {% endblock %}

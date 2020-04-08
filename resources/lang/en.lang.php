@@ -122,17 +122,9 @@ return [
     'default_user_quota' => 'Default User Quota',
     'max_user_quota' => 'Max User Quota',
     'invalid_quota' => 'Invalid values as default user quota.',
-    'mail.activate_text' => 'Hi %s!
-thank you for creating your account on %s (%s), click on the following link to activate it:
-
-%s',
+    'mail.activate_text' => 'Hi %s!<br>thank you for creating your account on %s (<a href="%s">%s</a>), click on the following link to activate it:<br><br><a href="%s">%s</a>',
     'mail.activate_account' => '%s - Account Activation',
-    'mail.recover_text' => 'Hi %s,
-a password reset has been requested for your account. To complete the procedure click on the following link:
-
-%s
-
-If it wasn\'t you who requested the password reset, simply ignore this email.',
+    'mail.recover_text' => 'Hi %s,<br>a password reset has been requested for your account. To complete the procedure click on the following link:<br><br><a href="%s">%s</a><br><br>If it wasn\'t you who requested the password reset, simply ignore this email.',
     'mail.recover_password' => '%s - Password Recovery',
     'recover_email_sent' => 'If present, a recovery email was sent to the specified account.',
     'account_activated' => 'Account activated, now you can login!',
@@ -156,18 +148,8 @@ If it wasn\'t you who requested the password reset, simply ignore this email.',
     'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
     'send_notification' => 'Send Mail Notification',
     'mail.new_account' => '%s - New Account Creation',
-    'mail.new_account_text_with_reset' => 'Hi %s!
-a new account was created for you on %s (%s), click on the following link to set a password and activate it:
-
-%s',
-    'mail.new_account_text_with_pw' => 'Hi %s!
-a new account was created for you on %s (%s), with the following credentials:
-
-Username: %s
-Password: %s
-
-Click on the following link to go to the login page:
-%s',
+    'mail.new_account_text_with_reset' => 'Hi %s!<br>a new account was created for you on %s (<a href="%s">%s</a>), click on the following link to set a password and activate it:<br><br><a href="%s">%s</a>',
+    'mail.new_account_text_with_pw' => 'Hi %s!<br>a new account was created for you on %s (<a href="%s">%s</a>), with the following credentials:<br><br>Username: %s<br>Password: %s<br><br>Click on the following link to go to the login page:<br><a href="%s">%s</a>',
     'user_create_password' => 'If leaved empty, you might want to send a notification to the user email.',
     'ldap_cant_connect' => 'Can\'t connect to the LDAP auth server.',
     'upload_max_file_size' => 'The max file size is currently %s.',

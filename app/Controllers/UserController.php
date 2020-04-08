@@ -289,8 +289,10 @@ class UserController extends Controller
                 param($request, 'username'),
                 $this->config['app_name'],
                 $this->config['base_url'],
+                $this->config['base_url'],
                 param($request, 'username'),
                 param($request, 'password'),
+                route('login.show'),
                 route('login.show'),
             ]);
         } else {
@@ -298,6 +300,8 @@ class UserController extends Controller
                 param($request, 'username'),
                 $this->config['app_name'],
                 $this->config['base_url'],
+                $this->config['base_url'],
+                route('recover.password', ['resetToken' => $resetToken]),
                 route('recover.password', ['resetToken' => $resetToken]),
             ]);
         }

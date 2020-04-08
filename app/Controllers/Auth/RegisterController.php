@@ -6,11 +6,12 @@ namespace App\Controllers\Auth;
 use App\Controllers\Controller;
 use App\Database\Queries\UserQuery;
 use App\Web\Mail;
+use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 
-class RegisterController extends Controller
+class RegisterController extends AuthController
 {
 
     /**
@@ -54,13 +55,8 @@ class RegisterController extends Controller
             throw new HttpNotFoundException($request);
         }
 
-        if ($this->getSetting('recaptcha_enabled') === 'on') {
-            $recaptcha = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$this->getSetting('recaptcha_secret_key').'&response='.param($request, 'recaptcha_token')));
-
-            if ($recaptcha->success && $recaptcha->score < 0.5) {
-                $this->session->alert(lang('recaptcha_failed'), 'danger');
-                return redirect($response, route('register.show'));
-            }
+        if ($this->checkRecaptcha(make(ValidationHelper::class), $request)->fails()) {
+            return redirect($response, route('register.show'));
         }
 
         $validator = $this->getUserCreateValidator($request)->alertIf(empty(param($request, 'password')), 'password_required');
@@ -89,6 +85,8 @@ class RegisterController extends Controller
                 param($request, 'username'),
                 $this->config['app_name'],
                 $this->config['base_url'],
+                $this->config['base_url'],
+                route('activate', ['activateToken' => $activateToken]),
                 route('activate', ['activateToken' => $activateToken]),
             ]))
             ->send();

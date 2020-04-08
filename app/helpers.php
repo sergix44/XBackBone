@@ -115,10 +115,7 @@ if (!function_exists('removeDirectory')) {
      */
     function removeDirectory($path)
     {
-        $files = glob($path.'/*');
-        foreach ($files as $file) {
-            is_dir($file) ? removeDirectory($file) : unlink($file);
-        }
+        cleanDirectory($path, true);
         rmdir($path);
     }
 }
@@ -128,13 +125,14 @@ if (!function_exists('cleanDirectory')) {
      * Removes all directory contents.
      *
      * @param $path
+     * @param  bool  $all
      */
-    function cleanDirectory($path)
+    function cleanDirectory($path, $all = false)
     {
         $directoryIterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
         $iteratorIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($iteratorIterator as $file) {
-            if ($file->getFilename() !== '.gitkeep') {
+            if ($all || $file->getFilename() !== '.gitkeep') {
                 $file->isDir() ? rmdir($file) : unlink($file);
             }
         }
