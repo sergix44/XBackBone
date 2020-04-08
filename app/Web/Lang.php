@@ -144,7 +144,10 @@ class Lang
         }
 
         if (array_key_exists($key, $transDict)) {
-            return vsprintf($transDict[$key], $args);
+            $string = @vsprintf($transDict[$key], $args);
+            if ($string !== false) {
+                return $string;
+            }
         }
 
         if ($lang !== self::DEFAULT_LANG) {

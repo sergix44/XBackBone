@@ -122,18 +122,8 @@ return [
     'register' => 'Rejestracja',
     'default_user_quota' => 'Domyślny przydział użytkownika',
     'invalid_quota' => 'Nieprawidłowe wartości jako domyślny przydział użytkownika.',
-    'mail.activate_text' => 'Hej %s!
-dziękujemy za stworzenie konta na %s (%s), kliknij poniższy link w celu jego aktywacji:
-
-%s',
     'register_success' => 'Konto zostało utworzone, e-mail potwierdzający został wysłany.',
     'mail.activate_account' => '%s - Aktywacja konta',
-    'mail.recover_text' => 'Hej %s,
-została wysłana prośba o zresetowanie hasła dla twojego konta. Aby ukończyć procedurę, kliknij w poniższy link:
-
-%s
-
-Jeżeli to nie ty zażądałeś zmiany hasła, po prostu zignoruj ten e-mail.',
     'mail.recover_password' => '%s - Odzyskiwanie hasła',
     'recover_email_sent' => 'Jeżeli istnieje, wiadomość e-mail do odzyskiwania hasła została wysłane na określone konto.',
     'account_activated' => 'Konto aktywowane, teraz możesz się zalogować!',
@@ -162,17 +152,5 @@ Jeżeli to nie ty zażądałeś zmiany hasła, po prostu zignoruj ten e-mail.',
     'upload_max_file_size' => 'Obecnie maksymalny rozmiar pliku wynosi %s.',
     'ldap_cant_connect' => 'Nie można połączyć z serwerem uwierzytelniającym LDAP.',
     'user_create_password' => 'Jeśli pozostawiono puste, możesz wysłać powiadomienie na adres e-mail użytkownika.',
-    'mail.new_account_text_with_pw' => 'Cześć %s!
-nowe konto zostało dla Ciebie utworzone na %s (%s), z następującymi danymi logowania:
-
-Nazwa użytkownika: %s
-Hasło: %s
-
-Kliknij w poniższy link, aby przejść na stronę logowania:
-%s',
-    'mail.new_account_text_with_reset' => 'Cześć %s!
-nowe konto zostało dla Ciebie utworzone na %s (%s), kliknij poniższy link, aby ustawić hasło i aktywować je:
-
-%s',
     'mail.new_account' => '%s - Tworzenie nowego konta',
 ];

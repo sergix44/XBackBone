@@ -114,18 +114,6 @@ return [
     'upload_max_file_size' => 'La taille maximale du fichier est actuellement %s.',
     'ldap_cant_connect' => 'Impossible de se connecter au serveur d\'authentification LDAP.',
     'user_create_password' => 'Si laissé vide, vous souhaiterez peut-être envoyer une notification à l\'e-mail de l\'utilisateur.',
-    'mail.new_account_text_with_pw' => 'Bonjour %s!
-un nouveau compte a été créé pour vous sur %s (%s), avec les informations d\'identification suivantes:
-
-Nom d\'utilisateur: %s
-Mot de passe: %s
-
-Cliquez sur le lien suivant pour accéder à la page de connexion:
-%s',
-    'mail.new_account_text_with_reset' => 'Bonjour %s!
-un nouveau compte a été créé pour vous sur %s (%s), cliquez sur le lien suivant pour définir un mot de passe et l\'activer:
-
-%s',
     'mail.new_account' => '%s - Création d\'un nouveau compte',
     'send_notification' => 'Envoyer une notification par courrier électronique',
     'recaptcha_secret_key' => 'Clé secrète reCAPTCHA',
@@ -149,17 +137,7 @@ un nouveau compte a été créé pour vous sur %s (%s), cliquez sur le lien suiv
     'account_activated' => 'Compte activé, vous pouvez maintenant vous connecter!',
     'recover_email_sent' => 'S\'il est présent, un e-mail de récupération a été envoyé au compte spécifié.',
     'mail.recover_password' => '%s - Récupération de mot de passe',
-    'mail.recover_text' => 'Bonjour %s,
-une réinitialisation du mot de passe a été demandée pour votre compte. Pour terminer la procédure, cliquez sur le lien suivant:
-
-%s
-
-Si ce n\'est pas vous qui avez demandé la réinitialisation du mot de passe, ignorez simplement cet e-mail.',
     'mail.activate_account' => '%s - Activation du compte',
-    'mail.activate_text' => 'Bonjour %s!
-merci d\'avoir créé votre compte sur %s (% s), cliquez sur le lien suivant pour l\'activer:
-
-%s',
     'invalid_quota' => 'Valeurs non valides comme quota utilisateur par défaut.',
     'max_user_quota' => 'Quota utilisateur maximum',
     'default_user_quota' => 'Quota utilisateur par défaut',

@@ -127,17 +127,7 @@ return [
     'invalid_quota' => 'Forvalgt brukerkvote har ugyldige verdier.',
     'mail.activate_account' => '%s - Kontoaktivering',
     'mail.recover_password' => '%s - Passordgjenoppretting',
-    'mail.activate_text' => 'Hei %s!
-takk for at du opprettet en konto hos %s (%s), klikk på følgende link for å aktivere den.
-
-%s',
     'register_success' => 'Kontoen har blitt opprettet, en bekreftelsese-post har blitt sendt.',
-    'mail.recover_text' => 'Hei %s,
-en tilbakestilling av passord har blitt forespurt for din konto. For å fullføre prosedyren, klikk på følgende lenke:
-
-%s
-
-Ignorer denne e-posten hvis forespørselen om å tilbakestille passordet, ikke kommer fra deg.',
     'recover_email_sent' => 'Hvis tilstede, har en gjenopprettingse-epost blitt sendt til den spesifiserte kontoen.',
     'account_activated' => 'Kontoen er aktivert, du kan nå logge in!',
     'quota_enabled' => 'Tillat brukerkvote',

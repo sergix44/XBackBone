@@ -125,18 +125,8 @@ return [
     'register' => 'Registrieren',
     'default_user_quota' => 'Standard Speicherplatz',
     'invalid_quota' => 'Ungültiger Wert für den Speicherplatz.',
-    'mail.activate_text' => 'Hey %s!
-Vielen Dank, dass Sie Ihr Konto auf %s (%s) erstellt haben. Klicken Sie auf den folgenden Link, um es zu aktivieren:
-
-%s',
     'register_success' => 'Das Konto wurde erstellt, eine Bestätigungs-E-Mail wurde gesendet.',
     'mail.activate_account' => '%s - Konto Aktivierung',
-    'mail.recover_text' => 'Hey %s,
-Für Ihr Konto wurde ein Zurücksetzen des Passworts angefordert. Um den Vorgang abzuschließen, klicken Sie auf den folgenden Link:
-
-%s
-
-Wenn Sie nicht das Zurücksetzen des Passworts angefordert haben, ignorieren Sie diese E-Mail einfach.',
     'mail.recover_password' => '%s - Passwort Zurücksetzung',
     'recover_email_sent' => 'Falls vorhanden, wurde eine Wiederherstellungs-E-Mail an das angegebene Konto gesendet.',
     'account_activated' => 'Account wurde aktiviert, du kannst dich jetzt einloggen!',
@@ -161,18 +151,6 @@ Wenn Sie nicht das Zurücksetzen des Passworts angefordert haben, ignorieren Sie
     'recaptcha_secret_key' => 'reCAPTCHA geheimen Schlüssel',
     'send_notification' => 'Mail-Benachrichtigung senden',
     'mail.new_account' => '%s - Erstellung von Konto',
-    'mail.new_account_text_with_reset' => 'Hallo %s!
-Ein neues Konto wurde für Sie auf %s (%s) erstellt, klicken Sie auf den folgenden Link, um ein Passwort festzulegen und es zu aktivieren:
-
-%s',
-    'mail.new_account_text_with_pw' => 'Hallo %s!
-Ein neues Konto wurde für Sie auf %s (%s) mit den folgenden Anmeldeinformationen erstellt:
-
-Benutzername: %s
-Kennwort: %s
-
-Klicken Sie auf den folgenden Link, um zur Login-Seite zu gelangen:
-%s',
     'user_create_password' => 'Wenn Sie keine Angaben gemacht haben, können Sie eine Benachrichtigung an die Benutzer-E-Mail senden.',
     'no_tags' => 'Keine Tags hinzugefügt',
     'upload_max_file_size' => 'Die maximale Dateigröße beträgt derzeit %s.',
