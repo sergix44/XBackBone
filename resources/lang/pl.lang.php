@@ -17,7 +17,7 @@ return [
     'pager.previous' => 'Poprzednia',
     'copy_link' => 'Skopiuj link',
     'public.telegram' => 'Udostępnij na Telegram',
-    'public.delete_text' => 'Jesteś pewien, że chcesz usunąć ten element? Nie będzie się dało go już odzyskać!',
+    'public.delete_text' => 'Jesteś pewien, że chcesz usunąć ten element? Nie będzie możliwości odzyskania go',
     'delete' => 'Usuń',
     'hide' => 'Ukryj',
     'files' => 'Pliki',
@@ -42,7 +42,7 @@ return [
     'confirm_string' => 'Jesteś pewien?',
     'installed' => 'Instalacja zakończona pomyślnie!',
     'welcome' => 'Witaj, %s!',
-    'email_required' => 'Email jest wymagany.',
+    'email_required' => 'E-mail jest wymagany.',
     'username_required' => 'Nazwa użytkownika jest wymagana.',
     'username_taken' => 'Nazwa użytkownika jest już zajęta.',
     'password_required' => 'Hasło jest wymagane.',
@@ -70,7 +70,7 @@ return [
     'account_disabled' => 'Twoje konto jest wyłączone.',
     'goodbye' => 'Do zobaczenia!',
     'token_not_found' => 'Nie znaleziono określonego tokena.',
-    'email_taken' => 'Ten email jest już zajęty.',
+    'email_taken' => 'Ten e-mail jest już zajęty.',
     'user_updated' => 'Użytkownik "%s" zaktualizowany!',
     'user_deleted' => 'Użytkownik usunięty.',
     'cannot_delete' => 'Nie możesz usunąć siebie.',
@@ -126,16 +126,16 @@ return [
 dziękujemy za stworzenie konta na %s (%s), kliknij poniższy link w celu jego aktywacji:
 
 %s',
-    'register_success' => 'Konto zostało utworzone, email potwierdzający został wysłany.',
+    'register_success' => 'Konto zostało utworzone, e-mail potwierdzający został wysłany.',
     'mail.activate_account' => '%s - Aktywacja konta',
     'mail.recover_text' => 'Hej %s,
 została wysłana prośba o zresetowanie hasła dla twojego konta. Aby ukończyć procedurę, kliknij w poniższy link:
 
 %s
 
-Jeżeli to nie ty zażądałeś zmiany hasła, po prostu zignoruj ten email.',
+Jeżeli to nie ty zażądałeś zmiany hasła, po prostu zignoruj ten e-mail.',
     'mail.recover_password' => '%s - Odzyskiwanie hasła',
-    'recover_email_sent' => 'Jeżeli istnieje, wiadomość email do odzyskiwania hasła została wysłane na określone konto.',
+    'recover_email_sent' => 'Jeżeli istnieje, wiadomość e-mail do odzyskiwania hasła została wysłane na określone konto.',
     'account_activated' => 'Konto aktywowane, teraz możesz się zalogować!',
     'quota_enabled' => 'Włącz przydział użytkownika',
     'password_repeat' => 'Powtórz hasło',
@@ -156,4 +156,23 @@ Jeżeli to nie ty zażądałeś zmiany hasła, po prostu zignoruj ten email.',
     'only_recaptcha_v3' => 'Tylko reCAPTCHA v3 jest obsługiwana.',
     'recaptcha_site_key' => 'Klucz strony reCAPTCHA',
     'recaptcha_secret_key' => 'Sekretny klucz reCAPTCHA',
+    'send_notification' => 'Wyślij powiadomienie e-mail',
+    'auto_tagging' => 'Automatyczne tagowanie po przesłaniu',
+    'no_tags' => 'Nie dodano tagów',
+    'upload_max_file_size' => 'Obecnie maksymalny rozmiar pliku wynosi %s.',
+    'ldap_cant_connect' => 'Nie można połączyć z serwerem uwierzytelniającym LDAP.',
+    'user_create_password' => 'Jeśli pozostawiono puste, możesz wysłać powiadomienie na adres e-mail użytkownika.',
+    'mail.new_account_text_with_pw' => 'Cześć %s!
+nowe konto zostało dla Ciebie utworzone na %s (%s), z następującymi danymi logowania:
+
+Nazwa użytkownika: %s
+Hasło: %s
+
+Kliknij w poniższy link, aby przejść na stronę logowania:
+%s',
+    'mail.new_account_text_with_reset' => 'Cześć %s!
+nowe konto zostało dla Ciebie utworzone na %s (%s), kliknij poniższy link, aby ustawić hasło i aktywować je:
+
+%s',
+    'mail.new_account' => '%s - Tworzenie nowego konta',
 ];
