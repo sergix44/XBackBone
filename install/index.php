@@ -78,6 +78,10 @@ $app->get('/', function (Response $response, View $view, Session $session) use (
         $session->alert('The required "fileinfo" extension is not loaded.', 'danger');
     }
 
+    if (!extension_loaded('zip')) {
+        $session->alert('The required "zip" extension is not loaded.', 'danger');
+    }
+
     if (!is_writable(__DIR__.'/../resources/cache')) {
         $session->alert('The cache folder is not writable ('.__DIR__.'/../resources/cache'.')', 'danger');
     }
