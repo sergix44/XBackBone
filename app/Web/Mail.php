@@ -47,7 +47,7 @@ class Mail
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Mail not valid.');
         }
-        $this->to = $mail;
+        $this->to = "<$mail>";
         return $this;
     }
 
