@@ -134,9 +134,9 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalTelegramShare" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
+    <div class="modal fade shadow-sm" id="modalTelegramShare" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content shadow-sm">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ lang('public.telegram') }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -147,8 +147,9 @@
                     <textarea type="text" class="form-control mb-2" id="telegram-share-text" onclick="this.select()">{{ media.filename }}</textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info btn-block" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ url }}&text=">
-                        <i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}</button>
+                    <button type="button" class="btn btn-info" id="telegram-share-button" onclick="app.telegramShare()" data-url="https://telegram.me/share/url?url={{ url }}&text=">
+                        <i class="fab fa-telegram-plane fa-lg fa-fw"></i> {{ lang("send") }}
+                    </button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang('cancel') }}</button>
                 </div>
             </div>
