@@ -155,4 +155,5 @@ return [
     'upload_max_file_size' => 'The max file size is currently %s.',
     'no_tags' => 'No tags added',
     'auto_tagging' => 'Auto upload tagging',
+    'zip_ext_not_loaded' => 'The required "zip" extension is not loaded',
 ];

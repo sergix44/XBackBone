@@ -14,6 +14,7 @@ XBackBone require PHP >= `7.1`, with installed the required extensions:
 + `php-json` json file support.
 + `php-intl` internationalization functions.
 + `php-fileinfo` file related functions.
++ `php-zip` compressed files related functions.
 + (optional) `php-ftp` to use the FTP remote storage driver.
 + (optional) `php-ldap` to use LDAP authentication.
 

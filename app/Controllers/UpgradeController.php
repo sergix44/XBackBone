@@ -27,6 +27,11 @@ class UpgradeController extends Controller
      */
     public function upgrade(Response $response, Logger $logger, Session $session): Response
     {
+        if (!extension_loaded('zip')) {
+            $session->alert(lang('zip_ext_not_loaded'), 'danger');
+            return redirect($response, route('system'));
+        }
+
         if (!is_writable(BASE_DIR)) {
             $session->alert(lang('path_not_writable', BASE_DIR), 'warning');
 
@@ -92,6 +97,9 @@ class UpgradeController extends Controller
             }
         }
 
+        $updateZip->close();
+        unlink($tmpFile);
+
         foreach ($currentFiles as $extraneous) {
             if (is_dir($extraneous)) {
                 removeDirectory($extraneous);
@@ -99,9 +107,6 @@ class UpgradeController extends Controller
                 unlink($extraneous);
             }
         }
-
-        $updateZip->close();
-        unlink($tmpFile);
 
         $logger->info('System update completed.');
 
