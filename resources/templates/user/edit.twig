@@ -80,15 +80,7 @@
                             {% if not profile %}
                                 <h6 class="text-danger">{{ lang('danger_zone') }}</h6>
                                 <hr>
-                                {% if quota_enabled == 'on' %}
-                                    <div class="form-group row">
-                                        <label for="max_user_quota" class="col-sm-3 col-form-label">{{ lang('max_user_quota') }}</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="max_user_quota" name="max_user_quota" pattern="([0-9]+[K|M|G|T])|(\-1)" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ max_disk_quota }}" required>
-                                            <small>512M, 2G, 1T, ... (-1=∞)</small>
-                                        </div>
-                                    </div>
-                                {% endif %}
+
                                 <div class="form-group row">
                                     <label for="is_admin" class="col-sm-3 col-form-label">{{ lang('is_admin') }}</label>
                                     <div class="col-sm-9">
@@ -106,6 +98,15 @@
                                         <label for="ldap" class="col-sm-3 col-form-label">LDAP Auth</label>
                                         <div class="col-sm-9">
                                             <input type="checkbox" name="ldap" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.ldap ? 'checked' }}>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if quota_enabled == 'on' %}
+                                    <div class="form-group row">
+                                        <label for="max_user_quota" class="col-sm-3 col-form-label">{{ lang('max_user_quota') }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="max_user_quota" name="max_user_quota" pattern="([0-9]+[K|M|G|T])|(\-1)" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ max_disk_quota }}" required>
+                                            <small>512M, 2G, 1T, ... (-1=∞)</small>
                                         </div>
                                     </div>
                                 {% endif %}
