@@ -157,4 +157,5 @@ return [
     'mail.new_account_text_with_reset' => 'Ciao %s!<br>un nuovo account è stato creato per te su %s (<a href="%s">%s</a>), clicca sul seguente link per impostare una password e attivarlo:<br><br><a href="%s">%s</a>',
     'mail.recover_text' => 'Ciao %s,<br>è stata richiesta una reimpostazione della password per il tuo account. Per completare la procedura clicca sul seguente link:<br><br><a href="%s">%s</a><br><br>Se non sei stato tu a richiedere la reimpostazione della password, ignora semplicemente questa e-mail.',
     'mail.activate_text' => 'Ciao %s!<br>grazie per aver creato il tuo account su %s (<a href="%s">%s</a>), fai clic sul seguente link per attivarlo:<br><br><a href="%s">%s</a>',
+    'zip_ext_not_loaded' => 'L\'estensione "zip" richiesta non è caricata',
 ];
