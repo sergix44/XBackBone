@@ -327,7 +327,7 @@ class MediaController extends Controller
         set_time_limit(0);
         $mime = $storage->getMimetype($media->storage_path);
 
-        if ((param($request, 'width') || param($request, 'height')) !== null && explode('/', $mime)[0] === 'image') {
+        if ((param($request, 'width') !== null || param($request, 'height') !== null) && explode('/', $mime)[0] === 'image') {
             return $this->makeThumbnail($storage, $media, param($request, 'width'), param($request, 'height'), $disposition);
         } else {
             $stream = new Stream($storage->readStream($media->storage_path));
