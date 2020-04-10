@@ -14,7 +14,7 @@ class ValidationException extends Exception
      */
     private $response;
 
-    public function __construct(Response $response, $message = "", $code = 0, Throwable $previous = null)
+    public function __construct(Response $response, $message = "", Throwable $previous = null)
     {
         parent::__construct($message, $response->getStatusCode(), $previous);
         $this->response = $response;

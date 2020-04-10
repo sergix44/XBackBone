@@ -61,7 +61,7 @@ $app = Bridge::create($builder->build());
 $app->setBasePath(parse_url($config['base_url'].'/install', PHP_URL_PATH));
 $app->addRoutingMiddleware();
 
-$app->get('/', function (Response $response, View $view, Session $session) use (&$config) {
+$app->get('/', function (Response $response, View $view, Session $session) {
     if (!extension_loaded('gd')) {
         $session->alert('The required "gd" extension is not loaded.', 'danger');
     }

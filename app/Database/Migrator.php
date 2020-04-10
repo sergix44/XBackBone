@@ -31,11 +31,7 @@ class Migrator
 
     public function migrate()
     {
-        try {
-            $this->db->query('SELECT 1 FROM `migrations` LIMIT 1');
-        } catch (PDOException $exception) {
-            $this->firstMigrate = true;
-        }
+        $this->db->query('SELECT 1 FROM `migrations` LIMIT 1');
 
         $this->db->getPdo()->exec(file_get_contents($this->schemaPath.DIRECTORY_SEPARATOR.'migrations.sql'));
 

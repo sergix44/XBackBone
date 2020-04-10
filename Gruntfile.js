@@ -151,7 +151,7 @@ module.exports = function (grunt) {
 
         shell: {
             phpstan: {
-                command: '"./vendor/bin/phpstan" analyse app resources/lang bin install'
+                command: '"./vendor/bin/phpstan" --level=0 analyse app resources/lang bin install'
             },
             composer_no_dev: {
                 command: 'composer update --no-dev --prefer-dist'
