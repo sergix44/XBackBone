@@ -3,6 +3,8 @@ layout: default
 title: Changelog
 nav_order: 8
 ---
+## v.3.1.1
++ Fixed error during a fresh installation with sqlite
 
 ## v.3.1
 + Added tagging system (add, delete, search of tagged files).

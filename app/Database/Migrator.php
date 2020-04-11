@@ -31,8 +31,6 @@ class Migrator
 
     public function migrate()
     {
-        $this->db->query('SELECT 1 FROM `migrations` LIMIT 1');
-
         $this->db->getPdo()->exec(file_get_contents($this->schemaPath.DIRECTORY_SEPARATOR.'migrations.sql'));
 
         $files = glob($this->schemaPath.'/'.$this->db->getCurrentDriver().'/*.sql');
