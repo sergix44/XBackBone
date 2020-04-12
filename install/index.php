@@ -3,7 +3,6 @@
 (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) ?: die('Sorry, PHP 7.1 or above is required to run XBackBone.');
 require __DIR__.'/../vendor/autoload.php';
 
-use App\Database\DB;
 use App\Database\Migrator;
 use App\Factories\ViewFactory;
 use App\Web\Session;
@@ -14,7 +13,6 @@ use function DI\factory;
 use function DI\get;
 use function DI\value;
 use League\Flysystem\FileExistsException;
-use League\Flysystem\Filesystem;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -38,8 +36,23 @@ $config = [
     ],
 ];
 
+$installed = false;
 if (file_exists(__DIR__.'/../config.php')) {
+    $installed = true;
     $config = array_replace_recursive($config, require __DIR__.'/../config.php');
+
+    if (isset($config['storage_dir'])) { // if from older installations with no support of other than local driver
+        $config['storage']['driver'] = 'local';
+        $config['storage']['path'] = $config['storage_dir'];
+        unset($config['storage_dir']);
+    }
+
+    if ($config['storage']['driver'] === 'local' && !is_dir($config['storage']['path'])) { // if installed with local driver, and the storage dir don't exists
+        $realPath = realpath(BASE_DIR.$config['storage']['path']);
+        if (is_dir($realPath) && is_writable($realPath)) { // and was a path relative to the upper folder
+            $config['storage']['path'] = $realPath; // update the config
+        }
+    }
 }
 
 $builder = new ContainerBuilder();
@@ -101,14 +114,12 @@ $app->get('/', function (Response $response, View $view, Session $session) {
     ]);
 })->setName('install');
 
-$app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session, DB $db) use (&$config) {
+$app->post('/', function (Request $request, Response $response, \DI\Container $container, Session $session) use (&$config, &$installed) {
     // disable debug in production
     unset($config['debug']);
 
     // Check if there is a previous installation, if not, setup the config file
-    if (!file_exists(__DIR__.'/../config.php')) {
-        $installed = false;
-
+    if (!$installed) {
         // config file setup
         $config['base_url'] = param($request, 'base_url');
         $config['storage']['driver'] = param($request, 'storage_driver');
@@ -153,26 +164,12 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
                 $config['storage']['path'] = param($request, 'storage_path');
                 break;
         }
-    } else {
-        $installed = true;
-        if (isset($config['storage_dir'])) { // if from older installations with no support of other than local driver
-            $config['storage']['driver'] = 'local';
-            $config['storage']['path'] = $config['storage_dir'];
-            unset($config['storage_dir']);
-        }
-
-        if ($config['storage']['driver'] === 'local' && !is_dir($config['storage']['path'])) { // if installed with local driver, and the storage dir don't exists
-            $realPath = realpath(BASE_DIR.$config['storage']['path']);
-            if (is_dir($realPath) && is_writable($realPath)) { // and was a path relative to the upper folder
-                $config['storage']['path'] = $realPath; // update the config
-                $storage->getAdapter()->setPathPrefix($realPath); // update the prefix
-            }
-        }
+        $container->set('config', value($config));
     }
 
+    $storage = $container->get('storage');
     // check if the storage is valid
     $storageTestFile = 'storage_test.xbackbone.txt';
-
     try {
         try {
             $success = $storage->write($storageTestFile, 'XBACKBONE_TEST_FILE');
@@ -190,7 +187,8 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         return redirect($response, urlFor('/install'));
     }
 
-    // Build the dns string and run the migrations
+    // Get the db instance and run migrations
+    $db = $container->get('database');
     try {
         $migrator = new Migrator($db, __DIR__.'/../resources/schemas');
         $migrator->migrate();

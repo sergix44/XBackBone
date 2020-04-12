@@ -58,7 +58,7 @@ if (!function_exists('isDisplayableImage')) {
      *
      * @return bool
      */
-    function isDisplayableImage(string $mime): bool
+    function isDisplayableImage(?string $mime): bool
     {
         return in_array($mime, [
             'image/apng',
