@@ -102,11 +102,10 @@ $app->get('/', function (Response $response, View $view, Session $session) {
 })->setName('install');
 
 $app->post('/', function (Request $request, Response $response, Filesystem $storage, Session $session, DB $db) use (&$config) {
-    // Check if there is a previous installation, if not, setup the config file
-    $installed = true;
-
     // disable debug in production
     unset($config['debug']);
+
+    // Check if there is a previous installation, if not, setup the config file
     if (!file_exists(__DIR__.'/../config.php')) {
         $installed = false;
 
@@ -154,6 +153,21 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
                 $config['storage']['path'] = param($request, 'storage_path');
                 break;
         }
+    } else {
+        $installed = true;
+        if (isset($config['storage_dir'])) { // if from older installations with no support of other than local driver
+            $config['storage']['driver'] = 'local';
+            $config['storage']['path'] = $config['storage_dir'];
+            unset($config['storage_dir']);
+        }
+
+        if ($config['storage']['driver'] === 'local' && !is_dir($config['storage']['path'])) { // if installed with local driver, and the storage dir don't exists
+            $realPath = realpath(BASE_DIR.$config['storage']['path']);
+            if (is_dir($realPath) && is_writable($realPath)) { // and was a path relative to the upper folder
+                $config['storage']['path'] = $realPath; // update the config
+                $storage->getAdapter()->setPathPrefix($realPath); // update the prefix
+            }
+        }
     }
 
     // check if the storage is valid
@@ -174,14 +188,6 @@ $app->post('/', function (Request $request, Response $response, Filesystem $stor
         $session->alert("Storage setup error: {$e->getMessage()} [{$e->getCode()}]", 'danger');
 
         return redirect($response, urlFor('/install'));
-    }
-
-    // if from older installations with no support of other than local driver
-    // update the config
-    if ($installed && isset($config['storage_dir'])) {
-        $config['storage']['driver'] = 'local';
-        $config['storage']['path'] = $config['storage_dir'];
-        unset($config['storage_dir']);
     }
 
     // Build the dns string and run the migrations
