@@ -3,8 +3,12 @@ layout: default
 title: Changelog
 nav_order: 9
 ---
+## v.3.1.2
++ Fixed upload table lost when updating very old instances.
++ Improved installer storage checks.
+
 ## v.3.1.1
-+ Fixed error during a fresh installation with sqlite
++ Fixed error during a fresh installation with sqlite.
 
 ## v.3.1
 + Added tagging system (add, delete, search of tagged files).
