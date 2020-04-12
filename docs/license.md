@@ -1,7 +1,7 @@
 ---
 layout: default
 title: License & Credits
-nav_order: 9
+nav_order: 10
 ---
 
 # License

@@ -4,7 +4,7 @@ title: Upgrading
 nav_order: 4
 ---
 
-# How to update
+# Upgrading
 
 The system updates can be applied via the web interface by an administrator, or manually via CLI.
 

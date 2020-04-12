@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Changelog
-nav_order: 8
+nav_order: 9
 ---
 ## v.3.1.1
 + Fixed error during a fresh installation with sqlite
