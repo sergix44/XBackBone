@@ -41,11 +41,11 @@ return [
 	'base_url' => 'https://example.com', // no trailing slash
 	'storage' => [
 		'driver' => 'local',
-		'path' => 'storage',
+		'path' => 'absolute/path/to/storage',
 	],
 	'db' => [
 		'connection' => 'sqlite', // current support for sqlite and mysql
-		'dsn' => 'abs/path/to/resources/database/xbackbone.db', // if sqlite should be an absolute path
+		'dsn' => 'absolute/path/to/resources/database/xbackbone.db', // if sqlite should be an absolute path
 		'username' => null, // username and password not needed for sqlite
 		'password' => null,
 	]
