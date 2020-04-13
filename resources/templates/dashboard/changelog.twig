@@ -1,0 +1,17 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('changelog') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-header">{{ lang('changelog') }}</div>
+            <div class="card-body">
+                {{ content | raw }}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

@@ -156,4 +156,6 @@ return [
     'no_tags' => 'No tags added',
     'auto_tagging' => 'Auto upload tagging',
     'zip_ext_not_loaded' => 'The required "zip" extension is not loaded',
+    'changelog' => 'Changelog',
+    'show_changelog' => 'Show changelog',
 ];

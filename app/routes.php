@@ -34,10 +34,11 @@ $app->group('', function (RouteCollectorProxy $group) {
         $group->get('/system/themes', [AdminController::class, 'getThemes'])->setName('theme');
 
         $group->post('/system/settings/save', [SettingController::class, 'saveSettings'])->setName('settings.save');
-
+    
         $group->post('/system/upgrade', [UpgradeController::class, 'upgrade'])->setName('system.upgrade');
         $group->get('/system/checkForUpdates', [UpgradeController::class, 'checkForUpdates'])->setName('system.checkForUpdates');
-
+        $group->get('/system/changelog', [UpgradeController::class, 'changelog'])->setName('system.changelog');
+    
         $group->get('/system', [AdminController::class, 'system'])->setName('system');
 
         $group->get('/users[/page/{page}]', [UserController::class, 'index'])->setName('user.index');
