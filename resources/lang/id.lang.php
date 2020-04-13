@@ -86,5 +86,5 @@ return [
     'no' => 'Tidak',
     'yes' => 'Ya',
     'enforce_language' => 'Penegakkan bahasa',
-    'lang' => 'Bahasa Indonesia',
+    'lang' => 'Indonesian',
 ];

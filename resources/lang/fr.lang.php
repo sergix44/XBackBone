@@ -1,6 +1,6 @@
 <?php
 return [
-    'lang' => 'Français',
+    'lang' => 'French',
     'yes' => 'Oui',
     'no' => 'Non',
     'send' => 'Envoyer',
