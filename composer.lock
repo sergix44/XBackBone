@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "38f18f0b967be3ce9096df807dea1a17",
+    "content-hash": "3a1bab97259e3ebc3e6ffcdeeae0f8c0",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -394,16 +394,16 @@
         },
         {
             "name": "graham-campbell/guzzle-factory",
-            "version": "v3.0.2",
+            "version": "v3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GrahamCampbell/Guzzle-Factory.git",
-                "reference": "6ccf9d73c4c2a55b9576f3a6edcf42af44c99fbb"
+                "reference": "de49ec514107b43f3a770743421c9bb78d01d3e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GrahamCampbell/Guzzle-Factory/zipball/6ccf9d73c4c2a55b9576f3a6edcf42af44c99fbb",
-                "reference": "6ccf9d73c4c2a55b9576f3a6edcf42af44c99fbb",
+                "url": "https://api.github.com/repos/GrahamCampbell/Guzzle-Factory/zipball/de49ec514107b43f3a770743421c9bb78d01d3e2",
+                "reference": "de49ec514107b43f3a770743421c9bb78d01d3e2",
                 "shasum": ""
             },
             "require": {
@@ -411,7 +411,7 @@
                 "php": "^7.0"
             },
             "require-dev": {
-                "graham-campbell/analyzer": "^2.1",
+                "graham-campbell/analyzer": "^2.4",
                 "phpunit/phpunit": "^6.5|^7.0|^8.0"
             },
             "type": "library",
@@ -444,7 +444,7 @@
                 "Guzzle-Factory",
                 "http"
             ],
-            "time": "2019-08-23T13:19:30+00:00"
+            "time": "2020-04-13T13:12:06+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3065,35 +3065,34 @@
         },
         {
             "name": "ocramius/package-versions",
-            "version": "1.8.0",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ocramius/PackageVersions.git",
-                "reference": "421679846270a5772534828013a93be709fb13df"
+                "reference": "44af6f3a2e2e04f2af46bcb302ad9600cba41c7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/PackageVersions/zipball/421679846270a5772534828013a93be709fb13df",
-                "reference": "421679846270a5772534828013a93be709fb13df",
+                "url": "https://api.github.com/repos/Ocramius/PackageVersions/zipball/44af6f3a2e2e04f2af46bcb302ad9600cba41c7d",
+                "reference": "44af6f3a2e2e04f2af46bcb302ad9600cba41c7d",
                 "shasum": ""
             },
             "require": {
-                "composer-plugin-api": "^1.1.0 || ^2.0",
-                "php": "^7.4.0"
+                "composer-plugin-api": "^1.0.0",
+                "php": "^7.1.0"
             },
             "require-dev": {
-                "composer/composer": "^1.9.3 || ^2.0@dev",
-                "doctrine/coding-standard": "^7.0.2",
-                "ext-zip": "^1.15.0",
-                "infection/infection": "^0.15.3",
-                "phpunit/phpunit": "^9.0.1",
-                "vimeo/psalm": "^3.9.3"
+                "composer/composer": "^1.6.3",
+                "doctrine/coding-standard": "^5.0.1",
+                "ext-zip": "*",
+                "infection/infection": "^0.7.1",
+                "phpunit/phpunit": "^7.5.17"
             },
             "type": "composer-plugin",
             "extra": {
                 "class": "PackageVersions\\Installer",
                 "branch-alias": {
-                    "dev-master": "1.99.x-dev"
+                    "dev-master": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -3112,7 +3111,7 @@
                 }
             ],
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
-            "time": "2020-04-06T17:43:35+00:00"
+            "time": "2019-11-15T16:17:10+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -3421,20 +3420,20 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v2.0.1",
+            "version": "v1.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "144c5e51266b281231e947b51223ba14acf1a749"
+                "reference": "ffc7f5692092df31515df2a5ecf3b7302b3ddacf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/144c5e51266b281231e947b51223ba14acf1a749",
-                "reference": "144c5e51266b281231e947b51223ba14acf1a749",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/ffc7f5692092df31515df2a5ecf3b7302b3ddacf",
+                "reference": "ffc7f5692092df31515df2a5ecf3b7302b3ddacf",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2.5",
+                "php": "^7.1.3",
                 "psr/container": "^1.0"
             },
             "suggest": {
@@ -3443,7 +3442,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -3475,7 +3474,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2019-11-18T17:27:11+00:00"
+            "time": "2019-10-14T12:27:06+00:00"
         }
     ],
     "aliases": [],
