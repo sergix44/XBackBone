@@ -1,5 +1,6 @@
 {
   "name": "sergix44/xbackbone",
+  "license": "AGPL-3.0",
   "version": "3.1.2",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
@@ -10,6 +11,7 @@
     "ext-json": "*",
     "ext-pdo": "*",
     "ext-zip": "*",
+    "erusev/parsedown": "^1.7",
     "guzzlehttp/psr7": "^1.6",
     "http-interop/http-factory-guzzle": "^1.0",
     "intervention/image": "^2.4",

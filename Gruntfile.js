@@ -146,6 +146,7 @@ module.exports = function (grunt) {
                 'composer.lock',
                 'LICENSE',
                 'favicon.ico',
+                'CHANGELOG.md'
             ]
         },
 
@@ -154,7 +155,7 @@ module.exports = function (grunt) {
                 command: '"./vendor/bin/phpstan" --level=0 analyse app resources/lang bin install'
             },
             composer_no_dev: {
-                command: 'composer update --no-dev --prefer-dist'
+                command: 'composer install --no-dev --prefer-dist'
             }
         }
 

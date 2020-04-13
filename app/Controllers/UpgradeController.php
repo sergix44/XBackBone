@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Web\Session;
 use Monolog\Logger;
+use Parsedown;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use RuntimeException;
@@ -152,6 +153,21 @@ class UpgradeController extends Controller
         }
 
         return json($response, $jsonResponse);
+    }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function changelog(Request $request, Response $response): Response
+    {
+        return view()->render($response, 'dashboard/changelog.twig', [
+            'content' => Parsedown::instance()->text(file_get_contents('CHANGELOG.md')),
+        ]);
     }
 
     protected function getApiJson()
