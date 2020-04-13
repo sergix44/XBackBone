@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.1.4] - 2020-04-13
+### Changed
+- Now the migrate command resync the system quota for each user.
+
+### Fixed
+- Fixed error with the migrate command.
+
 ## [3.1.3] - 2020-04-13
 ### Changed
 - Added changelog page.
