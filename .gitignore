@@ -9,6 +9,7 @@ composer.lock
 ### grunt ###
 # Grunt usually compiles files inside this directory
 dist/
+release*.zip
 
 # Grunt usually preprocesses files such as coffeescript, compass... inside the .tmp directory
 .tmp/
@@ -77,6 +78,7 @@ typings/
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
+.idea/
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
