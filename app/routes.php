@@ -19,7 +19,6 @@ use App\Middleware\AuthMiddleware;
 use App\Middleware\CheckForMaintenanceMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
-global $app;
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/home[/page/{page}]', [DashboardController::class, 'home'])->setName('home');
     $group->get('/upload', [UploadController::class, 'uploadWebPage'])->setName('upload.web.show');

@@ -38,14 +38,14 @@
       "App\\": "app/"
     }
   },
-  "extra": {
-    "violinist": {
-      "allow_updates_beyond_constraint": 1,
-      "blacklist": [],
-      "update_with_dependencies": 1
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
     }
   },
   "require-dev": {
-    "phpstan/phpstan": "^0.11.5"
+    "phpstan/phpstan": "^0.11.5",
+    "symfony/browser-kit": "^4.4",
+    "phpunit/phpunit": "7.5"
   }
 }

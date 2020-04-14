@@ -17,11 +17,11 @@ use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-if (!file_exists('config.php') && is_dir('install/')) {
+if (!file_exists(BASE_DIR.'config.php') && is_dir(BASE_DIR.'install/')) {
     header('Location: ./install/');
     exit();
 } else {
-    if (!file_exists('config.php') && !is_dir('install/')) {
+    if (!file_exists(BASE_DIR.'config.php') && !is_dir(BASE_DIR.'install/')) {
         exit('Cannot find the config file.');
     }
 }
@@ -71,6 +71,7 @@ $builder->addDefinitions([
 
 $builder->addDefinitions(__DIR__.'/container.php');
 
+global $app;
 $app = Bridge::create($builder->build());
 $app->getContainer()->set('config', $config);
 $app->setBasePath(parse_url($config['base_url'], PHP_URL_PATH) ?: '');

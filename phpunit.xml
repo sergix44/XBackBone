@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php"
+         colors="true"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         stopOnFailure="false"
+         cacheResult="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true">
+    <testsuites>
+        <testsuite name="Tests">
+            <directory suffix="Test.php">tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory>bin</directory>
+                <directory>docs</directory>
+                <directory>resources</directory>
+                <directory>vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
