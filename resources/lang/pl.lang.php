@@ -153,4 +153,6 @@ return [
     'ldap_cant_connect' => 'Nie można połączyć z serwerem uwierzytelniającym LDAP.',
     'user_create_password' => 'Jeśli pozostawiono puste, możesz wysłać powiadomienie na adres e-mail użytkownika.',
     'mail.new_account' => '%s - Tworzenie nowego konta',
+    'show_changelog' => 'Pokaż dziennik zmian',
+    'changelog' => 'Dziennik zmian',
 ];
