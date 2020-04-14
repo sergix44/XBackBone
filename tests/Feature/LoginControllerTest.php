@@ -3,7 +3,6 @@
 
 namespace Tests\Feature;
 
-
 use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
@@ -16,5 +15,4 @@ class LoginControllerTest extends TestCase
         //$this->client->getResponse();
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
-
 }
