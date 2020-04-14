@@ -9,7 +9,6 @@ use Symfony\Component\BrowserKit\Response;
 
 class Client extends AbstractBrowser
 {
-
     protected function doRequest($request)
     {
         define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
