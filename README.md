@@ -1,5 +1,5 @@
 
-# [![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg)](https://hosted.weblate.org/engage/xbackbone/?utm_source=widget) <a href="https://codeclimate.com/github/SergiX44/XBackBone/maintainability"><img src="https://api.codeclimate.com/v1/badges/bf8ee4a8df9c9f0dfa08/maintainability" /></a> [![Donations](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url)
+# [![Weblate](https://hosted.weblate.org/widgets/xbackbone/-/xbackbone/svg-badge.svg)](https://hosted.weblate.org/engage/xbackbone/?utm_source=widget) <a href="https://codeclimate.com/github/SergiX44/XBackBone/maintainability"><img src="https://api.codeclimate.com/v1/badges/bf8ee4a8df9c9f0dfa08/maintainability" /></a> [![Donations](https://img.shields.io/badge/donate-PayPal-yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url)
 
 <p align="center">
   <img src=".github/xbackbone.png" width="350px">
