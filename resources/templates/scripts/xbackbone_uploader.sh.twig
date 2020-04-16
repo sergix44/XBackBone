@@ -43,19 +43,23 @@ upload() {
         exit 1;
     fi
 
-    if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK." ]]; then
+    if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK" ]]; then
         URL="$(echo "${RESPONSE}" | jq -r '.url')";
         if [ "${DESKTOP_SESSION}" != "" ]; then
             echo "${URL}" | xclip -selection c;
             notify-send "Upload completed!" "${URL}";
+	    exit 0;
         else
             echo "${URL}";
+	    exit 0;
         fi
     else
         if [ "${DESKTOP_SESSION}" != "" ]; then
             notify-send "Error!" "$(echo "${RESPONSE}" | jq -r '.message')";
+	    exit 1;
         else
             echo "Error! $(echo "${RESPONSE}" | jq -r '.message')";
+	    exit 1;
         fi
     fi
 }
@@ -100,7 +104,9 @@ if [ -f "${1}" ]; then
 else
     if [ "${DESKTOP_SESSION}" != "" ]; then
         notify-send "Error!" "File specified not exists.";
+	exit 1;
     else
         echo "Error! File specified not exists.";
+	exit 1;
     fi
 fi
