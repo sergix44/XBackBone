@@ -121,7 +121,7 @@ return [
     'settings_saved' => 'Systemeinstellungen gespeichert!',
     'export_data' => 'Daten exportieren',
     'password_recovery' => 'Passwort wiederherstellen',
-    'no_account' => 'Du hast noch kein Account?',
+    'no_account' => 'Habens Sie kein Konto?',
     'register' => 'Registrieren',
     'default_user_quota' => 'Standard Speicherplatz',
     'invalid_quota' => 'Ungültiger Wert für den Speicherplatz.',
