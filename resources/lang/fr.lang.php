@@ -97,7 +97,7 @@ return [
     'token_not_found' => 'Le jeton spécifié n\'a pas été trouvé.',
     'email_required' => 'Une adresse courriel est requise.',
     'email_taken' => 'L\'adresse courriel est déjà utilisée.',
-    'username_required' => 'Un nom d\'utilisateur est requis.',
+    'username_required' => 'Le nom d\'utilisateur est requis.',
     'username_taken' => 'Le nom d\'utilisateur est déjà utilisé.',
     'password_required' => 'Le mot de passe est requis.',
     'user_created' => 'L\'utilisateur « %s » à été créé !',
