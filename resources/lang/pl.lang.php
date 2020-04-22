@@ -4,7 +4,7 @@ return [
     'yes' => 'Tak',
     'no' => 'Nie',
     'send' => 'Wyślij',
-    'no_media' => 'Nie znaleziono pliku.',
+    'no_media' => 'Nie znaleziono plików.',
     'login.username' => 'Nazwa użytkownika lub e-mail',
     'password' => 'Hasło',
     'login' => 'Login',
@@ -155,4 +155,9 @@ return [
     'mail.new_account' => '%s - Tworzenie nowego konta',
     'show_changelog' => 'Pokaż dziennik zmian',
     'changelog' => 'Dziennik zmian',
+    'zip_ext_not_loaded' => 'Wymagane rozszerzenie "zip" nie jest załadowane',
+    'mail.new_account_text_with_pw' => 'Cześć %s!<br>zostało utworzone nowe konto dla Ciebie na %s (<a href="%s">%s</a>), z następującymi danymi logowania:<br><br>Nazwa użytkownika: %s<br>Hasło: %s<br><br>Kliknij w poniższy link, aby przejść na stronę logowania:<br><a href="%s">%s</a>',
+    'mail.new_account_text_with_reset' => 'Cześć %s!<br>zostało utworzone nowe konto dla Ciebie na %s (<a href="%s">%s</a>), kliknij w poniższy link aby ustawić hasło i aktywować je:<br><br><a href="%s">%s</a>',
+    'mail.recover_text' => 'Cześć %s,<br>została wysłana prośba o zresetowanie hasła do twojego konta. Aby zakończyć procedurę, kliknij w poniższy link:<br><br><a href="%s">%s</a><br><br>Jeśli to nie ty poprosiłeś o zresetowanie hasła, po prostu zignoruj ten e-mail.',
+    'mail.activate_text' => 'Cześć %s!<br>dziękuję za utworzenie konta na %s (<a href="%s">%s</a>), kliknij w poniższy link, aby je aktywować:<br><br><a href="%s">%s</a>',
 ];
