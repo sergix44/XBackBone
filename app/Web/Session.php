@@ -140,7 +140,8 @@ class Session
      *
      * @return bool|void
      */
-    public function close() {
+    public function close()
+    {
         return session_write_close();
     }
 
