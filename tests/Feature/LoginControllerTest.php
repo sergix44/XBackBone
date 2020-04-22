@@ -12,7 +12,6 @@ class LoginControllerTest extends TestCase
     public function it_loads_the_login_page()
     {
         $this->client->request('GET', '/login');
-        //$this->client->getResponse();
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 }

@@ -325,6 +325,7 @@ class MediaController extends Controller
     protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
     {
         set_time_limit(0);
+        $this->session->close();
         $mime = $storage->getMimetype($media->storage_path);
 
         if ((param($request, 'width') !== null || param($request, 'height') !== null) && explode('/', $mime)[0] === 'image') {

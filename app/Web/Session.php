@@ -136,6 +136,15 @@ class Session
     }
 
     /**
+     * Closes the current session
+     *
+     * @return bool|void
+     */
+    public function close() {
+        return session_write_close();
+    }
+
+    /**
      * Retrieve flash alerts.
      *
      * @return array
