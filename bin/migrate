@@ -40,6 +40,6 @@ if (file_exists(__DIR__.'/../install') && (!isset($config['debug']) || !$config[
     removeDirectory(__DIR__.'/../install');
 }
 
-echo 'If you are upgrading from a previous version, please run a "php bin/clean".'.PHP_EOL;
+echo 'If you are upgrading from a previous version, please run a "php bin' . DIRECTORY_SEPARATOR . 'clean".'.PHP_EOL;
 echo 'Done.'.PHP_EOL;
 exit(0);
