@@ -149,4 +149,6 @@ return [
     'only_recaptcha_v3' => 'Bare reCAPTCHA v3 støttes.',
     'recaptcha_site_key' => 'reCAPTCHA Sidenøkkel',
     'recaptcha_secret_key' => 'reCAPTCHA Hemmelig Nøkkel',
+    'show_changelog' => 'Vis endringslogg',
+    'changelog' => 'Endringslogg',
 ];
