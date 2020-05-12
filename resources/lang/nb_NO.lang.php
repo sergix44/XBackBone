@@ -149,4 +149,10 @@ return [
     'only_recaptcha_v3' => 'Bare reCAPTCHA v3 støttes.',
     'recaptcha_site_key' => 'reCAPTCHA Sidenøkkel',
     'recaptcha_secret_key' => 'reCAPTCHA Hemmelig Nøkkel',
+    'show_changelog' => 'Vis endringslogg',
+    'changelog' => 'Endringslogg',
+    'mail.new_account_text_with_reset' => 'Hei %s.<br>en ny konto ble opprettet for deg på %s (<a href="%s">%s</a>), klikk på følgende lenke for å sette et passord og aktivere den:<br><br><a href="%s">%s</a>',
+    'no_tags' => 'Ingen etiketter lagt til',
+    'upload_max_file_size' => 'Maksimal filstørrelse er for tiden %s.',
+    'ldap_cant_connect' => 'Kan ikke koble til LDAP-identitetsbekreftelsestjener.',
 ];
