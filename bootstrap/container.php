@@ -50,11 +50,12 @@ return [
             case 's3':
                 $client = new S3Client([
                     'credentials' => [
-                        'key'    => $config['storage']['key'],
+                        'key' => $config['storage']['key'],
                         'secret' => $config['storage']['secret'],
                     ],
-                    'region'  => $config['storage']['region'],
+                    'region' => $config['storage']['region'],
                     'version' => 'latest',
+                    '@http' => ['stream' => true],
                 ]);
 
                 return new Filesystem(new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']));
@@ -64,18 +65,18 @@ return [
                 return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
             case 'ftp':
                 return new Filesystem(new FtpAdapter([
-                    'host'     => $config['storage']['host'],
+                    'host' => $config['storage']['host'],
                     'username' => $config['storage']['username'],
                     'password' => $config['storage']['password'],
-                    'port'     => $config['storage']['port'],
-                    'root'     => $config['storage']['path'],
-                    'passive'  => $config['storage']['passive'],
-                    'ssl'      => $config['storage']['ssl'],
-                    'timeout'  => 30,
+                    'port' => $config['storage']['port'],
+                    'root' => $config['storage']['path'],
+                    'passive' => $config['storage']['passive'],
+                    'ssl' => $config['storage']['ssl'],
+                    'timeout' => 30,
                 ]));
             case 'google-cloud':
                 $client = new StorageClient([
-                    'projectId'   => $config['storage']['project_id'],
+                    'projectId' => $config['storage']['project_id'],
                     'keyFilePath' => $config['storage']['key_path'],
                 ]);
 
