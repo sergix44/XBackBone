@@ -54,6 +54,7 @@ return [
                         'secret' => $config['storage']['secret'],
                     ],
                     'region' => $config['storage']['region'],
+                    'endpoint'  => $config['storage']['endpoint'],
                     'version' => 'latest',
                     '@http' => ['stream' => true],
                 ]);

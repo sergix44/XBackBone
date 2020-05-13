@@ -71,7 +71,7 @@
                                     <select id="storage_driver" name="storage_driver" class="form-control" required>
                                         <option value="local">Local Storage</option>
                                         <option value="ftp">FTP/FTPS</option>
-                                        <option value="s3">Amazon AWS S3</option>
+                                        <option value="s3">Amazon S3 (or compatible)</option>
                                         <option value="google-cloud">Google Cloud Storage</option>
                                         <option value="dropbox">Dropbox</option>
                                     </select>
@@ -99,6 +99,12 @@
                                 <label for="storage_region" class="col-sm-3 col-form-label">AWS S3 region</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control hook-storage-input" id="storage_region" name="storage_region" placeholder="your-region" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_region" class="col-sm-3 col-form-label">AWS S3 endpoint</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_endpoint" name="storage_endpoint" placeholder="optional (for S3-compliant services)" autocomplete="off">
                                 </div>
                             </div>
                             <div class="form-group row hook-storage">
