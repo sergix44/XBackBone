@@ -134,7 +134,7 @@ $app->post('/', function (Request $request, Response $response, \DI\Container $c
                 $config['storage']['key'] = param($request, 'storage_key');
                 $config['storage']['secret'] = param($request, 'storage_secret');
                 $config['storage']['region'] = param($request, 'storage_region');
-                $config['storage']['endpoint'] = param($request, 'storage_endpoint');
+                $config['storage']['endpoint'] = !empty(param($request, 'storage_endpoint')) ? param($request, 'storage_endpoint') : null;
                 $config['storage']['bucket'] = param($request, 'storage_bucket');
                 $config['storage']['path'] = param($request, 'storage_path');
                 break;
