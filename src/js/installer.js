@@ -44,6 +44,7 @@ $(document).ready(function () {
                 $('#storage_key').prop('required', 'required').parent().parent().show();
                 $('#storage_secret').prop('required', 'required').parent().parent().show();
                 $('#storage_region').prop('required', 'required').parent().parent().show();
+                $("#storage_endpoint").parent().parent().show();
                 $('#storage_bucket').prop('required', 'required').parent().parent().show();
                 break;
             case 'google-cloud':
