@@ -47,12 +47,18 @@
 <script src="{{ asset('/static/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('/static/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('/static/highlightjs/highlight.pack.min.js') }}"></script>
+<script src="{{ asset('/static/highlightjs/highlightjs-line-numbers.min.js') }}"></script>
 <script src="{{ asset('/static/clipboardjs/clipboard.min.js') }}"></script>
 <script src="{{ asset('/static/plyr/plyr.min.js') }}"></script>
 <script src="{{ asset('/static/dropzone/dropzone.min.js') }}"></script>
 <script src="{{ asset('/static/bootstrap/js/bootstrap4-toggle.min.js') }}"></script>
 <script src="{{ asset('/static/app/app.js') }}"></script>
-<script>hljs.initHighlightingOnLoad();</script>
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad({
+        singleLine: true
+    });
+</script>
 {% block js %}{% endblock %}
 </body>
 </html>

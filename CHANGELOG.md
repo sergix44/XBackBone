@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.1.5] - 2020-05-18
+### Added
+- Support for other S3-compatible storage endpoint.
+- Line number when showing text files.
+
+### Fixed
+- S3 driver file streaming not working properly.
+
 ## [3.1.4] - 2020-04-13
 ### Changed
 - Now the migrate command resync the system quota for each user.

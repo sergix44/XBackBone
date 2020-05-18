@@ -94,6 +94,11 @@ module.exports = function (grunt) {
                         cwd: 'node_modules/highlightjs',
                         src: ['styles/**/*', 'highlight.pack.min.js'],
                         dest: 'static/highlightjs'
+                    },                    {
+                        expand: true,
+                        cwd: 'node_modules/highlightjs-line-numbers.js/dist',
+                        src: ['highlightjs-line-numbers.min.js'],
+                        dest: 'static/highlightjs'
                     },
                     {
                         expand: true,
