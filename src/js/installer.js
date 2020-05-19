@@ -52,6 +52,11 @@ $(document).ready(function () {
                 $('#storage_key_path').prop('required', 'required').parent().parent().show();
                 $('#storage_bucket').prop('required', 'required').parent().parent().show();
                 break;
+            case 'azure':
+                $('#storage_account_name').prop('required', 'required').parent().parent().show();
+                $('#storage_account_key').prop('required', 'required').parent().parent().show();
+                $('#storage_container_name').prop('required', 'required').parent().parent().show();
+                break;
             case 'dropbox':
                 $('#storage_token').prop('required', 'required').parent().parent().show();
                 break;

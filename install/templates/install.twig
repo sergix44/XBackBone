@@ -73,6 +73,7 @@
                                         <option value="ftp">FTP/FTPS</option>
                                         <option value="s3">Amazon S3 (or compatible)</option>
                                         <option value="google-cloud">Google Cloud Storage</option>
+                                        <option value="azure">Azure Blob Storage</option>
                                         <option value="dropbox">Dropbox</option>
                                     </select>
                                 </div>
@@ -165,6 +166,24 @@
                                 <label for="storage_key_path" class="col-sm-3 col-form-label">Google key path</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control hook-storage-input" id="storage_key_path" name="storage_key_path" placeholder="/path/to/service-account.json" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_account_name" class="col-sm-3 col-form-label">Azure storage account name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_account_name" name="storage_account_name" placeholder="your-storage-account-name" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_account_key" class="col-sm-3 col-form-label">Azure storage account key</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_account_key" name="storage_account_key" placeholder="Account (Access) Key" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_container_name" class="col-sm-3 col-form-label">Azure storage container name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_container_name" name="storage_container_name" placeholder="your-blob-container-name" autocomplete="off">
                                 </div>
                             </div>
                             <div class="form-group row hook-storage">

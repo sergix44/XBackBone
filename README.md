@@ -18,7 +18,7 @@ All the installations, configuration, and usage instructions are available in th
 + Supports every upload type from ShareX.
 + Config generator for ShareX.
 + Low memory footprint.
-+ Multiple backends support: Local storage, AWS S3, Google Cloud, Dropbox, FTP(s).
++ Multiple backends support: Local storage, AWS S3, Google Cloud, Azure Blob Storage, Dropbox, FTP(s).
 + Web file upload.
 + Code uploads syntax highlighting.
 + Video and audio uploads webplayer.

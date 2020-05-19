@@ -125,10 +125,23 @@ return array(
 return array(
     ...
     'storage' => array (
-        'driver' => 'google-client',
+        'driver' => 'google-cloud',
         'project_id' => 'the-project-id',
         'key_path' => 'the-key-path',
         'bucket' => 'bucket-name',
+    )
+);
+```
+
++ Azure Blob Storage
+```php
+return array(
+    ...
+    'storage' => array (
+        'driver' => 'azure',
+        'account_name' => 'the-storage-account-name',
+        'account_key' => 'the-account-key',
+        'container_name' => 'container-name',
     )
 );
 ```
