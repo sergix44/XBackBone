@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.2] - 2020-05-19
+### Added
+- Added support to use Azure Blob Storage account as storage location.
+
 ## [3.1.5] - 2020-05-18
 ### Added
 - Support for other S3-compatible storage endpoint.

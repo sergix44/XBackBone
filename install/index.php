@@ -160,6 +160,11 @@ $app->post('/', function (Request $request, Response $response, \DI\Container $c
                 $config['storage']['key_path'] = param($request, 'storage_key_path');
                 $config['storage']['bucket'] = param($request, 'storage_bucket');
                 break;
+            case 'azure':
+                $config['storage']['account_name'] = param($request, 'storage_account_name');
+                $config['storage']['account_key'] = param($request, 'storage_account_key');
+                $config['storage']['container_name'] = param($request, 'storage_container_name');
+                break;
             case 'local':
             default:
                 $config['storage']['path'] = param($request, 'storage_path');

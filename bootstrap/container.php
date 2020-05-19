@@ -9,6 +9,8 @@ use Google\Cloud\Storage\StorageClient;
 use League\Flysystem\Adapter\Ftp as FtpAdapter;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter;
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use League\Flysystem\Filesystem;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
@@ -82,6 +84,15 @@ return [
                 ]);
 
                 return new Filesystem(new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket'])));
+            case 'azure':
+                $client = BlobRestProxy::createBlobService(
+                    sprintf(
+                        'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;',
+                        $config['storage']['account_name'],
+                        $config['storage']['account_key'])
+                );
+
+                return new Filesystem(new AzureBlobStorageAdapter($client, $config['storage']['container_name']));
             default:
                 throw new InvalidArgumentException('The driver specified is not supported.');
         }
