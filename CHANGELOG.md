@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - S3 driver file streaming not working properly.
+- Fixed Slack image preview.
 
 ## [3.1.4] - 2020-04-13
 ### Changed

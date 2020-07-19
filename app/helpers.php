@@ -328,8 +328,8 @@ if (!function_exists('isBot')) {
             'curl/',
             'wget/',
             'WhatsApp/',
-            'Slackbot',
-            'Slack-ImgProxy',
+            'Slack',
+            'Twitterbot/',
         ];
 
         foreach ($bots as $bot) {
