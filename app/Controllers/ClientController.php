@@ -63,7 +63,8 @@ class ClientController extends Controller
             return redirect($response, $request->getHeaderLine('Referer'));
         }
 
-        return view()->render($response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_'.$user->username.'.sh"'),
+        return view()->render(
+            $response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_'.$user->username.'.sh"'),
             'scripts/xbackbone_uploader.sh.twig',
             [
                 'username'   => $user->username,

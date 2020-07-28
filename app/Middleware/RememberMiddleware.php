@@ -20,7 +20,8 @@ class RememberMiddleware extends Middleware
         if (!$this->session->get('logged', false) && !empty($request->getCookieParams()['remember'])) {
             [$selector, $token] = explode(':', $request->getCookieParams()['remember']);
 
-            $user = $this->database->query('SELECT `id`, `username`,`is_admin`, `active`, `remember_token`, `current_disk_quota`, `max_disk_quota`, `copy_raw` FROM `users` WHERE `remember_selector` = ? AND `remember_expire` > ? LIMIT 1',
+            $user = $this->database->query(
+                'SELECT `id`, `username`,`is_admin`, `active`, `remember_token`, `current_disk_quota`, `max_disk_quota`, `copy_raw` FROM `users` WHERE `remember_selector` = ? AND `remember_expire` > ? LIMIT 1',
                 [$selector, date('Y-m-d\TH:i:s', time())]
             )->fetch();
 
