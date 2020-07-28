@@ -20,5 +20,4 @@ All those who make the recurring donations, the names or logos will be inserted 
 ## Sponsors
 
 + [@philw95](https://github.com/philw95)
-+ [@iamernie](https://github.com/iamernie)
 + [@Fabl0s](https://github.com/Fabl0s)
