@@ -89,7 +89,8 @@ return [
                     sprintf(
                         'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;',
                         $config['storage']['account_name'],
-                        $config['storage']['account_key'])
+                        $config['storage']['account_key']
+                    )
                 );
 
                 return new Filesystem(new AzureBlobStorageAdapter($client, $config['storage']['container_name']));

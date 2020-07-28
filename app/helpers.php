@@ -95,10 +95,13 @@ if (!function_exists('stringToBytes')) {
         switch ($last) {
             case 't':
                 $val *= 1024;
+                // no break
             case 'g':
                 $val *= 1024;
+                // no break
             case 'm':
                 $val *= 1024;
+                // no break
             case 'k':
                 $val *= 1024;
         }

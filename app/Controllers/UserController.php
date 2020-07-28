@@ -31,7 +31,8 @@ class UserController extends Controller
 
         $pages = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count / self::PER_PAGE;
 
-        return view()->render($response,
+        return view()->render(
+            $response,
             'user/index.twig',
             [
                 'users' => $users,
