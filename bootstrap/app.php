@@ -1,7 +1,7 @@
 <?php
 
-use App\Exception\Handlers\AppErrorHandler;
-use App\Exception\Handlers\Renderers\HtmlErrorRenderer;
+use App\Exceptions\Handlers\AppErrorHandler;
+use App\Exceptions\Handlers\Renderers\HtmlErrorRenderer;
 use App\Factories\ViewFactory;
 use App\Middleware\InjectMiddleware;
 use App\Middleware\LangMiddleware;
