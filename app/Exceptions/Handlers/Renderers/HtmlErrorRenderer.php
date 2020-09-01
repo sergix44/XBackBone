@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exception\Handlers\Renderers;
+namespace App\Exceptions\Handlers\Renderers;
 
 use App\Exceptions\UnderMaintenanceException;
 use Slim\Exception\HttpBadRequestException;
