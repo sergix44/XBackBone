@@ -12,7 +12,6 @@ use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
 use function DI\factory;
 use function DI\get;
-use function DI\value;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;

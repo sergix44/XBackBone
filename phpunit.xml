@@ -9,19 +9,18 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true">
     <testsuites>
-        <testsuite name="Tests">
+        <testsuite name="Feature">
             <directory suffix="Test.php">tests/Feature</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-            <exclude>
-                <directory>bin</directory>
-                <directory>docs</directory>
-                <directory>resources</directory>
-                <directory>vendor</directory>
-            </exclude>
+            <directory suffix=".php">app</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" target="./coverage"
+             lowUpperBound="70"
+             highLowerBound="90"/>
+    </logging>
 </phpunit>
