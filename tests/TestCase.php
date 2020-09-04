@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Symfony\Component\BrowserKit\Response;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -21,22 +21,30 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param  string  $uri
      * @param  array  $parameters
+     * @param  array  $files
+     * @param  array  $server
+     * @param  string|null  $content
+     * @param  bool  $changeHistory
      * @return Response|object
      */
-    public function get(string $uri, array $parameters = [])
+    protected function get(string $uri, array $parameters = [], array $files = [], array $server = [], string $content = null, bool $changeHistory = true)
     {
-        $this->client->request('GET', $uri, $parameters);
+        $this->client->request('GET', $uri, $parameters, $files, $server, $content, $changeHistory);
         return $this->client->getResponse();
     }
 
     /**
      * @param  string  $uri
      * @param  array  $parameters
+     * @param  array  $files
+     * @param  array  $server
+     * @param  string|null  $content
+     * @param  bool  $changeHistory
      * @return Response|object
      */
-    public function post(string $uri, array $parameters = [])
+    protected function post(string $uri, array $parameters = [], array $files = [], array $server = [], string $content = null, bool $changeHistory = true)
     {
-        $this->client->request('POST', $uri, $parameters);
+        $this->client->request('POST', $uri, $parameters, $files, $server, $content, $changeHistory);
         return $this->client->getResponse();
     }
 }

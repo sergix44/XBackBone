@@ -11,11 +11,15 @@ class Client extends AbstractBrowser
 {
     protected function doRequest($request)
     {
-        define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
-        define('PLATFORM_VERSION', json_decode(file_get_contents(BASE_DIR.'composer.json'))->version);
+        if (!defined('BASE_DIR')) {
+            define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
+        }
+        if (!defined('PLATFORM_VERSION')) {
+            define('PLATFORM_VERSION', json_decode(file_get_contents(BASE_DIR.'composer.json'))->version);
+        }
 
         /** @var \Slim\App $app */
-        $app = require_once BASE_DIR.'bootstrap/app.php';
+        $app = require BASE_DIR.'bootstrap/app.php';
         $response = $app->handle(new ServerRequest($request->getMethod(), $request->getUri(), [], $request->getContent()));
 
 
