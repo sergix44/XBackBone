@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Symfony\Component\BrowserKit\Response;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -12,9 +12,6 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUp()
     {
-        $_SERVER['HTTP_HOST'] = 'http://localhost';
-        $_SERVER['HTTPS'] = false;
-
         $this->client = new Client();
     }
 
