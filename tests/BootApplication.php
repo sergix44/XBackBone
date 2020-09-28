@@ -3,7 +3,6 @@
 
 namespace Tests;
 
-
 use App\Database\Migrator;
 
 trait BootApplication
@@ -24,5 +23,4 @@ trait BootApplication
 
         return $this->app;
     }
-
 }
