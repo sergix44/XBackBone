@@ -16,11 +16,11 @@ use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-if (!file_exists(BASE_DIR.'config.php') && is_dir(BASE_DIR.'install/')) {
+if (!file_exists(CONFIG_FILE) && is_dir(BASE_DIR.'install/')) {
     header('Location: ./install/');
     exit();
 } else {
-    if (!file_exists(BASE_DIR.'config.php') && !is_dir(BASE_DIR.'install/')) {
+    if (!file_exists(CONFIG_FILE) && !is_dir(BASE_DIR.'install/')) {
         exit('Cannot find the config file.');
     }
 }
@@ -48,7 +48,7 @@ $config = array_replace_recursive([
         'base_domain' => null,
         'user_domain' => null,
     ],
-], require BASE_DIR.'config.php');
+], require CONFIG_FILE);
 
 $builder = new ContainerBuilder();
 
