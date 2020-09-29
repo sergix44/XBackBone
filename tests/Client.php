@@ -3,23 +3,32 @@
 
 namespace Tests;
 
-use App\Database\Migrator;
 use GuzzleHttp\Psr7\ServerRequest;
+use Slim\App;
 use Symfony\Component\BrowserKit\AbstractBrowser;
+use Symfony\Component\BrowserKit\CookieJar;
+use Symfony\Component\BrowserKit\History;
 use Symfony\Component\BrowserKit\Response;
 
 class Client extends AbstractBrowser
 {
+    private $app;
+
+    public function __construct(App $app, $server = [], History $history = null, CookieJar $cookieJar = null)
+    {
+        parent::__construct($server, $history, $cookieJar);
+        $this->app = $app;
+    }
+
     protected function doRequest($request)
     {
-        /** @var \Slim\App $app */
-        $app = require BASE_DIR.'bootstrap/app.php';
+        $response = $this->app->handle(new ServerRequest($request->getMethod(), $request->getUri(), [], $request->getContent()));
 
-        $migrator = new Migrator($app->getContainer()->get('database'), BASE_DIR.'resources/schemas');
-        $migrator->migrate();
+        $body = $response->getBody();
 
-        $response = $app->handle(new ServerRequest($request->getMethod(), $request->getUri(), [], $request->getContent()));
-
-        return new Response($response->getBody()->getContents(), $response->getStatusCode(), $response->getHeaders());
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+        return new Response($body->getContents(), $response->getStatusCode(), $response->getHeaders());
     }
 }

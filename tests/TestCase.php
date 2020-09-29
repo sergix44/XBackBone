@@ -2,46 +2,50 @@
 
 namespace Tests;
 
+use App\Database\DB;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\BrowserKit\Response;
 
 abstract class TestCase extends BaseTestCase
 {
+    use BootApplication;
+
     /** @var Client */
     protected $client;
 
     protected function setUp()
     {
-        $this->client = new Client();
+        $this->client = new Client($this->createApplication());
+        $this->client->followRedirects(false);
     }
 
     /**
      * @param  string  $uri
      * @param  array  $parameters
-     * @param  array  $files
-     * @param  array  $server
-     * @param  string|null  $content
-     * @param  bool  $changeHistory
-     * @return Response|object
+     * @return object|Response
      */
-    protected function get(string $uri, array $parameters = [], array $files = [], array $server = [], string $content = null, bool $changeHistory = true)
+    public function get(string $uri, array $parameters = [])
     {
-        $this->client->request('GET', $uri, $parameters, $files, $server, $content, $changeHistory);
+        $this->client->request('GET', $uri, $parameters);
         return $this->client->getResponse();
     }
 
     /**
      * @param  string  $uri
      * @param  array  $parameters
-     * @param  array  $files
-     * @param  array  $server
-     * @param  string|null  $content
-     * @param  bool  $changeHistory
-     * @return Response|object
+     * @return object|Response
      */
-    protected function post(string $uri, array $parameters = [], array $files = [], array $server = [], string $content = null, bool $changeHistory = true)
+    public function post(string $uri, array $parameters = [])
     {
-        $this->client->request('POST', $uri, $parameters, $files, $server, $content, $changeHistory);
+        $this->client->request('POST', $uri, $parameters);
         return $this->client->getResponse();
+    }
+
+    /**
+     * @return DB
+     */
+    public function database()
+    {
+        return $this->app->getContainer()->get('database');
     }
 }
