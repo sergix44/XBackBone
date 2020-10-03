@@ -75,6 +75,7 @@ class LoginControllerTest extends TestCase
             ->form([
                 'username' => 'admin@example.com',
                 'password' => 'admin',
+                'remember' => 'on',
             ], 'POST');
 
         $this->submitForm($form);
@@ -84,8 +85,9 @@ class LoginControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_set_the_remember_token()
+    public function it_redirects_to()
     {
+        $this->app->getContainer()->get('session')->set('redirectTo', route('profile'));
         $this->createAdminUser();
 
         $response = $this->get(route('login.show'));
@@ -97,9 +99,7 @@ class LoginControllerTest extends TestCase
                 'remember' => 'on',
             ], 'POST');
 
-        $response = $this->submitForm($form);
-        dd($response->getHeaders());
-
-
+        $redirect = $this->submitForm($form)->getHeaderLine('Location');
+        $this->assertSame(route('profile'), $redirect);
     }
 }
