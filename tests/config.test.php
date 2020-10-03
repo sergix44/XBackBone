@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'base_path' => 'http://localhost',
+    'base_url' => 'http://localhost',
     'debug' => true,
     'db' =>
         [
