@@ -99,7 +99,5 @@ class LoginControllerTest extends TestCase
 
         $response = $this->submitForm($form);
         dd($response->getHeaders());
-
-
     }
 }
