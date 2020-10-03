@@ -5,6 +5,7 @@
 {% block head %}
     {% if type == 'image' %}
         <link rel="preload" href="{{ url }}/raw" as="{{ type }}">
+        <meta name="og:image" itemprop="{{ type }}" content="{{ url }}/raw">
     {% endif %}
 {% endblock %}
 
