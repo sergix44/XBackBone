@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
 use Tests\TestCase;
 
@@ -101,5 +101,32 @@ class LoginControllerTest extends TestCase
 
         $redirect = $this->submitForm($form)->getHeaderLine('Location');
         $this->assertSame(route('profile'), $redirect);
+    }
+
+    /** @test */
+    public function it_logout_the_user()
+    {
+        $this->createAdminUser();
+
+        $response = $this->get(route('login.show'));
+        $form = $this->getCrawler($response)
+            ->selectButton('Login')
+            ->form([
+                'username' => 'admin@example.com',
+                'password' => 'admin',
+                'remember' => 'on',
+            ], 'POST');
+
+        $this->submitForm($form);
+        $this->assertSame(200, $response->getStatusCode());
+
+        $response = $this->post(route('logout'));
+        $this->assertSame(302, $response->getStatusCode());
+
+        $response = $this->get(route('home'));
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame(route('login.show'), $response->getHeaderLine('Location'));
+
+        $this->assertFalse($this->app->getContainer()->get('session')->get('logged'));
     }
 }
