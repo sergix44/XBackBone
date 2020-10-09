@@ -3,7 +3,6 @@
 
 namespace Tests\Feature\Auth;
 
-
 use App\Web\Mail;
 use Tests\TestCase;
 
@@ -69,5 +68,4 @@ class RegisterControllerTest extends TestCase
         $result = $this->database()->query('SELECT * FROM users WHERE email = "mario@example.com"')->fetch();
         $this->assertIsObject($result);
     }
-
 }
