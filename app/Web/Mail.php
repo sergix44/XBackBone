@@ -7,6 +7,11 @@ use InvalidArgumentException;
 
 class Mail
 {
+    /**
+     * @var bool
+     */
+    private static $testing = false;
+
     protected $fromMail = 'no-reply@example.com';
     protected $fromName;
 
@@ -24,6 +29,14 @@ class Mail
     public static function make()
     {
         return new self();
+    }
+
+    /**
+     * This will skip the email send
+     */
+    public static function fake()
+    {
+        self::$testing = true;
     }
 
     /**
@@ -121,6 +134,10 @@ class Mail
 
         $this->headers .= $this->additionalHeaders;
         $message = html_entity_decode($this->message);
+
+        if (self::$testing) {
+            return 1;
+        }
 
         return (int) mail($this->to, $this->subject, "<html><body>$message</body></html>", $this->headers);
     }
