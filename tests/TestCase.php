@@ -15,6 +15,10 @@ abstract class TestCase extends BaseTestCase
         $this->createApplication();
     }
 
+    /**
+     * @param $key
+     * @param  null  $value
+     */
     public function updateSetting($key, $value = null)
     {
         if (!$this->database()->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database()->getPdo()->quote($key))->fetch()) {
@@ -24,9 +28,43 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
+    /**
+     * @param  string  $email
+     * @param  string  $username
+     * @param  string  $password
+     * @return string
+     */
     public function createAdminUser($email = 'admin@example.com', $username = 'admin', $password = 'admin')
     {
-        $this->database()->query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES (?, ?, ?, 1, ?)", [$email, $username, password_hash($password, PASSWORD_DEFAULT), humanRandomString(5)]);
+        return $this->createUser([
+            'email' => $email,
+            'username' => $username,
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+        ]);
+    }
+
+    /**
+     * @param  array  $attributes
+     * @return string
+     */
+    public function createUser($attributes = [])
+    {
+        $attributes = array_replace_recursive([
+            'email' => 'user@example.com',
+            'username' => 'user',
+            'password' => password_hash('user', PASSWORD_DEFAULT),
+            'is_admin' => 1,
+            'active' => 1,
+            'user_code' => humanRandomString(5),
+            'token' => 'token_'.md5(uniqid('', true)),
+            'max_disk_quota' => -1,
+            'activate_token' => null,
+            'ldap' => 0,
+            'hide_uploads' => 0,
+            'copy_raw' => 0,
+        ], $attributes);
+
+        $this->database()->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`, `ldap`, `hide_uploads`, `copy_raw`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($attributes));
         return $this->database()->getPdo()->lastInsertId();
     }
 }
