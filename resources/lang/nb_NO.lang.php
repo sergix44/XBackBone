@@ -155,4 +155,10 @@ return [
     'no_tags' => 'Ingen etiketter lagt til',
     'upload_max_file_size' => 'Maksimal filstørrelse er for tiden %s.',
     'ldap_cant_connect' => 'Kan ikke koble til LDAP-identitetsbekreftelsestjener.',
+    'zip_ext_not_loaded' => 'Påkrevd "zip"-utvidelse er ikke innlastet',
+    'auto_tagging' => 'Last opp etikettmerking automatisk',
+    'user_create_password' => 'Hvis levnet tom, vil du kanskje finne det naturlig å sende en merknad til brukerens e-postadresse.',
+    'mail.new_account_text_with_pw' => 'Hei %s!<br>en ny konto ble opprettet for deg på %s (<a href="%s">%s</a>), med følgende identitetsdetaljer:<br><br>Brukernavn: %s<br>Passord: %s<br><br>Klikk på følgende lenke for å gå til innloggingssiden:<br><a href="%s">%s</a>',
+    'mail.new_account' => '%s - Opprettelse av ny konto',
+    'send_notification' => 'Send e-postmerknad',
 ];
