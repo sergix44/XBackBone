@@ -43,10 +43,10 @@
                                 </div>
                             </a>
                         {% endif %}
-                        {% if session.get('admin') %}
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.get('gallery_view') is null or session.get('gallery_view') ? lang('gallery') : lang('table') }}</a>
-                        {% endif %}
+                        
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ session.get('gallery_view') is null or session.get('gallery_view') ? lang('gallery') : lang('table') }}</a>
+                        
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-fw fa-user"></i> {{ lang('profile') }}</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-fw fa-sign-out-alt"></i> {{ lang('logout') }}</a>
