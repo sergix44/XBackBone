@@ -23,7 +23,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/home[/page/{page}]', [DashboardController::class, 'home'])->setName('home');
     $group->get('/upload', [UploadController::class, 'uploadWebPage'])->setName('upload.web.show');
     $group->post('/upload/web', [UploadController::class, 'uploadWeb'])->setName('upload.web');
-	$group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');
+    $group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');
 	
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/system/deleteOrphanFiles', [AdminController::class, 'deleteOrphanFiles'])->setName('system.deleteOrphanFiles');
