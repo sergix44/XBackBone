@@ -24,7 +24,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/upload', [UploadController::class, 'uploadWebPage'])->setName('upload.web.show');
     $group->post('/upload/web', [UploadController::class, 'uploadWeb'])->setName('upload.web');
     $group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');
-	
+    
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/system/deleteOrphanFiles', [AdminController::class, 'deleteOrphanFiles'])->setName('system.deleteOrphanFiles');
         $group->get('/system/recalculateUserQuota', [AdminController::class, 'recalculateUserQuota'])->setName('system.recalculateUserQuota');
