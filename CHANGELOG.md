@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 ### Added
 - OpenGraph image tag #269
+- Table view for users #226
 
 ## [3.2.0] - 2020-09-05
 ### Added

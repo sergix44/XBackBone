@@ -21,7 +21,9 @@
                                         <th>{{ lang('filename') }}</th>
                                         <th>{{ lang('size') }}</th>
                                         <th>{{ lang('public') }}</th>
-                                        <th>{{ lang('owner') }}</th>
+                                        {% if session.get('admin') %}
+											<th>{{ lang('owner') }}</th>
+										{% endif %}
                                         <th>{{ lang('date') }}</th>
                                         <th></th>
                                     </tr>
@@ -57,7 +59,9 @@
                                                     <span class="badge badge-danger"><i class="fas fa-times"></i></span>
                                                 {% endif %}
                                             </td>
-                                            <td>{{ media.username|default('<None>') }}</td>
+											{% if session.get('admin') %}
+												<td>{{ media.username|default('<None>') }}</td>
+											{% endif %}
                                             <td>{{ media.timestamp|date("d/m/Y H:i:s") }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group">
