@@ -1,6 +1,12 @@
 import ScreenCloud
 import json
 import traceback
+import urllib.request
+import urllib.error
+import urllib.parse
+import io
+import mimetypes
+import uuid
 
 from PythonQt.QtCore import QByteArray, QBuffer, QIODevice, QFile
 from PythonQt.QtGui import QWidget, QDialog
@@ -58,27 +64,93 @@ class XBackBoneUploader:
         screenshot.save(q_buff, ScreenCloud.getScreenshotFormat())
         q_buff.close()
 
-        address = (self.host + '/upload').replace('//', '/')
+        url = (self.host + '/upload').replace('//upload', '/upload')
+
+        form = MultiPartForm()
+        form.add_field('token', self.token)
+        form.add_file('file', self.getFilename(), q_ba.data())
+        data = bytes(form)
+
+        r = urllib.request.Request(url, data, headers={
+        	'Content-Type': form.get_content_type(),
+        	'Content-Length': len(data),
+        	'User-Agent': 'XBackBone/Screencloud-client'
+        })
 
         try:
-            r = requests.post(address, files={'upload': q_ba.data()}, data={'token': self.token})
-            data = r.json()
-            url = data.get('url')
+            res = urllib.request.urlopen(r)
+            response = json.loads(res.read())
+            url = response.get('url')
 
             if not url:
-                raise Exception(data.get('message'))
+                raise Exception(response.get('message'))
 
             ScreenCloud.setUrl(url)
 
         except urllib.error.HTTPError as e:
-            ScreenCloud.setError('Error while connecting to: ' + self.host + '\nError:\n' + e.fp.read())
+            response = json.loads(e.read())
+            ScreenCloud.setError('Error while connecting to: ' + self.host + '\n' + response.get('message'))
             return False
 
         except Exception as e:
             try:
-                ScreenCloud.setError('Could not upload to: ' + self.host + '\nError: ' + e.message)
+                ScreenCloud.setError('Could not upload to: ' + self.host + '\nError: ' + str(e))
             except AttributeError:
                 ScreenCloud.setError('Unexpected error while uploading:\n' + traceback.format_exc())
             return False
 
         return True
+
+class MultiPartForm:
+    def __init__(self):
+        self.form_fields = []
+        self.files = []
+        self.boundary = uuid.uuid4().hex.encode('utf-8')
+        return
+
+    def get_content_type(self):
+        return 'multipart/form-data; boundary={}'.format(self.boundary.decode('utf-8'))
+
+    def add_field(self, name, value):
+        self.form_fields.append((name, value))
+
+    def add_file(self, fieldname, filename, body, mimetype=None):
+        if mimetype is None:
+            mimetype = (mimetypes.guess_type(filename)[0] or 'application/octet-stream')
+        self.files.append((fieldname, filename, mimetype, body))
+
+    @staticmethod
+    def _form_data(name):
+        return ('Content-Disposition: form-data; name="{}"\r\n').format(name).encode('utf-8')
+
+    @staticmethod
+    def _attached_file(name, filename):
+        return ('Content-Disposition: file; name="{}"; filename="{}"\r\n').format(name, filename).encode('utf-8')
+
+    @staticmethod
+    def _content_type(ct):
+        return 'Content-Type: {}\r\n'.format(ct).encode('utf-8')
+
+    def __bytes__(self):
+        buffer = io.BytesIO()
+        boundary = b'--' + self.boundary + b'\r\n'
+
+        # Add the form fields
+        for name, value in self.form_fields:
+            buffer.write(boundary)
+            buffer.write(self._form_data(name))
+            buffer.write(b'\r\n')
+            buffer.write(value.encode('utf-8'))
+            buffer.write(b'\r\n')
+
+        # Add the files to upload
+        for f_name, filename, f_content_type, body in self.files:
+            buffer.write(boundary)
+            buffer.write(self._attached_file(f_name, filename))
+            buffer.write(self._content_type(f_content_type))
+            buffer.write(b'\r\n')
+            buffer.write(body)
+            buffer.write(b'\r\n')
+
+        buffer.write(b'--' + self.boundary + b'--\r\n')
+        return buffer.getvalue()

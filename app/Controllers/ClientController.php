@@ -80,12 +80,6 @@ class ClientController extends Controller
         $zip->addFileFromPath('settings.ui', BASE_DIR.'resources/uploaders/screencloud/settings.ui');
         $zip->addFile('config.json', json_encode($config, JSON_UNESCAPED_SLASHES));
 
-        foreach (glob('resources/uploaders/screencloud/modules/requests/*') as $file) {
-            $name = basename($file);
-            $zip->addFileFromPath("modules/requests/{$name}", $file);
-        }
-
-
         $zip->finish();
         exit(0);
     }

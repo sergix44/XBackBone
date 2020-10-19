@@ -65,7 +65,7 @@
                                 <div class="col-sm-9">
                                     <div class="btn-group">
                                         <a href="{{ route('config.sharex', {'id': user.id}) }}" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX</a>
-                                        <a href="{{ route('config.screencloud', {'token': user.token}) }}" class="btn btn-lg btn-outline-info"><i class="fas fa-fw fa-download"></i> Screencloud</a>
+                                        <a href="javascript:alert('{{ lang('copied') }}')" data-clipboard-text="{{ route('config.screencloud', {'token': user.token}) }}" class="btn btn-lg btn-outline-info btn-clipboard"><i class="fas fa-fw fa-download"></i> Screencloud</a>
                                         <a href="{{ route('config.script', {'id': user.id}) }}" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-download"></i> Linux Script</a>
                                     </div>
                                 </div>
