@@ -82,6 +82,7 @@ $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setNa
 
 $app->post('/upload', [UploadController::class, 'uploadEndpoint'])->setName('upload');
 
+$app->get('/user/{token}/config/screencloud', [ClientController::class, 'getScreenCloudConfig'])->setName('config.screencloud')->add(CheckForMaintenanceMiddleware::class);
 $app->get('/{userCode}/{mediaCode}', [MediaController::class, 'show'])->setName('public');
 $app->get('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'show'])->setName('public.delete.show')->add(CheckForMaintenanceMiddleware::class);
 $app->post('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'deleteByToken'])->setName('public.delete')->add(CheckForMaintenanceMiddleware::class);

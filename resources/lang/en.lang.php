@@ -48,6 +48,7 @@ return [
     'your_profile' => 'Your Profile',
     'token' => 'Token',
     'copy' => 'Copy',
+    'copied' => 'Copied to clipboard!',
     'update' => 'Update',
     'edit' => 'Edit',
     'client_config' => 'Client Configuration',
