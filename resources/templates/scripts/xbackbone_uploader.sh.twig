@@ -30,37 +30,29 @@ EOF
 
 upload() {
     RESPONSE="$(curl -s -F "token={{ token }}" -F "upload=@${1}" {{ upload_url }})";
-    
-    if jq -e . >/dev/null 2>&1 <<<"$RESPONSE"; then
-        # Response is JSON
-        echo "Upload Completed.";
-    else
-        if [ "${DESKTOP_SESSION}" != "" ]; then
-            notify-send "Error: Uploading returned unexpected response" "Response: ${RESPONSE}";
-        else
-            echo "Error: Uploading returned unexpected response: ${RESPONSE}"
-        fi
-        exit 1;
-    fi
 
     if [[ "$(echo "${RESPONSE}" | jq -r '.message')" == "OK" ]]; then
         URL="$(echo "${RESPONSE}" | jq -r '.url')";
         if [ "${DESKTOP_SESSION}" != "" ]; then
             echo "${URL}" | xclip -selection c;
             notify-send "Upload completed!" "${URL}";
-	    exit 0;
         else
             echo "${URL}";
-	    exit 0;
         fi
+        exit 0;
     else
-        if [ "${DESKTOP_SESSION}" != "" ]; then
-            notify-send "Error!" "$(echo "${RESPONSE}" | jq -r '.message')";
-	    exit 1;
-        else
-            echo "Error! $(echo "${RESPONSE}" | jq -r '.message')";
-	    exit 1;
+        MESSAGE="$(echo "${RESPONSE}" | jq -r '.message')";
+        if [ $? -ne 0 ]; then
+            echo "Unexpected response:";
+            echo "${RESPONSE}";
+            exit 1;
         fi
+        if [ "${DESKTOP_SESSION}" != "" ]; then
+            notify-send "Error!" "${MESSAGE}";
+        else
+            echo "Error! ${MESSAGE}";
+        fi
+        exit 1;
     fi
 }
 
