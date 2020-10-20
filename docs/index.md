@@ -18,8 +18,8 @@ XBackBone is a simple and lightweight PHP file manager that support the instant 
 </p>
 
 ## Main Features
-+ Supports every upload type from ShareX.
-+ Config generator for ShareX.
++ Multiple clients supported: ShareX, Screencloud, uPic, ...
++ Config generator for ShareX, Screencloud.
 + Low memory footprint.
 + Multiple backends support: Local storage, AWS S3, Google Cloud, Azure Blob Storage, Dropbox, FTP(s).
 + Web file upload.

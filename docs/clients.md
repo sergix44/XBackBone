@@ -1,16 +1,33 @@
 ---
 layout: default
-title: Clients
+title: Client Configuration
 nav_order: 5
 ---
 
 # Clients Configuration
 
-## ShareX Configuration
+## ShareX (Windows)
 Once you are logged in, just go in your profile settings and download the ShareX config file for your account.
 
-## Linux/Mac Support
-Since ShareX does not support Linux, XBackBone can generate a script that allows you to share an item from any tool:
+## Screencloud (Windows, Mac and Linux)
+Once you are logged in, go in your profile account and click on the Screencloud button.
+Now open Screencloud, open "Preferences" > "Online Services" tab > click "More Services" > and "Install from URL"
+and paste the URL copied from XBackBone, and all should work out-of-the-box.
+
+If for whatever reason you need to change the instance url or the token, just edit the settings of the XBackBone plugin.
+
+## uPic (Mac)
+This tool does not support plugins or custom configuration, but you can configure it manually:
+In preferences, you should add "Custom" host and configure it as follows:
+- **API URL:** Your instance upload url, like `http://example.com/upload`
+- **Request method:** POST
+- **File field:** file
+- **URL Path:** ["url"]
+- In "Other fields", in the body section, you should add the field `token`, with your upload token.
+- In "Other fields", in the headers section, you should add the field `Content-Type`, with the value `application/x-www-form-urlencoded`.
+
+## Bash Script (Linux, Mac, WSL)
+XBackBone can generate a script that allows you to share an item from any tool, even headless servers:
 + Login into your account
 + Navigate to your profile and download the Linux script for your account.
 + Place the script where you want (ex. in your user home: `/home/<username>`).

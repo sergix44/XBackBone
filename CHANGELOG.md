@@ -3,10 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [3.3.0] - WIP
 ### Added
-- OpenGraph image tag #269
-- Table view for users #226
+- Added Screencloud client support (https://screencloud.net).
+- OpenGraph image tag (issue #269).
+
+### Changed
+- The list mode is now available also for non-admin accounts (issue #226).
+
+### Fixed
+- Linux script strange response code in headless mode.
 
 ## [3.2.0] - 2020-09-05
 ### Added
