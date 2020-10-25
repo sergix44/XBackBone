@@ -3,7 +3,6 @@
 
 namespace App\Controllers\Auth;
 
-use App\Controllers\Controller;
 use App\Web\Mail;
 use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -14,14 +13,13 @@ class PasswordRecoveryController extends AuthController
 {
 
     /**
-     * @param  Request  $request
      * @param  Response  $response
      * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function recover(Request $request, Response $response): Response
+    public function recover(Response $response): Response
     {
         return view()->render($response, 'auth/recover_mail.twig', [
             'recaptcha_site_key' => $this->getSetting('recaptcha_enabled') === 'on' ? $this->getSetting('recaptcha_site_key') : null,

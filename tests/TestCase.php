@@ -62,9 +62,10 @@ abstract class TestCase extends BaseTestCase
             'ldap' => 0,
             'hide_uploads' => 0,
             'copy_raw' => 0,
+            'reset_token' => null,
         ], $attributes);
 
-        $this->database()->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`, `ldap`, `hide_uploads`, `copy_raw`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($attributes));
+        $this->database()->query('INSERT INTO `users`(`email`, `username`, `password`, `is_admin`, `active`, `user_code`, `token`, `max_disk_quota`, `activate_token`, `ldap`, `hide_uploads`, `copy_raw`, `reset_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($attributes));
         return $this->database()->getPdo()->lastInsertId();
     }
 }
