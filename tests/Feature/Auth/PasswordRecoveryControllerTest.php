@@ -3,7 +3,6 @@
 
 namespace Tests\Feature\Auth;
 
-
 use App\Web\Mail;
 use Tests\TestCase;
 
@@ -138,5 +137,4 @@ class PasswordRecoveryControllerTest extends TestCase
             'resetToken' => 'the-token',
         ]), $response->getHeaderLine('Location'));
     }
-
 }
