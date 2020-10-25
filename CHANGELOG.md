@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [3.3.0] - WIP
 ### Added
+- Added PHP8 support.
 - Added Screencloud client support (https://screencloud.net).
 - OpenGraph image tag (issue #269).
+- Start adding unit tests.
 
 ### Changed
 - The list mode is now available also for non-admin accounts (issue #226).
