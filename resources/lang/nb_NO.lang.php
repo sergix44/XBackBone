@@ -161,4 +161,5 @@ return [
     'mail.new_account_text_with_pw' => 'Hei %s!<br>en ny konto ble opprettet for deg på %s (<a href="%s">%s</a>), med følgende identitetsdetaljer:<br><br>Brukernavn: %s<br>Passord: %s<br><br>Klikk på følgende lenke for å gå til innloggingssiden:<br><a href="%s">%s</a>',
     'mail.new_account' => '%s - Opprettelse av ny konto',
     'send_notification' => 'Send e-postmerknad',
+    'copied' => 'Kopiert til utklippstavle.',
 ];
