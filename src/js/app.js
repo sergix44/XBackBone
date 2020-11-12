@@ -119,9 +119,6 @@ var app = {
         });
         $themes.unbind('mousedown');
     },
-    telegramShare: function () {
-        window.open($('#telegram-share-button').data('url') + $('#telegram-share-text').val(), '_blank');
-    },
     checkForUpdates: function () {
         $('#checkForUpdatesMessage').empty().html('<i class="fas fa-spinner fa-pulse fa-3x"></i>');
         $('#doUpgradeButton').prop('disabled', true);
