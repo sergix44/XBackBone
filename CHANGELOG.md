@@ -3,9 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [3.3.0] - WIP
+## [3.3.0] - 12-11-2020
 ### Added
-- Added PHP8 support.
+- Enabled PHP 8 support.
 - Added Screencloud client support (https://screencloud.net).
 - OpenGraph image tag (issue #269).
 - Start adding unit tests.
@@ -15,6 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Linux script strange response code in headless mode.
+
+### Removed
+- Dropped Telegram share button.
 
 ## [3.2.0] - 2020-09-05
 ### Added
