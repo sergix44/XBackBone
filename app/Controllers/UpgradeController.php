@@ -136,7 +136,7 @@ class UpgradeController extends Controller
             $jsonResponse['status'] = 'OK';
             foreach ($json as $release) {
                 if (version_compare($release->tag_name, PLATFORM_VERSION, '>') && ($release->prerelease === $acceptPrerelease)) {
-                    $jsonResponse['message'] = lang('new_version_available', $release->tag_name);
+                    $jsonResponse['message'] = lang('new_version_available', [$release->tag_name]);
                     $jsonResponse['upgrade'] = true;
                     break;
                 }
