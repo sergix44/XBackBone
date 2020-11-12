@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [3.3.0] - 12-11-2020
+## [3.3.0] - 2020-11-12
 ### Added
 - Enabled PHP 8 support.
 - Added Screencloud client support (https://screencloud.net).
