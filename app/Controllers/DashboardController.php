@@ -52,8 +52,10 @@ class DashboardController extends Controller
                 break;
         }
 
+        $isAdmin = (bool) $this->session->get('admin', false);
+
         /** @var MediaQuery $query */
-        $query = make(MediaQuery::class, ['isAdmin' => (bool) $this->session->get('admin', false)])
+        $query = make(MediaQuery::class, ['isAdmin' => $isAdmin])
             ->orderBy($order, param($request, 'order', 'DESC'))
             ->withUserId($this->session->get('user_id'))
             ->search(param($request, 'search', null))
@@ -61,13 +63,13 @@ class DashboardController extends Controller
             ->run($page);
 
         $tags = make(TagQuery::class, [
-            'isAdmin' => (bool) $this->session->get('admin', false),
+            'isAdmin' => $isAdmin,
             'userId' => $this->session->get('user_id')
         ])->all();
 
         return view()->render(
             $response,
-            ($this->session->get('gallery_view', true)) ? 'dashboard/list.twig' : 'dashboard/grid.twig',
+            ($this->session->get('gallery_view', $isAdmin)) ? 'dashboard/list.twig' : 'dashboard/grid.twig',
             [
                 'medias' => $query->getMedia(),
                 'next' => $page < floor($query->getPages()),

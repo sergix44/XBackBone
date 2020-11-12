@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 ### Fixed
 - Formatting error on the check for updates.
+- Fixed default view for normal users
 
 ## [3.3.0] - 2020-11-12
 ### Added
