@@ -88,7 +88,9 @@ class DashboardController extends Controller
      */
     public function switchView(Response $response): Response
     {
-        $this->session->set('gallery_view', !$this->session->get('gallery_view', true));
+        $isAdmin = (bool) $this->session->get('admin', false);
+
+        $this->session->set('gallery_view', !$this->session->get('gallery_view', $isAdmin));
 
         return redirect($response, route('home'));
     }
