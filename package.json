@@ -6,8 +6,8 @@
     "clipboard": "^2.0.6",
     "dropzone": "^5.7.2",
     "highlightjs": "^9.16.2",
-    "highlightjs-line-numbers.js": "^2.7.0",
-    "jquery": "^3.5.0",
+    "highlightjs-line-numbers.js": "^2.8.0",
+    "jquery": "^3.5.1",
     "plyr": "^3.6.2",
     "popper.js": "^1.16.1",
     "tooltip.js": "^1.3.3"
