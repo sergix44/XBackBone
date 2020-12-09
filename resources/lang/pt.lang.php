@@ -117,10 +117,10 @@ return [
     'delete_all' => 'Apagar tudo',
     'used_space' => 'Espaço Utilizado',
     'quota_enabled' => 'Ativar quota de utilizador',
-    'mail.recover_password' => '%s - Recuperação de senha',
+    'mail.recover_password' => '%s - Recuperação de palavra-passe',
     'default_user_quota' => 'Quota de usuário predefinida',
     'register_success' => 'A conta foi criada, um email de confirmação foi enviado.',
     'no_account' => 'Não tem uma conta?',
-    'password_recovery' => 'Recuperar senha',
+    'password_recovery' => 'Recuperar palavra-passe',
     'export_data' => 'Exportar dados',
 ];
