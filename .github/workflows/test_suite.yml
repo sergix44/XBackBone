@@ -21,7 +21,7 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Run test suite
-      run: vendor/bin/phpunit
+      run: vendor/bin/phpunit --no-coverage
 
     - name: Send docker repo update
       run: |
