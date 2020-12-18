@@ -71,7 +71,8 @@ class Mail
      */
     public function subject(string $text)
     {
-        $this->subject = htmlentities($text);
+        $this->subject = utf8_decode($text);
+        $this->subject = mb_encode_mimeheader($text);
         return $this;
     }
 
