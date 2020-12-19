@@ -36,6 +36,7 @@
                     <a class="dropdown-item" href="{{ queryParams({'sort':'time'}) }}"><i class="fas fa-calendar-alt fa-fw"></i> {{ lang('time') }}</a>
                     <a class="dropdown-item" href="{{ queryParams({'sort':'name'}) }}"><i class="fas fa-font fa-fw"></i> {{ lang('name') }}</a>
                     <a class="dropdown-item" href="{{ queryParams({'sort':'size'}) }}"><i class="fas fa-weight-hanging fa-fw"></i> {{ lang('size') }}</a>
+                    <a class="dropdown-item" href="{{ queryParams({'sort':'user'}) }}"><i class="fas fa-user fa-fw"></i> {{ lang('users') }}</a>
                 </div>
             </div>
             <a href="{{ queryParams({'order': request.queryParams['order'] is same as('ASC') ? 'DESC' : 'ASC' }) }}" class="btn btn-outline-info">
