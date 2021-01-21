@@ -33,7 +33,7 @@ return [
     'files' => 'Datei(n)',
     'orphaned_files' => 'verwaiste Dateien',
     'theme' => 'Design',
-    'click_to_load' => 'Klick um zu laden...',
+    'click_to_load' => 'Zum Laden klicken…',
     'apply' => 'Sichern',
     'save' => 'Speichern',
     'used' => 'Benutzen',
@@ -78,7 +78,7 @@ return [
     'gallery' => 'Galerie',
     'table' => 'Tabelle',
     'dotted_search' => 'Suche...',
-    'order_by' => 'Sortieren nach...',
+    'order_by' => 'Sortieren nach…',
     'time' => 'Zeit',
     'name' => 'Name',
     'maintenance' => 'Wartungsarbeiten',
@@ -163,4 +163,5 @@ return [
     'mail.activate_text' => 'Hallo %s! <br>Vielen Dank fürs Registrieren auf %s (\'a href="%s">%s</a>), klicken Sie auf den folgenden Link, um es zu aktivieren:<br><br>\'a href="%s">%s</a>',
     'show_changelog' => 'Änderungsprotokoll ansehen',
     'changelog' => 'Änderungsprotokoll',
+    'copied' => 'In die Zwischenablage kopiert!',
 ];
