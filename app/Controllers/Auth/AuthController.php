@@ -52,7 +52,7 @@ abstract class AuthController extends Controller
      */
     protected function getLdapRdn(string $username)
     {
-        $bindString = 'uid='.addslashes($username);
+        $bindString = ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username);
         if ($this->config['ldap']['user_domain'] !== null) {
             $bindString .= ','.$this->config['ldap']['user_domain'];
         }
