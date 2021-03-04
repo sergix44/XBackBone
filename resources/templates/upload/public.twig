@@ -2,13 +2,6 @@
 
 {% block title %}{{ media.filename }}{% endblock %}
 
-{% block head %}
-    {% if type == 'image' %}
-        <link rel="preload" href="{{ url }}/raw" as="{{ type }}">
-        <meta name="og:image" itemprop="{{ type }}" content="{{ url }}/raw">
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     <nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4">
         <div class="container-fluid">

@@ -41,10 +41,6 @@ class MediaController extends Controller
 
         $filesystem = $this->storage;
 
-        if (isBot($request->getHeaderLine('User-Agent'))) {
-            return $this->streamMedia($request, $response, $filesystem, $media);
-        }
-
         try {
             $media->mimetype = $filesystem->getMimetype($media->storage_path);
             $size = $filesystem->getSize($media->storage_path);

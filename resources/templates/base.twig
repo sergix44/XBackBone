@@ -4,7 +4,6 @@
     <title>{% block title %}Default{% endblock %} | {{ config.app_name }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{{ config.app_name }} - Proudly powered by XBackBone.">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/static/images/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/static/images/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/static/images/favicon-16x16.png') }}">
@@ -13,7 +12,7 @@
     <link rel="shortcut icon" href="{{ asset('/static/images/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#603cba">
     <meta name="msapplication-config" content="{{ asset('/static/images/browserconfig.xml') }}">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ff3232">
     <link rel="preload" href="{{ asset('/static/bootstrap/css/bootstrap.min.css') }}" as="style">
     <link rel="preload" href="{{ asset('/static/fontawesome/css/all.min.css') }}" as="style">
     <link rel="preload" href="{{ asset('/static/app/app.css') }}" as="style">
@@ -34,6 +33,23 @@
             'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}', 'dropzone': '{{ lang('drop_to_upload') }}'}
         }
     </script>
+    <meta id="embed-title" property="og:site_name" content="{{ config.app_name }}">
+    <meta id="embed-url" property="og:url" content="{{ url }}">
+    <!-- This will only display an image, but that's the most important for now -->
+    {% if type %}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:type" content="website" />
+        <meta id="embed-title" property="og:title" content="{{ media.filename }} ({{ media.size }})">
+        <meta id="embed-image" property="og:image" content="{{ url }}/raw">
+        <meta id="embed-desc" property="og:description" content="Uploaded at {{ media.timestamp }} by {{ media.username }}">
+        <meta id="discord" name="twitter:image" content="{{ url }}/raw">
+        <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
+    {% else %}
+        <meta id="embed-title" property="og:title" content="{{ block('title') }}">
+        <meta id="discord" name="twitter:image" content="/static/images/favicon-32x32.png">
+        <meta id="image-src" name="twitter:image:src" content="/static/images/favicon-32x32.png">
+        <meta id="embed-image" property="og:image" content="/static/images/favicon-32x32.png">
+    {% endif %}
     {% block head %}{% endblock %}
     {{ customHead|raw }}
 </head>
