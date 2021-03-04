@@ -55,6 +55,7 @@ return array(
         'port' => 389, // ldap port
         'base_domain' => 'dc=example,dc=com', // the base_dn string
         'user_domain' => 'ou=Users', // the user dn string
+        'rdn_attribute' => 'uid=', // the attribute to identify the user
     )
 );
 ```
