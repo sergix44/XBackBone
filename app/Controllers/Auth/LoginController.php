@@ -48,6 +48,7 @@ class LoginController extends AuthController
         }
 
         $username = param($request, 'username');
+        $password = param($request, 'password');
         $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap`, `copy_raw` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
         if ($this->config['ldap']['enabled'] && ($user->ldap ?? true)) {
@@ -55,11 +56,12 @@ class LoginController extends AuthController
         }
 
         $validator
-            ->alertIf(!$user || !password_verify(param($request, 'password'), $user->password), 'bad_login')
+            ->alertIf(!$user || !password_verify($password, $user->password), 'bad_login')
             ->alertIf(isset($this->config['maintenance']) && $this->config['maintenance'] && !($user->is_admin ?? true), 'maintenance_in_progress', 'info')
             ->alertIf(!($user->active ?? false), 'account_disabled');
 
         if ($validator->fails()) {
+            $this->logger->info("Login failed with username='{$username}', password='{$password}'.");
             return redirect($response, route('login'));
         }
 
