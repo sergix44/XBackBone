@@ -142,6 +142,7 @@ module.exports = function (grunt) {
                 'resources/templates/**/*',
                 'resources/schemas/**/*',
                 'resources/lang/**/*',
+                'resources/uploaders/**/*',
                 'static/**/*',
                 'vendor/**/*',
                 '.htaccess',

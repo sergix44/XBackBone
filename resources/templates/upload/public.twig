@@ -5,7 +5,20 @@
 {% block head %}
     {% if type == 'image' %}
         <link rel="preload" href="{{ url }}/raw" as="{{ type }}">
-        <meta name="og:image" itemprop="{{ type }}" content="{{ url }}/raw">
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:type" content="website"/>
+    <meta id="embed-title" property="og:title" content="{{ media.filename }} ({{ media.size }})">
+    <meta id="embed-desc" property="og:description" content="{{ lang('date') }}: {{ media.timestamp }}">
+    {% if type == 'image' %}
+        <meta id="embed-image" property="og:image" content="{{ url }}/raw">
+        <meta id="discord" name="twitter:image" content="{{ url }}/raw">
+        <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
+        <meta id="discord" name="twitter:image" content="{{ url }}/raw">
+        <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
     {% endif %}
 {% endblock %}
 

@@ -1,14 +1,14 @@
 {
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.1",
-    "bootstrap": "^4.5.3",
+    "@fortawesome/fontawesome-free": "^5.15.2",
+    "bootstrap": "^4.6.0",
     "bootstrap4-toggle": "^3.6.1",
-    "clipboard": "^2.0.6",
-    "dropzone": "^5.7.2",
+    "clipboard": "^2.0.7",
+    "dropzone": "^5.8.0",
     "highlightjs": "^9.16.2",
     "highlightjs-line-numbers.js": "^2.8.0",
-    "jquery": "^3.5.1",
-    "plyr": "^3.6.2",
+    "jquery": "^3.6.0",
+    "plyr": "^3.6.4",
     "popper.js": "^1.16.1",
     "tooltip.js": "^1.3.3"
   },

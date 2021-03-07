@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.3.4] - 2021-03-07
+### Fixed
+- Fixed open graph meta tags for Discord.
+- Fixed custom html tags are not displayed back in the admin setting.
+- Fixed python plugin for newer version of Screencloud.
+- Fixed accented chars in email subject.
+
 ## [3.3.3] - 2020-11-13
 ### Fixed
 - Fixed issue with responsive menu on mobile.

@@ -71,7 +71,7 @@ class Mail
      */
     public function subject(string $text)
     {
-        $this->subject = htmlentities($text);
+        $this->subject = $text;
         return $this;
     }
 
@@ -81,7 +81,7 @@ class Mail
      */
     public function message(string $text)
     {
-        $this->message = htmlentities($text);
+        $this->message = $text;
         return $this;
     }
 

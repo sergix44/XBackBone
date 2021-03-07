@@ -325,8 +325,6 @@ if (!function_exists('isBot')) {
         $bots = [
             'TelegramBot',
             'facebookexternalhit/',
-            'Discordbot/',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0', // The discord service bot?
             'Facebot',
             'curl/',
             'wget/',

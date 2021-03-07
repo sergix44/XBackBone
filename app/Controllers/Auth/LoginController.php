@@ -98,7 +98,7 @@ class LoginController extends AuthController
         $this->session->alert(lang('goodbye'), 'warning');
 
         if (!empty($request->getCookieParams()['remember'])) {
-            setcookie('remember', null);
+            setcookie('remember', null, 0, '', '', false, true);
         }
 
         return redirect($response, route('login.show'));

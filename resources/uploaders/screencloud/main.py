@@ -79,7 +79,7 @@ class XBackBoneUploader:
 
         try:
             res = urllib.request.urlopen(r)
-            response = json.loads(res.read())
+            response = json.loads(res.read().decode('utf-8'))
             url = response.get('url')
 
             if not url:
