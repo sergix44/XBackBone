@@ -61,7 +61,12 @@ class LoginController extends AuthController
             ->alertIf(!($user->active ?? false), 'account_disabled');
 
         if ($validator->fails()) {
-            $this->logger->info("Login failed with username='{$username}', password='{$password}'.");
+            if (!empty($request->getHeaderLine('X-Forwarded-For'))) {
+                $ip = $request->getHeaderLine('X-Forwarded-For');
+            } else {
+                $ip = $request->getServerParams()['REMOTE_ADDR'];
+            }
+            $this->logger->info("Login failed with username='{$username}', ip={$ip}.");
             return redirect($response, route('login'));
         }
 
