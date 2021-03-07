@@ -64,7 +64,7 @@ class LoginController extends AuthController
             if (!empty($request->getHeaderLine('X-Forwarded-For'))) {
                 $ip = $request->getHeaderLine('X-Forwarded-For');
             } else {
-                $ip = $request->getServerParams()['REMOTE_ADDR'];
+                $ip = $request->getServerParams()['REMOTE_ADDR'] ?? null;
             }
             $this->logger->info("Login failed with username='{$username}', ip={$ip}.");
             return redirect($response, route('login'));
