@@ -1,8 +1,8 @@
 <?php
 return [
     'profile_updated' => 'Profil mis à jour avec succès!',
-    'user_updated' => 'L\'utilisateur « %s » à été mis à jour!',
-    'user_created' => 'L\'utilisateur « %s » à été créé!',
+    'user_updated' => 'L\'utilisateur « %s » a été mis à jour!',
+    'user_created' => 'L\'utilisateur « %s » a été créé!',
     'goodbye' => 'Au revoir!',
     'welcome' => 'Bienvenue, %s!',
     'installed' => 'L\'installation s\'est déroulée avec succès!',
