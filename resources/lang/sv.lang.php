@@ -64,7 +64,7 @@ return [
     'username' => 'Användarnamn',
     'login' => 'Inloggning',
     'password' => 'Lösenord',
-    'login.username' => 'Användarnamn eller E-post',
+    'login.username' => 'Användarnamn eller e-post',
     'no_media' => 'Ingen media kunde hittas.',
     'send' => 'Skicka',
     'no' => 'Nej',
