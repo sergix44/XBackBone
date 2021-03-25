@@ -5,7 +5,7 @@ return [
     'no' => 'Nej',
     'send' => 'Send',
     'no_media' => 'Intet media fundet.',
-    'login.username' => 'Brugernavn eller E-Mail',
+    'login.username' => 'Brugernavn eller e-mail',
     'password' => 'Adgangskode',
     'login' => 'Log på',
     'username' => 'Brugernavn',
@@ -45,4 +45,6 @@ return [
     'your_profile' => 'Din Profil',
     'user_updated' => 'Bruger »%s« er opdateret!',
     'user_created' => 'Bruger »%s« oprettet!',
+    'email_taken' => 'E-mail-adressen er allerede i brug.',
+    'email_required' => 'E-mail er påkrævet.',
 ];
