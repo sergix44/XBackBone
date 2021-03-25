@@ -60,7 +60,7 @@ return [
     'installed' => 'Installazione completata!',
     'bad_login' => 'Credenziali errate.',
     'account_disabled' => 'Il tuo account è disattivato.',
-    'welcome' => 'Benvenuto, %s!',
+    'welcome' => 'Benvenuto/a, %s!',
     'goodbye' => 'Arrivederci!',
     'token_not_found' => 'Il token specificato non è stato trovato.',
     'email_required' => 'E-mail obbligatoria.',
