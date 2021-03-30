@@ -56,7 +56,7 @@ return [
     'username' => 'यूजरनाम',
     'login' => 'लॉगिन',
     'password' => 'पासवर्ड',
-    'login.username' => 'यूजरनाम और E-मेल',
+    'login.username' => 'यूज़रनेम या ईमेल',
     'no_media' => 'नो मीडिया फाउंड.',
     'send' => 'सेंड',
     'no' => 'नो',

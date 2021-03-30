@@ -1,6 +1,6 @@
 <?php
 return [
-    'lang' => 'Spanish',
+    'lang' => 'Español',
     'yes' => 'Sí',
     'no' => 'No',
     'send' => 'Enviar',
@@ -67,8 +67,8 @@ return [
     'username_required' => 'El Nombre de Usuario es requisito.',
     'username_taken' => 'El Nombre de Usuario ya está en uso.',
     'password_required' => 'La Contraseña es requisito.',
-    'user_created' => '¡Usuario "%s" creado!',
-    'user_updated' => '¡Usuario "%s" actualizado!',
+    'user_created' => '¡Usuario «%s» creado!',
+    'user_updated' => '¡Usuario «%s» actualizado!',
     'profile_updated' => '¡Perfil actualizado con éxito!',
     'user_deleted' => 'Usuario borrado.',
     'cannot_delete' => 'No puede borrarse a usted mismo.',
@@ -123,7 +123,7 @@ return [
     'quota_enabled' => 'Activar la cuota de usuarios',
     'show_changelog' => 'Mostrar el registro de cambios',
     'changelog' => 'Registro de cambios',
-    'zip_ext_not_loaded' => 'La extensión "zip" requerida no está cargada',
+    'zip_ext_not_loaded' => 'La extensión zip requerida no está cargada',
     'auto_tagging' => 'Carga automática de etiquetas',
     'no_tags' => 'No se han añadido etiquetas',
     'upload_max_file_size' => 'El tamaño máximo del archivo es actualmente %s.',
