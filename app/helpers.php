@@ -331,6 +331,7 @@ if (!function_exists('isBot')) {
             'WhatsApp/',
             'Slack',
             'Twitterbot/',
+            'discord',
         ];
 
         foreach ($bots as $bot) {
