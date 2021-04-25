@@ -92,6 +92,21 @@ return array(
     )
 );
 ```
+For any filesystem S3-compatible, it's possible to specify an `endpoint` (for i.e. Minio)
+```php
+return array(
+    ...
+    'storage' => array (
+        'driver' => 's3',
+        'endpoint' => 'my-custom-endpoint',
+        'key' => 'the-key',
+        'secret' => 'the-secret',
+        'region' => 'the-region',
+        'bucket' => 'bucket-name',
+        'path' => 'optional/path/prefix',
+    )
+);
+```
 
 + Dropbox
 ```php
