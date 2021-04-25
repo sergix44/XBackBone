@@ -5,6 +5,13 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.3.5] - 2021-04-25
+### Fixed
+- Removed OG integration for discord.
+
+### Changed
+- Updated translations.
+
 ## [3.3.4] - 2021-03-07
 ### Added
 - Login failed logging.
