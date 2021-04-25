@@ -152,7 +152,7 @@ return [
     'user_create_password' => 'Se lasciato vuoto, si consiglia di inviare una notifica all\'utente via e-mail.',
     'mail.new_account' => '%s – Nuovo account creato',
     'send_notification' => 'Invia notifica e-mail',
-    'auto_tagging' => 'Codifica automatica del caricamento',
+    'auto_tagging' => 'Tagging automatico degli upload',
     'mail.new_account_text_with_pw' => 'Ciao %s!<br>un nuovo account è stato creato per te su %s (<a href="%s">%s</a>), con le seguenti credenziali:<br><br>Nome utente: %s<br>Password: %s<br><br>Clicca su questo collegamento per andare alla pagina di accesso:<br><a href="%s">%s</a>',
     'mail.new_account_text_with_reset' => 'Ciao %s!<br>un nuovo account è stato creato per te su %s (<a href="%s">%s</a>), clicca sul seguente collegamento per impostare una password e attivarlo:<br><br><a href="%s">%s</a>',
     'mail.recover_text' => 'Ciao %s,<br>è stata richiesta una reimpostazione della password per il tuo account. Per completare la procedura clicca sul seguente collegamento:<br><br><a href="%s">%s</a><br><br>Se non sei stato/a tu a richiedere la reimpostazione della password, ignora semplicemente questa e-mail.',

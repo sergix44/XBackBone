@@ -332,7 +332,7 @@ if (!function_exists('isBot')) {
             'Slack',
             'Twitterbot/',
             'discord',
-            'Discordbot/'
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0' // discord image bot
         ];
 
         foreach ($bots as $bot) {
