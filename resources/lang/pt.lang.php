@@ -118,7 +118,7 @@ return [
     'used_space' => 'Espaço Utilizado',
     'quota_enabled' => 'Ativar quota de utilizador',
     'mail.recover_password' => '%s - Recuperação de palavra-passe',
-    'default_user_quota' => 'Quota de usuário predefinida',
+    'default_user_quota' => 'Quota de utilizador predefinida',
     'register_success' => 'A conta foi criada, um e-mail de confirmação foi enviado.',
     'no_account' => 'Não tem uma conta?',
     'password_recovery' => 'Recuperar palavra-passe',
