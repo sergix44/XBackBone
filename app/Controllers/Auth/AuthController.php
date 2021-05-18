@@ -36,7 +36,7 @@ abstract class AuthController extends Controller
         }
         // Building LDAP URI
         $ldapSchema=array_key_exists('schema', $this->config['ldap']) ?
-        strtolower($this->config['ldap']['schema']) : 'ldap';
+            strtolower($this->config['ldap']['schema']) : 'ldap';
         $ldapURI="$ldapSchema://".$this->config['ldap']['host'].':'.$this->config['ldap']['port'];
         
         // Connecting to LDAP server
@@ -47,16 +47,24 @@ abstract class AuthController extends Controller
             ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
         }
         
+        // Upgrade to StartTLS
+        if ($this->config['ldap']['useStartTLS'] === true) {
+            if (ldap_start_tls($server) === false) { 
+                $this->logger-error("Failed to establish secure LDAP swith StartTLS");
+                return false;
+            }
+        }
+        
         // Authenticating LDAP service account
         $serviceAccountFQDN= (array_key_exists('service_account_dn', $this->config['ldap'])) ? 
             $this->config['ldap']['service_account_dn'] : null;
         if (is_string($serviceAccountFQDN)) {
-            
             if (ldap_bind($server,$serviceAccountFQDN,$this->config['ldap']['service_account_password']) === false) {
                 $this->logger->error("Bind with service account ($serviceAccountFQDN) failed.");
                 return false;
             }
-        }
+            
+        } 
 
         return $server;
     }
