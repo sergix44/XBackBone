@@ -45,6 +45,16 @@ abstract class AuthController extends Controller
             ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
         }
+        
+        $serviceAccountFQDN= (array_key_exists('service_account_dn', $this->config['ldap'])) ? 
+            $this->config['ldap']['service_account_dn'] : null;
+        if (is_string($serviceAccountFQDN)) {
+            
+            if (ldap_bind($server,$serviceAccountFQDN,$this->config['ldap']['service_account_password']) === false) {
+                $this->logger->error("Bind with service account ($serviceAccountFQDN) failed.");
+                return false;
+            }
+        }
 
         return $server;
     }
