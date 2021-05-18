@@ -35,7 +35,10 @@ abstract class AuthController extends Controller
             return false;
         }
 
-        $server = ldap_connect($this->config['ldap']['host'], $this->config['ldap']['port']);
+        $ldapSchema=array_key_exists('schema', $this->config['ldap']) ?
+        strtolower($this->config['ldap']['schema']) : 'ldap';
+        $ldapURI="$ldapSchema://".$this->config['ldap']['host'].':'.$this->config['ldap']['port'];
+        $server = ldap_connect($ldapURI);
 
         if ($server) {
             ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
