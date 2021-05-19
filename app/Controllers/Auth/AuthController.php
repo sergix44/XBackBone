@@ -35,7 +35,7 @@ abstract class AuthController extends Controller
             return false;
         }
         // Building LDAP URI
-        $ldapSchema=array_key_exists('schema', $this->config['ldap']) ?
+        $ldapSchema=(@is_string(['ldap']['schema'])) ?
             strtolower($this->config['ldap']['schema']) : 'ldap';
         $ldapURI="$ldapSchema://".$this->config['ldap']['host'].':'.$this->config['ldap']['port'];
         
