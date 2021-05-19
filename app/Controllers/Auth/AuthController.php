@@ -55,7 +55,7 @@ abstract class AuthController extends Controller
             }
         }
         
-        // Authenticating LDAP service account
+        // Authenticating LDAP service account (if configured)
         $serviceAccountFQDN= (array_key_exists('service_account_dn', $this->config['ldap'])) ? 
             $this->config['ldap']['service_account_dn'] : null;
         if (is_string($serviceAccountFQDN)) {
@@ -70,20 +70,44 @@ abstract class AuthController extends Controller
     }
 
     /**
+     * Returns User's LDAP DN
      * @param  string  $username
-     * @return string
+     * @package resource $server LDAP Server Resource 
+     * @return string|null
      */
-    protected function getLdapRdn(string $username)
+    protected function getLdapRdn(string $username, $server)
     {
-        $bindString = ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username);
-        if ($this->config['ldap']['user_domain'] !== null) {
-            $bindString .= ','.$this->config['ldap']['user_domain'];
+        //Dynamic LDAP User Binding
+        if (@is_string($this->config['ldap']['search_filter'])) {
+            //Replace ???? with username
+            $searchFilter=str_replace('????', ldap_escape($username,null,LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
+            $ldapAddributes=array ('dn');
+            $ldapSearchResp=ldap_search(
+                $server, 
+                $this->config['ldap']['base_domain'], 
+                $searchFilter,
+                $ldapAddributes
+            );
+            if (ldap_count_entries($server, $ldapSearchResp) !== 1 ) {
+                $this->logger->warn("$username not found or had multiple entries");
+                return null;
+            }
+            $ldapEntry = ldap_first_entry($server, $$ldapSearchResp);
+            $bindString=@ldap_get_values($server, $ldapEntry, 'dn');
+            
+            
+        } else {
+            // Static LDAP Binding
+            $bindString = ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username);
+            if ($this->config['ldap']['user_domain'] !== null) {
+                $bindString .= ','.$this->config['ldap']['user_domain'];
+            }
+            
+            if ($this->config['ldap']['base_domain'] !== null) {
+                $bindString .= ','.$this->config['ldap']['base_domain'];
+            }
         }
-
-        if ($this->config['ldap']['base_domain'] !== null) {
-            $bindString .= ','.$this->config['ldap']['base_domain'];
-        }
-
+        
         return $bindString;
     }
 }
