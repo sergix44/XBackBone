@@ -93,6 +93,7 @@ abstract class AuthController extends Controller
                 return null;
             }
             $ldapEntry = ldap_first_entry($server, $$ldapSearchResp);
+            //Returns full DN
             $bindString = ldap_get_dn($server, $ldapEntry);
             
             
@@ -106,6 +107,7 @@ abstract class AuthController extends Controller
             if ($this->config['ldap']['base_domain'] !== null) {
                 $bindString .= ','.$this->config['ldap']['base_domain'];
             }
+            //returns partial DN
         }
         
         return $bindString;
