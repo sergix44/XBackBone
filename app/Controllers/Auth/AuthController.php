@@ -80,20 +80,20 @@ abstract class AuthController extends Controller
         //Dynamic LDAP User Binding
         if (@is_string($this->config['ldap']['search_filter'])) {
             //Replace ???? with username
-            $searchFilter=str_replace('????', ldap_escape($username,null,LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
-            $ldapAddributes=array ('dn');
-            $ldapSearchResp=ldap_search(
+            $searchFilter = str_replace('????', ldap_escape($username,null,LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
+            $ldapAddributes = array ('dn');
+            $ldapSearchResp = ldap_search(
                 $server, 
                 $this->config['ldap']['base_domain'], 
                 $searchFilter,
                 $ldapAddributes
             );
             if (ldap_count_entries($server, $ldapSearchResp) !== 1 ) {
-                $this->logger->warn("$username not found or had multiple entries");
+                $this->logger->warn("LDAP search for $username not found or had multiple entries");
                 return null;
             }
             $ldapEntry = ldap_first_entry($server, $$ldapSearchResp);
-            $bindString=@ldap_get_values($server, $ldapEntry, 'dn');
+            $bindString = ldap_get_dn($server, $ldapEntry);
             
             
         } else {
