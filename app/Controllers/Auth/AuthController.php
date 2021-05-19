@@ -56,7 +56,7 @@ abstract class AuthController extends Controller
         }
         
         // Authenticating LDAP service account (if configured)
-        $serviceAccountFQDN= (array_key_exists('service_account_dn', $this->config['ldap'])) ? 
+        $serviceAccountFQDN= (@is_string($this->config['ldap']['service_account_dn'])) ? 
             $this->config['ldap']['service_account_dn'] : null;
         if (is_string($serviceAccountFQDN)) {
             if (ldap_bind($server,$serviceAccountFQDN,$this->config['ldap']['service_account_password']) === false) {
