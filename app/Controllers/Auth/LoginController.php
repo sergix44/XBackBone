@@ -130,13 +130,16 @@ class LoginController extends AuthController
         }
         
         //Get LDAP user's (R)DN
-        $userDN=$this->getLdapRdn($username, $password, $server);
+        $userDN=$this->getLdapRdn($username, $server);
         if (!is_string($userDN)) {
             return null;
         }
     
         //Bind as user to validate password
-        if (!@ldap_bind($server, $this->getLdapRdn($username), $password)) {
+        if (@ldap_bind($server, $userDN, $password)) {
+            $this->logger->debug("$userDN authenticated against LDAP sucessfully");
+        } else {
+            $this->logger->debug("$userDN authenticated against LDAP unsucessfully");
             if ($dbUser && !$dbUser->ldap) {
                 return $dbUser;
             }
@@ -165,7 +168,9 @@ class LoginController extends AuthController
             $userQuery->create($email, $username, $password, 0, 1, (int) $this->getSetting('default_user_quota', -1), null, 1);
             return $userQuery->get($request, $this->database->getPdo()->lastInsertId());
         }
-
+        
+        if ($server) ldap_close($server);
+        
         if (!password_verify($password, $dbUser->password)) {
             $userQuery = make(UserQuery::class);
             $userQuery->update($dbUser->id, $dbUser->email, $username, $password, $dbUser->is_admin, $dbUser->active, $dbUser->max_disk_quota, $dbUser->ldap);
