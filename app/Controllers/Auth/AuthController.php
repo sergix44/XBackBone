@@ -26,7 +26,8 @@ abstract class AuthController extends Controller
 
 
     /**
-     * @return bool|false|resource
+     * Connects to LDAP server and logs in with service account (if configured)
+     * @return resource|false
      */
     public function ldapConnect()
     {
@@ -35,22 +36,28 @@ abstract class AuthController extends Controller
             return false;
         }
         // Building LDAP URI
-        $ldapSchema=(@is_string(['ldap']['schema'])) ?
+        $ldapSchema=(@is_string($this->config['ldap']['schema'])) ?
             strtolower($this->config['ldap']['schema']) : 'ldap';
         $ldapURI="$ldapSchema://".$this->config['ldap']['host'].':'.$this->config['ldap']['port'];
         
         // Connecting to LDAP server
+        $this->logger->debug("Connecting to $ldapURI");
         $server = ldap_connect($ldapURI);
         if ($server) {
             ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
+        } else {
+            $this->logger->error(ldap_error($server));
+            return false;
         }
         
         // Upgrade to StartTLS
-        if ($this->config['ldap']['useStartTLS'] === true) {
+        $useStartTLS = @is_bool($this->config['ldap']['useStartTLS']) ? $this->config['ldap']['useStartTLS'] : false;
+        if ( $useStartTLS === true) {
             if (ldap_start_tls($server) === false) { 
-                $this->logger-error("Failed to establish secure LDAP swith StartTLS");
+                $this->logger-debug(ldap_error($server));
+                $this->logger->error("Failed to establish secure LDAP swith StartTLS");
                 return false;
             }
         }
@@ -60,6 +67,7 @@ abstract class AuthController extends Controller
             $this->config['ldap']['service_account_dn'] : null;
         if (is_string($serviceAccountFQDN)) {
             if (ldap_bind($server,$serviceAccountFQDN,$this->config['ldap']['service_account_password']) === false) {
+                $this->logger->debug(ldap_error($server));
                 $this->logger->error("Bind with service account ($serviceAccountFQDN) failed.");
                 return false;
             }
@@ -82,17 +90,23 @@ abstract class AuthController extends Controller
             //Replace ???? with username
             $searchFilter = str_replace('????', ldap_escape($username,null,LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
             $ldapAddributes = array ('dn');
+            $this->logger->debug("LDAP Search filter: $searchFilter");
             $ldapSearchResp = ldap_search(
                 $server, 
                 $this->config['ldap']['base_domain'], 
                 $searchFilter,
                 $ldapAddributes
             );
-            if (ldap_count_entries($server, $ldapSearchResp) !== 1 ) {
-                $this->logger->warn("LDAP search for $username not found or had multiple entries");
+            if (!is_resource($ldapSearchResp) ) {
+                $this->logger->debug(ldap_error($server));
+                $this->logger->error("User LDAP search for user $username failed");
                 return null;
             }
-            $ldapEntry = ldap_first_entry($server, $$ldapSearchResp);
+            if (ldap_count_entries($server, $ldapSearchResp) !== 1 ) {
+                $this->logger->notice("LDAP search for $username not found or had multiple entries");
+                return null;
+            }
+            $ldapEntry = ldap_first_entry($server, $ldapSearchResp);
             //Returns full DN
             $bindString = ldap_get_dn($server, $ldapEntry);
             
