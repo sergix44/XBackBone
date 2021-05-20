@@ -67,6 +67,7 @@ return array(
     ...
     'ldap' => array(
         'enabled' => true, // enable it
+        'schema' => 'ldap' // use 'ldap' or 'ldaps' Default is 'ldap'
         'host' => 'ad.example.com', // set the ldap host
         'port' => 389, // ldap port
         'base_domain' => 'dc=example,dc=com', // the base_dn string
@@ -99,6 +100,7 @@ return array(
     )
 );
 ```
+The 'schema' => 'ldaps' and 'useStartTLS'=> true configuration directives are mutually exclusive. Do no use them together.  
 
 By activating this function, it will not be possible for users logging in via LDAP to reset the password from the application (for obvious reasons), and it will also be possible to bring existing users under LDAP authentication.
 
