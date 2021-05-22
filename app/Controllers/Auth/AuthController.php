@@ -54,12 +54,10 @@ abstract class AuthController extends Controller
         
         // Upgrade to StartTLS
         $useStartTLS = @is_bool($this->config['ldap']['useStartTLS']) ? $this->config['ldap']['useStartTLS'] : false;
-        if ( $useStartTLS === true) {
-            if (ldap_start_tls($server) === false) { 
-                $this->logger-debug(ldap_error($server));
-                $this->logger->error("Failed to establish secure LDAP swith StartTLS");
-                return false;
-            }
+        if (($useStartTLS === true) && (ldap_start_tls($server) === false)) { 
+            $this->logger-debug(ldap_error($server));
+            $this->logger->error("Failed to establish secure LDAP swith StartTLS");
+            return false;    
         }
         
         // Authenticating LDAP service account (if configured)
@@ -70,10 +68,8 @@ abstract class AuthController extends Controller
                 $this->logger->debug(ldap_error($server));
                 $this->logger->error("Bind with service account ($serviceAccountFQDN) failed.");
                 return false;
-            }
-            
-        } 
-
+            }   
+        }
         return $server;
     }
 
