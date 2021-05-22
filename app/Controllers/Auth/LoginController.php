@@ -169,7 +169,9 @@ class LoginController extends AuthController
             return $userQuery->get($request, $this->database->getPdo()->lastInsertId());
         }
         
-        if ($server) ldap_close($server);
+        if ($server) {
+            ldap_close($server);
+        }
         
         if (!password_verify($password, $dbUser->password)) {
             $userQuery = make(UserQuery::class);
