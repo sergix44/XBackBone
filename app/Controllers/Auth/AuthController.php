@@ -54,17 +54,17 @@ abstract class AuthController extends Controller
         
         // Upgrade to StartTLS
         $useStartTLS = @is_bool($this->config['ldap']['useStartTLS']) ? $this->config['ldap']['useStartTLS'] : false;
-        if (($useStartTLS === true) && (ldap_start_tls($server) === false)) { 
+        if (($useStartTLS === true) && (ldap_start_tls($server) === false)) {
             $this->logger-debug(ldap_error($server));
             $this->logger->error("Failed to establish secure LDAP swith StartTLS");
-            return false;    
+            return false;
         }
         
         // Authenticating LDAP service account (if configured)
         $serviceAccountFQDN= (@is_string($this->config['ldap']['service_account_dn'])) ?
             $this->config['ldap']['service_account_dn'] : null;
         if (is_string($serviceAccountFQDN)) {
-            if (ldap_bind($server,$serviceAccountFQDN,$this->config['ldap']['service_account_password']) === false) {
+            if (ldap_bind($server, $serviceAccountFQDN, $this->config['ldap']['service_account_password']) === false) {
                 $this->logger->debug(ldap_error($server));
                 $this->logger->error("Bind with service account ($serviceAccountFQDN) failed.");
                 return false;
@@ -86,7 +86,7 @@ abstract class AuthController extends Controller
         if (@is_string($this->config['ldap']['search_filter'])) {
             //Replace ???? with username
             $searchFilter = str_replace('????', ldap_escape($username, null, LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
-            $ldapAddributes = array ('dn');
+            $ldapAddributes = array('dn');
             $this->logger->debug("LDAP Search filter: $searchFilter");
             $ldapSearchResp = ldap_search(
                 $server,

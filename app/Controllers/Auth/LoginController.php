@@ -156,7 +156,6 @@ class LoginController extends AuthController
                         'objectClass=*',
                         array('mail',$this->config['ldap']['rdn_attribute'])
                     );
-                          
                 } else {
                     $search = ldap_search($server, $this->config['ldap']['base_domain'], ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username),['mail']);
                 }
