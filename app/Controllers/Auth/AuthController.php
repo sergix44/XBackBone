@@ -68,8 +68,9 @@ abstract class AuthController extends Controller
                 $this->logger->debug(ldap_error($server));
                 $this->logger->error("Bind with service account ($serviceAccountFQDN) failed.");
                 return false;
-            }   
+            }
         }
+
         return $server;
     }
 
