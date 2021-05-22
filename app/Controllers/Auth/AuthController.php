@@ -61,7 +61,7 @@ abstract class AuthController extends Controller
         }
         
         // Authenticating LDAP service account (if configured)
-        $serviceAccountFQDN= (@is_string($this->config['ldap']['service_account_dn'])) ? 
+        $serviceAccountFQDN= (@is_string($this->config['ldap']['service_account_dn'])) ?
             $this->config['ldap']['service_account_dn'] : null;
         if (is_string($serviceAccountFQDN)) {
             if (ldap_bind($server,$serviceAccountFQDN,$this->config['ldap']['service_account_password']) === false) {
@@ -77,7 +77,7 @@ abstract class AuthController extends Controller
     /**
      * Returns User's LDAP DN
      * @param  string  $username
-     * @param resource $server LDAP Server Resource 
+     * @param resource $server LDAP Server Resource
      * @return string|null
      */
     protected function getLdapRdn(string $username, $server)
@@ -90,7 +90,7 @@ abstract class AuthController extends Controller
             $this->logger->debug("LDAP Search filter: $searchFilter");
             $ldapSearchResp = ldap_search(
                 $server,
-                $this->config['ldap']['base_domain'], 
+                $this->config['ldap']['base_domain'],
                 $searchFilter,
                 $ldapAddributes
             );
