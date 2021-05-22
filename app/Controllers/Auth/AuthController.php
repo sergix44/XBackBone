@@ -77,7 +77,7 @@ abstract class AuthController extends Controller
     /**
      * Returns User's LDAP DN
      * @param  string  $username
-     * @package resource $server LDAP Server Resource 
+     * @param resource $server LDAP Server Resource 
      * @return string|null
      */
     protected function getLdapRdn(string $username, $server)
@@ -94,20 +94,18 @@ abstract class AuthController extends Controller
                 $searchFilter,
                 $ldapAddributes
             );
-            if (!is_resource($ldapSearchResp) ) {
+            if (!is_resource($ldapSearchResp)) {
                 $this->logger->debug(ldap_error($server));
                 $this->logger->error("User LDAP search for user $username failed");
                 return null;
             }
-            if (ldap_count_entries($server, $ldapSearchResp) !== 1 ) {
+            if (ldap_count_entries($server, $ldapSearchResp) !== 1) {
                 $this->logger->notice("LDAP search for $username not found or had multiple entries");
                 return null;
             }
             $ldapEntry = ldap_first_entry($server, $ldapSearchResp);
             //Returns full DN
             $bindString = ldap_get_dn($server, $ldapEntry);
-            
-            
         } else {
             // Static LDAP Binding
             $bindString = ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username);
@@ -120,7 +118,6 @@ abstract class AuthController extends Controller
             }
             //returns partial DN
         }
-        
         return $bindString;
     }
 }
