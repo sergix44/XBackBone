@@ -157,7 +157,7 @@ class LoginController extends AuthController
                         array('mail',$this->config['ldap']['rdn_attribute'])
                     );
                 } else {
-                    $search = ldap_search($server, $this->config['ldap']['base_domain'], ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username),['mail']);
+                    $search = ldap_search($server, $this->config['ldap']['base_domain'], ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username), ['mail']);
                 }
                 $entry = ldap_first_entry($server, $search);
                 $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.rand(0, 100)); // if the mail is not set, generate a placeholder
