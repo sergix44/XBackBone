@@ -140,3 +140,6 @@ resources/sessions/sess_*
 logs/log-*.txt
 config.php
 release.zip
+/.settings/
+/.project
+/.buildpath

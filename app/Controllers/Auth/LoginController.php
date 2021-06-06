@@ -116,27 +116,49 @@ class LoginController extends AuthController
      * @param  string  $username
      * @param  string  $password
      * @param $dbUser
-     * @return bool
+     * @return bool|null
      * @throws \Slim\Exception\HttpNotFoundException
      * @throws \Slim\Exception\HttpUnauthorizedException
      */
     protected function ldapLogin(Request $request, string $username, string $password, $dbUser)
     {
+        // Build LDAP connection
         $server = $this->ldapConnect();
         if (!$server) {
             $this->session->alert(lang('ldap_cant_connect'), 'warning');
             return $dbUser;
         }
-        if (!@ldap_bind($server, $this->getLdapRdn($username), $password)) {
+        
+        //Get LDAP user's (R)DN
+        $userDN=$this->getLdapRdn($username, $server);
+        if (!is_string($userDN)) {
+            return null;
+        }
+    
+        //Bind as user to validate password
+        if (@ldap_bind($server, $userDN, $password)) {
+            $this->logger->debug("$userDN authenticated against LDAP sucessfully");
+        } else {
+            $this->logger->debug("$userDN authenticated against LDAP unsucessfully");
             if ($dbUser && !$dbUser->ldap) {
                 return $dbUser;
             }
             return null;
         }
+        
         if (!$dbUser) {
             $email = $username;
             if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                $search = ldap_search($server, $this->config['ldap']['base_domain'], ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username), ['mail']);
+                if (@is_string($this->config['ldap']['search_filter'])) {
+                    $search = ldap_read(
+                        $server,
+                        $userDN,
+                        'objectClass=*',
+                        array('mail',$this->config['ldap']['rdn_attribute'])
+                    );
+                } else {
+                    $search = ldap_search($server, $this->config['ldap']['base_domain'], ($this->config['ldap']['rdn_attribute'] ?? 'uid=').addslashes($username), ['mail']);
+                }
                 $entry = ldap_first_entry($server, $search);
                 $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.rand(0, 100)); // if the mail is not set, generate a placeholder
             }
@@ -145,7 +167,11 @@ class LoginController extends AuthController
             $userQuery->create($email, $username, $password, 0, 1, (int) $this->getSetting('default_user_quota', -1), null, 1);
             return $userQuery->get($request, $this->database->getPdo()->lastInsertId());
         }
-
+        
+        if ($server) {
+            ldap_close($server);
+        }
+        
         if (!password_verify($password, $dbUser->password)) {
             $userQuery = make(UserQuery::class);
             $userQuery->update($dbUser->id, $dbUser->email, $username, $password, $dbUser->is_admin, $dbUser->active, $dbUser->max_disk_quota, $dbUser->ldap);

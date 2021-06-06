@@ -46,6 +46,7 @@ return array(
 Since the release 3.1, the LDAP integration can be configured.
 
 Edit the `config.php`, and add the following lines:
+This configuration requires anonymous LDAP access
 ```php
 return array(
     ...
@@ -59,6 +60,47 @@ return array(
     )
 );
 ```
+
+The following configuration snippet enables authenticated LDAP user lookups
+```php
+return array(
+    ...
+    'ldap' => array(
+        'enabled' => true, // enable it
+        'schema' => 'ldap' // use 'ldap' or 'ldaps' Default is 'ldap'
+        'host' => 'ad.example.com', // set the ldap host
+        'port' => 389, // ldap port
+        'base_domain' => 'dc=example,dc=com', // the base_dn string
+        'search_filter' => '(&((objectClass=user)(sAMAccountName=????)))' // ???? is replaced with user provided username
+        'rdn_attribute' => 'sAMAccountName', // the attribute to use as username
+        'service_account_dn' => 'cn=xbackbone,cn=Users,dc=example,dc=com', // LDAP Service Account Full DN
+        'service_account_password' => 'examplepassword'
+    )
+);
+```
+
+Enabling LDAP over TLS. Make sure to update port number. Merge with your current LDAP configuration.
+```php
+return array(
+    ...
+    'ldap' => array(
+    	'schema' => 'ldaps',  //defaults to 'ldap'
+    	'port' => 636 
+    )
+);
+```
+
+Enabling StartTLS upgrade. Merge with your current LDAP configuration.
+```php
+return array(
+    ...
+    'ldap' => array(
+    	...
+    	'useStartTLS' => true  //defaults to false 
+    )
+);
+```
+The 'schema' => 'ldaps' and 'useStartTLS'=> true configuration directives are mutually exclusive. Do no use them together.  
 
 By activating this function, it will not be possible for users logging in via LDAP to reset the password from the application (for obvious reasons), and it will also be possible to bring existing users under LDAP authentication.
 
