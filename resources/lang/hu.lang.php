@@ -152,7 +152,7 @@ return [
     'username' => 'Felhasználónév',
     'login' => 'Belépés',
     'password' => 'Jelszó',
-    'login.username' => 'Felhasználónév vagy jelszó',
+    'login.username' => 'Felhasználónév vagy E-mail cím',
     'no_media' => 'Nem található média fájl.',
     'send' => 'Küldés',
     'no' => 'Nem',
