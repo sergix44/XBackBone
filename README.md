@@ -42,6 +42,11 @@ All the installations, configuration, and usage instructions are available in th
 + Tag uploads with custom tags for categorization.
 + ... and more.
 
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within XBackBone, please send an e-mail to Sergio at sergio@brighenti.me. All security vulnerabilities will be promptly addressed.
+
 ## License
 This software is licensed under the <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>, available in this repository.
 As a "copyright notice" it is sufficient to keep the small footer at the bottom of the page, also to help other people to learn about this project!
