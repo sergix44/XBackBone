@@ -67,8 +67,6 @@ if (!function_exists('isDisplayableImage')) {
             'image/x-icon',
             'image/jpeg',
             'image/png',
-            'image/svg',
-            'image/svg+xml',
             'image/tiff',
             'image/webp',
         ]);
@@ -345,6 +343,29 @@ if (!function_exists('isBot')) {
     }
 }
 
+if (!function_exists('isDiscord')) {
+    /**
+     * @param  string  $userAgent
+     *
+     * @return bool
+     */
+    function isDiscord(string $userAgent): bool
+    {
+        $bots = [
+            'discord',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0' // discord image bot
+        ];
+
+        foreach ($bots as $bot) {
+            if (stripos($userAgent, $bot) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
 if (!function_exists('mime2font')) {
     /**
      * Convert get the icon from the file mimetype.
@@ -493,5 +514,29 @@ if (!function_exists('platform_mail')) {
     function platform_mail($mailbox = 'no-reply'): string
     {
         return $mailbox.'@'.str_ireplace('www.', '', parse_url(resolve('config')['base_url'], PHP_URL_HOST));
+    }
+}
+
+if (!function_exists('must_be_escaped')) {
+    /**
+     * Return the system no-reply mail.
+     *
+     * @param $mime
+     * @return bool
+     */
+    function must_be_escaped($mime): bool
+    {
+        $mimes = [
+            'text/htm',
+            'image/svg'
+        ];
+
+        foreach ($mimes as $m) {
+            if (stripos($mime, $m) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -41,12 +41,15 @@ class MediaController extends Controller
 
         $filesystem = $this->storage;
 
-        if (isBot($request->getHeaderLine('User-Agent'))) {
+        $userAgent = $request->getHeaderLine('User-Agent');
+        $mime = $filesystem->getMimetype($media->storage_path);
+
+        if (isBot($userAgent) && (!isDiscord($userAgent) || (isDiscord($userAgent) && !isDisplayableImage($mime)))) {
             return $this->streamMedia($request, $response, $filesystem, $media);
         }
 
         try {
-            $media->mimetype = $filesystem->getMimetype($media->storage_path);
+            $media->mimetype = $mime;
             $size = $filesystem->getSize($media->storage_path);
 
             $type = explode('/', $media->mimetype)[0];
@@ -114,7 +117,7 @@ class MediaController extends Controller
     {
         $media = $this->getMedia($userCode, $mediaCode, false);
 
-        if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
+        if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -122,8 +125,7 @@ class MediaController extends Controller
             throw new HttpBadRequestException($request);
         }
 
-        // If contains html, return it as text/plain
-        if (strpos($this->storage->getMimetype($media->storage_path), 'text/htm') !== false) {
+        if (must_be_escaped($this->storage->getMimetype($media->storage_path))) {
             $response = $this->streamMedia($request, $response, $this->storage, $media);
             return $response->withHeader('Content-Type', 'text/plain');
         }
@@ -146,7 +148,7 @@ class MediaController extends Controller
     {
         $media = $this->getMedia($userCode, $mediaCode, false);
 
-        if (!$media || !$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false)) {
+        if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
             throw new HttpNotFoundException($request);
         }
 
