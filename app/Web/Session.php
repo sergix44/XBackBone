@@ -28,7 +28,7 @@ class Session
                     $params['lifetime'],
                     $params['path'].'; SameSite=Strict',
                     $params['domain'],
-                    $params['secure'],
+                    isSecure(),
                     $params['httponly']
                 );
             }
@@ -39,6 +39,7 @@ class Session
                 'cookie_httponly' => true,
                 'gc_probability' => 25,
                 'cookie_samesite' => 'Strict', // works only for php  >= 7.3
+                'cookie_secure' => isSecure(),
             ]);
 
             if (!$started) {

@@ -93,13 +93,13 @@ if (!function_exists('stringToBytes')) {
         switch ($last) {
             case 't':
                 $val *= 1024;
-                // no break
+            // no break
             case 'g':
                 $val *= 1024;
-                // no break
+            // no break
             case 'm':
                 $val *= 1024;
-                // no break
+            // no break
             case 'k':
                 $val *= 1024;
         }
@@ -528,7 +528,7 @@ if (!function_exists('must_be_escaped')) {
     {
         $mimes = [
             'text/htm',
-            'image/svg'
+            'image/svg',
         ];
 
         foreach ($mimes as $m) {
@@ -538,5 +538,15 @@ if (!function_exists('must_be_escaped')) {
         }
 
         return false;
+    }
+}
+
+if (!function_exists('isSecure')) {
+    /**
+     * @return bool
+     */
+    function isSecure(): bool
+    {
+        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] === 443;
     }
 }

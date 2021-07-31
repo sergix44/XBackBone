@@ -10,25 +10,25 @@ use App\Web\Session;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
-use function DI\factory;
-use function DI\get;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use function DI\factory;
+use function DI\get;
 
 if (!file_exists(CONFIG_FILE) && is_dir(BASE_DIR.'install/')) {
     header('Location: ./install/');
     exit();
-} else {
-    if (!file_exists(CONFIG_FILE) && !is_dir(BASE_DIR.'install/')) {
-        exit('Cannot find the config file.');
-    }
+}
+
+if (!file_exists(CONFIG_FILE) && !is_dir(BASE_DIR.'install/')) {
+    exit('Cannot find the config file.');
 }
 
 // Load the config
 $config = array_replace_recursive([
     'app_name' => 'XBackBone',
-    'base_url' => isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
+    'base_url' => isSecure() ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'],
     'debug' => false,
     'maintenance' => false,
     'db' => [
