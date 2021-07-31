@@ -8,8 +8,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ["7.2", "7.3", "7.4", "8.0"]
 
     steps:
     - uses: actions/checkout@v2
