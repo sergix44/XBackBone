@@ -5,7 +5,7 @@
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.2",
     "ext-gd": "*",
     "ext-intl": "*",
     "ext-json": "*",
@@ -15,7 +15,7 @@
     "guzzlehttp/psr7": "^1.6",
     "http-interop/http-factory-guzzle": "^1.0",
     "intervention/image": "^2.4",
-    "league/flysystem": "^1.0.45",
+    "league/flysystem": "^1.1.4",
     "league/flysystem-aws-s3-v3": "^1.0",
     "league/flysystem-azure-blob-storage": "^0.1.6",
     "maennchen/zipstream-php": "^2.0",
@@ -31,7 +31,7 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "platform": {
-      "php": "7.1.33"
+      "php": "7.2.34"
     }
   },
   "autoload": {
@@ -48,6 +48,7 @@
     }
   },
   "require-dev": {
+    "roave/security-advisories": "dev-latest",
     "phpstan/phpstan": "^0.11.5",
     "phpunit/phpunit": "7.5",
     "symfony/dom-crawler": "^4.4"
