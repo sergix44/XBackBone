@@ -128,12 +128,13 @@ abstract class Controller
 
         // Workaround for php <= 7.3
         if (PHP_VERSION_ID < 70300) {
-            setcookie('remember', "{$selector}:{$token}", $expire, '; SameSite=Lax', '', false, true);
+            setcookie('remember', "{$selector}:{$token}", $expire, '; SameSite=Strict', '', isSecure(), true);
         } else {
             setcookie('remember', "{$selector}:{$token}", [
                 'expires' => $expire,
                 'httponly' => true,
-                'samesite' => 'Lax',
+                'samesite' => 'Strict',
+                'secure' => isSecure(),
             ]);
         }
     }
