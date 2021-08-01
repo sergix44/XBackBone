@@ -5,6 +5,17 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.4.0] - 2021-08-01
+### Added
+- Added image support for OG for Discord only.
+
+### Changed
+- Updated translations.
+- Dropped support for PHP 7.1
+
+### Fixed
+- Fixed possible XSS and CSRF attacks.
+
 ## [3.3.5] - 2021-04-25
 ### Fixed
 - Removed OG integration for discord.
