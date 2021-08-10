@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->updateSetting('register_enabled', 'on');

@@ -41,6 +41,7 @@ class SettingController extends Controller
         $this->updateSetting('recaptcha_enabled', param($request, 'recaptcha_enabled', 'off'));
         $this->updateSetting('recaptcha_site_key', param($request, 'recaptcha_site_key'));
         $this->updateSetting('recaptcha_secret_key', param($request, 'recaptcha_secret_key'));
+        $this->updateSetting('image_embeds', param($request, 'image_embeds'));
 
         $this->applyTheme($request);
         $this->applyLang($request);

@@ -44,12 +44,13 @@ class MediaController extends Controller
         $userAgent = $request->getHeaderLine('User-Agent');
         $mime = $filesystem->getMimetype($media->storage_path);
 
-        if (isBot($userAgent) && (!isDiscord($userAgent) || (isDiscord($userAgent) && !isDisplayableImage($mime)))) {
+        if (isBot($userAgent) && (!isDiscord($userAgent) || (!isDisplayableImage($mime) && $this->getSetting('image_embeds') === 'on'))) {
             return $this->streamMedia($request, $response, $filesystem, $media);
         }
 
         try {
             $media->mimetype = $mime;
+            $media->extension = pathinfo($media->filename, PATHINFO_EXTENSION);
             $size = $filesystem->getSize($media->storage_path);
 
             $type = explode('/', $media->mimetype)[0];
@@ -58,7 +59,7 @@ class MediaController extends Controller
                 $media->mimetype = 'application/octet-stream';
             }
             if ($type === 'text') {
-                if ($size <= (200 * 1024)) { // less than 200 KB
+                if ($size <= (500 * 1024)) { // less than 500 KB
                     $media->text = $filesystem->read($media->storage_path);
                 } else {
                     $type = 'application';
@@ -75,7 +76,7 @@ class MediaController extends Controller
             'media' => $media,
             'type' => $type,
             'url' => urlFor("/{$userCode}/{$mediaCode}"),
-            'copy_url_behavior' => $this->getSetting('copy_url_behavior', 'off'),
+            'copy_raw' => $this->getSetting('copy_url_behavior', 'off') === 'raw',
         ]);
     }
 

@@ -31,7 +31,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="ml-auto">
-                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ url }}{{ copy_url_behavior == 'raw' ? '/raw' }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ url }}{{ copy_raw ? '/raw.' ~ media.extension }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
                     <a href="{{ url }}/raw" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
                     <a href="{{ url }}/download" class="btn btn-warning my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                     {% if session.get('logged') %}

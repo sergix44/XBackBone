@@ -161,4 +161,5 @@ return [
     'changelog' => 'Registro dei cambiamenti',
     'show_changelog' => 'Mostra registro dei cambiamenti',
     'copied' => 'Copiato negli appunti!',
+    'image_embeds' => 'Incorpora immagini',
 ];

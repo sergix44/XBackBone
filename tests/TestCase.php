@@ -8,7 +8,7 @@ abstract class TestCase extends BaseTestCase
 {
     use WithApplication;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $_SESSION = []; // ugly workaround to the the session superglobal between tests
