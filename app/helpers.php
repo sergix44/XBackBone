@@ -260,7 +260,7 @@ if (!function_exists('param')) {
      * @param  string  $name
      * @param  null  $default
      *
-     * @return string
+     * @return mixed
      */
     function param(Request $request, string $name, $default = null)
     {
@@ -270,11 +270,7 @@ if (!function_exists('param')) {
             $params = $request->getParsedBody();
         }
 
-        if (isset($params[$name])) {
-            return $params[$name];
-        }
-
-        return $default;
+        return $params[$name] ?? $default;
     }
 }
 
@@ -309,60 +305,6 @@ if (!function_exists('lang')) {
     function lang(string $key, $args = []): string
     {
         return resolve('lang')->get($key, $args);
-    }
-}
-
-if (!function_exists('isBot')) {
-    /**
-     * @param  string  $userAgent
-     *
-     * @return bool
-     */
-    function isBot(string $userAgent)
-    {
-        $bots = [
-            'TelegramBot',
-            'facebookexternalhit/',
-            'Facebot',
-            'curl/',
-            'wget/',
-            'WhatsApp/',
-            'Slack',
-            'Twitterbot/',
-            'discord',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0' // discord image bot
-        ];
-
-        foreach ($bots as $bot) {
-            if (stripos($userAgent, $bot) !== false) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
-if (!function_exists('isDiscord')) {
-    /**
-     * @param  string  $userAgent
-     *
-     * @return bool
-     */
-    function isDiscord(string $userAgent): bool
-    {
-        $bots = [
-            'discord',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0' // discord image bot
-        ];
-
-        foreach ($bots as $bot) {
-            if (stripos($userAgent, $bot) !== false) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
 

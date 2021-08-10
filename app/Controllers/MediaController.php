@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database\Queries\UserQuery;
+use App\Web\UA;
 use GuzzleHttp\Psr7\Stream;
 use Intervention\Image\Constraint;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -44,7 +45,7 @@ class MediaController extends Controller
         $userAgent = $request->getHeaderLine('User-Agent');
         $mime = $filesystem->getMimetype($media->storage_path);
 
-        if (isBot($userAgent) && (!isDiscord($userAgent) || (!isDisplayableImage($mime) && $this->getSetting('image_embeds') === 'on'))) {
+        if (UA::isBot($userAgent) && !(UA::embedsLinks($userAgent) && isDisplayableImage($mime) && $this->getSetting('image_embeds') === 'on')) {
             return $this->streamMedia($request, $response, $filesystem, $media);
         }
 
@@ -114,11 +115,17 @@ class MediaController extends Controller
      *
      * @throws FileNotFoundException
      */
-    public function getRaw(Request $request, Response $response, string $userCode, string $mediaCode, ?string $ext = null): Response
-    {
+    public function getRaw(
+        Request $request,
+        Response $response,
+        string $userCode,
+        string $mediaCode,
+        ?string $ext = null
+    ): Response {
         $media = $this->getMedia($userCode, $mediaCode, false);
 
-        if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
+        if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin',
+                    false))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -149,7 +156,8 @@ class MediaController extends Controller
     {
         $media = $this->getMedia($userCode, $mediaCode, false);
 
-        if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin', false))) {
+        if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get('admin',
+                    false))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -170,14 +178,16 @@ class MediaController extends Controller
         if ($this->session->get('admin')) {
             $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
         } else {
-            $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1', [$id, $this->session->get('user_id')])->fetch();
+            $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1',
+                [$id, $this->session->get('user_id')])->fetch();
         }
 
         if (!$media) {
             throw new HttpNotFoundException($request);
         }
 
-        $this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?', [$media->published ? 0 : 1, $media->id]);
+        $this->database->query('UPDATE `uploads` SET `published`=? WHERE `id`=?',
+            [$media->published ? 0 : 1, $media->id]);
 
         return $response;
     }
@@ -231,8 +241,13 @@ class MediaController extends Controller
      *
      * @throws HttpNotFoundException
      */
-    public function deleteByToken(Request $request, Response $response, string $userCode, string $mediaCode, string $token): Response
-    {
+    public function deleteByToken(
+        Request $request,
+        Response $response,
+        string $userCode,
+        string $mediaCode,
+        string $token
+    ): Response {
         $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media) {
@@ -297,17 +312,19 @@ class MediaController extends Controller
     {
         $mediaCode = pathinfo($mediaCode)['filename'];
 
-        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1', [
-            $userCode,
-            $mediaCode,
-        ])->fetch();
+        $media = $this->database->query('SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1',
+            [
+                $userCode,
+                $mediaCode,
+            ])->fetch();
 
         if (!$withTags || !$media) {
             return $media;
         }
 
         $media->tags = [];
-        foreach ($this->database->query('SELECT `tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` = ?', $media->mediaId) as $tag) {
+        foreach ($this->database->query('SELECT `tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` = ?',
+            $media->mediaId) as $tag) {
             $media->tags[$tag->id] = $tag->name;
         }
 
@@ -325,14 +342,21 @@ class MediaController extends Controller
      * @throws FileNotFoundException
      *
      */
-    protected function streamMedia(Request $request, Response $response, Filesystem $storage, $media, string $disposition = 'inline'): Response
-    {
+    protected function streamMedia(
+        Request $request,
+        Response $response,
+        Filesystem $storage,
+        $media,
+        string $disposition = 'inline'
+    ): Response {
         set_time_limit(0);
         $this->session->close();
         $mime = $storage->getMimetype($media->storage_path);
 
-        if ((param($request, 'width') !== null || param($request, 'height') !== null) && explode('/', $mime)[0] === 'image') {
-            return $this->makeThumbnail($storage, $media, param($request, 'width'), param($request, 'height'), $disposition);
+        if ((param($request, 'width') !== null || param($request, 'height') !== null) && explode('/',
+                $mime)[0] === 'image') {
+            return $this->makeThumbnail($storage, $media, param($request, 'width'), param($request, 'height'),
+                $disposition);
         } else {
             $stream = new Stream($storage->readStream($media->storage_path));
 
@@ -344,7 +368,8 @@ class MediaController extends Controller
             }
 
             if (isset($request->getServerParams()['HTTP_RANGE'])) {
-                return $this->handlePartialRequest($response, $stream, $request->getServerParams()['HTTP_RANGE'], $disposition, $media, $mime);
+                return $this->handlePartialRequest($response, $stream, $request->getServerParams()['HTTP_RANGE'],
+                    $disposition, $media, $mime);
             }
 
             return $response->withHeader('Content-Type', $mime)
@@ -365,15 +390,21 @@ class MediaController extends Controller
      * @throws FileNotFoundException
      *
      */
-    protected function makeThumbnail(Filesystem $storage, $media, $width = null, $height = null, string $disposition = 'inline')
-    {
+    protected function makeThumbnail(
+        Filesystem $storage,
+        $media,
+        $width = null,
+        $height = null,
+        string $disposition = 'inline'
+    ) {
         return Image::make($storage->readStream($media->storage_path))
             ->resize($width, $height, function (Constraint $constraint) {
                 $constraint->aspectRatio();
             })
             ->resizeCanvas($width, $height, 'center')
             ->psrResponse('png')
-            ->withHeader('Content-Disposition', $disposition.';filename="scaled-'.pathinfo($media->filename, PATHINFO_FILENAME).'.png"');
+            ->withHeader('Content-Disposition',
+                $disposition.';filename="scaled-'.pathinfo($media->filename, PATHINFO_FILENAME).'.png"');
     }
 
     /**
@@ -386,8 +417,14 @@ class MediaController extends Controller
      *
      * @return Response
      */
-    protected function handlePartialRequest(Response $response, Stream $stream, string $range, string $disposition, $media, $mime)
-    {
+    protected function handlePartialRequest(
+        Response $response,
+        Stream $stream,
+        string $range,
+        string $disposition,
+        $media,
+        $mime
+    ) {
         $end = $stream->getSize() - 1;
         [, $range] = explode('=', $range, 2);
 

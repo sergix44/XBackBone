@@ -19,12 +19,13 @@ use App\Middleware\AuthMiddleware;
 use App\Middleware\CheckForMaintenanceMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
+global $app;
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/home[/page/{page}]', [DashboardController::class, 'home'])->setName('home');
     $group->get('/upload', [UploadController::class, 'uploadWebPage'])->setName('upload.web.show');
     $group->post('/upload/web', [UploadController::class, 'uploadWeb'])->setName('upload.web');
     $group->get('/home/switchView', [DashboardController::class, 'switchView'])->setName('switchView');
-    
+
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/system/deleteOrphanFiles', [AdminController::class, 'deleteOrphanFiles'])->setName('system.deleteOrphanFiles');
         $group->get('/system/recalculateUserQuota', [AdminController::class, 'recalculateUserQuota'])->setName('system.recalculateUserQuota');
@@ -32,11 +33,11 @@ $app->group('', function (RouteCollectorProxy $group) {
         $group->get('/system/themes', [AdminController::class, 'getThemes'])->setName('theme');
 
         $group->post('/system/settings/save', [SettingController::class, 'saveSettings'])->setName('settings.save');
-    
+
         $group->post('/system/upgrade', [UpgradeController::class, 'upgrade'])->setName('system.upgrade');
         $group->get('/system/checkForUpdates', [UpgradeController::class, 'checkForUpdates'])->setName('system.checkForUpdates');
         $group->get('/system/changelog', [UpgradeController::class, 'changelog'])->setName('system.changelog');
-    
+
         $group->get('/system', [AdminController::class, 'system'])->setName('system');
 
         $group->get('/users[/page/{page}]', [UserController::class, 'index'])->setName('user.index');
