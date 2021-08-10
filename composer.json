@@ -11,6 +11,7 @@
     "ext-json": "*",
     "ext-pdo": "*",
     "ext-zip": "*",
+    "ext-filter": "*",
     "erusev/parsedown": "^1.7",
     "guzzlehttp/psr7": "^1.6",
     "http-interop/http-factory-guzzle": "^1.0",
