@@ -14,7 +14,7 @@
     "erusev/parsedown": "^1.7",
     "guzzlehttp/psr7": "^1.6",
     "http-interop/http-factory-guzzle": "^1.0",
-    "intervention/image": "^2.4",
+    "intervention/image": "^2.6",
     "league/flysystem": "^1.1.4",
     "league/flysystem-aws-s3-v3": "^1.0",
     "league/flysystem-azure-blob-storage": "^0.1.6",
@@ -24,7 +24,7 @@
     "slim/slim": "^4.0",
     "spatie/flysystem-dropbox": "^1.0",
     "superbalist/flysystem-google-storage": "^7.2",
-    "twig/twig": "^2.12"
+    "twig/twig": "^2.14"
   },
   "config": {
     "optimize-autoloader": true,
