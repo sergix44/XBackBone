@@ -67,14 +67,14 @@ return array(
     ...
     'ldap' => array(
         'enabled' => true, // enable it
-        'schema' => 'ldap' // use 'ldap' or 'ldaps' Default is 'ldap'
+        'schema' => 'ldap', // use 'ldap' or 'ldaps' Default is 'ldap'
         'host' => 'ad.example.com', // set the ldap host
         'port' => 389, // ldap port
         'base_domain' => 'dc=example,dc=com', // the base_dn string
-        'search_filter' => '(&((objectClass=user)(sAMAccountName=????)))' // ???? is replaced with user provided username
+        'search_filter' => '(&((objectClass=user)(sAMAccountName=????)))', // ???? is replaced with user provided username
         'rdn_attribute' => 'sAMAccountName', // the attribute to use as username
         'service_account_dn' => 'cn=xbackbone,cn=Users,dc=example,dc=com', // LDAP Service Account Full DN
-        'service_account_password' => 'examplepassword'
+        'service_account_password' => 'examplepassword',
     )
 );
 ```
@@ -85,7 +85,7 @@ return array(
     ...
     'ldap' => array(
     	'schema' => 'ldaps',  //defaults to 'ldap'
-    	'port' => 636 
+    	'port' => 636, 
     )
 );
 ```
@@ -96,7 +96,7 @@ return array(
     ...
     'ldap' => array(
     	...
-    	'useStartTLS' => true  //defaults to false 
+    	'useStartTLS' => true,  //defaults to false 
     )
 );
 ```
