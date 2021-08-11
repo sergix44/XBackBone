@@ -52,5 +52,4 @@ class UA
 
         return false;
     }
-
 }
