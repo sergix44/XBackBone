@@ -38,7 +38,7 @@ return array(
         'username' => 'xbackbone', // null, if sqlite
         'password' => 's3cr3t', // null, if sqlite
     ),
-)
+);
 ```
 
 ## LDAP Authentication
