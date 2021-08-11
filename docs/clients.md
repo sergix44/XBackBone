@@ -26,6 +26,12 @@ In preferences, you should add "Custom" host and configure it as follows:
 - In "Other fields", in the body section, you should add the field `token`, with your upload token.
 - In "Other fields", in the headers section, you should add the field `Content-Type`, with the value `application/x-www-form-urlencoded`.
 
+## MagicCap
+MagicCap supports the same file format used by ShareX. 
+
+Just download the ShareX config file from your profile, and then on MagicCap open the Preferences > Uploader settings and choose ShareX.
+Set the path to the file you have downloaded, and you are good to go!
+
 ## Bash Script (Linux, Mac, WSL)
 XBackBone can generate a script that allows you to share an item from any tool, even headless servers:
 + Login into your account

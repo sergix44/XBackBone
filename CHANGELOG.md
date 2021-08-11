@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.4.1] - 2021-08-11
+### Added
+- Toggle to disable embeds.
+
+### Changed
+- Raw url copying now contains also the file extension.
+
 ## [3.4.0] - 2021-08-01
 ### Added
 - Added image support for OG for Discord only.
