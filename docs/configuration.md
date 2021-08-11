@@ -57,7 +57,7 @@ return array(
         'base_domain' => 'dc=example,dc=com', // the base_dn string
         'user_domain' => 'ou=Users', // the user dn string
         'rdn_attribute' => 'uid=', // the attribute to identify the user
-    )
+    ),
 );
 ```
 
@@ -75,7 +75,7 @@ return array(
         'rdn_attribute' => 'sAMAccountName', // the attribute to use as username
         'service_account_dn' => 'cn=xbackbone,cn=Users,dc=example,dc=com', // LDAP Service Account Full DN
         'service_account_password' => 'examplepassword',
-    )
+    ),
 );
 ```
 
@@ -86,7 +86,7 @@ return array(
     'ldap' => array(
     	'schema' => 'ldaps',  //defaults to 'ldap'
     	'port' => 636, 
-    )
+    ),
 );
 ```
 
@@ -97,7 +97,7 @@ return array(
     'ldap' => array(
     	...
     	'useStartTLS' => true,  //defaults to false 
-    )
+    ),
 );
 ```
 The 'schema' => 'ldaps' and 'useStartTLS'=> true configuration directives are mutually exclusive. Do no use them together.  
@@ -116,7 +116,7 @@ return array(
     'storage' => array (
         'driver' => 'local',
         'path' => '/path/to/storage/folder',
-    )
+    ),
 );
 ```
 
@@ -131,7 +131,7 @@ return array(
         'region' => 'the-region',
         'bucket' => 'bucket-name',
         'path' => 'optional/path/prefix',
-    )
+    ),
 );
 ```
 For any filesystem S3-compatible, it's possible to specify an `endpoint` (for i.e. Minio)
@@ -146,7 +146,7 @@ return array(
         'region' => 'the-region',
         'bucket' => 'bucket-name',
         'path' => 'optional/path/prefix',
-    )
+    ),
 );
 ```
 
@@ -157,7 +157,7 @@ return array(
     'storage' => array (
         'driver' => 'dropbox',
         'token' => 'the-token',
-    )
+    ),
 );
 ```
 
@@ -174,7 +174,7 @@ return array(
         'path' => 'the/prefix/path/',
         'passive' => true/false,
         'ssl' => true/false,
-    )
+    ),
 );
 ```
 
@@ -187,7 +187,7 @@ return array(
         'project_id' => 'the-project-id',
         'key_path' => 'the-key-path',
         'bucket' => 'bucket-name',
-    )
+    ),
 );
 ```
 
@@ -200,7 +200,7 @@ return array(
         'account_name' => 'the-storage-account-name',
         'account_key' => 'the-account-key',
         'container_name' => 'container-name',
-    )
+    ),
 );
 ```
 
