@@ -81,7 +81,7 @@ class AdminController extends Controller
 
         $out = [];
 
-        $out['Default - Bootstrap 4 default theme'] = 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css';
+        $out['Default - Bootstrap 4 default theme'] = 'https://bootswatch.com/4/_vendor/bootstrap/dist/css/bootstrap.min.css';
         foreach ($apiJson->themes as $theme) {
             $out["{$theme->name} - {$theme->description}"] = $theme->cssMin;
         }

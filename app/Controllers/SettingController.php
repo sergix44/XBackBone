@@ -78,7 +78,7 @@ class SettingController extends Controller
             }
 
             // if is default, remove setting
-            if (param($request, 'css') !== 'https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css') {
+            if (param($request, 'css') !== 'https://bootswatch.com/4/_vendor/bootstrap/dist/css/bootstrap.min.css') {
                 $this->updateSetting('css', param($request, 'css'));
             } else {
                 $this->database->query('DELETE FROM `settings` WHERE `key` = \'css\'');
