@@ -1,14 +1,14 @@
 <?php
 
 
-namespace App\Database\Queries;
+namespace App\Database\Repositories;
 
 use App\Database\DB;
 use PDO;
 
-class TagQuery
+class TagRepository
 {
-    const PER_MEDIA_LIMIT = 10;
+    public const PER_MEDIA_LIMIT = 10;
 
     /**
      * @var DB

@@ -21,7 +21,7 @@ class Migrator
      * Migrator constructor.
      *
      * @param  DB  $db
-     * @param  string  $schemaPath
+     * @param  string|null  $schemaPath
      */
     public function __construct(DB $db, ?string $schemaPath)
     {
@@ -29,13 +29,13 @@ class Migrator
         $this->schemaPath = $schemaPath;
     }
 
-    public function migrate()
+    public function migrate(): void
     {
         $this->db->getPdo()->exec(file_get_contents($this->schemaPath.DIRECTORY_SEPARATOR.'migrations.sql'));
 
         $files = glob($this->schemaPath.'/'.$this->db->getCurrentDriver().'/*.sql');
 
-        $names = array_map(function ($path) {
+        $names = array_map(static function ($path) {
             return basename($path);
         }, $files);
 
@@ -51,11 +51,11 @@ class Migrator
                 if (basename($file) === $migration->name && $migration->migrated) {
                     $continue = true;
                     break;
-                } else {
-                    if (basename($file) === $migration->name && !$migration->migrated) {
-                        $exists = true;
-                        break;
-                    }
+                }
+
+                if (basename($file) === $migration->name && !$migration->migrated) {
+                    $exists = true;
+                    break;
                 }
             }
             if ($continue) {

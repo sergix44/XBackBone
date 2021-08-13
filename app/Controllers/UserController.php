@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\UserQuery;
+use App\Database\Repositories\UserRepository;
 use App\Web\Mail;
 use App\Web\ValidationHelper;
 use League\Flysystem\FileNotFoundException;
@@ -90,7 +90,7 @@ class UserController extends Controller
             return redirect($response, route('user.create'));
         }
 
-        make(UserQuery::class)->create(
+        make(UserRepository::class)->create(
             param($request, 'email'),
             param($request, 'username'),
             param($request, 'password'),
@@ -133,7 +133,7 @@ class UserController extends Controller
      */
     public function edit(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id);
+        $user = make(UserRepository::class)->get($request, $id);
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => false,
@@ -152,7 +152,7 @@ class UserController extends Controller
      */
     public function update(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id);
+        $user = make(UserRepository::class)->get($request, $id);
         $user->max_disk_quota = -1;
 
         /** @var ValidationHelper $validator */
@@ -180,7 +180,7 @@ class UserController extends Controller
             return redirect($response, route('user.edit', ['id' => $id]));
         }
 
-        make(UserQuery::class)->update(
+        make(UserRepository::class)->update(
             $user->id,
             param($request, 'email'),
             param($request, 'username'),
@@ -215,7 +215,7 @@ class UserController extends Controller
      */
     public function delete(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id);
+        $user = make(UserRepository::class)->get($request, $id);
 
         if ($user->id === $this->session->get('user_id')) {
             $this->session->alert(lang('cannot_delete'), 'danger');
@@ -239,7 +239,7 @@ class UserController extends Controller
      */
     public function clearUserMedia(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id, true);
+        $user = make(UserRepository::class)->get($request, $id, true);
 
         $medias = $this->database->query('SELECT * FROM `uploads` WHERE `user_id` = ?', $user->id);
 
@@ -269,7 +269,7 @@ class UserController extends Controller
      */
     public function refreshToken(Request $request, Response $response, int $id): Response
     {
-        $query = make(UserQuery::class);
+        $query = make(UserRepository::class);
         $user = $query->get($request, $id, true);
 
         $this->logger->info('User '.$this->session->get('username')." refreshed token of user $user->id.");

@@ -3,7 +3,7 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\UserQuery;
+use App\Database\Repositories\UserRepository;
 use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -21,7 +21,7 @@ class ProfileController extends Controller
      */
     public function profile(Request $request, Response $response): Response
     {
-        $user = make(UserQuery::class)->get($request, $this->session->get('user_id'), true);
+        $user = make(UserRepository::class)->get($request, $this->session->get('user_id'), true);
 
         return view()->render($response, 'user/edit.twig', [
             'profile' => true,
@@ -38,7 +38,7 @@ class ProfileController extends Controller
      */
     public function profileEdit(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id, true);
+        $user = make(UserRepository::class)->get($request, $id, true);
 
         /** @var ValidationHelper $validator */
         $validator = make(ValidationHelper::class)

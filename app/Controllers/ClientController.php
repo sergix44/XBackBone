@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\UserQuery;
+use App\Database\Repositories\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
@@ -20,9 +20,9 @@ class ClientController extends Controller
      */
     public function getShareXConfig(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id, true);
+        $user = make(UserRepository::class)->get($request, $id, true);
 
-        if ($user->token === null || $user->token === '') {
+        if (!$user->token) {
             $this->session->alert(lang('no_upload_token'), 'danger');
 
             return redirect($response, $request->getHeaderLine('Referer'));
@@ -96,9 +96,9 @@ class ClientController extends Controller
      */
     public function getBashScript(Request $request, Response $response, int $id): Response
     {
-        $user = make(UserQuery::class)->get($request, $id, true);
+        $user = make(UserRepository::class)->get($request, $id, true);
 
-        if ($user->token === null || $user->token === '') {
+        if (!$user->token) {
             $this->session->alert(lang('no_upload_token'), 'danger');
 
             return redirect($response, $request->getHeaderLine('Referer'));

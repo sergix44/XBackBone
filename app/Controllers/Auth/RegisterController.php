@@ -4,7 +4,7 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
-use App\Database\Queries\UserQuery;
+use App\Database\Repositories\UserRepository;
 use App\Web\Mail;
 use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -67,7 +67,7 @@ class RegisterController extends AuthController
 
         $activateToken = bin2hex(random_bytes(16));
 
-        make(UserQuery::class)->create(
+        make(UserRepository::class)->create(
             param($request, 'email'),
             param($request, 'username'),
             param($request, 'password'),

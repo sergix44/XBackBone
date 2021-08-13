@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Database\Queries;
+namespace App\Database\Repositories;
 
 use App\Database\DB;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Plugin\ListWith;
 
-class MediaQuery
+class MediaRepository
 {
-    const PER_PAGE = 21;
-    const PER_PAGE_ADMIN = 27;
+    public const PER_PAGE = 21;
+    public const PER_PAGE_ADMIN = 27;
 
-    const ORDER_TIME = 0;
-    const ORDER_NAME = 1;
-    const ORDER_SIZE = 2;
+    public const ORDER_TIME = 0;
+    public const ORDER_NAME = 1;
+    public const ORDER_SIZE = 2;
 
     /** @var DB */
     protected $db;
@@ -62,7 +62,7 @@ class MediaQuery
      * @param  DB  $db
      * @param  bool  $isAdmin
      * @param  Filesystem  $storage
-     * @return MediaQuery
+     * @return MediaRepository
      */
     public static function make(DB $db, Filesystem $storage, bool $isAdmin)
     {
@@ -74,7 +74,7 @@ class MediaQuery
      *
      * @return $this
      */
-    public function withUserId($id)
+    public function withUserId($id): MediaRepository
     {
         $this->userId = $id;
 
@@ -87,27 +87,31 @@ class MediaQuery
      *
      * @return $this
      */
-    public function orderBy(string $type = null, $mode = 'ASC')
+    public function orderBy(string $type = null, $mode = 'ASC'): MediaRepository
     {
-        $this->orderBy = ($type === null) ? self::ORDER_TIME : $type;
+        $this->orderBy = $type ?? self::ORDER_TIME;
         $this->orderMode = (strtoupper($mode) === 'ASC') ? 'ASC' : 'DESC';
 
         return $this;
     }
 
     /**
-     * @param  string  $text
+     * @param  string|null  $text
      *
      * @return $this
      */
-    public function search(?string $text)
+    public function search(?string $text): MediaRepository
     {
         $this->text = $text;
 
         return $this;
     }
 
-    public function filterByTag($tagId)
+    /**
+     * @param $tagId
+     * @return $this
+     */
+    public function filterByTag($tagId): MediaRepository
     {
         if ($tagId !== null) {
             $this->tagId = (int) $tagId;
@@ -117,7 +121,11 @@ class MediaQuery
     }
 
 
-    public function run(int $page)
+    /**
+     * @param  int  $page
+     * @return $this
+     */
+    public function run(int $page): MediaRepository
     {
         if ($this->orderBy == self::ORDER_SIZE) {
             $this->runWithFileSort($page);
@@ -128,7 +136,11 @@ class MediaQuery
         return $this;
     }
 
-    public function runWithDbSort(int $page)
+    /**
+     * @param  int  $page
+     * @return $this
+     */
+    public function runWithDbSort(int $page): MediaRepository
     {
         $params = [];
         if ($this->isAdmin) {
@@ -170,7 +182,11 @@ class MediaQuery
         return $this;
     }
 
-    public function runWithFileSort(int $page)
+    /**
+     * @param  int  $page
+     * @return $this
+     */
+    public function runWithFileSort(int $page): MediaRepository
     {
         $this->storage->addPlugin(new ListWith());
 
@@ -202,16 +218,14 @@ class MediaQuery
 
             $params[] = '%'.htmlentities($this->text).'%';
             $paths = array_column($files, 'path');
+        } elseif ($this->tagId !== null) {
+            $paths = array_column($files, 'path');
+            $ids = $this->getMediaIdsByTagId($this->tagId);
+            $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'") AND `uploads`.`id` IN ('.implode(',', $ids).')';
         } else {
-            if ($this->tagId !== null) {
-                $paths = array_column($files, 'path');
-                $ids = $this->getMediaIdsByTagId($this->tagId);
-                $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'") AND `uploads`.`id` IN ('.implode(',', $ids).')';
-            } else {
-                $files = array_slice($files, $offset, $limit, true);
-                $paths = array_column($files, 'path');
-                $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")';
-            }
+            $files = array_slice($files, $offset, $limit, true);
+            $paths = array_column($files, 'path');
+            $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")';
         }
 
         $medias = $this->db->query($queryMedia, $params)->fetchAll();

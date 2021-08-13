@@ -3,12 +3,14 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\UserQuery;
+use App\Database\Repositories\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class SettingController extends Controller
 {
+    public const DEFAULT_THEME_URL = 'https://bootswatch.com/4/_vendor/bootstrap/dist/css/bootstrap.min.css';
+
     /**
      * @param  Request  $request
      * @param  Response  $response
@@ -34,7 +36,7 @@ class SettingController extends Controller
         // quota
         $this->updateSetting('quota_enabled', param($request, 'quota_enabled', 'off'));
         $this->updateSetting('default_user_quota', stringToBytes(param($request, 'default_user_quota', '1G')));
-        $user = make(UserQuery::class)->get($request, $this->session->get('user_id'));
+        $user = make(UserRepository::class)->get($request, $this->session->get('user_id'));
         $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
 
         $this->updateSetting('custom_head', param($request, 'custom_head'));
@@ -78,7 +80,7 @@ class SettingController extends Controller
             }
 
             // if is default, remove setting
-            if (param($request, 'css') !== 'https://bootswatch.com/4/_vendor/bootstrap/dist/css/bootstrap.min.css') {
+            if (param($request, 'css') !== self::DEFAULT_THEME_URL) {
                 $this->updateSetting('css', param($request, 'css'));
             } else {
                 $this->database->query('DELETE FROM `settings` WHERE `key` = \'css\'');

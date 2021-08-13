@@ -3,7 +3,7 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\TagQuery;
+use App\Database\Repositories\TagRepository;
 use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -27,7 +27,7 @@ class TagController extends Controller
             throw new HttpBadRequestException($request);
         }
 
-        [$id, $limit] = make(TagQuery::class)->addTag(param($request, 'tag'), param($request, 'mediaId'));
+        [$id, $limit] = make(TagRepository::class)->addTag(param($request, 'tag'), param($request, 'mediaId'));
 
         $this->logger->info("Tag added $id.");
 
@@ -53,7 +53,7 @@ class TagController extends Controller
             throw new HttpBadRequestException($request);
         }
 
-        $result = make(TagQuery::class)->removeTag(param($request, 'tagId'), param($request, 'mediaId'));
+        $result = make(TagRepository::class)->removeTag(param($request, 'tagId'), param($request, 'mediaId'));
 
         if ($result === null) {
             throw new HttpNotFoundException($request);

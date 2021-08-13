@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Database\Queries\MediaQuery;
-use App\Database\Queries\TagQuery;
+use App\Database\Repositories\MediaRepository;
+use App\Database\Repositories\TagRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -41,28 +41,28 @@ class DashboardController extends Controller
 
         switch (param($request, 'sort', 'time')) {
             case 'size':
-                $order = MediaQuery::ORDER_SIZE;
+                $order = MediaRepository::ORDER_SIZE;
                 break;
             case 'name':
-                $order = MediaQuery::ORDER_NAME;
+                $order = MediaRepository::ORDER_NAME;
                 break;
             default:
             case 'time':
-                $order = MediaQuery::ORDER_TIME;
+                $order = MediaRepository::ORDER_TIME;
                 break;
         }
 
         $isAdmin = (bool) $this->session->get('admin', false);
 
-        /** @var MediaQuery $query */
-        $query = make(MediaQuery::class, ['isAdmin' => $isAdmin])
+        /** @var MediaRepository $query */
+        $query = make(MediaRepository::class, ['isAdmin' => $isAdmin])
             ->orderBy($order, param($request, 'order', 'DESC'))
             ->withUserId($this->session->get('user_id'))
             ->search(param($request, 'search', null))
             ->filterByTag(param($request, 'tag'))
             ->run($page);
 
-        $tags = make(TagQuery::class, [
+        $tags = make(TagRepository::class, [
             'isAdmin' => $isAdmin,
             'userId' => $this->session->get('user_id')
         ])->all();

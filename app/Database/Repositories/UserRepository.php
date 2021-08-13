@@ -1,15 +1,16 @@
 <?php
 
 
-namespace App\Database\Queries;
+namespace App\Database\Repositories;
 
 use App\Database\DB;
 use App\Web\Session;
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
 
-class UserQuery
+class UserRepository
 {
     /**
      * @var DB
@@ -34,7 +35,7 @@ class UserQuery
     /**
      * @param  DB  $db
      * @param  Session|null  $session
-     * @return UserQuery
+     * @return UserRepository
      */
     public static function make(DB $db, Session $session = null)
     {
@@ -59,7 +60,7 @@ class UserQuery
 
         if ($authorize) {
             if ($this->session === null) {
-                throw new \InvalidArgumentException('The session is null.');
+                throw new InvalidArgumentException('The session is null.');
             }
 
             if ($user->id !== $this->session->get('user_id') && !$this->session->get('admin', false)) {
@@ -135,19 +136,19 @@ class UserQuery
                 $copyRaw,
                 $id,
             ]);
-        } else {
-            return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=?, `hide_uploads`=?, `copy_raw`=? WHERE `id` = ?', [
-                $email,
-                $username,
-                $isAdmin,
-                $isActive,
-                $maxUserQuota,
-                $ldap,
-                $hideUploads,
-                $copyRaw,
-                $id,
-            ]);
         }
+
+        return $this->database->query('UPDATE `users` SET `email`=?, `username`=?, `is_admin`=?, `active`=?, `max_disk_quota`=?, `ldap`=?, `hide_uploads`=?, `copy_raw`=? WHERE `id` = ?', [
+            $email,
+            $username,
+            $isAdmin,
+            $isActive,
+            $maxUserQuota,
+            $ldap,
+            $hideUploads,
+            $copyRaw,
+            $id,
+        ]);
     }
 
     /**

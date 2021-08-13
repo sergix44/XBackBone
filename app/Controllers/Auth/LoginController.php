@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Auth;
 
-use App\Database\Queries\UserQuery;
+use App\Database\Repositories\UserRepository;
 use App\Web\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -128,13 +128,13 @@ class LoginController extends AuthController
             $this->session->alert(lang('ldap_cant_connect'), 'warning');
             return $dbUser;
         }
-        
+
         //Get LDAP user's (R)DN
         $userDN=$this->getLdapRdn($username, $server);
         if (!is_string($userDN)) {
             return null;
         }
-    
+
         //Bind as user to validate password
         if (@ldap_bind($server, $userDN, $password)) {
             $this->logger->debug("$userDN authenticated against LDAP sucessfully");
@@ -145,7 +145,7 @@ class LoginController extends AuthController
             }
             return null;
         }
-        
+
         if (!$dbUser) {
             $email = $username;
             if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
@@ -162,18 +162,18 @@ class LoginController extends AuthController
                 $entry = ldap_first_entry($server, $search);
                 $email = @ldap_get_values($server, $entry, 'mail')[0] ?? platform_mail($username.rand(0, 100)); // if the mail is not set, generate a placeholder
             }
-            /** @var UserQuery $userQuery */
-            $userQuery = make(UserQuery::class);
+            /** @var UserRepository $userQuery */
+            $userQuery = make(UserRepository::class);
             $userQuery->create($email, $username, $password, 0, 1, (int) $this->getSetting('default_user_quota', -1), null, 1);
             return $userQuery->get($request, $this->database->getPdo()->lastInsertId());
         }
-        
+
         if ($server) {
             ldap_close($server);
         }
-        
+
         if (!password_verify($password, $dbUser->password)) {
-            $userQuery = make(UserQuery::class);
+            $userQuery = make(UserRepository::class);
             $userQuery->update($dbUser->id, $dbUser->email, $username, $password, $dbUser->is_admin, $dbUser->active, $dbUser->max_disk_quota, $dbUser->ldap);
             return $userQuery->get($request, $dbUser->id);
         }
