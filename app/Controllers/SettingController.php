@@ -74,8 +74,10 @@ class SettingController extends Controller
             if (!is_writable(BASE_DIR.'static/bootstrap/css/bootstrap.min.css')) {
                 $this->session->alert(lang('cannot_write_file'), 'danger');
             } else {
-                file_put_contents(BASE_DIR.'static/bootstrap/css/bootstrap.min.css',
-                    file_get_contents(param($request, 'css')));
+                file_put_contents(
+                    BASE_DIR.'static/bootstrap/css/bootstrap.min.css',
+                    file_get_contents(param($request, 'css'))
+                );
             }
 
             // if is default, remove setting
@@ -94,11 +96,15 @@ class SettingController extends Controller
     private function updateSetting($key, $value = null)
     {
         if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database->getPdo()->quote($key))->fetch()) {
-            $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)',
-                $value);
+            $this->database->query(
+                'INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)',
+                $value
+            );
         } else {
-            $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = '.$this->database->getPdo()->quote($key),
-                $value);
+            $this->database->query(
+                'UPDATE `settings` SET `value`=? WHERE `key` = '.$this->database->getPdo()->quote($key),
+                $value
+            );
         }
     }
 }
