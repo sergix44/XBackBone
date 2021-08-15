@@ -58,6 +58,7 @@ return [
                     'region' => $config['storage']['region'],
                     'endpoint'  => $config['storage']['endpoint'],
                     'version' => 'latest',
+                    'use_path_style_endpoint' => $config['storage']['use_path_style_endpoint'] ?? false,
                     '@http' => ['stream' => true],
                 ]);
 
