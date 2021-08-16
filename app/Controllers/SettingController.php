@@ -101,11 +101,15 @@ class SettingController extends Controller
     private function updateSetting($key, $value = null)
     {
         if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database->getPdo()->quote($key))->fetch()) {
-            $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)',
-                $value);
+            $this->database->query(
+                'INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)',
+                $value
+            );
         } else {
-            $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = '.$this->database->getPdo()->quote($key),
-                $value);
+            $this->database->query(
+                'UPDATE `settings` SET `value`=? WHERE `key` = '.$this->database->getPdo()->quote($key),
+                $value
+            );
         }
     }
 }

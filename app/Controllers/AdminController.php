@@ -27,8 +27,11 @@ class AdminController extends Controller
             $settings[$setting->key] = $setting->value;
         }
 
-        $settings['default_user_quota'] = humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0,
-            true);
+        $settings['default_user_quota'] = humanFileSize(
+            $this->getSetting('default_user_quota', stringToBytes('1G')),
+            0,
+            true
+        );
 
         return view()->render($response, 'dashboard/system.twig', [
             'usersCount' => $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,

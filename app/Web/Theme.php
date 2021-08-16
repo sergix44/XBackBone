@@ -64,5 +64,4 @@ class Theme
     {
         return 'default|'.self::DEFAULT_THEME_URL;
     }
-
 }
