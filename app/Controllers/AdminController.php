@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database\Migrator;
+use App\Web\Theme;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -26,7 +27,8 @@ class AdminController extends Controller
             $settings[$setting->key] = $setting->value;
         }
 
-        $settings['default_user_quota'] = humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0, true);
+        $settings['default_user_quota'] = humanFileSize($this->getSetting('default_user_quota', stringToBytes('1G')), 0,
+            true);
 
         return view()->render($response, 'dashboard/system.twig', [
             'usersCount' => $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,
@@ -77,13 +79,15 @@ class AdminController extends Controller
      */
     public function getThemes(Response $response): Response
     {
-        $apiJson = json_decode(file_get_contents('https://bootswatch.com/api/4.json'));
+        $themes = make(Theme::class)->availableThemes();
 
         $out = [];
 
-        $out['Default - Bootstrap 4 default theme'] = self::DEFAULT_THEME_URL;
-        foreach ($apiJson->themes as $theme) {
-            $out["{$theme->name} - {$theme->description}"] = $theme->cssMin;
+        foreach ($themes as $vendor => $list) {
+            $out["-- {$vendor} --"] = null;
+            foreach ($list as $name => $url) {
+                $out[$name] = "{$vendor}|{$url}";
+            }
         }
 
         return json($response, $out);

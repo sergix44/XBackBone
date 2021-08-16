@@ -27,8 +27,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 abstract class Controller
 {
-    protected const DEFAULT_THEME_URL = 'https://bootswatch.com/4/_vendor/bootstrap/dist/css/bootstrap.min.css';
-
     /** @var Container */
     protected $container;
 

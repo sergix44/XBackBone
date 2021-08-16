@@ -114,6 +114,9 @@ var app = {
                 var opt = document.createElement('option');
                 opt.value = value;
                 opt.innerHTML = key;
+                if (value === null) {
+                    opt.disabled = true;
+                }
                 $themes.append(opt);
             });
         });

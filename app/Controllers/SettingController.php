@@ -4,8 +4,11 @@
 namespace App\Controllers;
 
 use App\Database\Repositories\UserRepository;
+use App\Web\Theme;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpInternalServerErrorException;
 
 class SettingController extends Controller
 {
@@ -14,6 +17,7 @@ class SettingController extends Controller
      * @param  Response  $response
      *
      * @return Response
+     * @throws HttpInternalServerErrorException
      */
     public function saveSettings(Request $request, Response $response): Response
     {
@@ -64,28 +68,29 @@ class SettingController extends Controller
         }
     }
 
-
     /**
      * @param  Request  $request
+     * @throws HttpInternalServerErrorException
      */
     public function applyTheme(Request $request)
     {
-        if (param($request, 'css') !== null) {
-            if (!is_writable(BASE_DIR.'static/bootstrap/css/bootstrap.min.css')) {
-                $this->session->alert(lang('cannot_write_file'), 'danger');
-            } else {
-                file_put_contents(
-                    BASE_DIR.'static/bootstrap/css/bootstrap.min.css',
-                    file_get_contents(param($request, 'css'))
-                );
-            }
+        $css = param($request, 'css');
+        if ($css === null) {
+            return;
+        }
 
-            // if is default, remove setting
-            if (param($request, 'css') !== self::DEFAULT_THEME_URL) {
-                $this->updateSetting('css', param($request, 'css'));
-            } else {
-                $this->database->query('DELETE FROM `settings` WHERE `key` = \'css\'');
-            }
+        if (!is_writable(BASE_DIR.'static/bootstrap/css/bootstrap.min.css')) {
+            $this->session->alert(lang('cannot_write_file'), 'danger');
+            throw new HttpInternalServerErrorException($request);
+        }
+
+        make(Theme::class)->applyTheme($css);
+
+        // if is default, remove setting
+        if ($css !== Theme::default()) {
+            $this->updateSetting('css', $css);
+        } else {
+            $this->database->query('DELETE FROM `settings` WHERE `key` = \'css\'');
         }
     }
 
@@ -96,15 +101,11 @@ class SettingController extends Controller
     private function updateSetting($key, $value = null)
     {
         if (!$this->database->query('SELECT `value` FROM `settings` WHERE `key` = '.$this->database->getPdo()->quote($key))->fetch()) {
-            $this->database->query(
-                'INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)',
-                $value
-            );
+            $this->database->query('INSERT INTO `settings`(`key`, `value`) VALUES ('.$this->database->getPdo()->quote($key).', ?)',
+                $value);
         } else {
-            $this->database->query(
-                'UPDATE `settings` SET `value`=? WHERE `key` = '.$this->database->getPdo()->quote($key),
-                $value
-            );
+            $this->database->query('UPDATE `settings` SET `value`=? WHERE `key` = '.$this->database->getPdo()->quote($key),
+                $value);
         }
     }
 }

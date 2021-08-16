@@ -123,8 +123,8 @@ class UpgradeController extends Controller
     public function checkForUpdates(Request $request, Response $response): Response
     {
         $jsonResponse = [
-            'status' => null,
-            'message' => null,
+            'status' => 'OK',
+            'message' => lang('already_latest_version'),
             'upgrade' => false,
         ];
 
@@ -133,17 +133,18 @@ class UpgradeController extends Controller
         try {
             $json = $this->getApiJson();
 
-            $jsonResponse['status'] = 'OK';
             foreach ($json as $release) {
-                if (version_compare($release->tag_name, PLATFORM_VERSION, '>') && ($release->prerelease === $acceptPrerelease)) {
+                if (
+                    $release->prerelease === $acceptPrerelease &&
+                    version_compare($release->tag_name, PLATFORM_VERSION, '>') &&
+                    version_compare($release->tag_name, '4.0.0', '<')
+                ) {
                     $jsonResponse['message'] = lang('new_version_available', [$release->tag_name]);
                     $jsonResponse['upgrade'] = true;
                     break;
                 }
 
                 if (version_compare($release->tag_name, PLATFORM_VERSION, '<=')) {
-                    $jsonResponse['message'] = lang('already_latest_version');
-                    $jsonResponse['upgrade'] = false;
                     break;
                 }
             }
@@ -154,10 +155,10 @@ class UpgradeController extends Controller
 
         return json($response, $jsonResponse);
     }
-    
+
     /**
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
