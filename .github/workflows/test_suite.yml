@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Validate composer.json and composer.lock
-      run: composer validate
+      run: composer validate --no-check-version
 
     - name: Install dependencies
       run: composer install --no-progress
