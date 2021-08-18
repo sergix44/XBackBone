@@ -159,4 +159,5 @@ return [
     'copied' => 'Kopierat till urklipp!',
     'token' => 'Token',
     'orphaned_files' => 'Föräldralösa Filer',
+    'image_embeds' => 'Inbäddade bilder',
 ];
