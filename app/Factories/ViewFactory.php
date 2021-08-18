@@ -42,6 +42,7 @@ class ViewFactory
         $twig->addFunction(new TwigFunction('inPath', 'inPath'));
         $twig->addFunction(new TwigFunction('humanFileSize', 'humanFileSize'));
         $twig->addFunction(new TwigFunction('param', 'param'));
+        $twig->addFunction(new TwigFunction('glue', 'glue'));
 
         return new View($twig);
     }

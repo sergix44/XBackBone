@@ -84,8 +84,8 @@ class MediaController extends Controller
             'delete_token' => $token,
             'media' => $media,
             'type' => $type,
-            'url' => urlFor("/{$userCode}/{$mediaCode}"),
-            'copy_raw' => $this->getSetting('copy_url_behavior', 'off') === 'raw',
+            'url' => urlFor(glue($userCode, $mediaCode)),
+            'copy_raw' => $this->session->get('copy_raw', false),
         ]);
     }
 

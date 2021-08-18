@@ -40,7 +40,7 @@
                                 <label for="token" class="col-sm-3 col-form-label">{{ lang('token') }}</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
-                                        <input type="text" id="token" class="form-control" value="{{ user.token }}" readonly>
+                                        <input type="text" id="token" class="form-control privacy-blur" value="{{ user.token }}" readonly>
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-success btn-clipboard" type="button" data-clipboard-target="#token"><i class="fas fa-fw fa-copy"></i> {{ lang('copy') }}</button>
                                             <button class="btn btn-outline-primary refresh-token" data-id="{{ user.id }}" type="button"><i class="fas fa-fw fa-sync"></i> {{ lang('update') }}</button>

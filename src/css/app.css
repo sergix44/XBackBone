@@ -224,3 +224,8 @@ body {
 .hljs-ln-code {
     padding-left: 5px !important;
 }
+
+.privacy-blur:not(:focus) {
+    color: transparent;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}

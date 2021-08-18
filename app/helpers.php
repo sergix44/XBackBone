@@ -493,3 +493,14 @@ if (!function_exists('isSecure')) {
             || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === 443);
     }
 }
+
+if (!function_exists('glue')) {
+    /**
+     * @param  mixed  ...$pieces
+     * @return string
+     */
+    function glue(...$pieces): string
+    {
+        return '/'.implode('/', $pieces);
+    }
+}
