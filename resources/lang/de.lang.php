@@ -164,4 +164,5 @@ return [
     'show_changelog' => 'Änderungsprotokoll ansehen',
     'changelog' => 'Änderungsprotokoll',
     'copied' => 'In Zwischenablage kopiert!',
+    'image_embeds' => 'Bilder einbetten',
 ];
