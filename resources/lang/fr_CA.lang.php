@@ -159,4 +159,5 @@ return [
     'yes' => 'Oui',
     'enforce_language' => 'Forcer la langue',
     'copied' => 'Copié dans le presse-papier!',
+    'image_embeds' => 'Intégrer des images',
 ];
