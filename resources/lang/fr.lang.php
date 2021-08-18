@@ -161,4 +161,5 @@ return [
     'changelog' => 'Journal des changements',
     'zip_ext_not_loaded' => 'L\'extension zip requise n\'est pas chargée',
     'copied' => 'Copié dans le presse-papier !',
+    'image_embeds' => 'Intégrer des images',
 ];
