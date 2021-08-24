@@ -159,4 +159,5 @@ return [
     'remember_me' => 'Recuerdame',
     'custom_head_html_hint' => 'Este contenido se añadirá en la etiqueta <head> de cada página.',
     'custom_head_html' => 'Contenido personalizado del encabezado HTML',
+    'image_embeds' => 'Incrustar imágenes',
 ];
