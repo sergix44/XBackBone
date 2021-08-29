@@ -160,4 +160,5 @@ return [
     'max_user_quota' => 'Quota Máxima do Utilizador',
     'register' => 'Registar',
     'settings_saved' => 'Definições de sistema guardadas!',
+    'image_embeds' => 'Embutir imagens',
 ];
