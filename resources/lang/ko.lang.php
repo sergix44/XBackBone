@@ -159,5 +159,5 @@ return [
     'no' => '취소',
     'yes' => '확인',
     'enforce_language' => '언어 설정',
-    'lang' => '한국어',
+    'lang' => 'Korean',
 ];
