@@ -5,6 +5,18 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.5.0] - 2021-09-05
+### Added
+- Support for theme-park.dev themes.
+- Updated translations.
+
+### Fixed
+- Wrong css when reapplying the default theme.
+
+### Removed
+- Dropped theme cli command.
+
+
 ## [3.4.1] - 2021-08-11
 ### Added
 - Toggle to disable embeds.
