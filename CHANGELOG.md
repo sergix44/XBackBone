@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+
+## [3.5.0] - 2021-09-05
 ### Added
 - Support for theme-park.dev themes.
 
 ### Fixed
 - Wrong css when reapplying the default theme.
+
+### Removed
+- Dropped theme cli command.
 
 ## [3.4.1] - 2021-08-11
 ### Added
