@@ -4,7 +4,7 @@
     "bootstrap": "^4.6.0",
     "bootstrap4-toggle": "^3.6.1",
     "clipboard": "^2.0.7",
-    "dropzone": "^5.8.0",
+    "dropzone": "^5.9.3",
     "highlightjs": "^9.16.2",
     "highlightjs-line-numbers.js": "^2.8.0",
     "jquery": "^3.6.0",
