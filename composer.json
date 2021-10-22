@@ -1,7 +1,7 @@
 {
   "name": "sergix44/xbackbone",
   "license": "AGPL-3.0-only",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {

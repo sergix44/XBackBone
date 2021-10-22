@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd500d701fcdb514247c1a634e18a59b",
+    "content-hash": "e52a840c8612d29a84f3c727a5b60df3",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -58,16 +58,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.197.0",
+            "version": "3.199.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "c5391ef7c979473b97d81329100bfa5fb018fa62"
+                "reference": "1033abba14fd7cb6667f60aaa085bc0d2c61afe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c5391ef7c979473b97d81329100bfa5fb018fa62",
-                "reference": "c5391ef7c979473b97d81329100bfa5fb018fa62",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1033abba14fd7cb6667f60aaa085bc0d2c61afe4",
+                "reference": "1033abba14fd7cb6667f60aaa085bc0d2c61afe4",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 "ext-simplexml": "*",
                 "guzzlehttp/guzzle": "^5.3.3|^6.2.1|^7.0",
                 "guzzlehttp/promises": "^1.4.0",
-                "guzzlehttp/psr7": "^1.7.0",
+                "guzzlehttp/psr7": "^1.7.0|^2.0",
                 "mtdowling/jmespath.php": "^2.6",
                 "php": ">=5.5"
             },
@@ -143,9 +143,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.197.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.199.1"
             },
-            "time": "2021-10-05T18:14:34+00:00"
+            "time": "2021-10-21T18:33:01+00:00"
         },
         {
             "name": "erusev/parsedown",
@@ -312,16 +312,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.43.0",
+            "version": "v1.43.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "2cbd6d2d975611cd420df428344049fe3a20dbde"
+                "reference": "60b47793e0c83f0e02a8197ef11ab1f599c348da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/2cbd6d2d975611cd420df428344049fe3a20dbde",
-                "reference": "2cbd6d2d975611cd420df428344049fe3a20dbde",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/60b47793e0c83f0e02a8197ef11ab1f599c348da",
+                "reference": "60b47793e0c83f0e02a8197ef11ab1f599c348da",
                 "shasum": ""
             },
             "require": {
@@ -370,22 +370,22 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.43.0"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.43.1"
             },
-            "time": "2021-09-15T00:52:58+00:00"
+            "time": "2021-10-20T17:52:15+00:00"
         },
         {
             "name": "google/cloud-storage",
-            "version": "v1.25.1",
+            "version": "v1.25.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-                "reference": "8367aaaa6c541fcc95ff349e8f14d9ce9f631c16"
+                "reference": "d040368605ce3b8c2e6f2f7c03eb4046e9e0b951"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/8367aaaa6c541fcc95ff349e8f14d9ce9f631c16",
-                "reference": "8367aaaa6c541fcc95ff349e8f14d9ce9f631c16",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/d040368605ce3b8c2e6f2f7c03eb4046e9e0b951",
+                "reference": "d040368605ce3b8c2e6f2f7c03eb4046e9e0b951",
                 "shasum": ""
             },
             "require": {
@@ -424,9 +424,9 @@
             ],
             "description": "Cloud Storage Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.25.1"
+                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.25.2"
             },
-            "time": "2021-10-04T22:16:26+00:00"
+            "time": "2021-10-20T17:52:15+00:00"
         },
         {
             "name": "google/crc32",
@@ -476,16 +476,16 @@
         },
         {
             "name": "graham-campbell/guzzle-factory",
-            "version": "v5.0.0",
+            "version": "v5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GrahamCampbell/Guzzle-Factory.git",
-                "reference": "5f6eae0dba2f2a02d72d42f11f3ff9f9f61e1cc8"
+                "reference": "983999291ca63d8da45be573574416b3c21f751b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GrahamCampbell/Guzzle-Factory/zipball/5f6eae0dba2f2a02d72d42f11f3ff9f9f61e1cc8",
-                "reference": "5f6eae0dba2f2a02d72d42f11f3ff9f9f61e1cc8",
+                "url": "https://api.github.com/repos/GrahamCampbell/Guzzle-Factory/zipball/983999291ca63d8da45be573574416b3c21f751b",
+                "reference": "983999291ca63d8da45be573574416b3c21f751b",
                 "shasum": ""
             },
             "require": {
@@ -509,7 +509,7 @@
             "authors": [
                 {
                     "name": "Graham Campbell",
-                    "email": "graham@alt-three.com"
+                    "email": "hello@gjcampbell.co.uk"
                 }
             ],
             "description": "Provides A Simple Guzzle Factory With Good Defaults",
@@ -523,7 +523,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GrahamCampbell/Guzzle-Factory/issues",
-                "source": "https://github.com/GrahamCampbell/Guzzle-Factory/tree/v5.0.0"
+                "source": "https://github.com/GrahamCampbell/Guzzle-Factory/tree/v5.0.2"
             },
             "funding": [
                 {
@@ -535,28 +535,29 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-24T20:39:09+00:00"
+            "time": "2021-10-17T19:48:29+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.3.0",
+            "version": "7.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "7008573787b430c1c1f650e3722d9bba59967628"
+                "reference": "868b3571a039f0ebc11ac8f344f4080babe2cb94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/7008573787b430c1c1f650e3722d9bba59967628",
-                "reference": "7008573787b430c1c1f650e3722d9bba59967628",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/868b3571a039f0ebc11ac8f344f4080babe2cb94",
+                "reference": "868b3571a039f0ebc11ac8f344f4080babe2cb94",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^1.4",
-                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "guzzlehttp/promises": "^1.5",
+                "guzzlehttp/psr7": "^1.8.3 || ^2.1",
                 "php": "^7.2.5 || ^8.0",
-                "psr/http-client": "^1.0"
+                "psr/http-client": "^1.0",
+                "symfony/deprecation-contracts": "^2.2"
             },
             "provide": {
                 "psr/http-client-implementation": "1.0"
@@ -566,7 +567,7 @@
                 "ext-curl": "*",
                 "php-http/client-integration-tests": "^3.0",
                 "phpunit/phpunit": "^8.5.5 || ^9.3.5",
-                "psr/log": "^1.1"
+                "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
                 "ext-curl": "Required for CURL handler support",
@@ -576,7 +577,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "7.3-dev"
+                    "dev-master": "7.4-dev"
                 }
             },
             "autoload": {
@@ -593,18 +594,42 @@
             ],
             "authors": [
                 {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
                 },
                 {
+                    "name": "Jeremy Lindblom",
+                    "email": "jeremeamia@gmail.com",
+                    "homepage": "https://github.com/jeremeamia"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https://github.com/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                },
+                {
                     "name": "Márk Sági-Kazár",
                     "email": "mark.sagikazar@gmail.com",
-                    "homepage": "https://sagikazarmark.hu"
+                    "homepage": "https://github.com/sagikazarmark"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https://github.com/Tobion"
                 }
             ],
             "description": "Guzzle is a PHP HTTP client library",
-            "homepage": "http://guzzlephp.org/",
             "keywords": [
                 "client",
                 "curl",
@@ -618,7 +643,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.3.0"
+                "source": "https://github.com/guzzle/guzzle/tree/7.4.0"
             },
             "funding": [
                 {
@@ -630,28 +655,24 @@
                     "type": "github"
                 },
                 {
-                    "url": "https://github.com/alexeyshockov",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/gmponos",
-                    "type": "github"
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/guzzle",
+                    "type": "tidelift"
                 }
             ],
-            "time": "2021-03-23T11:33:13+00:00"
+            "time": "2021-10-18T09:52:00+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.4.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d"
+                "reference": "136a635e2b4a49b9d79e9c8fee267ffb257fdba0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/8e7d04f1f6450fef59366c399cfad4b9383aa30d",
-                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/136a635e2b4a49b9d79e9c8fee267ffb257fdba0",
+                "reference": "136a635e2b4a49b9d79e9c8fee267ffb257fdba0",
                 "shasum": ""
             },
             "require": {
@@ -663,7 +684,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -680,9 +701,24 @@
             ],
             "authors": [
                 {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https://github.com/Tobion"
                 }
             ],
             "description": "Guzzle promises library",
@@ -691,9 +727,23 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.4.1"
+                "source": "https://github.com/guzzle/promises/tree/1.5.0"
             },
-            "time": "2021-03-07T09:25:29+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/promises",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-10-07T13:05:22+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1262,16 +1312,16 @@
         },
         {
             "name": "microsoft/azure-storage-blob",
-            "version": "1.5.2",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Azure/azure-storage-blob-php.git",
-                "reference": "2475330963372d519387cb8135d6a9cfd42272da"
+                "reference": "9aec3e152dab8cd9ec64fd89ed71129a0402c4be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-blob-php/zipball/2475330963372d519387cb8135d6a9cfd42272da",
-                "reference": "2475330963372d519387cb8135d6a9cfd42272da",
+                "url": "https://api.github.com/repos/Azure/azure-storage-blob-php/zipball/9aec3e152dab8cd9ec64fd89ed71129a0402c4be",
+                "reference": "9aec3e152dab8cd9ec64fd89ed71129a0402c4be",
                 "shasum": ""
             },
             "require": {
@@ -1304,22 +1354,22 @@
             ],
             "support": {
                 "issues": "https://github.com/Azure/azure-storage-blob-php/issues",
-                "source": "https://github.com/Azure/azure-storage-blob-php/tree/v1.5.2"
+                "source": "https://github.com/Azure/azure-storage-blob-php/tree/v1.5.3"
             },
-            "time": "2020-12-29T02:22:11+00:00"
+            "time": "2021-10-09T03:13:46+00:00"
         },
         {
             "name": "microsoft/azure-storage-common",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Azure/azure-storage-common-php.git",
-                "reference": "e5738035891546075bd369954e8af121d65ebd6d"
+                "reference": "8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-common-php/zipball/e5738035891546075bd369954e8af121d65ebd6d",
-                "reference": "e5738035891546075bd369954e8af121d65ebd6d",
+                "url": "https://api.github.com/repos/Azure/azure-storage-common-php/zipball/8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0",
+                "reference": "8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0",
                 "shasum": ""
             },
             "require": {
@@ -1352,9 +1402,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Azure/azure-storage-common-php/issues",
-                "source": "https://github.com/Azure/azure-storage-common-php/tree/v1.5.1"
+                "source": "https://github.com/Azure/azure-storage-common-php/tree/v1.5.2"
             },
-            "time": "2020-12-28T07:59:51+00:00"
+            "time": "2021-10-09T03:03:47+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -2351,16 +2401,16 @@
         },
         {
             "name": "rize/uri-template",
-            "version": "0.3.3",
+            "version": "0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rize/UriTemplate.git",
-                "reference": "6e0b97e00e0f36c652dd3c37b194ef07de669b82"
+                "reference": "2a874863c48d643b9e2e254ab288ec203060a0b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rize/UriTemplate/zipball/6e0b97e00e0f36c652dd3c37b194ef07de669b82",
-                "reference": "6e0b97e00e0f36c652dd3c37b194ef07de669b82",
+                "url": "https://api.github.com/repos/rize/UriTemplate/zipball/2a874863c48d643b9e2e254ab288ec203060a0b8",
+                "reference": "2a874863c48d643b9e2e254ab288ec203060a0b8",
                 "shasum": ""
             },
             "require": {
@@ -2393,9 +2443,19 @@
             ],
             "support": {
                 "issues": "https://github.com/rize/UriTemplate/issues",
-                "source": "https://github.com/rize/UriTemplate/tree/0.3.3"
+                "source": "https://github.com/rize/UriTemplate/tree/0.3.4"
             },
-            "time": "2021-02-22T15:03:38+00:00"
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rezigned",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://opencollective.com/rize-uri-template",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2021-10-09T06:30:16+00:00"
         },
         {
             "name": "slim/slim",
@@ -2691,6 +2751,73 @@
                 "source": "https://github.com/Superbalist/flysystem-google-cloud-storage/tree/7.2.2"
             },
             "time": "2019-10-10T12:22:54+00:00"
+        },
+        {
+            "name": "symfony/deprecation-contracts",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "5f38c8804a9e97d23e0c8d63341088cd8a22d627"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/5f38c8804a9e97d23e0c8d63341088cd8a22d627",
+                "reference": "5f38c8804a9e97d23e0c8d63341088cd8a22d627",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.4-dev"
+                },
+                "thanks": {
+                    "name": "symfony/contracts",
+                    "url": "https://github.com/symfony/contracts"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "function.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "A generic function and convention to trigger deprecation notices",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-03-23T23:28:01+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -3476,16 +3603,16 @@
         },
         {
             "name": "nette/neon",
-            "version": "v3.2.2",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/neon.git",
-                "reference": "e4ca6f4669121ca6876b1d048c612480e39a28d5"
+                "reference": "33d262a0c4fb6c6371385f6dc8532f4e32c20ebc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/neon/zipball/e4ca6f4669121ca6876b1d048c612480e39a28d5",
-                "reference": "e4ca6f4669121ca6876b1d048c612480e39a28d5",
+                "url": "https://api.github.com/repos/nette/neon/zipball/33d262a0c4fb6c6371385f6dc8532f4e32c20ebc",
+                "reference": "33d262a0c4fb6c6371385f6dc8532f4e32c20ebc",
                 "shasum": ""
             },
             "require": {
@@ -3500,7 +3627,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2-dev"
+                    "dev-master": "3.3-dev"
                 }
             },
             "autoload": {
@@ -3535,22 +3662,22 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/neon/issues",
-                "source": "https://github.com/nette/neon/tree/v3.2.2"
+                "source": "https://github.com/nette/neon/tree/v3.3.0"
             },
-            "time": "2021-02-28T12:30:32+00:00"
+            "time": "2021-10-19T22:11:22+00:00"
         },
         {
             "name": "nette/php-generator",
-            "version": "v3.6.2",
+            "version": "v3.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/php-generator.git",
-                "reference": "bce6abcd4090ab5eec24b78f26c753c6525a425c"
+                "reference": "fa374ae7b36be45241fd0b5acd49479a6d1227a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/php-generator/zipball/bce6abcd4090ab5eec24b78f26c753c6525a425c",
-                "reference": "bce6abcd4090ab5eec24b78f26c753c6525a425c",
+                "url": "https://api.github.com/repos/nette/php-generator/zipball/fa374ae7b36be45241fd0b5acd49479a6d1227a3",
+                "reference": "fa374ae7b36be45241fd0b5acd49479a6d1227a3",
                 "shasum": ""
             },
             "require": {
@@ -3559,9 +3686,9 @@
             },
             "require-dev": {
                 "nette/tester": "^2.4",
-                "nikic/php-parser": "^4.11",
+                "nikic/php-parser": "^4.13",
                 "phpstan/phpstan": "^0.12",
-                "tracy/tracy": "^2.3"
+                "tracy/tracy": "^2.8"
             },
             "suggest": {
                 "nikic/php-parser": "to use ClassType::withBodiesFrom() & GlobalFunction::withBodyFrom()"
@@ -3603,9 +3730,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/php-generator/issues",
-                "source": "https://github.com/nette/php-generator/tree/v3.6.2"
+                "source": "https://github.com/nette/php-generator/tree/v3.6.3"
             },
-            "time": "2021-09-23T21:48:24+00:00"
+            "time": "2021-10-14T22:12:56+00:00"
         },
         {
             "name": "nette/robot-loader",
@@ -3676,21 +3803,21 @@
         },
         {
             "name": "nette/schema",
-            "version": "v1.2.1",
+            "version": "v1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/schema.git",
-                "reference": "f5ed39fc96358f922cedfd1e516f0dadf5d2be0d"
+                "reference": "9a39cef03a5b34c7de64f551538cbba05c2be5df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/schema/zipball/f5ed39fc96358f922cedfd1e516f0dadf5d2be0d",
-                "reference": "f5ed39fc96358f922cedfd1e516f0dadf5d2be0d",
+                "url": "https://api.github.com/repos/nette/schema/zipball/9a39cef03a5b34c7de64f551538cbba05c2be5df",
+                "reference": "9a39cef03a5b34c7de64f551538cbba05c2be5df",
                 "shasum": ""
             },
             "require": {
-                "nette/utils": "^3.1.4 || ^4.0",
-                "php": ">=7.1 <8.1"
+                "nette/utils": "^2.5.7 || ^3.1.5 ||  ^4.0",
+                "php": ">=7.1 <8.2"
             },
             "require-dev": {
                 "nette/tester": "^2.3 || ^2.4",
@@ -3732,9 +3859,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/schema/issues",
-                "source": "https://github.com/nette/schema/tree/v1.2.1"
+                "source": "https://github.com/nette/schema/tree/v1.2.2"
             },
-            "time": "2021-03-04T17:51:11+00:00"
+            "time": "2021-10-15T11:40:02+00:00"
         },
         {
             "name": "nette/utils",
@@ -6477,5 +6604,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }

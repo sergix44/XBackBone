@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [3.5.1] - 2021-10-22
+### Changed
+- Fixed embed UA for Discord.
+- Updated translations.
+
 ## [3.5.0] - 2021-09-05
 ### Added
 - Support for theme-park.dev themes.

@@ -5,6 +5,11 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.5.1] - 2021-10-22
+### Changed
+- Fixed embed UA for Discord.
+- Updated translations.
+
 ## [3.5.0] - 2021-09-05
 ### Added
 - Support for theme-park.dev themes.
