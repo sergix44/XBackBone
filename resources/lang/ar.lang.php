@@ -33,7 +33,7 @@ return [
     'hide' => 'إخفاء',
     'files' => 'ملفات',
     'theme' => 'سمة',
-    'click_to_load' => 'انقر للتحميل...',
+    'click_to_load' => 'انقر للتحميل…',
     'apply' => 'تطبيق',
     'save' => 'حفظ',
     'used' => 'مستخدَم',
@@ -117,4 +117,6 @@ return [
     'danger_zone' => 'منطقة خطرة',
     'send_notification' => 'إرسال رسالة إشعار إلكترونية',
     'mail.new_account' => '%s - إنشاء حساب جديد',
+    'php_info' => 'معلومات PHP',
+    'enforce_language' => 'اللغة الافتراضية',
 ];
