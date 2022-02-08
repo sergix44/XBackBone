@@ -3,6 +3,8 @@
 use App\Database\DB;
 use App\Web\Lang;
 use Aws\S3\S3Client;
+use League\Flysystem\Cached\CachedAdapter;
+use League\Flysystem\Cached\Storage\Adapter;
 use function DI\factory;
 use function DI\get;
 use Google\Cloud\Storage\StorageClient;
@@ -46,58 +48,61 @@ return [
 
     Filesystem::class => factory(function (Container $container) {
         $config = $container->get('config');
-        switch ($config['storage']['driver']) {
-            case 'local':
-                return new Filesystem(new Local($config['storage']['path']));
-            case 's3':
-                $client = new S3Client([
-                    'credentials' => [
-                        'key' => $config['storage']['key'],
-                        'secret' => $config['storage']['secret'],
-                    ],
-                    'region' => $config['storage']['region'],
-                    'endpoint'  => $config['storage']['endpoint'],
-                    'version' => 'latest',
-                    'use_path_style_endpoint' => $config['storage']['use_path_style_endpoint'] ?? false,
-                    '@http' => ['stream' => true],
-                ]);
+        $driver = $config['storage']['driver'];
+        if ($driver === 'local') {
+            return new Filesystem(new Local($config['storage']['path']));
+        } elseif ($driver === 's3') {
+            $client = new S3Client([
+                'credentials' => [
+                    'key' => $config['storage']['key'],
+                    'secret' => $config['storage']['secret'],
+                ],
+                'region' => $config['storage']['region'],
+                'endpoint' => $config['storage']['endpoint'],
+                'version' => 'latest',
+                'use_path_style_endpoint' => $config['storage']['use_path_style_endpoint'] ?? false,
+                '@http' => ['stream' => true],
+            ]);
 
-                return new Filesystem(new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']));
-            case 'dropbox':
-                $client = new DropboxClient($config['storage']['token']);
+            $adapter = new AwsS3Adapter($client, $config['storage']['bucket'], $config['storage']['path']);
+        } elseif ($driver === 'dropbox') {
+            $client = new DropboxClient($config['storage']['token']);
 
-                return new Filesystem(new DropboxAdapter($client), ['case_sensitive' => false]);
-            case 'ftp':
-                return new Filesystem(new FtpAdapter([
-                    'host' => $config['storage']['host'],
-                    'username' => $config['storage']['username'],
-                    'password' => $config['storage']['password'],
-                    'port' => $config['storage']['port'],
-                    'root' => $config['storage']['path'],
-                    'passive' => $config['storage']['passive'],
-                    'ssl' => $config['storage']['ssl'],
-                    'timeout' => 30,
-                ]));
-            case 'google-cloud':
-                $client = new StorageClient([
-                    'projectId' => $config['storage']['project_id'],
-                    'keyFilePath' => $config['storage']['key_path'],
-                ]);
+            $adapter = new DropboxAdapter($client);
+        } elseif ($driver === 'ftp') {
+            $adapter = new FtpAdapter([
+                'host' => $config['storage']['host'],
+                'username' => $config['storage']['username'],
+                'password' => $config['storage']['password'],
+                'port' => $config['storage']['port'],
+                'root' => $config['storage']['path'],
+                'passive' => $config['storage']['passive'],
+                'ssl' => $config['storage']['ssl'],
+                'timeout' => 30,
+            ]);
+        } elseif ($driver === 'google-cloud') {
+            $client = new StorageClient([
+                'projectId' => $config['storage']['project_id'],
+                'keyFilePath' => $config['storage']['key_path'],
+            ]);
 
-                return new Filesystem(new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket'])));
-            case 'azure':
-                $client = BlobRestProxy::createBlobService(
-                    sprintf(
-                        'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;',
-                        $config['storage']['account_name'],
-                        $config['storage']['account_key']
-                    )
-                );
+            $adapter = new GoogleStorageAdapter($client, $client->bucket($config['storage']['bucket']));
+        } elseif ($driver === 'azure') {
+            $client = BlobRestProxy::createBlobService(
+                sprintf(
+                    'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;',
+                    $config['storage']['account_name'],
+                    $config['storage']['account_key']
+                )
+            );
 
-                return new Filesystem(new AzureBlobStorageAdapter($client, $config['storage']['container_name']));
-            default:
-                throw new InvalidArgumentException('The driver specified is not supported.');
+            $adapter = new AzureBlobStorageAdapter($client, $config['storage']['container_name']);
+        } else {
+            throw new InvalidArgumentException('The driver specified is not supported.');
         }
+
+        $cache = new Adapter(new Local(BASE_DIR.'resources/cache/fs'), 'file', 300); // 5min
+        return new Filesystem(new CachedAdapter($adapter, $cache));
     }),
     'storage' => get(Filesystem::class),
 
