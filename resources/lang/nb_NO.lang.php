@@ -162,4 +162,5 @@ return [
     'mail.new_account' => '%s - Opprettelse av ny konto',
     'send_notification' => 'Send e-postmerknad',
     'copied' => 'Kopiert til utklippstavle.',
+    'image_embeds' => 'Integrer bilder',
 ];
