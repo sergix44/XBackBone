@@ -44,7 +44,7 @@
     <div class="container-fluid">
         {% include 'comp/alert.twig' %}
         <div class="row ml-auto mr-auto">
-            <div class="col-md-12 justify-content-center">
+            <div class="col-md-11 justify-content-center">
                 {% if delete_token is not null %}
                     <form method="post" action="{{ url }}/delete/{{ delete_token }}">
                         <div class="text-center mb-4">
