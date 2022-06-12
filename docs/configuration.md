@@ -71,7 +71,7 @@ return array(
         'host' => 'ad.example.com', // set the ldap host
         'port' => 389, // ldap port
         'base_domain' => 'dc=example,dc=com', // the base_dn string
-        'search_filter' => '(&((objectClass=user)(sAMAccountName=????)))', // ???? is replaced with user provided username
+        'search_filter' => '(&(objectClass=user)(sAMAccountName=????))', // ???? is replaced with user provided username
         'rdn_attribute' => 'sAMAccountName', // the attribute to use as username
         'service_account_dn' => 'cn=xbackbone,cn=Users,dc=example,dc=com', // LDAP Service Account Full DN
         'service_account_password' => 'examplepassword',
