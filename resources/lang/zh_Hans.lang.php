@@ -150,4 +150,6 @@ return [
     'delete_selected' => '删除所选',
     'upload_max_file_size' => '当前最大文件大小为 %s.',
     'no_tags' => '未添加标签',
+    'mail.recover_text' => 'Hi %s,<br>已为您的帐户请求重置密码。要完成该过程，请单击以下链接:<br><br><a href="%s">%s</a><br><br>如果不是您要求重置密码，请忽略此电子邮件。',
+    'used' => '使用中',
 ];
