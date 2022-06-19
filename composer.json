@@ -13,8 +13,6 @@
     "ext-pdo": "*",
     "ext-zip": "*",
     "erusev/parsedown": "^1.7",
-    "guzzlehttp/psr7": "^1.6",
-    "http-interop/http-factory-guzzle": "^1.0",
     "intervention/image": "^2.6",
     "league/flysystem": "^1.1.4",
     "league/flysystem-aws-s3-v3": "^1.0",
@@ -22,6 +20,8 @@
     "league/flysystem-cached-adapter": "^1.1",
     "maennchen/zipstream-php": "^2.0",
     "monolog/monolog": "^1.23",
+    "nyholm/psr7": "^1.5",
+    "nyholm/psr7-server": "^1.0",
     "php-di/slim-bridge": "^3.0",
     "slim/slim": "^4.0",
     "spatie/flysystem-dropbox": "^1.0",
@@ -33,7 +33,7 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "platform": {
-      "php": "7.2.34"
+      "php": "7.3.33"
     }
   },
   "autoload": {
