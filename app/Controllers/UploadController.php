@@ -123,7 +123,9 @@ class UploadController extends Controller
      */
     protected function validateFile(Request $request, Response $response)
     {
-        if ($request->getServerParams()['CONTENT_LENGTH'] > stringToBytes(ini_get('post_max_size'))) {
+        $iniValue = ini_get('post_max_size');
+        $maxPostSize = $iniValue === '0' ? INF : stringToBytes($iniValue);
+        if ($request->getServerParams()['CONTENT_LENGTH'] > $maxPostSize) {
             $this->json['message'] = 'File too large (post_max_size too low?).';
 
             throw new ValidationException(json($response, $this->json, 400));
