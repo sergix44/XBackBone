@@ -19,6 +19,22 @@
         <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
         <meta id="discord" name="twitter:image" content="{{ url }}/raw">
         <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
+    {% elseif type == 'video' %}
+        <meta name="twitter:card" content="player" />
+        <meta name="twitter:title" content="{{ media.filename }} ({{ media.size }})" />
+        <meta name="twitter:image" content="0" />
+        <meta name="twitter:player:stream" content="{{ url }}/raw" />
+        <meta name="twitter:player:width" content="720" />
+        <meta name="twitter:player:height" content="480" />
+        <meta name="twitter:player:stream:content_type" content="{{ media.mimetype }}" />
+
+        <meta property="og:url" content="{{ url }}/raw" />
+        <meta property="og:video" content="{{ url }}/raw" />
+        <meta property="og:video:secure_url" content="{{ url }}/raw" />
+        <meta property="og:video:type" content="{{ media.mimetype }}" />
+        <meta property="og:video:width" content="720" />
+        <meta property="og:video:height" content="480" />
+        <meta property="og:image" content="0" />
     {% endif %}
 {% endblock %}
 

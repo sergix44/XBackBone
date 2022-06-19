@@ -53,10 +53,6 @@ class MediaController extends Controller
         $userAgent = $request->getHeaderLine('User-Agent');
         $mime = $filesystem->getMimetype($media->storage_path);
 
-        if (UA::isBot($userAgent) && !(UA::embedsLinks($userAgent) && isDisplayableImage($mime) && $this->getSetting('image_embeds') === 'on')) {
-            return $this->streamMedia($request, $response, $filesystem, $media);
-        }
-
         try {
             $media->mimetype = $mime;
             $media->extension = pathinfo($media->filename, PATHINFO_EXTENSION);
@@ -78,6 +74,22 @@ class MediaController extends Controller
             $media->size = humanFileSize($size);
         } catch (FileNotFoundException $e) {
             throw new HttpNotFoundException($request);
+        }
+
+        if (
+            UA::isBot($userAgent) &&
+            !(
+                // embed if enabled
+                (UA::embedsLinks($userAgent) &&
+                    isEmbeddable($mime) &&
+                    $this->getSetting('image_embeds') === 'on') ||
+                // if the file is too large to be displayed as non embedded
+                (UA::embedsLinks($userAgent) &&
+                    isEmbeddable($mime) &&
+                    $size >= (8 * 1024 * 1024))
+            )
+        ) {
+            return $this->streamMedia($request, $response, $filesystem, $media);
         }
 
         return view()->render($response, 'upload/public.twig', [
@@ -133,9 +145,9 @@ class MediaController extends Controller
         $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get(
-            'admin',
-            false
-        ))) {
+                    'admin',
+                    false
+                ))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -167,9 +179,9 @@ class MediaController extends Controller
         $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get(
-            'admin',
-            false
-        ))) {
+                    'admin',
+                    false
+                ))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -373,9 +385,9 @@ class MediaController extends Controller
         $mime = $storage->getMimetype($media->storage_path);
 
         if ((param($request, 'width') !== null || param($request, 'height') !== null) && explode(
-            '/',
-            $mime
-        )[0] === 'image') {
+                '/',
+                $mime
+            )[0] === 'image') {
             return $this->makeThumbnail(
                 $storage,
                 $media,

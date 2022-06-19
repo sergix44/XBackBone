@@ -73,6 +73,30 @@ if (!function_exists('isDisplayableImage')) {
     }
 }
 
+if (!function_exists('isEmbeddable')) {
+    /**
+     * @param  ?string  $mime
+     *
+     * @return bool
+     */
+    function isEmbeddable(?string $mime): bool
+    {
+        return in_array($mime, [
+            'image/apng',
+            'image/bmp',
+            'image/gif',
+            'image/x-icon',
+            'image/jpeg',
+            'image/png',
+            'image/tiff',
+            'image/webp',
+            'video/mp4',
+            'video/ogg',
+            'video/webm',
+        ]);
+    }
+}
+
 if (!function_exists('stringToBytes')) {
     /**
      * @param $str
