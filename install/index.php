@@ -1,6 +1,6 @@
 <?php
 
-((PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 2) || PHP_MAJOR_VERSION > 7) ?: die('Sorry, PHP 7.2 or above is required to run XBackBone.');
+((PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 3) || PHP_MAJOR_VERSION > 7) ?: die('Sorry, PHP 7.3 or above is required to run XBackBone.');
 require __DIR__.'/../vendor/autoload.php';
 
 use App\Database\Migrator;
@@ -9,13 +9,13 @@ use App\Web\Session;
 use App\Web\View;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
-use function DI\factory;
-use function DI\get;
-use function DI\value;
 use League\Flysystem\FileExistsException;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use function DI\factory;
+use function DI\get;
+use function DI\value;
 
 define('PLATFORM_VERSION', json_decode(file_get_contents(__DIR__.'/../composer.json'))->version);
 define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
