@@ -145,9 +145,9 @@ class MediaController extends Controller
         $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get(
-                    'admin',
-                    false
-                ))) {
+            'admin',
+            false
+        ))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -179,9 +179,9 @@ class MediaController extends Controller
         $media = $this->getMedia($userCode, $mediaCode, false);
 
         if (!$media || (!$media->published && $this->session->get('user_id') !== $media->user_id && !$this->session->get(
-                    'admin',
-                    false
-                ))) {
+            'admin',
+            false
+        ))) {
             throw new HttpNotFoundException($request);
         }
 
@@ -385,9 +385,9 @@ class MediaController extends Controller
         $mime = $storage->getMimetype($media->storage_path);
 
         if ((param($request, 'width') !== null || param($request, 'height') !== null) && explode(
-                '/',
-                $mime
-            )[0] === 'image') {
+            '/',
+            $mime
+        )[0] === 'image') {
             return $this->makeThumbnail(
                 $storage,
                 $media,
