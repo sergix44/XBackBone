@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+### Changed
+- Improved embedding on discord of large videos.
+- Removed deprecation notices on php >= 8 
+- Updated translations
+
+### Fixed
+- Fixed embed UA for Discord.
+- Fixed error with post_max_size = 0
+
+### Removed
+- Support for php 7.2
 
 ## [3.5.1] - 2021-10-22
 ### Changed
