@@ -5,6 +5,20 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.6.0] - 2022-06-20
+### Changed
+- Improved embedding on discord of large videos.
+- Releases are now compressed for faster downloads
+- Updated translations
+
+### Fixed
+- Fixed deprecation notices on php >= 8
+- Fixed embed UA for Discord.
+- Fixed error with post_max_size = 0
+
+### Removed
+- Support for php 7.2
+
 ## [3.5.1] - 2021-10-22
 ### Changed
 - Fixed embed UA for Discord.
