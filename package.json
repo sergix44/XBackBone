@@ -14,13 +14,13 @@
   },
   "devDependencies": {
     "grunt": "^1.5.3",
+    "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^3.0.0",
     "grunt-contrib-jshint": "^3.1.1",
     "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-shell": "^3.0.1",
-    "grunt-zip": "^0.18.2",
     "load-grunt-tasks": "^4.0.0"
   }
 }

@@ -128,33 +128,6 @@ module.exports = function (grunt) {
                 ],
             },
         },
-        zip: {
-            [releaseFilename]: [
-                'app/**/*',
-                'bin/**/*',
-                'bootstrap/**/*',
-                'install/**/*',
-                'logs/**/',
-                'resources/cache',
-                'resources/sessions',
-                'resources/database',
-                'resources/lang/**/*',
-                'resources/templates/**/*',
-                'resources/schemas/**/*',
-                'resources/lang/**/*',
-                'resources/uploaders/**/*',
-                'static/**/*',
-                'vendor/**/*',
-                '.htaccess',
-                'config.example.php',
-                'index.php',
-                'composer.json',
-                'composer.lock',
-                'LICENSE',
-                'favicon.ico',
-                'CHANGELOG.md'
-            ]
-        },
 
         shell: {
             phpstan: {
@@ -163,7 +136,47 @@ module.exports = function (grunt) {
             composer_no_dev: {
                 command: 'composer install --no-dev --prefer-dist'
             }
-        }
+        },
+
+        compress: {
+            main: {
+                options: {
+                    archive: releaseFilename,
+                    mode: 'zip',
+                    level: 9,
+                },
+                files: [{
+                    expand: true,
+                    cwd: './',
+                    src: [
+                        'app/**/*',
+                        'bin/**/*',
+                        'bootstrap/**/*',
+                        'install/**/*',
+                        'logs/**/',
+                        'resources/cache',
+                        'resources/sessions',
+                        'resources/database',
+                        'resources/lang/**/*',
+                        'resources/templates/**/*',
+                        'resources/schemas/**/*',
+                        'resources/lang/**/*',
+                        'resources/uploaders/**/*',
+                        'static/**/*',
+                        'vendor/**/*',
+                        '.htaccess',
+                        'config.example.php',
+                        'index.php',
+                        'composer.json',
+                        'composer.lock',
+                        'LICENSE',
+                        'favicon.ico',
+                        'CHANGELOG.md'
+                    ],
+                    dest: '/'
+                }]
+            }
+        },
 
     });
 
@@ -172,5 +185,5 @@ module.exports = function (grunt) {
     grunt.registerTask('test', ['jshint']);
     grunt.registerTask('phpstan', ['shell:phpstan']);
     grunt.registerTask('composer_no_dev', ['shell:composer_no_dev']);
-    grunt.registerTask('build-release', ['default', 'composer_no_dev', 'zip']);
+    grunt.registerTask('build-release', ['default', 'composer_no_dev', 'compress']);
 };
