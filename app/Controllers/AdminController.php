@@ -34,15 +34,15 @@ class AdminController extends Controller
         );
 
         return view()->render($response, 'dashboard/system.twig', [
-            'usersCount' => $usersCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,
-            'mediasCount' => $mediasCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count,
-            'orphanFilesCount' => $orphanFilesCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count,
-            'totalSize' => humanFileSize($totalSize = $this->database->query('SELECT SUM(`current_disk_quota`) AS `sum` FROM `users`')->fetch()->sum ?? 0),
+            'usersCount' => $this->database->query('SELECT COUNT(*) AS `count` FROM `users`')->fetch()->count,
+            'mediasCount' => $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads`')->fetch()->count,
+            'orphanFilesCount' => $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `user_id` IS NULL')->fetch()->count,
+            'totalSize' => humanFileSize($this->database->query('SELECT SUM(`current_disk_quota`) AS `sum` FROM `users`')->fetch()->sum ?? 0),
             'post_max_size' => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
             'installed_lang' => $this->lang->getList(),
             'forced_lang' => $request->getAttribute('forced_lang'),
-            'php_version' => phpversion(),
+            'php_version' => PHP_VERSION,
             'max_memory' => ini_get('memory_limit'),
             'settings' => $settings,
         ]);
