@@ -7,7 +7,7 @@ nav_order: 2
 # Installation
 
 ### Prerequisites
-XBackBone require PHP >= `7.2`, with installed the required extensions:
+XBackBone require PHP >= `7.3`, with installed the required extensions:
 + `php-sqlite3` for SQLite.
 + `php-mysql` for MariaDB/MySQL.
 + `php-gd` image manipualtion library.
