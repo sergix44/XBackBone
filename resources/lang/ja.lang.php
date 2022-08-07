@@ -35,7 +35,7 @@ return [
     'files' => 'ファイル',
     'orphaned_files' => '所有者のいないファイル',
     'theme' => 'テーマ',
-    'click_to_load' => 'クリックしてロード...',
+    'click_to_load' => 'クリックしてロード…',
     'apply' => '適用',
     'save' => '保存',
     'system_info' => 'システム情報',
