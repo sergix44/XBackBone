@@ -159,4 +159,5 @@ return [
     'yes' => 'Igen',
     'enforce_language' => 'A nyelv érvényesítése',
     'lang' => 'Angol',
+    'image_embeds' => 'Képek beágyazása',
 ];
