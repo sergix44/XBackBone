@@ -18,7 +18,7 @@ class AuthMiddleware extends Middleware
     public function __invoke(Request $request, RequestHandler $handler): ResponseInterface
     {
         if (!$this->session->get('logged', false)) {
-            $this->session->set('redirectTo', (string) $request->getUri());
+            $this->session->set('redirectTo', (string) $request->getUri()->getPath());
 
             return redirect(new Response(), route('login.show'));
         }
