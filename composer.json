@@ -5,7 +5,7 @@
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.3",
     "ext-filter": "*",
     "ext-gd": "*",
     "ext-intl": "*",
@@ -52,7 +52,7 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "phpstan/phpstan": "^0.11.5",
-    "phpunit/phpunit": "^8.5",
+    "phpunit/phpunit": "^9.0",
     "symfony/dom-crawler": "^4.4"
   }
 }
