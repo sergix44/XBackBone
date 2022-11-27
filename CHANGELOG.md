@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [3.6.1] - 2022-11-27
+### Changed
+- Upgraded dependencies
+- Updated translations
+
+### Fixed
+- Fixed error in export data (#499)
+- Fixed issues with reverse proxies (#495)
+- Fixed duplicated twitter tags
+
 ## [3.6.0] - 2022-06-20
 ### Changed
 - Improved embedding on discord of large videos.

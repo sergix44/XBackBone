@@ -5,6 +5,16 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.6.1] - 2022-11-27
+### Changed
+- Upgraded dependencies
+- Updated translations
+
+### Fixed
+- Fixed error in export data (#499)
+- Fixed issues with reverse proxies (#495)
+- Fixed duplicated twitter tags (#496)
+
 ## [3.6.0] - 2022-06-20
 ### Changed
 - Improved embedding on discord of large videos.
