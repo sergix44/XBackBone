@@ -345,7 +345,7 @@ class MediaRepository
     protected function getMediaIdsByTagId($tagId)
     {
         $mediaIds = $this->db->query('SELECT `upload_id` FROM `uploads_tags` WHERE `tag_id` = ?', $tagId)->fetchAll();
-        $ids = [];
+        $ids = [-1];
         foreach ($mediaIds as $pivot) {
             $ids[] = $pivot->upload_id;
         }
