@@ -1,0 +1,167 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ media.filename }}{% endblock %}
+
+{% block head %}
+    {% if type == 'image' %}
+        <link rel="preload" href="{{ url }}/raw" as="{{ type }}">
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:type" content="website"/>
+    <meta id="embed-title" property="og:title" content="{{ media.filename }} ({{ media.size }})">
+    <meta id="embed-desc" property="og:description" content="{{ lang('date') }}: {{ media.timestamp }}">
+    {% if type == 'image' %}
+        <meta id="embed-image" property="og:image" content="{{ url }}/raw">
+        <meta id="discord" name="twitter:image" content="{{ url }}/raw">
+        <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
+    {% elseif type == 'video' %}
+        <meta name="twitter:card" content="player" />
+        <meta name="twitter:title" content="{{ media.filename }} ({{ media.size }})" />
+        <meta name="twitter:image" content="0" />
+        <meta name="twitter:player:stream" content="{{ url }}/raw" />
+        <meta name="twitter:player:width" content="720" />
+        <meta name="twitter:player:height" content="480" />
+        <meta name="twitter:player:stream:content_type" content="{{ media.mimetype }}" />
+
+        <meta property="og:url" content="{{ url }}/raw" />
+        <meta property="og:video" content="{{ url }}/raw" />
+        <meta property="og:video:secure_url" content="{{ url }}/raw" />
+        <meta property="og:video:type" content="{{ media.mimetype }}" />
+        <meta property="og:video:width" content="720" />
+        <meta property="og:video:height" content="480" />
+        <meta property="og:image" content="0" />
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ route('root') }}">{{ config.app_name }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="ml-auto">
+                    <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor(glue(media.user_code, media.code) ~ (copy_raw ? '/raw.' ~ media.extension : '.' ~ media.extension)) }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
+                    <a href="{{ url }}/raw" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ url }}/download" class="btn btn-warning my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
+                    {% if session.get('logged') %}
+                        <a href="javascript:void(0)" class="btn btn-primary my-2 my-sm-0 public-vanity" data-link="{{ route('upload.vanity', {'id': media.mediaId}) }}" data-id="{{ media.mediaId }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star fa-lg fa-fw"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-danger my-2 my-sm-0 public-delete" data-link="{{ route('upload.delete', {'id': media.mediaId}) }}" data-toggle="tooltip" title="{{ lang('delete') }}"><i class="fas fa-trash fa-lg fa-fw"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        {% include 'comp/alert.twig' %}
+        <div class="row">
+            <div class="col-md-12 justify-content-center">
+                {% if delete_token is not null %}
+                    <form method="post" action="{{ url }}/delete/{{ delete_token }}">
+                        <div class="text-center mb-4">
+                            <p>{{ lang('public.delete_text') }}</p>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> {{ lang('yes') }}</button>
+                                <a href="{{ url }}" class="btn btn-secondary">{{ lang('no') }}</a>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+                {% set typeMatched = false %}
+                {% if type is same as ('image') %}
+                    {% set typeMatched = true %}
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <img src="{{ url }}/raw" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
+                        </div>
+                    </div>
+                {% elseif type is same as ('text') %}
+                    {% set typeMatched = true %}
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <pre><code>{{ media.text }}</code></pre>
+                        </div>
+                    </div>
+                {% elseif type is same as ('audio') %}
+                    {% set typeMatched = true %}
+                    <div class="media-player media-audio">
+                        <audio id="player" autoplay controls loop preload="auto">
+                            <source src="{{ url }}/raw" type="{{ media.mimetype }}">
+                            Your browser does not support HTML5 audio.
+                            <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                        </audio>
+                    </div>
+                {% elseif type is same as ('video') %}
+                    {% set typeMatched = true %}
+                    <div class="media-player">
+                        <video id="player" autoplay controls loop preload="auto">
+                            <source src="{{ url }}/raw" type="{{ media.mimetype }}">
+                            Your browser does not support HTML5 video.
+                            <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                        </video>
+                    </div>
+                {% elseif media.mimetype is same as ('application/pdf') %}
+                    {% set typeMatched = true %}
+                    <object type="{{ media.mimetype }}" data="{{ url }}/raw" class="pdf-viewer">
+                        Your browser does not support PDF previews.
+                        <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                    </object>
+                {% endif %}
+                {% if not typeMatched %}
+                    <div class="text-center">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <i class="far {{ mime2font(media.mimetype) }} fa-10x"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <b>{{ media.filename }}</b>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ media.size }}
+                            </div>
+                        </div>
+                        {% if media.tags is not empty %}
+                            <div class="row mt-1 mb-2">
+                                <div class="col-md-12 text-center">
+                                    {% for tag_id, tag_name in media.tags %}
+                                        <span class="badge badge-pill badge-primary shadow-sm mr-1" title="{{ tag_name }}">{{ tag_name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row mt-1">
+                        <div class="col-md-12 text-center">
+                            {{ media.filename }}
+                        </div>
+                    </div>
+                    {% if media.tags is not empty %}
+                        <div class="row mt-2">
+                            <div class="col-md-12 text-center">
+                                {% for tag_id, tag_name in media.tags %}
+                                    <span class="badge badge-pill badge-primary shadow-sm mr-1" title="{{ tag_name }}">{{ tag_name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% include 'comp/modal_delete.twig' %}
+    {% include 'comp/modal_vanity.twig' %}
+{% endblock %}

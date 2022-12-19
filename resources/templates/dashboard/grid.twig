@@ -1,0 +1,74 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('home') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        {% include 'dashboard/pager_header.twig' with {'path': 'home'} %}
+        {% if medias|length > 0 %}
+            <div class="row">
+                {% for media in medias %}
+                    <div class="col-md-4 bulk-selector" id="media_{{ media.id }}" data-id="{{ media.id }}">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-body image-card p-0">
+                                <div class="overlay">
+                                    <div class="overlay-rows">
+                                        <div class="overlay-rows-top">
+                                            <div class="pl-3 pt-2d5"><span class="badge badge-dark shadow-lg">{{ media.size }}</span></div>
+                                            <div class="text-right pr-3 pt-2d5">
+                                                <div class="btn-group shadow-lg">
+                                                    <button type="button" class="btn btn-sm btn-success btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor(glue(media.user_code, media.code) ~ (copy_raw ? '/raw.' ~ media.extension : '.' ~ media.extension)) }}">
+                                                        <i class="fas fa-link"></i>
+                                                    </button>
+                                                    <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/download') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt"></i></a>
+                                                    {% if media.published %}
+                                                        <a class="btn btn-sm btn-warning publish-toggle" data-toggle="tooltip" title="{{ lang('hide') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-times-circle"></i></a>
+                                                    {% else %}
+                                                        <a class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
+                                                    {% endif %}
+                                                    <button class="btn btn-primary btn-sm public-vanity" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a class="btn btn-link btn-block text-light overlay-rows-center" href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank">
+                                            <div>
+                                                <i class="fas fa-external-link-alt fa-2x text-shadow-link"></i>
+                                            </div>
+                                        </a>
+                                        <div class="overlay-rows-bottom pl-3 pr-3 pb-1">
+                                            {% for tag_id, tag_name in media.tags %}
+                                                <a href="{{ queryParams({'tag':tag_id}) }}" class="badge badge-pill badge-light shadow-sm tag-item mr-1" data-id="{{ tag_id }}" data-media="{{ media.id }}" title="{{ tag_name }}">{{ tag_name }}</a>
+                                            {% endfor %}
+                                            <a href="javascript:void(0);" class="badge badge-pill badge-success shadow-sm tag-add mr-1" data-id="{{ media.id }}"><i class="fas fa-plus fa-sm fa-fw"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if isDisplayableImage(media.mimetype) %}
+                                    <div class="content-image" style="background-image: url({{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?height=267') }});"></div>
+                                {% else %}
+                                    <div class="text-center" style="font-size: 178px;"><i class="far {{ mime2font(media.mimetype) }} mb-4 mt-4"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <span class="user-title" title="{{ media.filename }}">{{ media.filename }}</span>
+                                <small>{{ media.timestamp|date("d/m/Y H:i") }}</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-center">
+                {% include 'comp/pager.twig' with {'path': 'home'} %}
+            </div>
+        {% else %}
+            <div class="text-center text-muted"><i>{{ lang('no_media') }}</i></div>
+        {% endif %}
+    </div>
+    {% include 'comp/modal_vanity.twig' %}
+    
+{% endblock %}
