@@ -28,10 +28,7 @@
                                                     {% else %}
                                                         <a class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
                                                     {% endif %}
-<<<<<<< HEAD
                                                     <button class="btn btn-primary btn-sm public-vanity" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star"></i></button>
-=======
->>>>>>> b4f720cf218b71a0b982c837b986b8b977597421
                                                     <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
