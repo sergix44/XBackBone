@@ -1,0 +1,60 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('password_recovery') }}{% endblock %}
+
+{% block head %}
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            display: -ms-flexbox;
+            display: -webkit-box;
+            display: flex;
+            -ms-flex-align: center;
+            -ms-flex-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            padding-bottom: 40px;
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form class="form-signin" method="post" action="{{ route('recover.mail') }}">
+            {% if recaptcha_site_key is not null %}
+                <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+            {% endif %}
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <h1 class="h3 mb-3 font-weight-normal">{{ config.app_name }}</h1>
+                    {% include 'comp/alert.twig' %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="email" class="sr-only">{{ lang('email') }}</label>
+                    <input type="email" id="email" class="form-control" placeholder="mail@example.com" name="email" required autofocus>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ lang('password_recovery') }}</button>
+                    <div class="text-center mt-2">
+                        <a href="{{ route('login.show') }}">{{ lang('cancel') }}</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block js %}
+    {% if recaptcha_site_key is not null %}
+        {% include 'comp/recaptcha.twig' %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,58 @@
+<nav class="navbar navbar-dark bg-primary navbar-expand-md mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{{ route('root') }}">{{ config.app_name }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="{{ route('home') }}" class="nav-link {{ inPath(request.uri.path, '/home') ? 'active' }}"><i class="fas fa-fw fa-home"></i>
+                        {{ lang('home') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('upload.web.show') }}" class="nav-link {{ inPath(request.uri.path, '/upload') ? 'active' }}"><i class="fas fa-fw fa-upload"></i>
+                        {{ lang('upload') }}
+                    </a>
+                </li>
+                {% if session.get('admin') %}
+                    <li class="nav-item">
+                        <a href="{{ route('user.index') }}" class="nav-link {{ inPath(request.uri.path, '/user') ? 'active' }}"><i class="fas fa-fw fa-users"></i>
+                            {{ lang('users') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('system') }}" class="nav-link {{ inPath(request.uri.path, '/system') ? 'active' }}"><i class="fas fa-fw fa-cog"></i>
+                            {{ lang('system') }}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-fw fa-user"></i> {{ session.get('username') }}
+                    </a>
+                    <div class="dropdown-menu shadow-sm" aria-labelledby="userDropdown">
+                        <a class="dropdown-item disabled" href="javascript:void(0)">{{ lang('used') }}: {{ session.get('current_disk_quota') }}{% if session.get('max_disk_quota') %}/{{ session.get('max_disk_quota') }}{% endif %}</a>
+                        {% if session.get('percent_disk_quota') is not null %}
+                            <a class="dropdown-item disabled" href="javascript:void(0)">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ session.get('percent_disk_quota') }}%" aria-valuenow="{{ session.get('percent_disk_quota') }}" aria-valuemin="0" aria-valuemax="100">{{ session.get('percent_disk_quota') }}%</div>
+                                </div>
+                            </a>
+                        {% endif %}
+                        
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route('switchView') }}"><i class="fas fa-fw fa-sync"></i> {{ lang('switch_to') }}: {{ (session.get('gallery_view') is null and session.get('admin')) or session.get('gallery_view') ? lang('gallery') : lang('table') }}</a>
+                        
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-fw fa-user"></i> {{ lang('profile') }}</a>
+                        <a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-fw fa-sign-out-alt"></i> {{ lang('logout') }}</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

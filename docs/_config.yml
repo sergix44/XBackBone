@@ -1,0 +1,8 @@
+remote_theme: pmarsceill/just-the-docs
+logo: "img/xbackbone.png"
+title: "XBackBone"
+aux_links:
+  "Star me on GitHub":
+    - "//github.com/SergiX44/XBackBone"
+footer_content: "Copyright &copy; 2020 Sergio Brighenti. Distributed under <a href=\"https://github.com/SergiX44/XBackBone/blob/master/LICENSE\">AGPL v3.0 license.</a>"
+ga_tracking: UA-55470316-7

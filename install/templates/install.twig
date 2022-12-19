@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>XBackBone Installer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="XBackBone Installer">
+
+    <link href="../static/bootstrap/css/bootstrap.min.css?{{ 'now'|date('U') }}" rel="stylesheet">
+    <link href="../static/fontawesome/css/all.min.css?{{ 'now'|date('U') }}" rel="stylesheet">
+    <link href="../static/app/app.css?{{ 'now'|date('U') }}" rel="stylesheet">
+
+    <script src="../static/jquery/jquery.min.js?{{ 'now'|date('U') }}"></script>
+    <script src="../static/bootstrap/js/bootstrap.bundle.min.js?{{ 'now'|date('U') }}"></script>
+    <script src="installer.js?{{ 'now'|date('U') }}"></script>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="mt-4">
+        {% include 'comp/alert.twig' %}
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-3 shadow-sm">
+                <div class="card-header">Install XBackBone</div>
+                <div class="card-body">
+                    <form method="post" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                        {% if not installed %}
+                            <div class="form-group row">
+                                <label for="base_url" class="col-sm-3 col-form-label">Base URL</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="base_url" name="base_url" value="{{ config.base_url }}" autocomplete="off" required>
+                                    <small>No trailing slash.</small>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="connection" class="col-sm-3 col-form-label">SQL Engine</label>
+                                <div class="col-sm-9">
+                                    <select name="connection" id="connection" required class="form-control">
+                                        <option value="sqlite" selected>SQLite</option>
+                                        <option value="mysql">MySQL</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="dsn" class="col-sm-3 col-form-label">Database Source Name (DSN)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="dsn" name="dsn" value="{{ config.db.dsn }}" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row hook-database">
+                                <label for="db_user" class="col-sm-3 col-form-label">Database Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-database-input" id="db_user" name="db_user" value="db_user" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row hook-database">
+                                <label for="db_password" class="col-sm-3 col-form-label">Database Password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control hook-database-input" id="db_password" name="db_password" autocomplete="off">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="storage_driver" class="col-sm-3 col-form-label">Storage Driver</label>
+                                <div class="col-sm-9">
+                                    <select id="storage_driver" name="storage_driver" class="form-control" required>
+                                        <option value="local">Local Storage</option>
+                                        <option value="ftp">FTP/FTPS</option>
+                                        <option value="s3">Amazon S3 (or compatible)</option>
+                                        <option value="google-cloud">Google Cloud Storage</option>
+                                        <option value="azure">Azure Blob Storage</option>
+                                        <option value="dropbox">Dropbox</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_path" class="col-sm-3 col-form-label">Storage path root</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_path" name="storage_path" autocomplete="off" data-default-local="{{ config.storage.path }}">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_key" class="col-sm-3 col-form-label">AWS S3 key</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_key" name="storage_key" placeholder="your-key" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_secret" class="col-sm-3 col-form-label">AWS S3 secret</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_secret" name="storage_secret" placeholder="your-secret" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_region" class="col-sm-3 col-form-label">AWS S3 region</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_region" name="storage_region" placeholder="your-region" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_region" class="col-sm-3 col-form-label">AWS S3 endpoint</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_endpoint" name="storage_endpoint" placeholder="optional (for S3-compatible services)" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_token" class="col-sm-3 col-form-label">Dropbox token</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_token" name="storage_token" placeholder="authorization-token" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_host" class="col-sm-3 col-form-label">FTP host</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_host" name="storage_host" placeholder="127.0.0.1" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_username" class="col-sm-3 col-form-label">FTP username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_username" name="storage_username" placeholder="username" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_password" class="col-sm-3 col-form-label">FTP password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control hook-storage-input" id="storage_password" name="storage_password" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_port" class="col-sm-3 col-form-label">FTP port</label>
+                                <div class="col-sm-9">
+                                    <input type="number" min="0" max="65535" class="form-control hook-storage-input" id="storage_port" name="storage_port" placeholder="21" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_passive" class="col-sm-3 col-form-label">FTP passive mode</label>
+                                <div class="col-sm-9">
+                                    <select name="storage_passive" id="storage_passive" class="form-control hook-storage-input">
+                                        <option value="1" selected>Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_ssl" class="col-sm-3 col-form-label">FTP SSL enabled</label>
+                                <div class="col-sm-9">
+                                    <select name="storage_ssl" id="storage_ssl" class="form-control hook-storage-input">
+                                        <option value="1">Yes</option>
+                                        <option value="0" selected>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_project_id" class="col-sm-3 col-form-label">Google project id</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_project_id" name="storage_project_id" placeholder="your-project-id" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_key_path" class="col-sm-3 col-form-label">Google key path</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_key_path" name="storage_key_path" placeholder="/path/to/service-account.json" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_account_name" class="col-sm-3 col-form-label">Azure storage account name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_account_name" name="storage_account_name" placeholder="your-storage-account-name" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_account_key" class="col-sm-3 col-form-label">Azure storage account key</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_account_key" name="storage_account_key" placeholder="Account (Access) Key" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_container_name" class="col-sm-3 col-form-label">Azure storage container name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_container_name" name="storage_container_name" placeholder="your-blob-container-name" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row hook-storage">
+                                <label for="storage_bucket" class="col-sm-3 col-form-label">Storage bucket</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control hook-storage-input" id="storage_bucket" name="storage_bucket" placeholder="your-bucket-name" autocomplete="off">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label">Admin email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-3 col-form-label">Admin password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="password" placeholder="Password" name="password" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row justify-content-md-end">
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="fas fa-save fa-fw"></i> Install
+                                    </button>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="form-group row">
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-lg btn-outline-primary">
+                                        <i class="fas fa-sync fa-fw"></i> Finalize update
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Please wait...</h6>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-10x fa-spinner fa-pulse"></i>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

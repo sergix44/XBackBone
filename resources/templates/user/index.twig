@@ -1,0 +1,86 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('users') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-right">
+                    <a href="{{ route('user.create') }}" class="btn btn-outline-success mb-3"><i class="fas fa-plus"></i> {{ lang('user.create') }}</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>{{ lang('username') }}</th>
+                            <th>{{ lang('user_code') }}</th>
+                            <th>{{ lang('used_space') }}</th>
+                            <th>{{ lang('active') }}</th>
+                            {% if config.ldap.enabled %}
+                                <th>{{ lang('LDAP') }}</th>
+                            {% endif %}
+                            <th>{{ lang('admin') }}</th>
+                            <th>{{ lang('reg_date') }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>#{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>
+                                    <pre>{{ user.user_code|default(lang('none')) }}</pre>
+                                </td>
+                                <td>{{ humanFileSize(user.current_disk_quota) }}{% if quota_enabled == 'on' %}/{{ user.max_disk_quota > 0 ? humanFileSize(user.max_disk_quota) : '∞' }}{% endif %}</td>
+                                <td class="text-center">
+                                    {% if user.active %}
+                                        <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                                    {% else %}
+                                        <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                                    {% endif %}
+                                </td>
+                                {% if config.ldap.enabled %}
+                                    <td class="text-center">
+                                        {% if user.ldap %}
+                                            <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                                        {% else %}
+                                            <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                                <td class="text-center">
+                                    {% if user.is_admin %}
+                                        <span class="badge badge-success"><i class="fas fa-check"></i></span>
+                                    {% else %}
+                                        <span class="badge badge-danger"><i class="fas fa-times"></i></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ user.registration_date|date("d/m/Y H:i:s") }}
+                                </td>
+                                <td class="text-right">
+                                    <div class="btn-group">
+                                        <a href="{{ route('user.edit', {'id': user.id}) }}" class="btn btn-outline-warning" data-toggle="tooltip" title="{{ lang('edit') }}"><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="javascript:void(0)" class="btn btn-outline-danger user-delete" data-link="{{ route('user.delete', {'id': user.id}) }}" data-toggle="tooltip" title="{{ lang('delete') }}"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-center">
+                    {% include 'comp/pager.twig' with {'path': 'users'} %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'comp/modal_delete.twig' %}
+{% endblock %}

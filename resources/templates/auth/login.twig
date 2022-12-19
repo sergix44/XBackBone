@@ -1,0 +1,72 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('login') }}{% endblock %}
+
+{% block head %}
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            display: -ms-flexbox;
+            display: -webkit-box;
+            display: flex;
+            -ms-flex-align: center;
+            -ms-flex-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            padding-bottom: 40px;
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form class="form-signin" method="post" action="{{ route('login') }}">
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <h1 class="h3 mb-3 font-weight-normal">{{ config.app_name }}</h1>
+                    {% include 'comp/alert.twig' %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% if recaptcha_site_key is not null %}
+                        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                    {% endif %}
+                    <label for="username" class="sr-only">{{ lang('login.username') }}</label>
+                    <input type="text" id="username" class="form-control first" placeholder="{{ lang('login.username') }}" name="username" required autofocus>
+                    <label for="password" class="sr-only">{{ lang('password') }}</label>
+                    <input type="password" id="password" class="form-control last" placeholder="{{ lang('password') }}" name="password" required>
+                    <div class="d-flex justify-content-between">
+                        <div class="form-check">
+                            <input type="checkbox" name="remember" class="form-check-input float-left" id="remember">
+                            <label class="form-check-label" for="remember">{{ lang('remember_me') }}</label>
+                        </div>
+                        <a href="{{ route('recover') }}" class="">{{ lang('password_recovery') }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ lang('login') }}</button>
+                    {% if register_enabled == 'on' %}
+                    <div class="text-center mt-2">
+                        {{ lang('no_account') }} <a href="{{ route('register.show') }}">{{ lang('register') }}</a>.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% if recaptcha_site_key is not null %}
+        {% include 'comp/recaptcha.twig' %}
+    {% endif %}
+{% endblock %}

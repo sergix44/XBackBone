@@ -1,0 +1,136 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ profile ? lang('your_profile') : lang('user.edit') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm">
+                    {% if not profile %}
+                        <div class="card-header">{{ lang('user.edit') }}</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <form method="post" action="{{ route( (profile ? 'profile.update' : 'user.update'), {'id': user.id}) }}">
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" value="{{ user.email }}" autocomplete="off" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-3 col-form-label">{{ lang('username') }}</label>
+                                <div class="col-sm-9">
+                                    {% if profile %}
+                                        <input type="text" class="form-control disabled" id="username" value="{{ user.username }}" readonly>
+                                    {% else %}
+                                        <input type="text" class="form-control" id="username" placeholder="{{ lang('username') }}" name="username" value="{{ user.username }}" autocomplete="off" required>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-3 col-form-label">{{ lang('password') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="password" placeholder="{{ lang('password') }}" name="password" autocomplete="off"{{ user.ldap ? ' disabled' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="token" class="col-sm-3 col-form-label">{{ lang('token') }}</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group">
+                                        <input type="text" id="token" class="form-control privacy-blur" value="{{ user.token }}" readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-success btn-clipboard" type="button" data-clipboard-target="#token"><i class="fas fa-fw fa-copy"></i> {{ lang('copy') }}</button>
+                                            <button class="btn btn-outline-primary refresh-token" data-id="{{ user.id }}" type="button"><i class="fas fa-fw fa-sync"></i> {{ lang('update') }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hide_uploads" class="col-sm-3 col-form-label">{{ lang('hide_by_default') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="hide_uploads" data-toggle="toggle" {{ user.hide_uploads ? 'checked' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="copy_raw" class="col-sm-3 col-form-label">{{ lang('copy_url_behavior') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="copy_raw" data-toggle="toggle" data-off="Default URL" data-on="Raw URL" data-onstyle="primary" data-offstyle="secondary" {{ user.copy_raw ? 'checked' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ lang('client_config') }}</label>
+                                <div class="col-sm-9">
+                                    <div class="btn-group">
+                                        <a href="{{ route('config.sharex', {'id': user.id}) }}" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX</a>
+                                        <a href="javascript:alert('{{ lang('copied') }}')" data-clipboard-text="{{ route('config.screencloud', {'token': user.token}) }}" class="btn btn-lg btn-outline-info btn-clipboard"><i class="fas fa-fw fa-download"></i> Screencloud</a>
+                                        <a href="{{ route('config.script', {'id': user.id}) }}" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-download"></i> Linux Script</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ lang('export_data') }}</label>
+                                <div class="col-sm-9">
+                                    <div class="btn-group">
+                                        <a href="{{ route('export.data', {'id': user.id}) }}" class="btn btn-lg btn-outline-warning"><i class="fas fa-fw fa-file-archive"></i> {{ lang('download') }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if not profile %}
+                                <h6 class="text-danger">{{ lang('danger_zone') }}</h6>
+                                <hr>
+
+                                <div class="form-group row">
+                                    <label for="is_admin" class="col-sm-3 col-form-label">{{ lang('is_admin') }}</label>
+                                    <div class="col-sm-9">
+                                        <input type="checkbox" name="is_admin" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.is_admin ? 'checked' }}>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="is_active" class="col-sm-3 col-form-label">{{ lang('is_active') }}</label>
+                                    <div class="col-sm-9">
+                                        <input type="checkbox" name="is_active" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.active ? 'checked' }}>
+                                    </div>
+                                </div>
+                                {% if config.ldap.enabled %}
+                                    <div class="form-group row">
+                                        <label for="ldap" class="col-sm-3 col-form-label">LDAP Auth</label>
+                                        <div class="col-sm-9">
+                                            <input type="checkbox" name="ldap" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.ldap ? 'checked' }}>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if quota_enabled == 'on' %}
+                                    <div class="form-group row">
+                                        <label for="max_user_quota" class="col-sm-3 col-form-label">{{ lang('max_user_quota') }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="max_user_quota" name="max_user_quota" pattern="([0-9]+[K|M|G|T])|(\-1)" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ max_disk_quota }}" required>
+                                            <small>512M, 2G, 1T, ... (-1=∞)</small>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">{{ lang('delete_all') }}</label>
+                                    <div class="col-sm-9">
+                                        <div class="btn-group">
+                                            <a href="{{ route('user.clear', {'id': user.id}) }}" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-recycle"></i> {{ lang('clear_account') }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="form-group row justify-content-md-end">
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-outline-info">
+                                        <i class="fas fa-save fa-fw"></i> {{ lang('save') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

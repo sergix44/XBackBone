@@ -1,0 +1,45 @@
+#!/usr/bin/env php
+<?php
+((PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 3) || PHP_MAJOR_VERSION > 7) ?: die('Sorry, PHP 7.3 or above is required to run XBackBone.');
+if (PHP_SAPI !== 'cli') {
+    die();
+}
+
+use App\Database\Migrator;
+use DI\ContainerBuilder;
+
+require __DIR__.'/../vendor/autoload.php';
+
+define('BASE_DIR', realpath(__DIR__.'/../').DIRECTORY_SEPARATOR);
+
+$config = include __DIR__.'/../config.php';
+
+if (!$config) {
+    die('config.php not found. Please create a new one.');
+}
+
+chdir(BASE_DIR);
+
+$builder = new ContainerBuilder();
+$builder->addDefinitions(BASE_DIR.'bootstrap/container.php');
+
+$container = $builder->build();
+$container->set('config', $config);
+
+$db = $container->get('database');
+
+$migrator = new Migrator($db, 'resources/schemas');
+$migrator->migrate();
+$migrator->reSyncQuotas($container->get('storage'));
+
+if (isset($argv[1]) && $argv[1] === '--install') {
+    $db->query("INSERT INTO `users` (`email`, `username`, `password`, `is_admin`, `user_code`) VALUES ('admin@example.com', 'admin', ?, 1, ?)", [password_hash('admin', PASSWORD_DEFAULT), humanRandomString(5)]);
+}
+
+if (file_exists(__DIR__.'/../install') && (!isset($config['debug']) || !$config['debug'])) {
+    removeDirectory(__DIR__.'/../install');
+}
+
+echo 'If you are upgrading from a previous version, please run a "php bin' . DIRECTORY_SEPARATOR . 'clean".'.PHP_EOL;
+echo 'Done.'.PHP_EOL;
+exit(0);

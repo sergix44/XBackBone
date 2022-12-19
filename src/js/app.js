@@ -72,7 +72,6 @@ var app = {
         })
     },
     publishToggle: function () {
-        console.error('publishToggle');
         var id = $(this).data('id');
         var $callerButton = $(this);
         var isOutline = false;
@@ -105,7 +104,6 @@ var app = {
         }
     },
     mediaDelete: function () {
-        console.log('mediaDelete');
         var id = $(this).data('id');
         var $callerButton = $(this);
         $.post(window.AppConfig.base_url + '/upload/' + id + '/delete', function () {

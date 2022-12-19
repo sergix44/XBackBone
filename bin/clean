@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+((PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 3) || PHP_MAJOR_VERSION > 7) ?: die('Sorry, PHP 7.3 or above is required to run XBackBone.');
+if (PHP_SAPI !== 'cli') {
+	die();
+}
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$action = isset($argv[1]) ? $argv[1] : 'all';
+
+switch ($action) {
+	case 'cache':
+		cleanDirectory(__DIR__ . '/../resources/cache');
+		break;
+	case 'sessions':
+		cleanDirectory(__DIR__ . '/../resources/sessions');
+		break;
+	case 'all':
+		cleanDirectory(__DIR__ . '/../resources/cache');
+		cleanDirectory(__DIR__ . '/../resources/sessions');
+		break;
+	case 'help':
+	default:
+		echo 'Usage: php ' . $argv[0] . ' <cache|sessions|all|help>' . PHP_EOL;
+}
+
+exit(0);

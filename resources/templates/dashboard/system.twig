@@ -1,0 +1,224 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('system') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-success text-white h-100 shadow-sm">
+                    <div class="card-body bg-success">
+                        <div class="rotate">
+                            <i class="fas fa-users fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">{{ lang('users') }}</h6>
+                        <h1 class="display-4 system-tile">{{ usersCount }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-danger text-white h-100 shadow-sm">
+                    <div class="card-body bg-danger">
+                        <div class="rotate">
+                            <i class="fas fa-weight fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">{{ lang('size') }}</h6>
+                        <h1 class="display-4 system-tile">{{ totalSize }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-warning text-white h-100 shadow-sm">
+                    <div class="card-body bg-warning">
+                        <div class="rotate">
+                            <i class="fas fa-upload fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">{{ lang('files') }}</h6>
+                        <h1 class="display-4 system-tile">{{ mediasCount }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card bg-dark text-white h-100 shadow-sm">
+                    <div class="card-body bg-dark">
+                        <div class="rotate">
+                            <i class="fas fa-unlink fa-3x"></i>
+                        </div>
+                        <h6 class="text-uppercase">{{ lang('orphaned_files') }}</h6>
+                        <h1 class="display-4 system-tile">{{ orphanFilesCount }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header"><i class="fas fa-cog fa-fw"></i> {{ lang('system_settings') }}</div>
+                    <div class="card-body">
+                        <form method="post" action="{{ route('settings.save') }}">
+                            <div class="form-group row">
+                                <label for="register_enabled" class="col-sm-4 col-form-label">{{ lang('register_enabled') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="register_enabled" data-toggle="toggle" {{ settings.register_enabled == 'on' ? 'checked' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="auto_tagging" class="col-sm-4 col-form-label">{{ lang('auto_tagging') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="auto_tagging" data-toggle="toggle" {{ settings.auto_tagging == 'on' ? 'checked' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="image_embeds" class="col-sm-4 col-form-label">{{ lang('image_embeds') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="image_embeds" data-toggle="toggle" {{ settings.image_embeds == 'on' ? 'checked' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="themes" class="col-sm-4 col-form-label">{{ lang('theme') }}</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="themes" name="css">
+                                        <option id="theme-load" selected disabled hidden>{{ lang('click_to_load') }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="lang" class="col-sm-4 col-form-label">{{ lang('enforce_language') }}</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="lang" name="lang">
+                                        <option value="auto">({{ lang('auto_set') }})</option>
+                                        {% for lang, name in installed_lang %}
+                                            <option value="{{ lang }}"{{ forced_lang == lang ? ' selected' }}>{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small>{{ lang('default_lang_behavior') }}</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="custom_head" class="col-sm-4 col-form-label">{{ lang('custom_head_html') }}</label>
+                                <div class="col-sm-8">
+                                    <textarea name="custom_head" class="form-control text-monospace">{{ settings.custom_head|raw }}</textarea>
+                                    <small>{{ lang('custom_head_html_hint') }}</small>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="quota_enabled" class="col-sm-4 col-form-label">{{ lang('quota_enabled') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="quota_enabled" data-toggle="toggle" {{ settings.quota_enabled == 'on' ? 'checked' }} onchange="document.getElementById('default_user_quota').toggleAttribute('readonly')">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="default_user_quota" class="col-sm-4 col-form-label">{{ lang('default_user_quota') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="default_user_quota" name="default_user_quota" pattern="[0-9]+[K|M|G|T]" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ settings.default_user_quota }}" {{ settings.quota_enabled == 'off' ? 'readonly' }}>
+                                    <small>512M, 2G, 1T, ...</small>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="recaptcha_enabled" class="col-sm-4 col-form-label">{{ lang('recaptcha_enabled') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="recaptcha_enabled" data-toggle="toggle" {{ settings.recaptcha_enabled == 'on' ? 'checked' }} onchange="document.getElementById('recaptcha_site_key').toggleAttribute('readonly');document.getElementById('recaptcha_secret_key').toggleAttribute('readonly')">
+                                    <br><small>{{ lang('only_recaptcha_v3') }}</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="recaptcha_site_key" class="col-sm-4 col-form-label">{{ lang('recaptcha_site_key') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="recaptcha_site_key" name="recaptcha_site_key" value="{{ settings.recaptcha_site_key }}" {{ settings.recaptcha_enabled == 'off' ? 'readonly' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="recaptcha_secret_key" class="col-sm-4 col-form-label">{{ lang('recaptcha_secret_key') }}</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="recaptcha_secret_key" name="recaptcha_secret_key" value="{{ settings.recaptcha_secret_key }}" {{ settings.recaptcha_enabled == 'off' ? 'readonly' }}>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-outline-success float-right mt-3">
+                                <i class="fas fa-save fa-fw"></i> {{ lang('apply') }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header"><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('updates') }} <span class="float-right">v{{ PLATFORM_VERSION }}</span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-block btn-outline-info checkForUpdatesButton" data-prerelease="false"><i class="fas fa-sync fa-fw"></i> {{ lang('check_for_updates') }}</button>
+                                    <button type="button" class="btn btn-outline-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item checkForUpdatesButton" href="javascript:void(0);" data-prerelease="true">{{ lang('prerelease_channel') }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col text-center"><span class="text-muted" id="checkForUpdatesMessage"></span></div>
+
+                            <div class="col">
+                                <form method="post" action="{{ route('system.upgrade') }}" onsubmit="$('#modalLoading').modal({backdrop: 'static', keyboard: false})">
+                                    <button type="submit" id="doUpgradeButton" class="btn btn-block btn-outline-success" disabled><i class="fas fa-cloud-download-alt fa-fw"></i> {{ lang('upgrade') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ route('system.changelog') }}">{{ lang('show_changelog') }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-3">
+                <div class="card shadow-sm">
+                    <div class="card-header"><i class="fab fa-php fa-fw"></i> {{ lang('php_info') }}</div>
+                    <div class="card-body">
+                        <strong>PHP Version:</strong> {{ php_version }}<br>
+                        <strong>Max memory usage:</strong> {{ max_memory }}<br>
+                        <strong>Max upload size:</strong>
+                        <ul>
+                            <li><code>post_max_size</code>: {{ post_max_size }}</li>
+                            <li><code>upload_max_filesize</code>: {{ upload_max_filesize }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header"><i class="fas fa-tools fa-fw"></i> {{ lang('maintenance') }}</div>
+                    <div class="card-body">
+                        <a href="{{ route('system.deleteOrphanFiles') }}" class="btn btn-outline-danger btn-block"><i class="fas fa-broom fa-fw"></i> {{ lang('clean_orphaned_uploads') }}</a>
+                        <a href="{{ route('system.recalculateUserQuota') }}" class="btn btn-outline-info btn-block"><i class="fas fa-calculator fa-fw"></i> {{ lang('recalculate_user_quota') }}</a>
+                    </div>
+                </div>
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header"><i class="fas fa-donate fa-fw"></i> {{ lang('donation') }}</div>
+                    <div class="card-body">
+                        <p class="text-justify">{{ lang('donate_text') }}</p>
+                        <div class="text-center">
+                            <a href="https://github.com/sponsors/SergiX44" target="_blank" class="text-dark"><i class="fab fa-github-square fa-3x"></i></a>
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6RXF8ZGCZBL68&item_name=Support+the+XBackBone+Development&currency_code=EUR&source=url" target="_blank" class="text-warning"><i class="fab fa-cc-paypal fa-3x"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">{{ lang('please_wait') }}</h6>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-10x fa-spinner fa-pulse"></i>
+                </div>
+                <div class="modal-footer">
+                    {{ lang('dont_close') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

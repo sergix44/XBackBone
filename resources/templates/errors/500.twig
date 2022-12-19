@@ -1,0 +1,30 @@
+{% extends 'base.twig' %}
+
+{% block title %}Internal Server Error{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-5">
+        <div class="text-center">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="display-1">500 Internal Server Error</h1>
+                    <p class="lead">Unexpected error while handling the request.</p>
+                </div>
+            </div>
+        </div>
+        {% if exception is not null %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header"><strong><code>{{ exception.getMessage }} (Line {{ exception.getLine }}
+                                    in file {{ exception.getFile }})</code></strong></div>
+                        <div class="card-body">
+                            <pre><code>{{ exception.getTraceAsString }}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php"
+         colors="true"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         stopOnFailure="false"
+         cacheResult="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true">
+    <testsuites>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">app</directory>
+            <exclude>
+                <file>app/routes.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="./coverage"
+             lowUpperBound="70"
+             highLowerBound="90"/>
+    </logging>
+    <php>
+        <server name="HTTP_HOST" value="localhost"/>
+        <server name="HTTPS" value="false"/>
+    </php>
+</phpunit>

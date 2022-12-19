@@ -1,0 +1,22 @@
+{% if previous or next %}
+    <nav>
+        <ul class="pagination">
+            {% if previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ urlFor('/' ~ path ~ '/page/' ~ (current_page-1), queryParams()) }}"><i class="fas fa-angle-left fa-fw"></i> {{ lang('pager.previous') }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#"><i class="fas fa-angle-left fa-fw"></i> {{ lang('pager.previous') }}</a></li>
+            {% endif %}
+
+            {% if next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ urlFor('/' ~ path ~ '/page/' ~ (current_page+1), queryParams()) }}">{{ lang('pager.next') }} <i class="fas fa-angle-right fa-fw"></i></a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">{{ lang('pager.next') }} <i class="fas fa-angle-right fa-fw"></i></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

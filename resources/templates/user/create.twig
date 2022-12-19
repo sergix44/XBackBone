@@ -1,0 +1,87 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('user.create') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm">
+                    <div class="card-header">{{ lang('user.create') }}</div>
+                    <div class="card-body">
+                        <form method="post" action="{{ route('user.store') }}">
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label">E-Mail</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" autocomplete="off" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label">{{ lang('username') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="username" placeholder="{{ lang('username') }}" name="username" autocomplete="off" required >
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-3 col-form-label">{{ lang('password') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="password" placeholder="{{ lang('password') }}" name="password" autocomplete="off">
+                                    <small>{{ lang('user_create_password') }}</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hide_uploads" class="col-sm-3 col-form-label">{{ lang('hide_by_default') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="hide_uploads" data-toggle="toggle">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="copy_raw" class="col-sm-3 col-form-label">{{ lang('copy_url_behavior') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="copy_raw" data-toggle="toggle" data-off="Default URL" data-on="Raw URL" data-onstyle="primary" data-offstyle="secondary">
+                                </div>
+                            </div>
+                            {% if quota_enabled == 'on' %}
+                            <div class="form-group row">
+                                <label for="max_user_quota" class="col-sm-3 col-form-label">{{ lang('max_user_quota') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="max_user_quota" name="max_user_quota" pattern="([0-9]+[K|M|G|T])|(\-1)" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ default_user_quota }}" required>
+                                    <small>512M, 2G, 1T, ... (-1=∞)</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="form-group row">
+                                <label for="is_admin" class="col-sm-3 col-form-label">{{ lang('is_admin') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="is_admin" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="is_active" class="col-sm-3 col-form-label">{{ lang('is_active') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="is_active" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" checked>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="send_notification" class="col-sm-3 col-form-label">{{ lang('send_notification') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" name="send_notification" data-toggle="toggle" data-onstyle="info" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}">
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-md-end">
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="fas fa-save fa-fw"></i> {{ lang('save') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

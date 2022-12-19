@@ -1,0 +1,36 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('upload') }}{% endblock %}
+
+{% block content %}
+    {% include 'comp/navbar.twig' %}
+    <div class="container">
+        {% include 'comp/alert.twig' %}
+        <div class="alert alert-success alert-permanent">
+            {{ lang('upload_max_file_size', [max_file_size]) }}
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-10">
+                        <div class="progress h-100">
+                            <div class="progress-bar progress-bar-animated progress-bar-striped" style="width: 0;" id="uploadProgess"></div>
+                        </div>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-block" onclick="Dropzone.instances[0].removeAllFiles(true)" data-toggle="tooltip" title="{{ lang('cancel') }}"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <form action="{{ route('upload.web') }}" method="post" id="upload-dropzone" class="dropzone">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

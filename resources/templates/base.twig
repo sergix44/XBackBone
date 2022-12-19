@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="{{ current_lang }}">
+<head>
+    <title>{% block title %}Default{% endblock %} | {{ config.app_name }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{ config.app_name }} - Proudly powered by XBackBone.">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/static/images/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/static/images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/static/images/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('/static/images/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('/static/images/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ asset('/static/images/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#603cba">
+    <meta name="msapplication-config" content="{{ asset('/static/images/browserconfig.xml') }}">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preload" href="{{ asset('/static/bootstrap/css/bootstrap.min.css') }}" as="style">
+    <link rel="preload" href="{{ asset('/static/fontawesome/css/all.min.css') }}" as="style">
+    <link rel="preload" href="{{ asset('/static/app/app.css') }}" as="style">
+    <link rel="preload" href="{{ asset('/static/jquery/jquery.min.js') }}" as="script">
+    <link rel="preload" href="{{ asset('/static/bootstrap/js/bootstrap.bundle.min.js') }}" as="script">
+    <link rel="preload" href="{{ asset('/static/app/app.js') }}" as="script">
+    <link href="{{ asset('/static/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/static/fontawesome/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/static/highlightjs/styles/monokai.css') }}" rel="stylesheet">
+    <link href="{{ asset('/static/plyr/plyr.css') }}" rel="stylesheet">
+    <link href="{{ asset('/static/dropzone/dropzone.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/static/bootstrap/css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/static/app/app.css') }}" rel="stylesheet">
+    {% block meta %}
+        <meta id="embed-title" property="og:title" content="{{ block('title') }}">
+        <meta id="discord" name="twitter:image" content="{{ asset('/static/images/favicon-32x32.png') }}">
+        <meta id="image-src" name="twitter:image:src" content="{{ asset('/static/images/favicon-32x32.png') }}">
+        <meta id="embed-image" property="og:image" content="{{ asset('/static/images/favicon-32x32.png') }}">
+        <meta id="embed-desc" property="og:description" content="Proudly powered by XBackBone">
+    {% endblock %}
+    <script>
+        window.AppConfig = {
+            'base_url': '{{ urlFor() }}',
+            'max_upload_size': {{ maxUploadSize }},
+            'lang': {'publish': '{{ lang('publish') }}', 'hide': '{{ lang('hide') }}', 'dropzone': '{{ lang('drop_to_upload') }}'}
+        }
+    </script>
+    {% block head %}{% endblock %}
+    {{ customHead|raw }}
+</head>
+<body class="bg-light">
+{% block content %}{% endblock %}
+{% block footer %}
+    <div class="container-fluid footer" style="display: none; font-size: 0.8rem">
+        <div class="text-muted">Proudly powered by <a href="https://sergix44.github.io/XBackBone/">XBackBone{% if session.get('admin') %} v{{ PLATFORM_VERSION }}{% endif %}</a> — <i class="fas fa-fw fa-balance-scale"></i> AGPL v3.0</div>
+    </div>
+{% endblock %}
+<script src="{{ asset('/static/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('/static/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('/static/highlightjs/highlight.pack.min.js') }}"></script>
+<script src="{{ asset('/static/highlightjs/highlightjs-line-numbers.min.js') }}"></script>
+<script src="{{ asset('/static/clipboardjs/clipboard.min.js') }}"></script>
+<script src="{{ asset('/static/plyr/plyr.min.js') }}"></script>
+<script src="{{ asset('/static/dropzone/dropzone.min.js') }}"></script>
+<script src="{{ asset('/static/bootstrap/js/bootstrap4-toggle.min.js') }}"></script>
+<script src="{{ asset('/static/app/app.js') }}"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad({
+        singleLine: true
+    });
+</script>
+{% block js %}{% endblock %}
+</body>
+</html>

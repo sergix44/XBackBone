@@ -1,0 +1,16 @@
+{% extends 'base.twig' %}
+
+{% block title %}Not Found{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-5">
+        <div class="text-center">
+            <h1 class="display-1">404 Not Found</h1>
+            <p class="lead">Cannot find the requested resource.</p>
+            <button type="button" class="btn btn-lg btn-outline-secondary" onclick="window.history.back()">
+                <i class="fas fa-arrow-left fa-fw"></i> Back
+            </button>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}
