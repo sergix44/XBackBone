@@ -78,10 +78,7 @@
                                                     {% else %}
                                                         <a href="javascript:void(0)" class="btn btn-sm btn-outline-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
                                                     {% endif %}
-<<<<<<< HEAD
                                                     <a href="javascript:void(0)" class="btn btn-sm btn-outline-info public-vanity" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star"></i></a>
-=======
->>>>>>> b4f720cf218b71a0b982c837b986b8b977597421
                                                     <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}"><i class="fas fa-trash"></i></a>
                                                 </div>
                                             </td>
