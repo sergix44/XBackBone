@@ -208,7 +208,7 @@ class MediaController extends Controller
                 'SELECT * FROM `uploads` WHERE `id` = ? AND `user_id` = ? LIMIT 1',
                 [$id, $this->session->get('user_id')]
             )->fetch();
-        }        
+        }
 
         $data = $request->getParsedBody();
         $vanity = $data['vanity'];
@@ -216,7 +216,9 @@ class MediaController extends Controller
 
         if (!$media) {
             throw new HttpNotFoundException($request);
-        } else if ($vanity === '' || $media->code === $vanity) {
+        }
+
+        if ($vanity === '' || $media->code === $vanity) {
             throw new HttpBadRequestException($request);
         }
 
