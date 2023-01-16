@@ -1,7 +1,7 @@
 {
   "name": "sergix44/xbackbone",
   "license": "AGPL-3.0-only",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
@@ -13,7 +13,6 @@
     "ext-pdo": "*",
     "ext-zip": "*",
     "erusev/parsedown": "^1.7",
-    "guzzlehttp/psr7": "^1.9.0",
     "intervention/image": "^2.6",
     "league/flysystem": "^1.1.4",
     "league/flysystem-aws-s3-v3": "^1.0",
@@ -23,6 +22,7 @@
     "monolog/monolog": "^1.23",
     "php-di/slim-bridge": "^3.0",
     "sapphirecat/slim4-http-interop-adapter": "^1.0",
+    "slim/psr7": "^1.5",
     "slim/slim": "^4.0",
     "spatie/flysystem-dropbox": "^1.0",
     "superbalist/flysystem-google-storage": "^7.2",

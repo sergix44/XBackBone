@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Database\Repositories\UserRepository;
 use App\Web\UA;
-use GuzzleHttp\Psr7\Stream;
 use Intervention\Image\Constraint;
 use Intervention\Image\ImageManagerStatic as Image;
 use League\Flysystem\FileNotFoundException;
@@ -14,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Psr7\Stream;
 
 class MediaController extends Controller
 {
