@@ -63,11 +63,24 @@ var app = {
         var id = $(this).data('id');
         $('#modalVanity').modal('show');
         $('#modalVanity-link').click(function () {
-            var vanity = $('#modalVanity-input').val();
             var $callerButton = $(this);
-            $.post(window.AppConfig.base_url + '/upload/' + id + '/vanity', {vanity: vanity}, function () {
+            $.post(window.AppConfig.base_url + '/upload/' + id + '/vanity', {vanity: $('#modalVanity-input').val()}, function (data, status) {
                 $callerButton.tooltip('dispose');
-                window.location.href = window.AppConfig.base_url + '/home';
+                $('#modalVanity').modal('hide');
+                $('#modalVanity-input').val('');
+                var data = JSON.parse(data);
+                if ($('#media_' + id).find('.btn-group').length >0) {
+                    $('#media_' + id).find('.btn-group').find('a').each(function (item) {
+                        var oldUrl = $(this).attr('href');
+                        var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), data.code);
+                        $(this).attr('href', newUrl);
+                    })
+                } else {
+                    var oldUrl = window.location.href;
+                    var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), data.code);
+                    window.location.href = newUrl;
+
+                }
             });
         })
     },
