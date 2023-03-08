@@ -164,4 +164,5 @@ return [
     'system_settings' => 'Системные настройки',
     'upload' => 'Выгрузить',
     'php_info' => 'Инфо о PHP',
+    'image_embeds' => 'Встроенные изображения',
 ];
