@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
 {
-
     /** @test */
     public function it_loads_the_login_page()
     {
