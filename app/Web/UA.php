@@ -4,7 +4,6 @@ namespace App\Web;
 
 class UA
 {
-
     /**
      * bot user agent => perform link embed
      * @var string[]
