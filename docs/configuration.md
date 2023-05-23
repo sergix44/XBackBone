@@ -191,19 +191,6 @@ return array(
 );
 ```
 
-+ Azure Blob Storage
-```php
-return array(
-    ...
-    'storage' => array (
-        'driver' => 'azure',
-        'account_name' => 'the-storage-account-name',
-        'account_key' => 'the-account-key',
-        'container_name' => 'container-name',
-    ),
-);
-```
-
 ## Changing themes
 XBackBone supports all [bootswatch.com](https://bootswatch.com/) themes.
 

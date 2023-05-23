@@ -5,6 +5,13 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.6.2] - 2023-05-24
+### Changed
+- Support for PHP 8.2
+
+### Removed
+- Azure blob storage driver
+
 ## [3.6.1] - 2022-11-27
 ### Changed
 - Upgraded dependencies

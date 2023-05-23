@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2c2b4664741843ed87ec6cd68c53f5a",
+    "content-hash": "24e8699d57c1d1ed75785be6aafa0384",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -821,38 +821,44 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.9.1",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b"
+                "reference": "b635f279edd83fc275f822a1188157ffea568ff6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e4490cabc77465aaee90b20cfc9a770f8c04be6b",
-                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/b635f279edd83fc275f822a1188157ffea568ff6",
+                "reference": "b635f279edd83fc275f822a1188157ffea568ff6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0",
-                "psr/http-message": "~1.0",
-                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
+                "php": "^7.2.5 || ^8.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "ralouphie/getallheaders": "^3.0"
             },
             "provide": {
+                "psr/http-factory-implementation": "1.0",
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "ext-zlib": "*",
-                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
+                "bamarni/composer-bin-plugin": "^1.8.1",
+                "http-interop/http-factory-tests": "^0.9",
+                "phpunit/phpunit": "^8.5.29 || ^9.5.23"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
             "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
+                }
+            },
             "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
                 "psr-4": {
                     "GuzzleHttp\\Psr7\\": "src/"
                 }
@@ -891,6 +897,11 @@
                     "name": "Tobias Schultze",
                     "email": "webmaster@tubo-world.de",
                     "homepage": "https://github.com/Tobion"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://sagikazarmark.hu"
                 }
             ],
             "description": "PSR-7 message implementation that also provides common utility methods",
@@ -906,7 +917,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.9.1"
+                "source": "https://github.com/guzzle/psr7/tree/2.5.0"
             },
             "funding": [
                 {
@@ -922,7 +933,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-17T16:00:37+00:00"
+            "time": "2023-04-17T16:11:26+00:00"
         },
         {
             "name": "http-interop/http-factory-guzzle",
@@ -1226,51 +1237,6 @@
             "time": "2022-07-02T13:51:38+00:00"
         },
         {
-            "name": "league/flysystem-azure-blob-storage",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/flysystem-azure-blob-storage.git",
-                "reference": "fbfd44cd758fefa6d3de26a962fba5db663497c4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-azure-blob-storage/zipball/fbfd44cd758fefa6d3de26a962fba5db663497c4",
-                "reference": "fbfd44cd758fefa6d3de26a962fba5db663497c4",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/psr7": "^1.5",
-                "league/flysystem": "^1.0",
-                "microsoft/azure-storage-blob": "^1.1",
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "League\\Flysystem\\AzureBlobStorage\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Frank de Jonge",
-                    "email": "info@frenky.net"
-                }
-            ],
-            "support": {
-                "issues": "https://github.com/thephpleague/flysystem-azure-blob-storage/issues",
-                "source": "https://github.com/thephpleague/flysystem-azure-blob-storage/tree/master"
-            },
-            "time": "2020-08-09T13:19:24+00:00"
-        },
-        {
             "name": "league/flysystem-cached-adapter",
             "version": "1.1.0",
             "source": {
@@ -1451,102 +1417,6 @@
                 }
             ],
             "time": "2020-05-30T13:11:16+00:00"
-        },
-        {
-            "name": "microsoft/azure-storage-blob",
-            "version": "1.5.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Azure/azure-storage-blob-php.git",
-                "reference": "1023ce1dbf062351a32ca5ec72ad1fd4a504f1bf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-blob-php/zipball/1023ce1dbf062351a32ca5ec72ad1fd4a504f1bf",
-                "reference": "1023ce1dbf062351a32ca5ec72ad1fd4a504f1bf",
-                "shasum": ""
-            },
-            "require": {
-                "microsoft/azure-storage-common": "~1.5",
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MicrosoftAzure\\Storage\\Blob\\": "src/Blob"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Azure Storage PHP Client Library",
-                    "email": "dmsh@microsoft.com"
-                }
-            ],
-            "description": "This project provides a set of PHP client libraries that make it easy to access Microsoft Azure Storage Blob APIs.",
-            "keywords": [
-                "azure",
-                "blob",
-                "php",
-                "sdk",
-                "storage"
-            ],
-            "support": {
-                "issues": "https://github.com/Azure/azure-storage-blob-php/issues",
-                "source": "https://github.com/Azure/azure-storage-blob-php/tree/v1.5.4"
-            },
-            "time": "2022-09-02T02:13:06+00:00"
-        },
-        {
-            "name": "microsoft/azure-storage-common",
-            "version": "1.5.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Azure/azure-storage-common-php.git",
-                "reference": "8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-common-php/zipball/8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0",
-                "reference": "8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "~6.0|^7.0",
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MicrosoftAzure\\Storage\\Common\\": "src/Common"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Azure Storage PHP Client Library",
-                    "email": "dmsh@microsoft.com"
-                }
-            ],
-            "description": "This project provides a set of common code shared by Azure Storage Blob, Table, Queue and File PHP client libraries.",
-            "keywords": [
-                "azure",
-                "common",
-                "php",
-                "sdk",
-                "storage"
-            ],
-            "support": {
-                "issues": "https://github.com/Azure/azure-storage-common-php/issues",
-                "source": "https://github.com/Azure/azure-storage-common-php/tree/v1.5.2"
-            },
-            "time": "2021-10-09T03:03:47+00:00"
         },
         {
             "name": "monolog/monolog",
