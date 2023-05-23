@@ -12,7 +12,6 @@ use Slim\Exception\HttpNotFoundException;
 
 class TagController extends Controller
 {
-
     /**
      * @param  Request  $request
      * @param  Response  $response
