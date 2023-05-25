@@ -94,7 +94,7 @@ abstract class AuthController extends Controller
                 $searchFilter,
                 $ldapAddributes
             );
-            if (!is_resource($ldapSearchResp)) {
+            if (!$ldapSearchResp) {
                 $this->logger->debug(ldap_error($server));
                 $this->logger->error("User LDAP search for user $username failed");
                 return null;
