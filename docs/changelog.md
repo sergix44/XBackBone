@@ -5,6 +5,10 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.6.3] - 2023-05-27
+### Fixed
+- Fix LDAP for php >= 8.1
+
 ## [3.6.2] - 2023-05-24
 ### Changed
 - Support for PHP 8.2
