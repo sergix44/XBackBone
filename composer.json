@@ -1,7 +1,7 @@
 {
   "name": "sergix44/xbackbone",
   "license": "AGPL-3.0-only",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "description": "A lightweight ShareX PHP backend",
   "type": "project",
   "require": {
@@ -48,6 +48,8 @@
       "Tests\\": "tests/"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "phpstan/phpstan": "^0.11.5",
