@@ -64,7 +64,7 @@ return [
     'cancel' => 'Annuler',
     'maintenance_in_progress' => 'Plateforme en maintenance, réessayez plus tard…',
     'updates' => 'Mises à jour',
-    'upgrade' => 'Mettre à jour',
+    'upgrade' => 'Mettre à niveau',
     'check_for_updates' => 'Vérifier les mises à jour',
     'file_size_no_match' => 'Le fichier téléchargé n\'a pas la taille correcte.',
     'cannot_retrieve_file' => 'Impossible de retrouver le fichier.',
