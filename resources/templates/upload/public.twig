@@ -4,7 +4,7 @@
 
 {% block head %}
     {% if type == 'image' %}
-        <link rel="preload" href="{{ url }}/raw" as="{{ type }}">
+        <link rel="preload" href="{{ raw_url }}" as="{{ type }}">
     {% endif %}
 {% endblock %}
 
@@ -13,22 +13,25 @@
     <meta property="og:type" content="website"/>
     <meta id="embed-title" property="og:title" content="{{ media.filename }} ({{ media.size }})">
     <meta id="embed-desc" property="og:description" content="{{ lang('date') }}: {{ media.timestamp }}">
+    <link rel="alternate" type="application/json+oembed"
+          href="{{ oembed }}"
+          title="{{ media.filename }}" />
     {% if type == 'image' %}
-        <meta id="embed-image" property="og:image" content="{{ url }}/raw">
-        <meta id="discord" name="twitter:image" content="{{ url }}/raw">
-        <meta id="image-src" name="twitter:image:src" content="{{ url }}/raw">
+        <meta id="embed-image" property="og:image" content="{{ raw_url }}">
+        <meta id="discord" name="twitter:image" content="{{ raw_url }}">
+        <meta id="image-src" name="twitter:image:src" content="{{ raw_url }}">
     {% elseif type == 'video' %}
         <meta name="twitter:card" content="player" />
         <meta name="twitter:title" content="{{ media.filename }} ({{ media.size }})" />
         <meta name="twitter:image" content="0" />
-        <meta name="twitter:player:stream" content="{{ url }}/raw" />
+        <meta name="twitter:player:stream" content="{{ raw_url }}" />
         <meta name="twitter:player:width" content="720" />
         <meta name="twitter:player:height" content="480" />
         <meta name="twitter:player:stream:content_type" content="{{ media.mimetype }}" />
 
-        <meta property="og:url" content="{{ url }}/raw" />
-        <meta property="og:video" content="{{ url }}/raw" />
-        <meta property="og:video:secure_url" content="{{ url }}/raw" />
+        <meta property="og:url" content="{{ raw_url }}" />
+        <meta property="og:video" content="{{ raw_url }}" />
+        <meta property="og:video:secure_url" content="{{ raw_url }}" />
         <meta property="og:video:type" content="{{ media.mimetype }}" />
         <meta property="og:video:width" content="720" />
         <meta property="og:video:height" content="480" />
@@ -46,7 +49,7 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="ml-auto">
                     <a href="javascript:void(0)" class="btn btn-success my-2 my-sm-0 btn-clipboard" data-toggle="tooltip" title="{{ lang('copy_link') }}" data-clipboard-text="{{ urlFor(glue(media.user_code, media.code) ~ (copy_raw ? '/raw.' ~ media.extension : '.' ~ media.extension)) }}"><i class="fas fa-link fa-lg fa-fw"></i></a>
-                    <a href="{{ url }}/raw" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
+                    <a href="{{ raw_url }}" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
                     <a href="{{ url }}/download" class="btn btn-warning my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                     {% if session.get('logged') %}
                         <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0 public-vanity" data-link="{{ route('upload.vanity', {'id': media.mediaId}) }}" data-id="{{ media.mediaId }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star fa-lg fa-fw"></i></a>
@@ -76,7 +79,7 @@
                     {% set typeMatched = true %}
                     <div class="row mb-2">
                         <div class="col-md-12">
-                            <img src="{{ url }}/raw" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
+                            <img src="{{ raw_url }}" class="img-thumbnail rounded mx-auto d-block" alt="{{ media.filename }}">
                         </div>
                     </div>
                 {% elseif type is same as ('text') %}
@@ -90,7 +93,7 @@
                     {% set typeMatched = true %}
                     <div class="media-player media-audio">
                         <audio id="player" autoplay controls loop preload="auto">
-                            <source src="{{ url }}/raw" type="{{ media.mimetype }}">
+                            <source src="{{ raw_url }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 audio.
                             <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </audio>
@@ -99,14 +102,14 @@
                     {% set typeMatched = true %}
                     <div class="media-player">
                         <video id="player" autoplay controls loop preload="auto">
-                            <source src="{{ url }}/raw" type="{{ media.mimetype }}">
+                            <source src="{{ raw_url }}" type="{{ media.mimetype }}">
                             Your browser does not support HTML5 video.
                             <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                         </video>
                     </div>
                 {% elseif media.mimetype is same as ('application/pdf') %}
                     {% set typeMatched = true %}
-                    <object type="{{ media.mimetype }}" data="{{ url }}/raw" class="pdf-viewer">
+                    <object type="{{ media.mimetype }}" data="{{ raw_url }}" class="pdf-viewer">
                         Your browser does not support PDF previews.
                         <a href="{{ url }}/download" class="btn btn-dark btn-lg"><i class="fas fa-cloud-download-alt fa-fw"></i> Download</a>
                     </object>

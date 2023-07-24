@@ -151,4 +151,38 @@ abstract class Controller
             ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `email` = ?', param($request, 'email'))->fetch()->count != 0, 'email_taken')
             ->alertIf($this->database->query('SELECT COUNT(*) AS `count` FROM `users` WHERE `username` = ?', param($request, 'username'))->fetch()->count != 0, 'username_taken');
     }
+
+    /**
+     * @param $userCode
+     * @param $mediaCode
+     *
+     * @param  bool $withTags
+     * @return mixed
+     */
+    protected function getMedia($userCode, $mediaCode, $withTags = false)
+    {
+        $mediaCode = pathinfo($mediaCode)['filename'];
+
+        $media = $this->database->query(
+            'SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1',
+            [
+                $userCode,
+                $mediaCode,
+            ]
+        )->fetch();
+
+        if (!$withTags || !$media) {
+            return $media;
+        }
+
+        $media->tags = [];
+        foreach ($this->database->query(
+            'SELECT `tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` = ?',
+            $media->mediaId
+        ) as $tag) {
+            $media->tags[$tag->id] = $tag->name;
+        }
+
+        return $media;
+    }
 }

@@ -8,6 +8,7 @@ use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
 use App\Controllers\ExportController;
 use App\Controllers\MediaController;
+use App\Controllers\OembedController;
 use App\Controllers\ProfileController;
 use App\Controllers\SettingController;
 use App\Controllers\TagController;
@@ -91,3 +92,5 @@ $app->get('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'sh
 $app->post('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'deleteByToken'])->setName('public.delete')->add(CheckForMaintenanceMiddleware::class);
 $app->get('/{userCode}/{mediaCode}/raw[.{ext}]', [MediaController::class, 'getRaw'])->setName('public.raw');
 $app->get('/{userCode}/{mediaCode}/download', [MediaController::class, 'download'])->setName('public.download');
+
+$app->get('/oembed', [OembedController::class, 'oembed'])->setName('oembed');
