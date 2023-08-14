@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  xbackbone:
+    container_name: xbackbone
+    hostname: xbackbone
+    image: lscr.io/linuxserver/xbackbone:latest
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=US/New York
+    volumes:
+      - ./config:/config
+    ports:
+      - 80:80
+      - 443:443
