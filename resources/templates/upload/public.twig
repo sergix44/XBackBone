@@ -49,6 +49,7 @@
                     <a href="{{ url }}/raw" class="btn btn-secondary my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('raw') }}"><i class="fas fa-file-alt fa-lg fa-fw"></i></a>
                     <a href="{{ url }}/download" class="btn btn-warning my-2 my-sm-0" data-toggle="tooltip" title="{{ lang('download') }}"><i class="fas fa-cloud-download-alt fa-lg fa-fw"></i></a>
                     {% if session.get('logged') %}
+                        <a href="javascript:void(0)" class="btn btn-info my-2 my-sm-0 public-vanity" data-link="{{ route('upload.vanity', {'id': media.mediaId}) }}" data-id="{{ media.mediaId }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star fa-lg fa-fw"></i></a>
                         <a href="javascript:void(0)" class="btn btn-danger my-2 my-sm-0 public-delete" data-link="{{ route('upload.delete', {'id': media.mediaId}) }}" data-toggle="tooltip" title="{{ lang('delete') }}"><i class="fas fa-trash fa-lg fa-fw"></i></a>
                     {% endif %}
                 </div>
@@ -162,4 +163,5 @@
         </div>
     </div>
     {% include 'comp/modal_delete.twig' %}
+    {% include 'comp/modal_vanity.twig' %}
 {% endblock %}

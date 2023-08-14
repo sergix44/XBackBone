@@ -29,8 +29,10 @@ var app = {
 
         $('.user-delete').click(app.modalDelete);
         $('.public-delete').click(app.modalDelete);
+        $('.public-vanity').click(app.modalVanity);
         $('.media-delete').click(app.mediaDelete);
         $('.publish-toggle').click(app.publishToggle);
+
         $('.refresh-token').click(app.refreshToken);
         $('#themes').mousedown(app.loadThemes);
         $('.checkForUpdatesButton').click(app.checkForUpdates);
@@ -56,6 +58,30 @@ var app = {
     modalDelete: function () {
         $('#modalDelete-link').attr('href', $(this).data('link'));
         $('#modalDelete').modal('show');
+    },
+    modalVanity: function () {
+        var id = $(this).data('id');
+        $('#modalVanity').modal('show');
+        $('#modalVanity-link').click(function () {
+            var $callerButton = $(this);
+            $.post(window.AppConfig.base_url + '/upload/' + id + '/vanity', {vanity: $('#modalVanity-input').val()}, function (responseData, status) {
+                $callerButton.tooltip('dispose');
+                $('#modalVanity').modal('hide');
+                $('#modalVanity-input').val('');
+                var parsedData = JSON.parse(responseData);
+                if ($('#media_' + id).find('.btn-group').length > 0) {
+                    $('#media_' + id).find('.btn-group').find('a').each(function (item) {
+                        var oldUrl = $(this).attr('href');
+                        var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), parsedData.code.code);
+                        $(this).attr('href', newUrl);
+                    });
+                } else {
+                    var oldUrl = window.location.href;
+                    var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), parsedData.code.code);
+                    window.location.href = newUrl;
+                }
+            });
+        });
     },
     publishToggle: function () {
         var id = $(this).data('id');
