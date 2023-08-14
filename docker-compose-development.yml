@@ -1,0 +1,60 @@
+#https://hub.docker.com/_/mariadb
+version: '3.9'
+
+services:
+  XBackBone:
+    container_name: XBackBone
+    hostname: XBackBone
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+     - .env
+    ports:
+      - '80:80'
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - "XBackBone-db"
+    volumes:
+      - ./storage:/app/storage
+      - ./database:/app/resources/database
+      - ./logs:/app/logs
+      - ./config:/app/config
+      
+  XBackBone-db:
+    container_name: XBackBone-db
+    hostname: XBackBone-db
+    image: mariadb:10.6.14
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    env_file:
+      - .env
+    ports:
+      - '3306'
+    volumes:
+      - ./db-data:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  mariadb:
+  storage:
+  database:
+  logs:
+  config:
