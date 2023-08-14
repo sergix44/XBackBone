@@ -78,7 +78,7 @@
                                                     {% else %}
                                                         <a href="javascript:void(0)" class="btn btn-sm btn-outline-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
                                                     {% endif %}
-                                                    <a href="javascript:void(0)" class="btn btn-sm btn-outline-info public-vanity" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star"></i></a>
+                                                    <a href="javascript:void(0)" class="btn btn-sm btn-outline-info public-vanity" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity_url') }}"><i class="fas fa-star"></i></a>
                                                     <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}"><i class="fas fa-trash"></i></a>
                                                 </div>
                                             </td>

@@ -64,25 +64,24 @@ var app = {
         $('#modalVanity').modal('show');
         $('#modalVanity-link').click(function () {
             var $callerButton = $(this);
-            $.post(window.AppConfig.base_url + '/upload/' + id + '/vanity', {vanity: $('#modalVanity-input').val()}, function (data, status) {
+            $.post(window.AppConfig.base_url + '/upload/' + id + '/vanity', {vanity: $('#modalVanity-input').val()}, function (responseData, status) {
                 $callerButton.tooltip('dispose');
                 $('#modalVanity').modal('hide');
                 $('#modalVanity-input').val('');
-                var data = JSON.parse(data);
-                if ($('#media_' + id).find('.btn-group').length >0) {
+                var parsedData = JSON.parse(responseData);
+                if ($('#media_' + id).find('.btn-group').length > 0) {
                     $('#media_' + id).find('.btn-group').find('a').each(function (item) {
                         var oldUrl = $(this).attr('href');
-                        var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), data.code);
+                        var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), parsedData.code.code);
                         $(this).attr('href', newUrl);
-                    })
+                    });
                 } else {
                     var oldUrl = window.location.href;
-                    var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), data.code);
+                    var newUrl = oldUrl.replace(oldUrl.substr(oldUrl.lastIndexOf('/') + 1), parsedData.code.code);
                     window.location.href = newUrl;
-
                 }
             });
-        })
+        });
     },
     publishToggle: function () {
         var id = $(this).data('id');

@@ -28,7 +28,7 @@
                                                     {% else %}
                                                         <a class="btn btn-sm btn-info publish-toggle" data-toggle="tooltip" title="{{ lang('publish') }}" data-id="{{ media.id }}" data-published="{{ media.published }}"><i class="fas fa-check-circle"></i></a>
                                                     {% endif %}
-                                                    <button class="btn btn-info btn-sm public-vanity" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity') }}"><i class="fas fa-star"></i></button>
+                                                    <button class="btn btn-info btn-sm public-vanity" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('vanity_url') }}"><i class="fas fa-star"></i></button>
                                                     <button type="button" class="btn btn-sm btn-danger media-delete" data-link="{{ route('upload.delete', {'id': media.id}) }}" data-id="{{ media.id }}" data-toggle="tooltip" title="{{ lang('delete') }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
