@@ -11,7 +11,6 @@ use Slim\Exception\HttpNotFoundException;
 
 class PasswordRecoveryController extends AuthController
 {
-
     /**
      * @param  Response  $response
      * @return Response

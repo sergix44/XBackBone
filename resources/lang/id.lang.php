@@ -159,4 +159,5 @@ return [
     'password_match' => 'Kata sandi harus sama.',
     'custom_head_set' => 'Head HTML khusus diterapkan.',
     'path_not_writable' => 'Destinasi berkas tidak dapat ditulis.',
+    'image_embeds' => 'Sematkan gambar',
 ];

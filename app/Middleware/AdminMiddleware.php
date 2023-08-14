@@ -2,7 +2,6 @@
 
 namespace App\Middleware;
 
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -16,7 +15,7 @@ class AdminMiddleware extends Middleware
      *
      * @throws HttpUnauthorizedException
      *
-     * @return Response
+     * @return ResponseInterface
      */
     public function __invoke(Request $request, RequestHandler $handler): ResponseInterface
     {

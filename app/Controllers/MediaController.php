@@ -4,8 +4,6 @@ namespace App\Controllers;
 
 use App\Database\Repositories\UserRepository;
 use App\Web\UA;
-use App\helpers;
-use GuzzleHttp\Psr7\Stream;
 use Intervention\Image\Constraint;
 use Intervention\Image\ImageManagerStatic as Image;
 use League\Flysystem\FileNotFoundException;
@@ -15,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Psr7\Stream;
 
 class MediaController extends Controller
 {
@@ -187,44 +186,6 @@ class MediaController extends Controller
         }
 
         return $this->streamMedia($request, $response, $this->storage, $media, 'attachment');
-    }
-
-
-    /**
-     * @param  Request  $request
-     * @param  Response  $response
-     * @param  string  $vanity
-     * @param  string  $id
-     *
-     * @return Response
-     * @throws HttpNotFoundException
-     * @throws HttpBadRequestException
-     */
-    public function createVanity(Request $request, Response $response, int $id): Response
-    {
-        $media = $this->database->query('SELECT * FROM `uploads` WHERE `id` = ? LIMIT 1', $id)->fetch();
-
-        $vanity = param($request, 'vanity');
-        $vanity = preg_replace('/[^a-z0-9]+/', '-', strtolower($vanity));
-
-        //handle collisions
-        $collision = $this->database->query('SELECT * FROM `uploads` WHERE `code` = ? AND `id` != ? LIMIT 1', [$vanity, $id])->fetch();
-
-        if (!$media) {
-            throw new HttpNotFoundException($request);
-        }
-
-        if ($vanity === '' || $collision) {
-            throw new HttpBadRequestException($request);
-        }
-
-        $this->database->query('UPDATE `uploads` SET `code` = ? WHERE `id` = ?', [$vanity, $media->id]);
-        $media->code = $vanity;
-        $response->getBody()->write(json_encode($media));
-
-        $this->logger->info('User '.$this->session->get('username').' created a vanity link for media '.$media->id);
-
-        return $response;
     }
 
     /**

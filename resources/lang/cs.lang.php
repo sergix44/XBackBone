@@ -113,8 +113,8 @@ return [
     'mail.new_account_text_with_reset' => 'Zdravíme, %s!<br>Byl pro vás vytvořen nový účet na %s (<a href="%s">%s</a>). Klikněte na následující odkaz pro nastavení hesla a aktivaci účtu:<br><br><a href="%s">%s</a>',
     'mail.new_account' => '%s - tvorba nového účtu',
     'send_notification' => 'Poslat e-mailové oznámení',
-    'recaptcha_secret_key' => 'reCAPTCHA Secret Key',
-    'recaptcha_site_key' => 'reCAPTCHA Site Key',
+    'recaptcha_secret_key' => 'reCAPTCHA Tajný klíč',
+    'recaptcha_site_key' => 'reCAPTCHA Webový Klíč',
     'only_recaptcha_v3' => 'Je podporována pouze reCAPTCHA v3.',
     'recaptcha_keys_required' => 'Jsou vyžadovány všechny klíče reCAPTCHA.',
     'recaptcha_enabled' => 'reCAPTCHA povolena',
@@ -159,4 +159,5 @@ return [
     'donation' => 'Přispět',
     'drop_to_upload' => 'Klikněte nebo sem přetáhněte soubory pro nahrání.',
     'no_upload_token' => 'Nemáte osobní nahrávací token. (Vygenerujte si jej a zkuste to znovu.)',
+    'image_embeds' => 'Vložené obrázky',
 ];

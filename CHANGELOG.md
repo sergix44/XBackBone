@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [3.6.3] - 2023-05-27
+### Fixed
+- Fix LDAP for php >= 8.1
+
+## [3.6.2] - 2023-05-24
+### Changed
+- Support for PHP 8.2
+
+### Removed
+- Azure blob storage driver
+
 ## [3.6.1] - 2022-11-27
 ### Changed
 - Upgraded dependencies

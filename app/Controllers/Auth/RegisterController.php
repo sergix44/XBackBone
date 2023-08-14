@@ -13,7 +13,6 @@ use Slim\Exception\HttpNotFoundException;
 
 class RegisterController extends AuthController
 {
-
     /**
      * @param  Request  $request
      * @param  Response  $response
