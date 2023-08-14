@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+## [3.6.4] - 2023-08-14
+### Improvements
+- Docker Support for Easier Deployment
+- Updated Depencies
+- Added Depencies Bot for Auto-Updating
+- Changed LICENSE to LICENSE.md
+- Fixed EXAMPLE NGINX.conf
+- Harden docker-compose.yml
 
 ## [3.6.3] - 2023-05-27
 ### Fixed
