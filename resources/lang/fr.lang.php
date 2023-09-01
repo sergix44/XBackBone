@@ -54,7 +54,7 @@ return [
     'reg_date' => 'Date d\'inscription',
     'none' => 'Aucun',
     'open' => 'Ouvrir',
-    'confirm' => 'Confirmation',
+    'confirm' => 'Confirmer',
     'confirm_string' => 'Êtes-vous sûr·e ?',
     'installed' => 'L\'installation s\'est déroulée avec succès !',
     'bad_login' => 'Identifiant ou mot de passe incorrect.',
@@ -162,4 +162,5 @@ return [
     'zip_ext_not_loaded' => 'L\'extension zip requise n\'est pas chargée',
     'copied' => 'Copié dans le presse-papier !',
     'image_embeds' => 'Intégrer des images',
+    'vanity_url' => 'URL personnalisée',
 ];
