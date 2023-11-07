@@ -35,7 +35,7 @@ return [
     'bad_login' => 'Väärät kirjautumistiedot.',
     'installed' => 'Asennus suoritettu loppuun onnistuneesti!',
     'confirm_string' => 'Oletko varma?',
-    'confirm' => 'Vahvistus',
+    'confirm' => 'Vahvista',
     'open' => 'Auki',
     'none' => 'Ei mitään',
     'reg_date' => 'Rekisteröitymis päivä',
@@ -160,4 +160,5 @@ return [
     'invalid_quota' => 'Virheelliset arvot oletuskäyttäjäkiintiönä.',
     'mail.recover_text' => 'Hei %s, <br>tilillesi on pyydetty salasanan palautusta. Suorita toimenpide napsauttamalla seuraavaa linkkiä:<br><br><a href="%s">%s</a><br><br>Jos et ollut sinä, joka pyysit salasanan vaihtamista, ohita tämä sähköposti.',
     'quota_enabled' => 'Käyttäjäkiintiön ottaminen käyttöön',
+    'vanity_url' => 'Mukautettu URL',
 ];
