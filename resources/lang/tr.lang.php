@@ -15,7 +15,7 @@ return [
     'filename' => 'Dosya adı',
     'preview' => 'Ön izleme',
     'public.delete_text' => 'Bu ögeyi silmek istediğinizden emin misiniz? Geri dönüşü olmayacaktır',
-    'public.telegram' => 'Telegram\'da paylaş !',
+    'public.telegram' => 'Telegram\'da paylaş',
     'copy_link' => 'Bağlantıyı kopyala',
     'pager.previous' => 'Önceki',
     'pager.next' => 'Sonraki',
@@ -148,7 +148,7 @@ return [
     'zip_ext_not_loaded' => 'Gereken "zip" eklentisi yüklenmedi',
     'changelog' => 'Değişiklik Günlüğü (Yama Notları)',
     'show_changelog' => 'Değişiklik günlüğünü göster',
-    'confirm' => 'Onay',
+    'confirm' => 'Onayla',
     'user_created' => '"%s" kullanıcısı oluşturuldu!',
     'user_updated' => '"%s" kullanıcısı güncellendi!',
     'profile_updated' => 'Profil başarıyla güncellendi!',
@@ -160,4 +160,5 @@ return [
     'custom_head_set' => 'Özel HTML başlığı uygulandı.',
     'mail.activate_text' => 'Merhaba %s!<br>%s (<a href="%s">%s</a>) hesabınızı oluşturduğunuz için teşekkür ederiz, etkinleştirmek için aşağıdaki bağlantıya tıklayın:<br><br><a href="%s">%s</a>',
     'switch_to' => 'Şuna geç',
+    'vanity_url' => 'Özel URL',
 ];
