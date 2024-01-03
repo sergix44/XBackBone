@@ -54,7 +54,7 @@ return [
     'reg_date' => 'Data de registo',
     'none' => 'Nenhum',
     'open' => 'Abrir',
-    'confirm' => 'Confirmação',
+    'confirm' => 'Confirmar',
     'confirm_string' => 'Tem a certeza?',
     'installed' => 'Instalação completa com sucesso!',
     'bad_login' => 'Login inválido.',
@@ -161,4 +161,5 @@ return [
     'register' => 'Registar',
     'settings_saved' => 'Definições de sistema guardadas!',
     'image_embeds' => 'Embutir imagens',
+    'vanity_url' => 'URL personalizado',
 ];

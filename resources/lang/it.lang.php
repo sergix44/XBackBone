@@ -162,4 +162,5 @@ return [
     'show_changelog' => 'Mostra registro dei cambiamenti',
     'copied' => 'Copiato negli appunti!',
     'image_embeds' => 'Incorpora immagini',
+    'vanity_url' => 'URL personalizzato',
 ];

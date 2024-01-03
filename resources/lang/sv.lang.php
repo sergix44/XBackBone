@@ -155,9 +155,10 @@ return [
     'cannot_write_file' => 'Destinationens sökväg är ej skrivbar.',
     'cannot_demote' => 'Du kan inte degradera dig själv.',
     'token_not_found' => 'Den token som angavs hittades inte.',
-    'confirm' => 'Bekräftelse',
+    'confirm' => 'Bekräfta',
     'copied' => 'Kopierat till urklipp!',
     'token' => 'Token',
     'orphaned_files' => 'Föräldralösa Filer',
     'image_embeds' => 'Inbäddade bilder',
+    'vanity_url' => 'Anpassad URL',
 ];

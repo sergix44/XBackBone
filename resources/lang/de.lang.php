@@ -54,7 +54,7 @@ return [
     'reg_date' => 'Registrierungsdatum',
     'none' => 'keine',
     'open' => 'Öffnen',
-    'confirm' => 'Bestätigung',
+    'confirm' => 'Bestätigen',
     'confirm_string' => 'Bist du sicher?',
     'installed' => 'Installation erfolgreich abgeschlossen!',
     'bad_login' => 'Falsche Anmeldeinformationen.',

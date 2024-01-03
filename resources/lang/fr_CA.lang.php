@@ -107,7 +107,7 @@ return [
     'lang' => 'Français (Canada)',
     'mail.new_account_text_with_pw' => 'Bonjour %s! <br> un nouveau compte a été créé pour vous sur %s (<a href="%s">% s</a>), avec les informations d\'identification suivantes : <br> <br> Nom d\'utilisateur :%s <br> Mot de passe :%s <br> <br> Cliquez sur le lien suivant pour accéder à la page de connexion : <br> <a href="%s">%s </a>',
     'maintenance' => 'Maintenance',
-    'confirm' => 'Confirmation',
+    'confirm' => 'Confirmer',
     'user_create_password' => 'Si laissé vide, vous souhaiterez peut-être envoyer une notification à l\'utilisateur par courriel.',
     'mail.new_account' => '%s – Création d\'un nouveau compte',
     'mail.recover_password' => '%s – Récupération de mot de passe',
@@ -160,4 +160,5 @@ return [
     'enforce_language' => 'Forcer la langue',
     'copied' => 'Copié dans le presse-papier!',
     'image_embeds' => 'Intégrer des images',
+    'vanity_url' => 'URL personnalisée',
 ];
