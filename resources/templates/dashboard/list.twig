@@ -33,7 +33,7 @@
                                     {% for media in medias %}
                                         <tr id="media_{{ media.id }}" class="bulk-selector" data-id="{{ media.id }}">
                                             <td class="text-center">
-                                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank">
+                                                <a href="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension) }}" target="_blank" class="text-dark">
                                                 {% if isDisplayableImage(media.mimetype) %}
                                                     {% if media.username is not null %}
                                                         <img src="{{ urlFor('/' ~ media.user_code ~ '/' ~ media.code ~ '.' ~ media.extension ~ '/raw?width=84&height=42') }}" class="img-fluid rounded">
