@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [3.7.0] - 2024-01-14
+### Added
+- Added support for vanity urls.
+- Added KDE integration for linux script.
+
+### Changed
+- Updated translations.
+- File preview is now clickable to open the file.
+
+### Fixed
+- Fixes for LDAP authentication.
+
 ## [3.6.3] - 2023-05-27
 ### Fixed
 - Fix LDAP for php >= 8.1
