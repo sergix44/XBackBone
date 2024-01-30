@@ -166,4 +166,5 @@ return [
     'changelog' => 'Änderungsprotokoll',
     'copied' => 'In Zwischenablage kopiert!',
     'image_embeds' => 'Bilder einbetten',
+    'vanity_url' => 'Benutzerdefinierte URL',
 ];
