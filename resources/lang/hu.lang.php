@@ -158,6 +158,7 @@ return [
     'no' => 'Nem',
     'yes' => 'Igen',
     'enforce_language' => 'A nyelv érvényesítése',
-    'lang' => 'Angol',
+    'lang' => 'Magyar',
     'image_embeds' => 'Képek beágyazása',
+    'vanity_url' => 'Egyedi URL',
 ];
