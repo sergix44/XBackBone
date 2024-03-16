@@ -54,7 +54,7 @@ return [
     'reg_date' => 'Registratiedatum',
     'none' => 'Geen',
     'open' => 'Open',
-    'confirm' => 'Bevestigen',
+    'confirm' => 'Bevestig',
     'confirm_string' => 'Weet je het zeker?',
     'installed' => 'Installatie succesvol voltooid!',
     'bad_login' => 'Verkeerde verificatiegegevens.',
@@ -164,6 +164,6 @@ return [
     'php_info' => 'PHP Informatie',
     'upload' => 'Uploaden',
     'copied' => 'Gekopieerd naar klembord!',
-    'vanity_url' => 'Aangepaste URL',
+    'vanity_url' => 'Eigen URL',
     'image_embeds' => 'Ingesloten afbeeldingen',
 ];
