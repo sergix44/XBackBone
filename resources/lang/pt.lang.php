@@ -26,7 +26,7 @@ return [
     'owner' => 'Dono',
     'date' => 'Data',
     'raw' => 'Mostrar raw',
-    'download' => 'Transferir',
+    'download' => 'Descarregar',
     'delete' => 'Apagar',
     'publish' => 'Publicar',
     'hide' => 'Esconder',
