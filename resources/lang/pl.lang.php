@@ -38,7 +38,7 @@ return [
     'admin' => 'Admin',
     'reg_date' => 'Data rejestracji',
     'open' => 'Otwórz',
-    'confirm' => 'Potwierdzenie',
+    'confirm' => 'Potwierdź',
     'confirm_string' => 'Jesteś pewien?',
     'installed' => 'Instalacja zakończona pomyślnie!',
     'welcome' => 'Witaj, %s!',
@@ -162,4 +162,5 @@ return [
     'mail.activate_text' => 'Cześć %s!<br>dziękuję za utworzenie konta na %s (<a href="%s">%s</a>), kliknij w poniższy link, aby je aktywować:<br><br><a href="%s">%s</a>',
     'image_embeds' => 'Osadź obrazy',
     'copied' => 'Skopiowano!',
+    'vanity_url' => 'Niestandardowy adres URL',
 ];
