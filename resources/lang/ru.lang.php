@@ -163,7 +163,7 @@ return [
     'copied' => 'Скопировано!',
     'system_settings' => 'Системные настройки',
     'upload' => 'Выгрузить',
-    'php_info' => 'Инфо о PHP',
+    'php_info' => 'Информация о PHP',
     'image_embeds' => 'Встроенные изображения',
     'vanity_url' => 'Пользовательский URL',
 ];
