@@ -48,6 +48,10 @@ var app = {
             $('.alert').slideUp(500);
         });
 
+        if ($('.dropzone').length > 0) {
+            app.initClipboardPasteToUpload();
+        }
+
         new ClipboardJS('.btn-clipboard');
         new Plyr($('#player'), {ratio: '16:9'});
 
@@ -252,7 +256,20 @@ var app = {
                 $('#dropdown-tag-list > a[data-id="' + $tag.data('id') + '"]').remove();
             }
         });
-    }
+    },
+    initClipboardPasteToUpload: function() {
+      document.onpaste = function(event){
+        if (event.clipboardData || event.originalEvent.clipboardData) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            items.forEach((item) => {
+                if (item.kind === 'file') {
+                    // Add the file to the dropzone instance.
+                    Dropzone.forElement('.dropzone').addFile(item.getAsFile());
+                }
+            });
+        }
+      }
+    },
 };
 
 app.init();
