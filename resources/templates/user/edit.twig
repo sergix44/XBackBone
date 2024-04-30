@@ -66,7 +66,11 @@
                                     <div class="btn-group">
                                         <a href="{{ route('config.sharex', {'id': user.id}) }}" class="btn btn-lg btn-outline-dark"><i class="fas fa-fw fa-download"></i> ShareX</a>
                                         <a href="javascript:alert('{{ lang('copied') }}')" data-clipboard-text="{{ route('config.screencloud', {'token': user.token}) }}" class="btn btn-lg btn-outline-info btn-clipboard"><i class="fas fa-fw fa-download"></i> Screencloud</a>
-                                        <a href="{{ route('config.script', {'id': user.id}) }}" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-download"></i> Linux Script</a>
+                                        <a href="{{ route('config.script', {'id': user.id}) }}" type="button" class="btn btn-lg btn-outline-danger"><i class="fas fa-fw fa-download"></i> Linux Script</a>
+                                        <button type="button" class="btn btn-outline-danger dropdown-toggle dropdown-toggle-split" id="userDropdown" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item text-danger" href="{{ route('kde_config.script', {'id': user.id}) }}"><i class="fas fa-fw fa-download"></i> KDE Linux Script</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

@@ -57,6 +57,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/user/{id}/refreshToken', [UserController::class, 'refreshToken'])->setName('refreshToken');
     $group->get('/user/{id}/config/sharex', [ClientController::class, 'getShareXConfig'])->setName('config.sharex');
     $group->get('/user/{id}/config/script', [ClientController::class, 'getBashScript'])->setName('config.script');
+    $group->get('/user/{id}/config/kde_script', [ClientController::class, 'getKDEScript'])->setName('kde_config.script');
 
     $group->get('/user/{id}/export', [ExportController::class, 'downloadData'])->setName('export.data');
 

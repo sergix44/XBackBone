@@ -27,7 +27,7 @@ abstract class AuthController extends Controller
 
     /**
      * Connects to LDAP server and logs in with service account (if configured)
-     * @return resource|false
+     * @return \LDAP\Connection|resource|false
      */
     public function ldapConnect()
     {
@@ -39,7 +39,7 @@ abstract class AuthController extends Controller
         $ldapSchema=(@is_string($this->config['ldap']['schema'])) ?
             strtolower($this->config['ldap']['schema']) : 'ldap';
         $ldapURI="$ldapSchema://".$this->config['ldap']['host'].':'.$this->config['ldap']['port'];
-        
+
         // Connecting to LDAP server
         $this->logger->debug("Connecting to $ldapURI");
         $server = ldap_connect($ldapURI);
@@ -48,18 +48,18 @@ abstract class AuthController extends Controller
             ldap_set_option($server, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($server, LDAP_OPT_NETWORK_TIMEOUT, 10);
         } else {
-            $this->logger->error(ldap_error($server));
+            $this->logger->error('LDAP-URI was not parseable');
             return false;
         }
-        
+
         // Upgrade to StartTLS
         $useStartTLS = @is_bool($this->config['ldap']['useStartTLS']) ? $this->config['ldap']['useStartTLS'] : false;
         if (($useStartTLS === true) && (ldap_start_tls($server) === false)) {
-            $this->logger-debug(ldap_error($server));
+            $this->logger->debug(ldap_error($server));
             $this->logger->error("Failed to establish secure LDAP swith StartTLS");
             return false;
         }
-        
+
         // Authenticating LDAP service account (if configured)
         $serviceAccountFQDN= (@is_string($this->config['ldap']['service_account_dn'])) ?
             $this->config['ldap']['service_account_dn'] : null;
@@ -77,7 +77,7 @@ abstract class AuthController extends Controller
     /**
      * Returns User's LDAP DN
      * @param  string  $username
-     * @param resource $server LDAP Server Resource
+     * @param \LDAP\Connection|resource $server LDAP Server Resource
      * @return string|null
      */
     protected function getLdapRdn(string $username, $server)
@@ -85,7 +85,7 @@ abstract class AuthController extends Controller
         //Dynamic LDAP User Binding
         if (@is_string($this->config['ldap']['search_filter'])) {
             //Replace ???? with username
-            $searchFilter = str_replace('????', ldap_escape($username, null, LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
+            $searchFilter = str_replace('????', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $this->config['ldap']['search_filter']);
             $ldapAddributes = array('dn');
             $this->logger->debug("LDAP Search filter: $searchFilter");
             $ldapSearchResp = ldap_search(
@@ -112,7 +112,7 @@ abstract class AuthController extends Controller
             if ($this->config['ldap']['user_domain'] !== null) {
                 $bindString .= ','.$this->config['ldap']['user_domain'];
             }
-            
+
             if ($this->config['ldap']['base_domain'] !== null) {
                 $bindString .= ','.$this->config['ldap']['base_domain'];
             }

@@ -114,4 +114,35 @@ class ClientController extends Controller
             ]
         );
     }
+
+    /**
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  int  $id
+     *
+     * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function getKDEScript(Request $request, Response $response, int $id): Response
+    {
+        $user = make(UserRepository::class)->get($request, $id, true);
+
+        if (!$user->token) {
+            $this->session->alert(lang('no_upload_token'), 'danger');
+
+            return redirect($response, $request->getHeaderLine('Referer'));
+        }
+
+        return view()->render(
+            $response->withHeader('Content-Disposition', 'attachment;filename="xbackbone_uploader_'.$user->username.'.sh"'),
+            'scripts/xbackbone_kde_uploader.sh.twig',
+            [
+                'username' => $user->username,
+                'upload_url' => route('upload'),
+                'token' => $user->token,
+            ]
+        );
+    }
 }
