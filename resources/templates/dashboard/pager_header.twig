@@ -16,6 +16,7 @@
                 {% if tags is empty %}
                     <h6 class="dropdown-header">{{ lang('no_tags') }}</h6>
                 {% else %}
+                    <a class="dropdown-item" href="{{ route('home') }}">{{ lang('show_all_tags') }}</a>
                     {% for tag in tags %}
                         <a class="dropdown-item {{ request.queryParams['tag'] == tag.id ? 'active' }}" href="{{ queryParams({'tag': tag.id}) }}" data-id="{{ tag.id }}">{{ tag.name }}</a>
                     {% endfor %}

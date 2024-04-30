@@ -153,6 +153,7 @@ return [
     'mail.new_account' => '%s – Erstellung von Konto',
     'user_create_password' => 'Wenn das leer bleibt, wollen Sie vielleicht eine Benachrichtigung an die Benutzer per E-Mail senden.',
     'no_tags' => 'Keine Tags hinzugefügt',
+    'show_all_tags' => 'Alle Tags anzeigen',
     'upload_max_file_size' => 'Die maximale Dateigröße beträgt derzeit %s.',
     'ldap_cant_connect' => 'Es kann keine Verbindung zum LDAP-Auth-Server hergestellt werden.',
     'zip_ext_not_loaded' => 'Die zip-Erweiterung ist erforderlich',
