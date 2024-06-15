@@ -101,7 +101,7 @@ return [
     'account_disabled' => '당신의 계정은 비활성 상태입니다.',
     'bad_login' => '잘못된 자격증명입니다.',
     'installed' => '설치가 완료되었어요!',
-    'confirm' => '재확인',
+    'confirm' => '확인',
     'confirm_string' => '확실한가요?',
     'open' => '열기',
     'none' => '없음',
@@ -160,4 +160,5 @@ return [
     'yes' => '확인',
     'enforce_language' => '언어 설정',
     'lang' => 'Korean',
+    'vanity_url' => '사용자 정의 URL',
 ];
