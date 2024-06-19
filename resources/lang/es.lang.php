@@ -166,4 +166,5 @@ return [
     'only_recaptcha_v3' => 'Solo reCAPTCHA v3 está soportado.',
     'custom_head_set' => 'Cabecera HTML personalizada aplicada.',
     'vanity_url' => 'URL personalizada',
+    'show_all_tags' => 'Mostrar todas las etiquetas',
 ];
