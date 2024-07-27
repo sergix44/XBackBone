@@ -208,21 +208,38 @@ class MediaRepository
         array_multisort(array_column($files, 'size'), $this->buildOrderBy(), SORT_NUMERIC, $files);
 
         $params = [];
+        $queryPagesParams = [];
+
         if ($this->text !== null) {
             if ($this->isAdmin) {
-                [$queryMedia,] = $this->buildAdminQueries();
+                [$queryMedia, $queryPages] = $this->buildAdminQueries();
             } else {
-                [$queryMedia,] = $this->buildUserQueries();
+                [$queryMedia, $queryPages] = $this->buildUserQueries();
                 $params[] = $this->userId;
             }
 
             $params[] = '%'.htmlentities($this->text).'%';
+            $queryPagesParams = $params;
             $paths = array_column($files, 'path');
         } elseif ($this->tagId !== null) {
+            if ($this->isAdmin) {
+                [, $queryPages] = $this->buildAdminQueries();
+            } else {
+                [, $queryPages] = $this->buildUserQueries();
+                $queryPagesParams[] = $this->userId;
+            }
+
             $paths = array_column($files, 'path');
             $ids = $this->getMediaIdsByTagId($this->tagId);
             $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'") AND `uploads`.`id` IN ('.implode(',', $ids).')';
         } else {
+            if ($this->isAdmin) {
+                [, $queryPages] = $this->buildAdminQueries();
+            } else {
+                [, $queryPages] = $this->buildUserQueries();
+                $queryPagesParams[] = $this->userId;
+            }
+
             $files = array_slice($files, $offset, $limit, true);
             $paths = array_column($files, 'path');
             $queryMedia = 'SELECT `uploads`.*, `users`.`user_code`, `users`.`username` FROM `uploads` LEFT JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `uploads`.`storage_path` IN ("'.implode('","', $paths).'")';
@@ -253,7 +270,7 @@ class MediaRepository
             }
         }
 
-        $this->pages = count($this->media) / $limit;
+        $this->pages = $this->db->query($queryPages, $queryPagesParams)->fetch()->count / $limit;
 
         if ($this->text !== null || $this->tagId !== null) {
             $this->media = array_slice($this->media, $offset, $limit, true);
