@@ -161,4 +161,5 @@ return [
     'mail.activate_text' => 'Merhaba %s!<br>%s (<a href="%s">%s</a>) hesabınızı oluşturduğunuz için teşekkür ederiz, etkinleştirmek için aşağıdaki bağlantıya tıklayın:<br><br><a href="%s">%s</a>',
     'switch_to' => 'Şuna geç',
     'vanity_url' => 'Özel URL',
+    'show_all_tags' => 'Tüm etiketleri göster',
 ];
