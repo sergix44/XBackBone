@@ -107,7 +107,7 @@ class UploadController extends Controller
         }
 
         try {
-            $response = $this->saveMedia($response, $file, $user);
+            $response = $this->saveMedia($response, $file, $user, param($request, 'code'));
         } catch (Exception $e) {
             $this->updateUserQuota($request, $user->id, $file->getSize(), true);
             throw $e;
@@ -178,15 +178,24 @@ class UploadController extends Controller
      * @param  Response  $response
      * @param  UploadedFileInterface  $file
      * @param $user
+     * @param $code
      * @return Response
      * @throws \League\Flysystem\FileExistsException
      * @throws \League\Flysystem\FileNotFoundException
      */
-    protected function saveMedia(Response $response, UploadedFileInterface $file, $user)
+    protected function saveMedia(Response $response, UploadedFileInterface $file, $user, $code)
     {
-        do {
-            $code = humanRandomString();
-        } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
+        if ($code == null) {
+            do {
+                $code = humanRandomString();
+            } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
+        } else {
+            $existingCodeCount = $this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count;
+            if ($existingCodeCount > 0) {
+                $this->json['message'] = 'Custom url code already exists.';
+                return json($response, $this->json, 409);
+            }
+        }
 
         $fileInfo = pathinfo($file->getClientFilename());
         $storagePath = "$user->user_code/$code.$fileInfo[extension]";
