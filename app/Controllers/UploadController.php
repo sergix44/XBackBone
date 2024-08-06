@@ -185,7 +185,7 @@ class UploadController extends Controller
      */
     protected function saveMedia(Response $response, UploadedFileInterface $file, $user, $code)
     {
-        if ($code == null) {
+        if ($code === null) {
             do {
                 $code = humanRandomString();
             } while ($this->database->query('SELECT COUNT(*) AS `count` FROM `uploads` WHERE `code` = ?', $code)->fetch()->count > 0);
