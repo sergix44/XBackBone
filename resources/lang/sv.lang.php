@@ -161,4 +161,5 @@ return [
     'orphaned_files' => 'Föräldralösa Filer',
     'image_embeds' => 'Inbäddade bilder',
     'vanity_url' => 'Anpassad URL',
+    'show_all_tags' => 'Visa alla taggar',
 ];
