@@ -16,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
 
-Route::get('/dashboard', Welcome::class);
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/dashboard', Welcome::class)->name('dashboard');
+});

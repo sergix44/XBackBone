@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Livewire\Forms\LoginForm;
+use Laravel\Fortify\Fortify;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -17,6 +18,8 @@ class Login extends Component
         $this->validate();
 
         $this->form->authenticate();
+
+        return redirect()->intended(Fortify::redirects('dashboard'));
     }
 
     public function render()
