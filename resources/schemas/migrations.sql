@@ -1,4 +1,0 @@
-CREATE TABLE IF NOT EXISTS `migrations` (
-  `name`  VARCHAR(256) NOT NULL PRIMARY KEY,
-  `migrated`  BOOLEAN NOT NULL DEFAULT 0
-);
