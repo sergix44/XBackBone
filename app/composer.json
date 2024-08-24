@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "xbb/core": "dev-main as 1.0"
+    "xbb/core": "dev-next as 1.0"
   },
   "scripts": {
     "post-autoload-dump": [

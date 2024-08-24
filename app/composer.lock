@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40fe6f7ed23eba8246a473b622c81733",
+    "content-hash": "caa816936a26f5bc210eaa17f1352908",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6518,11 +6518,11 @@
         },
         {
             "name": "xbb/core",
-            "version": "dev-main",
+            "version": "dev-next",
             "dist": {
                 "type": "path",
                 "url": "../core",
-                "reference": "5924ef49b7a573fd78fc7522ca3ff40c46d0c04b"
+                "reference": "4c47d3eb626ff672f67e068466b3a63f79a65632"
             },
             "require": {
                 "laravel/fortify": "^1.24",
@@ -6576,12 +6576,12 @@
                 ]
             },
             "license": [
-                "MIT"
+                "AGPL-3.0-only"
             ],
-            "description": "The skeleton application for the Laravel framework.",
+            "description": "The xbackbone core",
             "keywords": [
-                "framework",
-                "laravel"
+                "core",
+                "xbb"
             ],
             "transport-options": {
                 "relative": true
@@ -6592,7 +6592,7 @@
     "aliases": [
         {
             "package": "xbb/core",
-            "version": "dev-main",
+            "version": "dev-next",
             "alias": "1.0",
             "alias_normalized": "1.0.0.0"
         }
