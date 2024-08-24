@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
                 base_path('public/.htaccess') => public_path('.htaccess'),
             ];
 
-            if ($this->app->environment('local')){
+            if ($this->app->environment('local')) {
                 $group[base_path('public/hot')] = public_path('hot');
             }
 
