@@ -14,4 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', Welcome::class);
+Route::redirect('/', '/dashboard');
+
+Route::get('/dashboard', Welcome::class);
