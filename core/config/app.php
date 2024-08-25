@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // The root path of the application
+    // the standalone path will be different
+    // form the base path
+    'root' => env('APP_ROOT', base_path()),
 ];

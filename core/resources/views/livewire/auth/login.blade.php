@@ -6,7 +6,9 @@
 
         <div class="flex flex-col gap-2 mt-6">
             <x-button label="Login" class="btn-primary btn-block" type="submit" spinner="authenticate"/>
-            <x-button label="Register" class="btn-block"/>
+            @feature('signup')
+                <x-button label="Register" class="btn-block"/>
+            @endfeature
             <x-button label="Forgot Password?" class="btn-link btn-sm"/>
         </div>
     </x-form>
