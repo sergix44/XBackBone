@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -20,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+    ];
+
+    protected $appends = [
+        'avatar',
     ];
 
     /**
@@ -43,5 +48,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function resources(): HasMany
+    {
+        return $this->hasMany(Resource::class);
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        return 'https://www.gravatar.com/avatar/'.hash('sha256', strtolower($this->email)).'?d=robohash&r=x';
     }
 }

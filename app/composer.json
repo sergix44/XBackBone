@@ -22,7 +22,8 @@
     "post-autoload-dump": [
       "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
       "@php xbb package:discover --ansi",
-      "@php xbb vendor:publish --tag=app --force --ansi"
+      "@php xbb vendor:publish --tag=app --force --ansi",
+      "@php xbb vendor:publish --tag=app-img --ansi"
     ],
     "post-create-project-cmd": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",

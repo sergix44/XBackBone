@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1344581bbdf190c0deda43550bb89a53",
+    "content-hash": "b51607fef651f2d364c28fc24da962b8",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4023,6 +4023,124 @@
                 }
             ],
             "time": "2024-08-17T21:24:32+00:00"
+        },
+        {
+            "name": "sergix44/imagezen",
+            "version": "0.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sergix44/imagezen.git",
+                "reference": "142cc3988e6d04ec38db94df4f88cc0319553360"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sergix44/imagezen/zipball/142cc3988e6d04ec38db94df4f88cc0319553360",
+                "reference": "142cc3988e6d04ec38db94df4f88cc0319553360",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "guzzlehttp/psr7": "^2.6",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.13",
+                "pestphp/pest": "^2.29",
+                "sapientpro/image-comparator": "^1.0"
+            },
+            "suggest": {
+                "ext-gd": "To use GD library based image processing.",
+                "ext-imagick": "To use Imagick based image processing."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SergiX44\\ImageZen\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Sergio Brighenti",
+                    "email": "sergio@brighenti.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Yet another image manipulation library",
+            "homepage": "https://github.com/sergix44/imagezen",
+            "keywords": [
+                "image",
+                "imagezen"
+            ],
+            "support": {
+                "issues": "https://github.com/sergix44/imagezen/issues",
+                "source": "https://github.com/sergix44/imagezen/tree/0.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/SergiX44",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-06-30T19:55:46+00:00"
+        },
+        {
+            "name": "sqids/sqids",
+            "version": "0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sqids/sqids-php.git",
+                "reference": "ff3d1214c0c2119ae4b676cc00f3abb22f61da42"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sqids/sqids-php/zipball/ff3d1214c0c2119ae4b676cc00f3abb22f61da42",
+                "reference": "ff3d1214c0c2119ae4b676cc00f3abb22f61da42",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.3"
+            },
+            "suggest": {
+                "ext-bcmath": "Required to use BC Math arbitrary precision mathematics (*).",
+                "ext-gmp": "Required to use GNU multiple precision mathematics (*)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sqids\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Generate short YouTube-looking IDs from numbers",
+            "homepage": "https://sqids.org/php",
+            "keywords": [
+                "decode",
+                "encode",
+                "generate",
+                "hashids",
+                "ids",
+                "sqids"
+            ],
+            "support": {
+                "issues": "https://github.com/sqids/sqids-php/issues",
+                "source": "https://github.com/sqids/sqids-php/tree/0.4.1"
+            },
+            "time": "2023-09-12T22:30:42+00:00"
         },
         {
             "name": "symfony/clock",
