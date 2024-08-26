@@ -25,7 +25,7 @@ class AppBrand extends Component
                 <a href="/" wire:navigate>
                     <!-- Hidden when collapsed -->
                     <div {{ $attributes->class(["hidden-when-collapsed"]) }}>
-                        <div class="flex items-center {{ $onTop ? 'flex-col justify-center' : 'gap-2 btn btn-link no-underline hover:no-underline flex-nowrap' }}">
+                        <div class="flex items-center {{ $onTop ? 'flex-col justify-center' : 'gap-2 flex-nowrap' }}">
                             <div class="avatar">
                                 <div class="{{ $onTop ? 'w-24' : 'w-12' }}">
                                     <img src="{{ asset('img/android-chrome-192x192.png') }}" />

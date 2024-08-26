@@ -13,6 +13,11 @@ export default {
     theme: {
         extend: {},
     },
+    variants: {
+        extend: {
+            display: ["group-hover"],
+        },
+    },
 
     // Add daisyUI
     plugins: [require("daisyui")],
