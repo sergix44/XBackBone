@@ -35,30 +35,30 @@
             <x-app-brand/>
         </div>
         <div class="navbar-center hidden lg:flex">
-            <x-menu activate-by-route class="menu-horizontal">
+            <x-menu activate-by-route class="menu-horizontal z-50 flex items-center">
                 <x-menu-item title="Home" icon="o-home" link="###"/>
                 <x-menu-item title="Messages" icon="o-envelope" link="###"/>
                 <x-menu-sub title="Settings" icon="o-cog-6-tooth">
+                    <x-menu-item title="Wifi" icon="o-wifi" link="####"/>
+                    <x-menu-item title="Wifi" icon="o-wifi" link="####"/>
+                    <x-menu-item title="Wifi" icon="o-wifi" link="####"/>
                     <x-menu-item title="Wifi" icon="o-wifi" link="####"/>
                     <x-menu-item title="Archives" icon="o-archive-box" link="####"/>
                 </x-menu-sub>
             </x-menu>
         </div>
-        <div class="navbar-end">
+        <div class="navbar-end mr-2">
             @if($user = auth()->user())
                 <x-dropdown>
                     <x-slot:trigger>
                         <x-avatar :image="$user->avatar" :title="$user->username" :subtitle="$user->name"
                                   class="!w-10"/>
                     </x-slot:trigger>
-                    <x-menu-item icon="o-power" title="Logout" link="javascript:void(0)"
-                                 onclick="event.preventDefault();document.getElementById('logout-form').submit();"
-                                 no-wire-navigate/>
+                    <x-menu-item icon="o-power" title="Logout" link="javascript:document.getElementById('logout-form').submit();" no-wire-navigate/>
                 </x-dropdown>
             @endif
         </div>
     </div>
-    <form method="POST" action="{{ route('logout') }}" id="logout-form">@csrf</form>
 
     <x-main with-nav full-width>
         <x-slot:content>
@@ -66,5 +66,6 @@
         </x-slot:content>
     </x-main>
 
+    <form method="POST" action="{{ route('logout') }}" id="logout-form">@csrf</form>
     <x-toast/>
 @endsection

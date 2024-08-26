@@ -11,7 +11,7 @@ class AppBrand extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct(public ?bool $onTop = false)
     {
         //
     }
@@ -25,9 +25,13 @@ class AppBrand extends Component
                 <a href="/" wire:navigate>
                     <!-- Hidden when collapsed -->
                     <div {{ $attributes->class(["hidden-when-collapsed"]) }}>
-                        <div class="flex items-center gap-2">
-                            <x-icon name="o-square-3-stack-3d" class="w-6 -mb-1 text-purple-500" />
-                            <span class="font-bold text-3xl me-3 bg-gradient-to-r from-purple-500 to-pink-300 bg-clip-text text-transparent ">
+                        <div class="flex items-center {{ $onTop ? 'flex-col justify-center' : 'gap-2 btn btn-link no-underline hover:no-underline' }}">
+                            <div class="avatar">
+                                <div class="{{ $onTop ? 'w-24' : 'w-12' }}">
+                                    <img src="{{ asset('img/android-chrome-192x192.png') }}" />
+                              </div>
+                            </div>
+                            <span class="font-bold text-3xl bg-gradient-to-r from-blue-500 to-green-400 bg-clip-text text-transparent ">
                                 {{ config('app.name') }}
                             </span>
                         </div>
