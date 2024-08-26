@@ -9,7 +9,7 @@
         <x-app-brand/>
     </div>
     <div class="navbar-center hidden lg:flex">
-        <x-menu activate-by-route class="menu-horizontal z-50 flex items-center">
+        <x-menu activate-by-route class="menu-horizontal z-50 flex items-center gap-1">
             @include('components.layouts.navbar.menuitems')
         </x-menu>
     </div>
