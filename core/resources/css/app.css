@@ -17,3 +17,6 @@
     @apply bg-base-100
 }
 
+.card.image-full::before {
+    background-color: transparent;
+}
