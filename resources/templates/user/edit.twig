@@ -17,7 +17,10 @@
                             <div class="form-group row">
                                 <label for="email" class="col-sm-3 col-form-label">Email</label>
                                 <div class="col-sm-9">
-                                    <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" value="{{ user.email }}" autocomplete="off" required>
+                                    <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email" value="{{ user.email }}" autocomplete="off" {{ user.external ? ' disabled' : '' }} required>
+                                    {% if user.external %}
+                                        <input type="hidden" name="email" value="{{ user.email }}">
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -33,7 +36,7 @@
                             <div class="form-group row">
                                 <label for="password" class="col-sm-3 col-form-label">{{ lang('password') }}</label>
                                 <div class="col-sm-9">
-                                    <input type="password" class="form-control" id="password" placeholder="{{ lang('password') }}" name="password" autocomplete="off"{{ user.ldap ? ' disabled' }}>
+                                    <input type="password" class="form-control" id="password" placeholder="{{ lang('password') }}" name="password" autocomplete="off"{{ user.ldap or user.external ? ' disabled' }}>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -103,6 +106,14 @@
                                         <label for="ldap" class="col-sm-3 col-form-label">LDAP Auth</label>
                                         <div class="col-sm-9">
                                             <input type="checkbox" name="ldap" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.ldap ? 'checked' }}>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if config.oauth.enabled %}
+                                    <div class="form-group row">
+                                        <label for="external" class="col-sm-3 col-form-label">OAuth User</label>
+                                        <div class="col-sm-9">
+                                            <input type="checkbox" name="external" data-toggle="toggle" data-off="{{ lang('no') }}" data-on="{{ lang('yes') }}" {{ user.external ? 'checked' }} disabled>
                                         </div>
                                     </div>
                                 {% endif %}

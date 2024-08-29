@@ -42,7 +42,7 @@ class PasswordRecoveryController extends AuthController
             return redirect($response, route('recover'));
         }
 
-        $user = $this->database->query('SELECT `id`, `username` FROM `users` WHERE `email` = ? AND NOT `ldap` LIMIT 1', param($request, 'email'))->fetch();
+        $user = $this->database->query('SELECT `id`, `username` FROM `users` WHERE `email` = ? AND (`ldap` = 0 AND `external` = 0) LIMIT 1', param($request, 'email'))->fetch();
 
         if (!isset($user->id)) {
             $this->session->alert(lang('recover_email_sent'), 'success');

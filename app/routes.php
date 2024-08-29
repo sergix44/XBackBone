@@ -91,3 +91,6 @@ $app->get('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'sh
 $app->post('/{userCode}/{mediaCode}/delete/{token}', [MediaController::class, 'deleteByToken'])->setName('public.delete')->add(CheckForMaintenanceMiddleware::class);
 $app->get('/{userCode}/{mediaCode}/raw[.{ext}]', [MediaController::class, 'getRaw'])->setName('public.raw');
 $app->get('/{userCode}/{mediaCode}/download', [MediaController::class, 'download'])->setName('public.download');
+
+$app->get('/login/oauth', [LoginController::class, 'initiateOAuthLogin'])->setName('login.oauth');
+$app->get('/login/oauth/callback', [LoginController::class, 'handleOAuthCallback'])->setName('login.oauth.callback');

@@ -62,6 +62,17 @@
                 </div>
             </div>
         </form>
+        {% if oauth_enabled %}
+        <div class="row mt-3">
+            <div class="col-md-12 text-center">
+                <div class="login-options">
+                    <a href="{{ route('login.oauth') }}" class="btn btn-primary">
+                        {{config.oauth.title}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}
 

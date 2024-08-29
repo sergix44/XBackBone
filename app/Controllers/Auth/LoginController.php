@@ -51,8 +51,21 @@ class LoginController extends AuthController
         $password = param($request, 'password');
         $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap`, `copy_raw` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
-        if ($this->config['ldap']['enabled'] && (!$user || $user->ldap ?? true)) {
-            $user = $this->ldapLogin($request, $username, param($request, 'password'), $user);
+        // Enforce that external users cannot log in with a password
+        if ($user && $user->external) {
+            $this->logger->info("Login attempt with password for external user '{$username}' blocked.");
+            // Handling the error with session alert
+            $this->session->alert(lang('auth.external_user_password_blocked', [$user->username]), 'danger');
+            return redirect($response, route('login'));
+        } else {
+            // Proceed with LDAP login or password verification for non-external users
+            if ($this->config['ldap']['enabled'] && (!$user || $user->ldap ?? true)) {
+                $user = $this->ldapLogin($request, $username, $password, $user);
+            }
+
+            if (!$user || !password_verify($password, $user->password)) {
+                $validator->alert('bad_login');
+            }
         }
 
         $validator
@@ -109,6 +122,132 @@ class LoginController extends AuthController
         }
 
         return redirect($response, route('login.show'));
+    }
+
+    /**
+     * Configure Oauth provider
+     */
+    private function getOAuthProvider(): Azure
+    {
+        return new Azure([
+            'clientId'                => $this->config['oauth']['clientId'],
+            'clientSecret'            => $this->config['oauth']['clientSecret'],
+            'redirectUri'             => $this->config['oauth']['redirectUri'],
+            'urlAuthorize'            => $this->config['oauth']['urlAuthorize'],
+            'urlAccessToken'          => $this->config['oauth']['urlAccessToken'],
+            'urlResourceOwnerDetails' => $this->config['oauth']['urlResourceOwnerDetails'],
+            'scopes'                  => $this->config['oauth']['scopes'],
+            'defaultEndPointVersion'  => $this->config['oauth']['defaultEndPointVersion'],
+            'tenant'                  => $this->config['oauth']['tenant_id']
+        ]);
+    }
+
+    /**
+     * Redirect to Azure AD for authentication
+     */
+    public function initiateOAuthLogin(Response $response): Response
+    {
+        $provider = $this->getOAuthProvider();
+
+        $authorizationUrl = $provider->getAuthorizationUrl();
+        $_SESSION['OAuth2.state'] = $provider->getState();
+
+        return $response->withHeader('Location', $authorizationUrl)->withStatus(302);
+    }
+
+    /**
+     * Handle the callback from Azure AD after authentication
+     */
+    public function handleOAuthCallback(Request $request, Response $response): Response
+    {
+        $provider = $this->getOAuthProvider();
+
+        if (empty($request->getQueryParams()['state']) || ($request->getQueryParams()['state'] !== $_SESSION['OAuth2.state'])) {
+            unset($_SESSION['OAuth2.state']);
+            $response->getBody()->write(lang('auth.invalid_oauth_state'));
+            return $response->withStatus(400);
+        }
+
+        try {
+            $token = $provider->getAccessToken('authorization_code', [
+                'code' => $request->getQueryParams()['code']
+            ]);
+
+            $resourceOwner = $provider->getResourceOwner($token);
+            $user = $resourceOwner->toArray();
+
+            $existingUser = $this->database->query('SELECT * FROM users WHERE email = ? LIMIT 1', [$user['email']])->fetch();
+
+            if ($existingUser) {
+                $this->database->query('UPDATE users SET username = ?, external = 1 WHERE id = ?', [
+                    $user['preferred_username'],
+                    $existingUser->id
+                ]);
+                $this->setupUserSession($existingUser);
+                session_write_close();
+                return redirect($response, route('home'))->withStatus(302);
+            } else {
+                $userCode = $this->generateUserCode();
+                $this->database->query('INSERT INTO users (username, email, external, user_code) VALUES (?, ?, 1, ?)', [
+                    $user['preferred_username'],
+                    $user['email'],
+                    $userCode
+                ]);
+                $newUsername = $user['preferred_username'];
+    
+                $response->getBody()->write("
+                    <html>
+                        <head>
+                            <meta http-equiv='refresh' content='3;url=" . route('login.oauth') . "'>
+                        </head>
+                        <body>
+                            <p>" . sprintf(lang('auth.new_user_signed_up'), $newUsername) . "</p>
+                        </body>
+                    </html>
+                ");
+                session_write_close();
+                return $response->withStatus(200)->withHeader('Content-Type', 'text/html');
+            }
+
+        } catch (\Exception $e) {
+            $response->getBody()->write(sprintf(lang('auth.failed_to_get_access_token'), $e->getMessage()));
+            return $response->withStatus(400);
+        }
+
+        // Always return a response interface
+        return $response;
+    }
+
+    /**
+     * Set up session data for the authenticated user
+     *
+     * @param $user
+     */
+    private function setupUserSession($user)
+    {
+        $this->session->set('logged', true)
+            ->set('user_id', $user->id)
+            ->set('username', $user->username)
+            ->set('admin', $user->is_admin)
+            ->set('copy_raw', $user->copy_raw);
+
+        $this->setSessionQuotaInfo($user->current_disk_quota, $user->max_disk_quota);
+
+        $this->session->alert(lang('welcome', [$user->username]), 'info');
+        $this->logger->info("User {$user->username} logged in.");
+    }
+
+    /**
+     * Generate a unique 5-character code for the user
+     */
+    private function generateUserCode(): string
+    {
+        do {
+            $code = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 5);
+            $existingCode = $this->database->query('SELECT id FROM users WHERE user_code = ? LIMIT 1', [$code])->fetch();
+        } while ($existingCode);
+
+        return $code;
     }
 
     /**

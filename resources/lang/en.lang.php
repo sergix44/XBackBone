@@ -161,5 +161,9 @@ return [
     'zip_ext_not_loaded' => 'The required "zip" extension is not loaded',
     'changelog' => 'Changelog',
     'show_changelog' => 'Show changelog',
-    'image_embeds' => 'Embed images'
+    'image_embeds' => 'Embed images',
+    'auth.external_user_password_blocked' => 'Login attempt with password for external user %s is blocked. Try Login with OAuth.',
+    'auth.invalid_oauth_state' => 'Invalid OAuth state.',
+    'auth.new_user_signed_up' => 'New user %s signed up. You will be redirected to login with OAuth in 3 seconds...',
+    'auth.failed_to_get_access_token' => 'Failed to get access token: %s.'    
 ];
