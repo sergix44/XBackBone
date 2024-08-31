@@ -10,6 +10,5 @@ class UploadController extends Controller
 {
     public function __invoke(UploadResourceRequest $request, StoreResource $uploadResource)
     {
-
     }
 }
