@@ -9,7 +9,7 @@
             @feature('signup')
                 <x-button label="Register" class="btn-block"/>
             @endfeature
-            <x-button label="Forgot Password?" class="btn-link btn-sm"/>
+            <x-button label="Forgot Password?" class="btn-link btn-sm" link="{{ route('password.request') }}"/>
         </div>
     </x-form>
 </div>

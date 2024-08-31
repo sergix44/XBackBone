@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -46,6 +47,10 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::loginView(static function () {
             return app()->call(Login::class);
+        });
+
+        Fortify::requestPasswordResetLinkView(static function () {
+            return app()->call(ForgotPassword::class);
         });
     }
 }

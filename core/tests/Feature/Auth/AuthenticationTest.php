@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Auth\Login;
+use App\Livewire\Dashboard;
 use App\Models\User;
 
 test('login screen can be rendered', function () {
@@ -30,11 +31,11 @@ test('users can authenticate using the login screen', function () {
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $component = Volt::test('pages.auth.login')
+    $component = Livewire::test(Login::class)
         ->set('form.email', $user->email)
         ->set('form.password', 'wrong-password');
 
-    $component->call('login');
+    $component->call('authenticate');
 
     $component
         ->assertHasErrors()
@@ -46,27 +47,16 @@ test('users can not authenticate with invalid password', function () {
 test('navigation menu can be rendered', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user);
-
-    $response = $this->get('/dashboard');
-
-    $response
+    $this->actingAs($user)
+        ->get('/dashboard')
         ->assertOk()
-        ->assertSeeVolt('layout.navigation');
+        ->assertSeeLivewire(Dashboard::class);
 });
 
 test('users can logout', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user);
-
-    $component = Volt::test('layout.navigation');
-
-    $component->call('logout');
-
-    $component
-        ->assertHasNoErrors()
-        ->assertRedirect('/');
+    $this->actingAs($user)->post(route('logout'));
 
     $this->assertGuest();
 });

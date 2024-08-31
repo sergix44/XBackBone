@@ -11,4 +11,5 @@
             </x-card>
         </div>
     </div>
+    <x-toast />
 @endsection
