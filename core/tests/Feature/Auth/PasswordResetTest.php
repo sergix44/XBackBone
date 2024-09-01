@@ -36,7 +36,7 @@ test('reset password screen can be rendered', function () {
         $response = $this->get('/reset-password/'.$notification->token);
 
         $response
-            ->assertSeeVolt('pages.auth.reset-password')
+            ->assertSeeLivewire(\App\Livewire\Auth\ResetPassword::class)
             ->assertStatus(200);
 
         return true;
@@ -51,16 +51,16 @@ test('password can be reset with valid token', function () {
     $this->post('/forgot-password', ['email' => $user->email]);
 
     Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-        $component = Volt::test('pages.auth.reset-password', ['token' => $notification->token])
-            ->set('email', $user->email)
-            ->set('password', 'password')
-            ->set('password_confirmation', 'password');
+        $response = $this->post('/reset-password', [
+            'token' => $notification->token,
+            'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
 
-        $component->call('resetPassword');
-
-        $component
+        $response->assertSessionHasNoErrors()
             ->assertRedirect('/login')
-            ->assertHasNoErrors();
+            ->assertSessionHas('status', 'Your password has been reset.');
 
         return true;
     });

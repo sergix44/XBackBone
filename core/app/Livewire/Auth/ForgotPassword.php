@@ -11,16 +11,6 @@ class ForgotPassword extends Component
 {
     use Toast;
 
-    #[Validate('email')]
-    public string $email = '';
-
-    public function sendPasswordResetLink()
-    {
-        $this->validate();
-
-        $this->notify('Password reset link sent. Please check your email.');
-    }
-
     public function render()
     {
         return view('livewire.auth.forgot-password')
