@@ -50,7 +50,7 @@ return [
     'reg_date' => 'Datum registracije',
     'none' => 'Nijedan',
     'open' => 'Otvori',
-    'confirm' => 'Potvrda',
+    'confirm' => 'Potvrdi',
     'installed' => 'Instalacija je uspešno završena!',
     'bad_login' => 'Pogrešne akreditive.',
     'account_disabled' => 'Vaš nalog je onemogućen.',
@@ -160,4 +160,5 @@ return [
     'register_success' => 'Nalog je kreiran, e-mail za potvrdu je poslat.',
     'mail.activate_text' => 'Zdravo %s!<br>hvala što ste otvorili svoj nalog na %s (<a href="%s">%s</a>), kliknite na sledeću vezu da biste ga aktivirali:<br><br>< a href="%s">%s</a>',
     'mail.recover_text' => 'Zdravo %s,<br>zatraženo je resetovanje lozinke za vaš nalog. Da biste završili proceduru kliknite na sledeću vezu:<br><br><a href="%s">%s</a><br><br>Ako niste vi tražili resetovanje lozinke, jednostavno ignorišite ovu e-poštu.',
+    'show_all_tags' => 'Prikaži sve tagove',
 ];
