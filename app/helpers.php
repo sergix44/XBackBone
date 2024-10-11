@@ -479,7 +479,13 @@ if (!function_exists('platform_mail')) {
      */
     function platform_mail($mailbox = 'no-reply'): string
     {
+		$app_email = resolve('config')['app_email'];
+
+	if (!empty($app_email)) {
+		return $mailbox = $app_email;
+	}else{
         return $mailbox.'@'.str_ireplace('www.', '', parse_url(resolve('config')['base_url'], PHP_URL_HOST));
+		}
     }
 }
 
