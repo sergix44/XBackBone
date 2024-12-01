@@ -9,9 +9,9 @@ class UploadResourceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['file'],
-            'name' => ['sometimes', 'string', 'nullable'],
-            'data' => ['sometimes', 'string', 'nullable']
+            'name' => ['string', 'nullable'],
+            'file' => ['file', 'prohibits:data'],
+            'data' => ['string', 'prohibits:file'],
         ];
     }
 
