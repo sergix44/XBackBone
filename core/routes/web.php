@@ -1,6 +1,8 @@
 <?php
 
 use App\Livewire\Dashboard;
+use App\Livewire\Display;
+use App\Livewire\Preview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +22,8 @@ Route::redirect('/', '/dashboard');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 });
+
+Route::get('{resource:code}', Preview::class)->name('preview');
+Route::get('{resource:code}.{ext}', Preview::class)->name('preview.ext');
+//Route::get('{resource:code}/download', )->name('download');
+

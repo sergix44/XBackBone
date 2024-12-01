@@ -14,10 +14,19 @@ class ResourceResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'type' => $this->type,
             'filename' => $this->filename,
+            'mime' => $this->mime,
             'size' => $this->size,
+            'is_hidden' => $this->hidden,
+            'extension' => $this->extension,
+            'view_count' => $this->views,
+            'download_count' => $this->downloads,
+            'preview_url' => $this->preview_url,
+            'preview_ext_url' => $this->preview_ext_url,
             'published_at' => $this->published_at,
+            'expires_at' => $this->expires_at,
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Properties\ResourceType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,5 +47,15 @@ class Resource extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function previewUrl(): Attribute
+    {
+        return Attribute::make(get: fn() => route('preview', $this->code));
+    }
+
+    public function previewExtUrl(): Attribute
+    {
+        return Attribute::make(get: fn() => route('preview.ext', ['resource' => $this->code, 'ext' => $this->extension]));
     }
 }

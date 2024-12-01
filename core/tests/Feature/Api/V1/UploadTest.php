@@ -10,18 +10,21 @@ test('uploading a file', function () {
         ->postJson(route('api.v1.upload'), [
             'file' => UploadedFile::fake()->image('screen.jpg'),
         ])
-        ->dump()
         ->assertCreated()
         ->assertJsonStructure([
             'data' => [
                 'id',
-                'code',
-                'name',
+                'user_id',
+                'type',
                 'filename',
-                'size',
                 'mime',
-                'views',
-                'downloads',
+                'size',
+                'is_hidden',
+                'extension',
+                'view_count',
+                'download_count',
+                'preview_url',
+                'preview_ext_url',
                 'published_at',
                 'expires_at',
             ],

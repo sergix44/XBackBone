@@ -42,6 +42,7 @@ class StoreResource
                 'filename' => $file?->getClientOriginalName(),
                 'size' => $file?->getSize(),
                 'mime' => $file?->getMimeType(),
+                'extension' => $file?->extension(),
                 'name' => $name,
                 'data' => $data,
             ]);
