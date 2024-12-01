@@ -51,11 +51,11 @@ class Resource extends Model
 
     public function previewUrl(): Attribute
     {
-        return Attribute::make(get: fn() => route('preview', $this->code));
+        return Attribute::make(get: fn () => route('preview', $this->code));
     }
 
     public function previewExtUrl(): Attribute
     {
-        return Attribute::make(get: fn() => route('preview.ext', ['resource' => $this->code, 'ext' => $this->extension]));
+        return Attribute::make(get: fn () => route('preview.ext', ['resource' => $this->code, 'ext' => $this->extension]));
     }
 }
