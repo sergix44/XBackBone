@@ -162,4 +162,5 @@ return [
     'settings_saved' => 'Definições de sistema guardadas!',
     'image_embeds' => 'Embutir imagens',
     'vanity_url' => 'URL personalizado',
+    'show_all_tags' => 'Mostrar todas as tags',
 ];
