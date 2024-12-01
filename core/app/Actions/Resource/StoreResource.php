@@ -14,7 +14,6 @@ use Throwable;
 
 class StoreResource
 {
-
     public function __construct(protected Sqids $genId)
     {
     }
