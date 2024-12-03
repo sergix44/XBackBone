@@ -19,7 +19,7 @@ test('uploading a file', function () {
                 'filename',
                 'mime',
                 'size',
-                'is_hidden',
+                'is_private',
                 'extension',
                 'view_count',
                 'download_count',

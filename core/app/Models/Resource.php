@@ -16,7 +16,7 @@ class Resource extends Model
         'type',
         'user_id',
         'code',
-        'hidden',
+        'is_private',
         'data',
         'extension',
         'filename',

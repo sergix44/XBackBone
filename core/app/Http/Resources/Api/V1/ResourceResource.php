@@ -19,7 +19,7 @@ class ResourceResource extends JsonResource
             'filename' => $this->filename,
             'mime' => $this->mime,
             'size' => $this->size,
-            'is_hidden' => $this->hidden,
+            'is_private' => $this->is_private,
             'extension' => $this->extension,
             'view_count' => $this->views,
             'download_count' => $this->downloads,
