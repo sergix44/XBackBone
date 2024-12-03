@@ -26,4 +26,3 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('{resource:code}', Preview::class)->name('preview');
 Route::get('{resource:code}.{ext}', Preview::class)->name('preview.ext');
 //Route::get('{resource:code}/download', )->name('download');
-
