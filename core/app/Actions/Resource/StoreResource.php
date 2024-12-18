@@ -40,7 +40,7 @@ class StoreResource
                 'type' => $this->findType($file, $data),
                 'user_id' => $user->id,
                 'filename' => $file?->getClientOriginalName(),
-                'size' => $file?->getSize(),
+                'size' => $file?->getSize() ?? strlen($data),
                 'mime' => $file?->getMimeType(),
                 'extension' => $file?->extension(),
                 'name' => $name,
