@@ -161,4 +161,5 @@ return [
     'path_not_writable' => 'Destinasi berkas tidak dapat ditulis.',
     'image_embeds' => 'Sematkan gambar',
     'vanity_url' => 'URL kostum',
+    'show_all_tags' => 'Tampilkan semua tag',
 ];
