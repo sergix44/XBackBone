@@ -21,30 +21,38 @@ class ClientController extends Controller
     public function getShareXConfig(Request $request, Response $response, int $id): Response
     {
         $user = make(UserRepository::class)->get($request, $id, true);
-
+    
         if (!$user->token) {
             $this->session->alert(lang('no_upload_token'), 'danger');
-
+    
             return redirect($response, $request->getHeaderLine('Referer'));
         }
-
+    
+        $fileBaseName = $user->username . '-ShareX'; // Base file name without extension
+        $fileName = $fileBaseName . '.sxcu'; // Full file name with extension
+    
         $json = [
+            'Version' => '16.1.0',
+            'Name' => $fileBaseName,
             'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
+            'RequestMethod' => 'POST',
             'RequestURL' => route('upload'),
-            'FileFormName' => 'upload',
+            'Body' => 'MultipartFormData',
             'Arguments' => [
-                'file' => '$filename$',
-                'text' => '$input$',
+                'file' => '{filename}',
+                'text' => '{input}',
                 'token' => $user->token,
             ],
-            'URL' => '$json:url$',
-            'ThumbnailURL' => '$json:url$/raw',
-            'DeletionURL' => '$json:url$/delete/'.$user->token,
+            'FileFormName' => 'upload',
+            'URL' => '{json:url}',
+            'ThumbnailURL' => '{json:url}/raw',
+            'DeletionURL' => '{json:url}/delete/' . $user->token,
         ];
-
+    
         return json($response, $json, 200, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
-            ->withHeader('Content-Disposition', 'attachment;filename="'.$user->username.'-ShareX.sxcu"');
+            ->withHeader('Content-Disposition', 'attachment;filename="' . $fileName . '"');
     }
+    
 
     /**
      * @param  Request  $request
