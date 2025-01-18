@@ -114,7 +114,7 @@
                             <div class="form-group row">
                                 <label for="default_user_quota" class="col-sm-4 col-form-label">{{ lang('default_user_quota') }}</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="default_user_quota" name="default_user_quota" pattern="[0-9]+[K|M|G|T]" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ settings.default_user_quota }}" {{ settings.quota_enabled == 'off' ? 'readonly' }}>
+                                    <input type="text" class="form-control" id="default_user_quota" name="default_user_quota" pattern="[0-9]+[KMGTP]" title="512M, 2G, 1T, ..." placeholder="1G" value="{{ settings.default_user_quota }}" {{ settings.quota_enabled == 'off' ? 'readonly' }}>
                                     <small>512M, 2G, 1T, ...</small>
                                 </div>
                             </div>
