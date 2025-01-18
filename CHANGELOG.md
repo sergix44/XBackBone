@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [3.8.0] - 2025-01-18
+### Added
+- Support for PHP 8.4
+- Add an `app_email` option to the config (#616)
+- Exporting ShareX settings now work for the latest version of ShareX 16.1.0 (#617)
+- Option to upload file with a custom name (#588)
+- Upload from clipboard (#572)
+
+### Changed
+- Updated translations.
+- Updated dependencies.
+
+### Fixed
+- Page count calculation (#586)
+
 ## [3.7.0] - 2024-01-14
 ### Added
 - Added support for vanity urls.
