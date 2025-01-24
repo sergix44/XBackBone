@@ -59,7 +59,7 @@ class UploadController extends Controller
         }
 
         try {
-            $response = $this->saveMedia($response, $file, $user);
+            $response = $this->saveMedia($response, $file, $user, param($request, 'code'));
             $this->setSessionQuotaInfo($user->current_disk_quota + $file->getSize(), $user->max_disk_quota);
         } catch (Exception $e) {
             $this->updateUserQuota($request, $user->id, $file->getSize(), true);
