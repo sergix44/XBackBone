@@ -5,6 +5,10 @@ nav_order: 9
 ---
 # Changelog
 
+## [3.8.1] - 2025-01-24
+### Fixed
+- Crash when uploading file (#625)
+
 ## [3.8.0] - 2025-01-18
 ### Added
 - Support for PHP 8.4
