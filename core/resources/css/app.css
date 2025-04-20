@@ -1,22 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Table pagination: active page highlight */
-.mary-table-pagination span[aria-current="page"] > span {
-    @apply bg-primary text-base-100
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark;
 }
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
 
-/* Table pagination: for dark mode*/
-.mary-table-pagination span[aria-disabled="true"] span {
-    @apply bg-inherit
-}
 
-/* Table pagination: for dark mode */
-.mary-table-pagination button {
-    @apply bg-base-100
-}
+/* Dark theme variant support */
+@custom-variant dark (&:where(.dark, .dark *));
 
-.card.image-full::before {
-    background-color: transparent;
-}
+
+/* Laravel 12 defaults */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+
+/* Custom Styles */

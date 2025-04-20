@@ -53,7 +53,7 @@ class StoreResource
 
             $code = $this->genId->encode([$user->id, $resource->id]);
 
-            if (!Storage::put($code, $file)) {
+            if (!Storage::put($code, $file ?? $data)) {
                 throw new InvalidArgumentException('Failed to store the file.');
             }
 

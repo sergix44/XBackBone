@@ -9,12 +9,12 @@
     "require": {
         "php": "^8.2",
         "laravel/fortify": "^1.24",
-        "laravel/framework": "^11.9",
+        "laravel/framework": "^12.0",
         "laravel/pennant": "^1.11",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
-        "robsontenorio/mary": "^1.35",
+        "robsontenorio/mary": "^2.0",
         "sergix44/imagezen": "^0.2.2",
         "sqids/sqids": "^0.4.1"
     },
@@ -24,7 +24,7 @@
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
-        "pestphp/pest": "^2.35",
+        "pestphp/pest": "^3.0",
         "predis/predis": "^2.2"
     },
     "autoload": {
