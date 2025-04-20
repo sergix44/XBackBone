@@ -1,7 +1,7 @@
 <div>
     <x-form wire:submit="authenticate" no-separator>
-        <x-input label="Username" type="email" wire:model="form.email" inline/>
-        <x-input label="Password" type="password" wire:model="form.password" inline/>
+        <x-input placeholder="Username" label="Username" type="email" wire:model="form.email" inline />
+        <x-input placeholder="Password" label="Password" type="password" wire:model="form.password" inline />
         <x-checkbox label="Remember me" wire:model="form.remember"/>
 
         <div class="flex flex-col gap-2 mt-6">

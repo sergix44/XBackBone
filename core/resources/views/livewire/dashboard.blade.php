@@ -2,9 +2,10 @@
     <div class="flex justify-between">
         <div class="flex gap-2">
             <x-button label="New" class="btn-primary" icon="o-plus"/>
-            <x-input placeholder="Search...">
+
+            <x-input placeholder="Search..." inline>
                 <x-slot:append>
-                    <x-button icon="o-magnifying-glass" class="btn-primary rounded-s-none"/>
+                    <x-button icon="o-magnifying-glass" class="join-item btn-primary" />
                 </x-slot:append>
             </x-input>
         </div>
