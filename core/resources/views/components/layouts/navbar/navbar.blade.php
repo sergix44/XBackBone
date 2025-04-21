@@ -1,4 +1,4 @@
-<div class="navbar bg-base-100 w-full mx-auto lg:px-10">
+<div class="navbar bg-base-100 w-full mx-auto lg:px-10 shadow p-0">
     <div class="navbar-start">
         <x-dropdown>
             <x-slot:trigger>
@@ -17,8 +17,8 @@
         @if($user = auth()->user())
             <x-dropdown right>
                 <x-slot:trigger>
-                    <div class="btn btn-ghost btn-circle">
-                        <x-avatar :image="$user->avatar" class="!w-10"/>
+                    <div class="btn btn-ghost">
+                        <x-avatar :image="$user->avatar" :title="$user->name"/>
                     </div>
                 </x-slot:trigger>
                 <x-menu-item icon="o-user" title="Profile" link="#"/>
