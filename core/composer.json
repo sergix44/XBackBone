@@ -8,6 +8,7 @@
     "license": "AGPL-3.0-only",
     "require": {
         "php": "^8.2",
+        "codeat3/blade-simple-icons": "^6.12",
         "laravel/fortify": "^1.24",
         "laravel/framework": "^12.0",
         "laravel/pennant": "^1.11",

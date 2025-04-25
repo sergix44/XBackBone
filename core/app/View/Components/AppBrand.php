@@ -28,10 +28,10 @@ class AppBrand extends Component
                         <div class="flex items-center {{ $onTop ? 'flex-col justify-center' : 'gap-2 flex-nowrap' }}">
                             <div class="avatar">
                                 <div class="{{ $onTop ? 'w-24' : 'w-12' }}">
-                                    <img src="{{ asset('img/android-chrome-192x192.png') }}" />
+                                    <img src="{{ asset('img/android-chrome-192x192.png') }}"  alt="Application Logo">
                               </div>
                             </div>
-                            <span class="font-bold text-3xl bg-gradient-to-r from-blue-500 to-green-400 bg-clip-text text-transparent ">
+                            <span class="font-bold text-3xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent ">
                                 {{ config('app.name') }}
                             </span>
                         </div>

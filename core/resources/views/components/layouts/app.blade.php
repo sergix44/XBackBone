@@ -1,7 +1,7 @@
 @extends('components.layouts.base')
 
 @section('body')
-    <x-layouts.navbar.navbar/>
+    <x-navbar.navbar/>
 
     <x-main with-nav full-width>
         <x-slot:content>

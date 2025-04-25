@@ -18,7 +18,7 @@
     @livewireStyles
 </head>
 <body class="min-h-screen font-sans antialiased bg-base-300">
-    @yield('body')
-    @livewireScripts
+@yield('body')
+@livewireScripts
 </body>
 </html>

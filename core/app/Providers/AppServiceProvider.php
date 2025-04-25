@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Notifications\ResetPassword;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pennant\Feature;
 use Sqids\Sqids;
@@ -24,10 +25,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (!$this->app->runningInConsole()) {
-            return;
-        }
+        Gate::define('administrate', static fn(User $user) => $user->is_admin);
 
+        if ($this->app->runningInConsole()) {
+            $this->registerPublishes();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function registerPublishes(): void
+    {
         $group = [
             base_path('public/build/') => public_path('build'),
             base_path('public/vendor/') => public_path('vendor'),

@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
+use App\Livewire\Admin\Settings;
 use App\Livewire\Dashboard;
 use App\Livewire\Display;
+use App\Livewire\Integrations;
 use App\Livewire\Preview;
-use Illuminate\Http\Request;
+use App\Livewire\User\Profile;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +22,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
 
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+Route::group(['middleware' => 'auth'], static function () {
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::get('integrations', Integrations::class)->name('integrations');
+    Route::get('settings', Settings::class)->name('admin.settings')->can('administrate');
+    Route::get('profile', Profile::class)->name('user.profile');
 });
 
 Route::get('{resource:code}', Preview::class)->name('preview');
