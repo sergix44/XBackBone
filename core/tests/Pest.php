@@ -13,7 +13,7 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class)->in('Feature');
+pest()->extend(TestCase::class)->in('Feature/**/*');
 
 /*
 |--------------------------------------------------------------------------
