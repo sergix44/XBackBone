@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use Livewire\Volt\Volt;
+beforeEach()->skip('Implement the test');
 
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');

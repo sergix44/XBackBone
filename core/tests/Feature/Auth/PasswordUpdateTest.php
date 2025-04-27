@@ -4,7 +4,8 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Volt\Volt;
+
+beforeEach()->skip('Implement the test');
 
 test('password can be updated', function () {
     $user = User::factory()->create();

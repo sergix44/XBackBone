@@ -3,11 +3,11 @@
 @section('body')
     <x-navbar.navbar/>
 
-    <x-main with-nav full-width>
+    <x-custom-main with-nav full-width>
         <x-slot:content>
             {{ $slot }}
         </x-slot:content>
-    </x-main>
+    </x-custom-main>
 
     <form method="POST" action="{{ route('logout') }}" id="logout-form">@csrf</form>
     <x-toast/>
