@@ -18,8 +18,8 @@ class UpdateThemesCommand extends Command
         }
 
         $themes = collect(glob(base_path('node_modules/daisyui/theme/*.css')))
-            ->map(fn($file) => str_replace(base_path('node_modules/daisyui/theme/'), '', $file))
-            ->map(fn($file) => basename($file, '.css'))
+            ->map(fn ($file) => str_replace(base_path('node_modules/daisyui/theme/'), '', $file))
+            ->map(fn ($file) => basename($file, '.css'))
             ->toArray();
 
         if (config('themes') === $themes) {
