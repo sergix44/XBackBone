@@ -9,6 +9,7 @@ use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -36,7 +37,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        RateLimiter::for('login', function (Request $request) {
+        RateLimiter::for('login', static function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
@@ -54,8 +55,12 @@ class FortifyServiceProvider extends ServiceProvider
             return app()->call(ForgotPassword::class);
         });
 
-        Fortify::resetPasswordView(static function ($request) {
+        Fortify::resetPasswordView(static function () {
             return app()->call(ResetPassword::class);
+        });
+
+        Fortify::verifyEmailView(static function () {
+            return app()->call(VerifyEmail::class);
         });
     }
 }

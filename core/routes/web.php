@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
 
-Route::group(['middleware' => 'auth'], static function () {
+Route::group(['middleware' => ['auth', 'verified']], static function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('integrations', Integrations::class)->name('integrations');
     Route::get('settings', Settings::class)->name('admin.settings')->can('administrate');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Auth\VerifyEmail;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
@@ -8,9 +9,10 @@ use Illuminate\Support\Facades\URL;
 test('email verification screen can be rendered', function () {
     $user = User::factory()->unverified()->create();
 
-    $response = $this->actingAs($user)->get('/verify-email');
+    $response = $this->actingAs($user)->get('/email/verify');
 
-    $response->assertStatus(200);
+    $response->assertStatus(200)
+        ->assertSeeLivewire(VerifyEmail::class);
 });
 
 test('email can be verified', function () {

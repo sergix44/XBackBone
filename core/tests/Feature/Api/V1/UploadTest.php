@@ -3,6 +3,10 @@
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
+beforeEach(function () {
+    Storage::fake();
+});
+
 test('uploading a file', function () {
     $user = User::factory()->create();
 

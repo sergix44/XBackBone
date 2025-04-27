@@ -7,11 +7,6 @@
                 <h1 class="mb-6 justify-center flex">
                     <x-app-brand on-top/>
                 </h1>
-                @if(session()->has('status'))
-                    <x-alert icon="o-check" class="alert-success mb-4">
-                        {{ session('status') }}
-                    </x-alert>
-                @endif
                 {{ $slot }}
             </x-card>
         </div>

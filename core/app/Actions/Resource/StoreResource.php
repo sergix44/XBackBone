@@ -9,8 +9,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use RuntimeException;
 use Sqids\Sqids;
-use Throwable;
 
 class StoreResource
 {
@@ -41,8 +41,8 @@ class StoreResource
                 'user_id' => $user->id,
                 'filename' => $file?->getClientOriginalName(),
                 'size' => $file?->getSize() ?? strlen($data),
-                'mime' => $file?->getMimeType(),
-                'extension' => $file?->extension(),
+                'mime' => $file?->getMimeType() ?? 'text/plain',
+                'extension' => $file?->extension() ?? 'txt',
                 'name' => $name,
                 'data' => $data,
             ]);
@@ -52,16 +52,16 @@ class StoreResource
             }
 
             $code = $this->genId->encode([$user->id, $resource->id]);
+            $stream = $file ? fopen($file->getRealPath(), 'rb') : $data;
 
-            if (!Storage::put($code, $file ?? $data)) {
-                throw new InvalidArgumentException('Failed to store the file.');
+            if (!Storage::put($code, $stream)) {
+                throw new RuntimeException('Failed to store the file.');
             }
 
-            $resource->update([
+            $resource->fill([
                 'code' => $code,
                 'published_at' => now(),
             ]);
-
 
             return $resource;
         });
