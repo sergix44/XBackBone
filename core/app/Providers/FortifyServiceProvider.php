@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Livewire\Auth\ConfirmPassword;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
@@ -61,6 +62,10 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::verifyEmailView(static function () {
             return app()->call(VerifyEmail::class);
+        });
+
+        Fortify::confirmPasswordView(static function () {
+            return app()->call(ConfirmPassword::class);
         });
     }
 }

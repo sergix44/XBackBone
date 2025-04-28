@@ -2,46 +2,31 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Livewire\Auth\ConfirmPassword;
 use App\Models\User;
-
-beforeEach()->skip('Implement the test');
+use function Pest\Laravel\actingAs;
 
 test('confirm password screen can be rendered', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->get('/confirm-password');
-
-    $response
-        ->assertSeeVolt('pages.auth.confirm-password')
+    actingAs($user)
+        ->get('/user/confirm-password')
+        ->assertSeeLivewire(ConfirmPassword::class)
         ->assertStatus(200);
 });
 
 test('password can be confirmed', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user);
-
-    $component = Volt::test('pages.auth.confirm-password')
-        ->set('password', 'password');
-
-    $component->call('confirmPassword');
-
-    $component
-        ->assertRedirect('/dashboard')
-        ->assertHasNoErrors();
+    actingAs($user)
+        ->post('/user/confirm-password', ['password' => 'password'])
+        ->assertRedirect('/dashboard');
 });
 
 test('password is not confirmed with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user);
-
-    $component = Volt::test('pages.auth.confirm-password')
-        ->set('password', 'wrong-password');
-
-    $component->call('confirmPassword');
-
-    $component
-        ->assertNoRedirect()
-        ->assertHasErrors('password');
+    actingAs($user)
+        ->post('/user/confirm-password', ['password' => 'notpassword'])
+        ->assertSessionHasErrors();
 });
