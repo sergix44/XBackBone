@@ -2,12 +2,13 @@
 
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use \Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     Storage::fake();
 });
 
-test('uploading a file', function () {
+test('upload a file', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
@@ -61,4 +62,20 @@ test('upload a file string', function () {
                 'expires_at',
             ],
         ]);
+});
+
+test('fails when not authenticated', function () {
+    $this->postJson(route('api.v1.upload'), [
+        'file' => UploadedFile::fake()->image('screen.jpg'),
+    ])
+        ->assertUnauthorized();
+});
+
+test('fails file is not specified', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->postJson(route('api.v1.upload'), [])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['file']);
 });

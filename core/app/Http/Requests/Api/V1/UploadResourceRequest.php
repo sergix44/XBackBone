@@ -10,8 +10,8 @@ class UploadResourceRequest extends FormRequest
     {
         return [
             'name' => ['string', 'nullable'],
-            'file' => ['file', 'prohibits:data'],
-            'data' => ['string', 'prohibits:file'],
+            'file' => ['file', 'prohibits:data', 'required_without:data'],
+            'data' => ['string', 'prohibits:file', 'required_without:file'],
         ];
     }
 
