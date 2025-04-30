@@ -2,7 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use \Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     Storage::fake();
@@ -41,7 +41,7 @@ test('upload a file string', function () {
 
     $this->actingAs($user)
         ->postJson(route('api.v1.upload'), [
-            'data' => 'ij j ewojfeiojwio eoje jwefjiwe jf '
+            'data' => 'ij j ewojfeiojwio eoje jwefjiwe jf ',
         ])
         ->assertCreated()
         ->assertJsonStructure([

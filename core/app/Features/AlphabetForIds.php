@@ -2,8 +2,6 @@
 
 namespace App\Features;
 
-use Illuminate\Support\Lottery;
-use Illuminate\Support\Str;
 use Sqids\Sqids;
 
 class AlphabetForIds

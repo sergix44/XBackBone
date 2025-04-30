@@ -17,6 +17,8 @@
         "livewire/livewire": "^3.5",
         "robsontenorio/mary": "^2.0",
         "sergix44/imagezen": "^0.2.2",
+        "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-query-builder": "^6.3",
         "sqids/sqids": "^0.4.1"
     },
     "require-dev": {

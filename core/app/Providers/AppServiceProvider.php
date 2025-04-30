@@ -25,16 +25,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('administrate', static fn(User $user) => $user->is_admin);
+        Gate::define('administrate', static fn (User $user) => $user->is_admin);
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishes();
         }
     }
 
-    /**
-     * @return void
-     */
     public function registerPublishes(): void
     {
         $group = [

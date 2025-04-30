@@ -14,28 +14,20 @@ use Sqids\Sqids;
 
 class StoreResource
 {
-    public function __construct(protected Sqids $genId)
-    {
-    }
+    public function __construct(protected Sqids $genId) {}
 
-    /**
-     * @param  User  $user
-     * @param  UploadedFile|null  $file
-     * @param  string|null  $name
-     * @param  string|null  $data
-     * @return Resource
-     */
     public function __invoke(User $user, ?UploadedFile $file = null, ?string $name = null, ?string $data = null): Resource
     {
-        if (!$file && !$data) {
+        if (! $file && ! $data) {
             throw new InvalidArgumentException('Cannot store a resource without a file or data.');
         }
 
-        if (!$name && $file) {
+        if (! $name && $file) {
             $name = $file?->getClientOriginalName() ?? $file?->hashName();
         }
 
-        return DB::transaction(function () use ($user, $file, $name, $data) {
+        /** @var resource $resource */
+        $resource = DB::transaction(function () use ($user, $file, $name, $data) {
             $resource = Resource::query()->create([
                 'type' => $this->findType($file, $data),
                 'user_id' => $user->id,
@@ -47,14 +39,14 @@ class StoreResource
                 'data' => $data,
             ]);
 
-            if (!$resource) {
+            if (! $resource) {
                 throw new InvalidArgumentException('Failed to store the resource.');
             }
 
             $code = $this->genId->encode([$user->id, $resource->id]);
             $stream = $file ? fopen($file->getRealPath(), 'rb') : $data;
 
-            if (!Storage::put($code, $stream)) {
+            if (! Storage::put($code, $stream)) {
                 throw new RuntimeException('Failed to store the file.');
             }
 
@@ -65,6 +57,13 @@ class StoreResource
 
             return $resource;
         });
+
+        activity()
+            ->performedOn($resource)
+            ->causedBy($user)
+            ->log('resource.uploaded');
+
+        return $resource;
     }
 
     private function findType(?UploadedFile $file, ?string $data): ResourceType

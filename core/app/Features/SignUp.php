@@ -2,8 +2,6 @@
 
 namespace App\Features;
 
-use Illuminate\Support\Lottery;
-
 class SignUp
 {
     public string $name = 'signup';

@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Middleware\AdminMiddleware;
 use App\Livewire\Admin\Settings;
 use App\Livewire\Dashboard;
-use App\Livewire\Display;
 use App\Livewire\Integrations;
 use App\Livewire\Preview;
 use App\Livewire\User\Profile;
@@ -31,4 +29,4 @@ Route::group(['middleware' => ['auth', 'verified']], static function () {
 
 Route::get('{resource:code}', Preview::class)->name('preview');
 Route::get('{resource:code}.{ext}', Preview::class)->name('preview.ext');
-//Route::get('{resource:code}/download', )->name('download');
+// Route::get('{resource:code}/download', )->name('download');

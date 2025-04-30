@@ -1,5 +1,5 @@
 <div class="grid grid-cols-12 gap-6">
-    <div class="col-span-3">
+    <div class="md:col-span-3 col-span-12">
         <x-menu class="rounded-lg bg-base-100">
             <x-menu-item title="Profile" icon="o-user-circle" />
             <x-menu-item title="Tokens" icon="o-command-line" />
@@ -7,7 +7,7 @@
             <x-menu-item title="Delete Account" icon="o-user-minus" class="text-red-500" />
         </x-menu>
     </div>
-    <div class="col-span-9">
+    <div class="md:col-span-9 col-span-12">
         <div class="card bg-base-100 w-full">
             <div class="card-body">
                 <x-avatar :image="$user->avatar" class="!w-22">

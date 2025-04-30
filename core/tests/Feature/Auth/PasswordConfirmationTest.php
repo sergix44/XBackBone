@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Livewire\Auth\ConfirmPassword;
 use App\Models\User;
+
 use function Pest\Laravel\actingAs;
 
 test('confirm password screen can be rendered', function () {

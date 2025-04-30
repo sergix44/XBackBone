@@ -8,6 +8,7 @@ use Livewire\Component;
 class Profile extends Component
 {
     public User $user;
+
     public array $themes = [];
 
     public function mount()
