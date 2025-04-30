@@ -14,7 +14,9 @@ use Sqids\Sqids;
 
 class StoreResource
 {
-    public function __construct(protected Sqids $genId) {}
+    public function __construct(protected Sqids $genId)
+    {
+    }
 
     public function __invoke(User $user, ?UploadedFile $file = null, ?string $name = null, ?string $data = null): Resource
     {
