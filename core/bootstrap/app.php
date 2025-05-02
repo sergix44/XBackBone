@@ -15,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             ->group(base_path('routes/api/v1.php'))
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->trustProxies(headers: Request::HEADER_X_FORWARDED_FOR |
+        $middleware->trustProxies(
+            headers: Request::HEADER_X_FORWARDED_FOR |
             Request::HEADER_X_FORWARDED_HOST |
             Request::HEADER_X_FORWARDED_PORT |
             Request::HEADER_X_FORWARDED_PROTO |
