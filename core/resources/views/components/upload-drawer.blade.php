@@ -6,7 +6,7 @@
     title="Uploads"
 >
     <div id="drop-area"
-         class="w-full p-6 border-2 border-dashed border-neutral-content/50 rounded-lg text-center relative">
+         class="w-full p-6 border-2 border-dashed border-base-content/50 rounded-lg text-center relative">
         <input id="files" type="file" class="absolute inset-0 w-full h-full opacity-0 z-50 cursor-pointer" multiple>
         <div class="flex flex-col items-center justify-center gap-4">
             <x-icon name="o-cloud-arrow-up" class="text-base-content/70 w-20 h-20"/>
@@ -20,7 +20,7 @@
             <div class="card w-full bg-neutral/20 card-sm shadow-sm mb-2">
                 <div class="card-body">
                     <div class="flex items-center justify-between mb-2 gap-2">
-                        <h2 class="card-title truncate" x-text="file.name"></h2>
+                        <h2 class="card-title truncate block" x-text="file.name"></h2>
                         <div class="card-actions justify-end">
                             <x-button x-show="!file.completed && !file.canceled" icon="o-x-mark" class="btn-circle btn-xs btn-error" x-on:click="cancelFile(file.id)"/>
                             <x-button x-show="file.completed" icon="o-check" class="btn-circle btn-xs btn-success" x-on:click="removeFile(file.id)"/>
@@ -94,6 +94,8 @@
                     this.list[id].completed = true;
                     this.list[id].progress = 100;
                     $wire.saveUpload(id)
+                    $wire.$refresh()
+                    this.checkAllCompleted()
                 }, () => {
                     console.log(`File upload failed: ${file.name}`);
                     delete this.list[id];
@@ -116,6 +118,11 @@
         removeFile(id) {
             if (this.list[id]) {
                 delete this.list[id];
+            }
+        },
+        checkAllCompleted() {
+            if (Object.values(this.list).every(file => file.completed)) {
+                $wire.showUploadDrawer = false;
             }
         },
     }));

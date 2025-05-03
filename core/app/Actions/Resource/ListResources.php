@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ListResources
 {
-    public function __invoke(?User $user = null): AbstractPaginator
+    public function __invoke(?User $user = null, int $perPage = 16): AbstractPaginator
     {
         return QueryBuilder::for(Resource::class)
             ->when($user, function ($query) use ($user) {
@@ -17,7 +17,8 @@ class ListResources
             })
             ->allowedFilters(['filename', 'type', 'mime', 'extension', 'code'])
             ->allowedSorts(['created_at', 'size', 'filename', 'views', 'downloads'])
-            ->paginate()
+            ->defaultSort('-created_at')
+            ->paginate($perPage)
             ->appends(request()->query());
     }
 }

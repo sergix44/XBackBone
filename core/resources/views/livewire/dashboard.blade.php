@@ -10,11 +10,7 @@
             </x-input>
         </div>
         <div class="flex justify-center lg:shrink-0 lg:my-0">
-            <div class="join">
-                <button class="join-item btn">«</button>
-                <button class="join-item btn">Page 1</button>
-                <button class="join-item btn">»</button>
-            </div>
+            {{ $resources->links() }}
         </div>
         <div class="flex items-center justify-center lg:justify-end gap-2 lg:w-1/2">
             <div class="join">
@@ -30,11 +26,10 @@
         @foreach($resources as $resource)
             <x-resource :resource="$resource"/>
         @endforeach
-
-        <x-resource/>
-        <x-resource :is-dir="true"/>
     </div>
-
+    <div class="flex justify-center mt-4">
+        {{ $resources->links() }}
+    </div>
 </div>
 
 @script

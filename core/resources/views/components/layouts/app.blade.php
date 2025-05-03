@@ -11,4 +11,5 @@
 
     <form method="POST" action="{{ route('logout') }}" id="logout-form">@csrf</form>
     <x-toast/>
+    <x-footer/>
 @endsection

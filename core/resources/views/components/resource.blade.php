@@ -1,8 +1,10 @@
 <div class="card bg-base-100 w-full shadow-sm card-xs flex-col">
     <div class="card-body justify-start">
-        <div class="flex justify-between items-center">
-            <h3 class="card-title">{{ $resource?->filename ?? 'File Name' }}</h3>
-            <div>
+        <div class="flex justify-between items-center gap-1">
+            <h3 class="card-title truncate block">
+                {{ $resource?->filename ?? 'File Name' }}
+            </h3>
+            <div class="inline-flex gap-0.5">
                 <x-button icon="m-link" class="btn-success btn-xs btn-square btn-soft"/>
                 <x-button icon="m-cloud-arrow-down" class="btn-info btn-xs btn-square btn-soft"/>
                 <x-button icon="m-eye-slash" class="btn-warning btn-xs btn-square btn-soft"/>
@@ -22,7 +24,9 @@
     <div class="card-body justify-end">
         <div class="flex justify-between items-center">
             <div class="font-mono">{{ $resource?->size_human_readable ?? '0' }}</div>
-            <div class="font-semibold">{{ $resource ?? null ? $resource->created_at->diffForHumans() : '0' }}</div>
+            <div class="font-semibold tooltip tooltip-bottom" data-tip="{{ $resource?->created_at ?? '0' }}">
+                {{ $resource ?? null ? $resource->created_at->diffForHumans() : '0' }}
+            </div>
         </div>
     </div>
 </div>

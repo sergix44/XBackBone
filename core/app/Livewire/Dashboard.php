@@ -8,11 +8,12 @@ use Illuminate\Pagination\AbstractPaginator;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Dashboard extends Component
 {
-    use WithFileUploads, Toast;
+    use WithFileUploads, Toast, WithPagination;
 
     private readonly StoreResource $storeResource;
 
