@@ -18,13 +18,17 @@ class StoreResource
     {
     }
 
-    public function __invoke(User $user, ?UploadedFile $file = null, ?string $name = null, ?string $data = null): Resource
-    {
-        if (! $file && ! $data) {
+    public function __invoke(
+        User $user,
+        ?UploadedFile $file = null,
+        ?string $name = null,
+        ?string $data = null
+    ): Resource {
+        if (!$file && !$data) {
             throw new InvalidArgumentException('Cannot store a resource without a file or data.');
         }
 
-        if (! $name && $file) {
+        if (!$name && $file) {
             $name = $file?->getClientOriginalName() ?? $file?->hashName();
         }
 
@@ -36,23 +40,23 @@ class StoreResource
                 'filename' => $file?->getClientOriginalName(),
                 'size' => $file?->getSize() ?? strlen($data),
                 'mime' => $file?->getMimeType() ?? 'text/plain',
-                'extension' => $file?->extension() ?? 'txt',
+                'extension' => $this->fromFilename($file) ?? $file?->extension() ?? 'txt',
                 'name' => $name,
                 'data' => $data,
             ]);
 
-            if (! $resource) {
+            if (!$resource) {
                 throw new InvalidArgumentException('Failed to store the resource.');
             }
 
             $code = $this->genId->encode([$user->id, $resource->id]);
             $stream = $file ? fopen($file->getRealPath(), 'rb') : $data;
 
-            if (! Storage::put($code, $stream)) {
+            if (!Storage::put($code, $stream)) {
                 throw new RuntimeException('Failed to store the file.');
             }
 
-            $resource->fill([
+            $resource->update([
                 'code' => $code,
                 'published_at' => now(),
             ]);
@@ -79,5 +83,16 @@ class StoreResource
         }
 
         return ResourceType::FILE;
+    }
+
+    private function fromFilename(?UploadedFile $file): ?string
+    {
+        $originalExtension = $file?->getClientOriginalExtension();
+
+        if (empty($originalExtension)) {
+            return null;
+        }
+
+        return strtolower($originalExtension);
     }
 }

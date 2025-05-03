@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Resource;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -10,6 +11,7 @@ return new class extends Migration {
     {
         Schema::create('resources', static function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Resource::class, 'parent_id')->nullable()->comment('The parent resource ID, if any.');
             $table->string('type')->comment('The type of resource.');
             $table->foreignIdFor(User::class)->constrained('users')->comment('The user that owns the resource.');
             $table->string('code')->unique()->nullable()->comment('The unique code of the resource.');

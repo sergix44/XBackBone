@@ -26,15 +26,23 @@
             </div>
         </div>
     </div>
-    <div class="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <x-resource/>
-        <x-resource/>
-        <x-resource/>
-        <x-resource/>
-        <x-resource/>
-        <x-resource/>
+    <div class="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="resources">
+        @foreach($resources as $resource)
+            <x-resource :resource="$resource"/>
+        @endforeach
+
         <x-resource/>
         <x-resource :is-dir="true"/>
     </div>
 
 </div>
+
+@script
+<script>
+    $wire.el.querySelector('#resources')
+        .addEventListener('dragover', e => {
+            e.preventDefault();
+            $wire.showUploadDrawer = true;
+        });
+</script>
+@endscript

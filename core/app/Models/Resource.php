@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use App\Models\Properties\ResourceType;
+use App\Support\Helpers;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Resource extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'parent_id',
         'type',
         'user_id',
         'code',
@@ -49,13 +52,33 @@ class Resource extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Resource::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Resource::class, 'parent_id');
+    }
+
     public function previewUrl(): Attribute
     {
-        return Attribute::make(get: fn () => route('preview', $this->code));
+        return Attribute::make(get: fn() => route('preview', $this->code));
     }
 
     public function previewExtUrl(): Attribute
     {
-        return Attribute::make(get: fn () => route('preview.ext', ['resource' => $this->code, 'ext' => $this->extension]));
+        return Attribute::make(get: fn() => route('preview.ext', ['resource' => $this->code, 'ext' => $this->extension]));
+    }
+
+    public function isDir(): Attribute
+    {
+        return Attribute::make(get: fn() => $this->type === ResourceType::DIRECTORY);
+    }
+
+    public function sizeHumanReadable(): Attribute
+    {
+        return Attribute::make(get: fn() => $this->size ? Helpers::humanizeBytes($this->size) : null);
     }
 }

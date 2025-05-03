@@ -1,7 +1,7 @@
 <div class="card bg-base-100 w-full shadow-sm card-xs flex-col">
     <div class="card-body justify-start">
         <div class="flex justify-between items-center">
-            <h3 class="card-title">Scarpe di lukazzo.png</h3>
+            <h3 class="card-title">{{ $resource?->filename ?? 'File Name' }}</h3>
             <div>
                 <x-button icon="m-link" class="btn-success btn-xs btn-square btn-soft"/>
                 <x-button icon="m-cloud-arrow-down" class="btn-info btn-xs btn-square btn-soft"/>
@@ -11,7 +11,7 @@
         </div>
     </div>
     <figure class="justify-center">
-        @if($isDir ?? false)
+        @if($resource->is_dir ?? false)
             <x-icon name="o-folder" class="w-full h-32"></x-icon>
         @else
             <img
@@ -21,8 +21,8 @@
     </figure>
     <div class="card-body justify-end">
         <div class="flex justify-between items-center">
-            <div class="font-mono">30.2 TB</div>
-            <div class="font-semibold">31/12/2037 14:23:01</div>
+            <div class="font-mono">{{ $resource?->size_human_readable ?? '0' }}</div>
+            <div class="font-semibold">{{ $resource ?? null ? $resource->created_at->diffForHumans() : '0' }}</div>
         </div>
     </div>
 </div>

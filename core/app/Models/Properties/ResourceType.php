@@ -13,10 +13,13 @@ enum ResourceType: string
     case TEXT = 'TEXT';
     case FILE = 'FILE';
     case LINK = 'LINK';
+    case DIRECTORY = 'DIRECTORY';
 
     public static function fromMime(string $mime): self
     {
-        [$type, $subtype] = explode('/', $mime);
+        $data = explode('/', $mime);
+        $type = $data[0];
+        $subtype = $data[1] ?? '';
 
         return match (true) {
             $type === 'image' => self::IMAGE,
