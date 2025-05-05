@@ -25,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Feature::resolveScopeUsing(static fn() => null);
+
         Gate::define('administrate', static fn (User $user) => $user->is_admin);
 
         if ($this->app->runningInConsole()) {
