@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Actions\Resource\ListResources;
 use App\Actions\Resource\StoreResource;
-use Illuminate\Pagination\AbstractPaginator;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -15,23 +14,13 @@ class Dashboard extends Component
 {
     use WithFileUploads, Toast, WithPagination;
 
-    private readonly StoreResource $storeResource;
-
     public bool $showUploadDrawer = false;
-
     public array $files = [];
-    private ListResources $listResources;
-
-    public function boot(StoreResource $storeResource, ListResources $listResources): void
-    {
-        $this->storeResource = $storeResource;
-        $this->listResources = $listResources;
-    }
 
     public function render()
     {
         return view('livewire.dashboard', [
-            'resources' => ($this->listResources)(auth()->user()),
+            'resources' => app(ListResources::class)(auth()->user()),
         ])->title('Gallery');
     }
 
@@ -45,7 +34,7 @@ class Dashboard extends Component
             return;
         }
 
-        $resource = ($this->storeResource)(auth()->user(), $file);
+        $resource = app(StoreResource::class)(auth()->user(), $file);
         $this->success('Upload successful!', $resource->preview_ext_url);
 
         $file->delete();

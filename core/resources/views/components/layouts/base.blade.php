@@ -19,6 +19,6 @@
 </head>
 <body class="min-h-screen font-sans antialiased bg-base-300 flex flex-col">
 @yield('body')
-@livewireScripts
+@livewireScriptConfig
 </body>
 </html>

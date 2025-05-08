@@ -38,4 +38,16 @@ enum ResourceType: string
             default => self::FILE,
         };
     }
+
+    public function isPreviewable(): bool
+    {
+        return match ($this) {
+            self::IMAGE => true,
+            self::VIDEO => true,
+            self::AUDIO => true,
+            self::PDF => true,
+            self::TEXT => true,
+            default => false,
+        };
+    }
 }

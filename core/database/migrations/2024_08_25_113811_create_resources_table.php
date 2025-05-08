@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('filename')->nullable()->comment('The original filename of the resource.');
             $table->unsignedBigInteger('size')->nullable()->comment('The size of the resource in bytes.');
             $table->string('mime')->nullable()->comment('The MIME type of the resource.');
+            $table->boolean('has_preview')->default(false)->comment('Whether the resource has a preview generated.');
             $table->unsignedBigInteger('views')->default(0)->comment('The number of views of the resource.');
             $table->unsignedBigInteger('downloads')->default(0)->comment('The number of downloads of the resource.');
             $table->string('password')->nullable()->comment('The password to access the resource.');
