@@ -2,14 +2,14 @@
 
 @section('body')
     <x-navbar.navbar/>
-
     <x-custom-main with-nav full-width>
         <x-slot:content>
             {{ $slot }}
         </x-slot:content>
+        <x-slot:footer>
+            <x-footer/>
+        </x-slot:footer>
     </x-custom-main>
-
     <form method="POST" action="{{ route('logout') }}" id="logout-form">@csrf</form>
     <x-toast/>
-    <x-footer/>
 @endsection

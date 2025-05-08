@@ -25,7 +25,7 @@ class CustomMain extends Component
     public function render(): View|Closure|string
     {
         return <<<'BLADE'
-                 <main @class(["w-full mx-auto", "max-w-screen-2xl" => !$fullWidth])>
+                 <main id="main" @class(["w-full mx-auto flex-grow", "max-w-screen-2xl" => !$fullWidth])>
                     <div @class([
                         "drawer lg:drawer-open",
                         "drawer-end" => $sidebar?->attributes['right'],
