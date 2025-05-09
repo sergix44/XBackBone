@@ -10,7 +10,7 @@
             </x-input>
         </div>
         <div class="flex justify-center lg:shrink-0 lg:my-0">
-            {{ $resources->links() }}
+            {{ $this->resources->links() }}
         </div>
         <div class="flex items-center justify-center lg:justify-end gap-2 lg:w-1/2">
             <div class="join">
@@ -23,12 +23,12 @@
         </div>
     </div>
     <div class="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach($resources as $resource)
+        @foreach($this->resources as $resource)
             <x-resource :resource="$resource"/>
         @endforeach
     </div>
     <div class="flex justify-center mt-4">
-        {{ $resources->links() }}
+        {{ $this->resources->links() }}
     </div>
 </div>
 
@@ -37,6 +37,10 @@
     document.querySelector('#main').addEventListener('dragover', e => {
         e.preventDefault();
         $wire.showUploadDrawer = true;
+    });
+
+    Livewire.on('clipboard:copied', (text) => {
+        $wire.$call('success', 'Copied to clipboard ', text);
     });
 </script>
 @endscript

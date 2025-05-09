@@ -16,14 +16,16 @@ return new class extends Migration {
             $table->foreignIdFor(User::class)->constrained('users')->comment('The user that owns the resource.');
             $table->string('code')->unique()->nullable()->comment('The unique code of the resource.');
             $table->boolean('is_private')->default(false)->comment('Whether the resource is hidden.');
-            $table->string('data', 2048)->nullable()->comment('The path, content, or URL of the resource.');
+            $table->longText('data')->nullable()->comment('The path, content, or URL of the resource.');
             $table->string('extension')->nullable()->comment('The extension of the resource, if any.');
             $table->string('filename')->nullable()->comment('The original filename of the resource.');
             $table->unsignedBigInteger('size')->nullable()->comment('The size of the resource in bytes.');
             $table->string('mime')->nullable()->comment('The MIME type of the resource.');
-            $table->boolean('has_preview')->default(false)->comment('Whether the resource has a preview generated.');
+            $table->string('preview_type')->nullable()->comment('The type of preview for the resource if any.');
+            $table->string('preview_extension')->nullable()->comment('The extension of the preview for the resource if any.');
             $table->unsignedBigInteger('views')->default(0)->comment('The number of views of the resource.');
             $table->unsignedBigInteger('downloads')->default(0)->comment('The number of downloads of the resource.');
+            $table->string('fingerprint')->nullable()->comment('The fingerprint of the resource.');
             $table->string('password')->nullable()->comment('The password to access the resource.');
             $table->timestamp('published_at')->nullable()->comment('The date and time the resource was published.');
             $table->timestamp('expires_at')->nullable()->comment('The date and time the resource expires.');

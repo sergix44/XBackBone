@@ -25,9 +25,11 @@ class Resource extends Model
         'filename',
         'size',
         'mime',
-        'has_preview',
+        'preview_type',
+        'preview_extension',
         'views',
         'downloads',
+        'fingerprint',
         'password',
         'published_at',
         'expires_at',
@@ -46,7 +48,6 @@ class Resource extends Model
             'expires_at' => 'datetime',
             'password' => 'hashed',
             'is_private' => 'boolean',
-            'has_preview' => 'boolean',
         ];
     }
 
@@ -85,10 +86,8 @@ class Resource extends Model
         return Attribute::make(get: fn() => $this->size ? Helpers::humanizeBytes($this->size) : null);
     }
 
-    public function isPreviewable(): Attribute
+    public function hasPreview(): Attribute
     {
-        return Attribute::make(get: function () {
-            return $this->type->isPreviewable() || $this->has_preview;
-        });
+        return Attribute::make(get: fn() => $this->preview_type !== null);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ResourceController;
 use App\Livewire\Admin\Settings;
 use App\Livewire\Dashboard;
 use App\Livewire\Integrations;
@@ -27,6 +28,11 @@ Route::group(['middleware' => ['auth', 'verified']], static function () {
     Route::get('profile', Profile::class)->name('user.profile');
 });
 
+Route::get('preview/{resource:code}.{ext}', [ResourceController::class, 'preview'])->name('preview.ext');
+Route::get('preview/{resource:code}', [ResourceController::class, 'preview'])->name('preview');
+Route::get('raw/{resource:code}.{ext}', [ResourceController::class, 'raw'])->name('raw.ext');
+Route::get('raw/{resource:code}', [ResourceController::class, 'raw'])->name('raw');
+Route::get('download/{resource:code}.{ext}', [ResourceController::class, 'download'])->name('download.ext');
+Route::get('download/{resource:code}/download', [ResourceController::class, 'download'])->name('download');
 Route::get('{resource:code}.{ext}', Preview::class)->name('preview.ext');
 Route::get('{resource:code}', Preview::class)->name('preview');
-// Route::get('{resource:code}/download', )->name('download');

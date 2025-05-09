@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Actions\Resource\ListResources;
 use App\Actions\Resource\StoreResource;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -19,9 +21,13 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard', [
-            'resources' => app(ListResources::class)(auth()->user()),
-        ])->title('Gallery');
+        return view('livewire.dashboard')->title('Gallery');
+    }
+
+    #[Computed]
+    public function resources()
+    {
+        return app(ListResources::class)(auth()->user());
     }
 
     public function saveUpload(int $id): void
@@ -35,6 +41,12 @@ class Dashboard extends Component
         }
 
         $resource = app(StoreResource::class)(auth()->user(), $file);
+
+        activity()
+            ->performedOn($resource)
+            ->causedBy(auth()->user())
+            ->log('resource.uploaded');
+
         $this->success('Upload successful!', $resource->preview_ext_url);
 
         $file->delete();

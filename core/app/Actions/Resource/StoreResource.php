@@ -19,11 +19,12 @@ class StoreResource
     }
 
     public function __invoke(
-        User $user,
+        User          $user,
         ?UploadedFile $file = null,
-        ?string $name = null,
-        ?string $data = null
-    ): Resource {
+        ?string       $name = null,
+        ?string       $data = null
+    ): Resource
+    {
         if (!$file && !$data) {
             throw new InvalidArgumentException('Cannot store a resource without a file or data.');
         }
@@ -50,25 +51,22 @@ class StoreResource
             }
 
             $code = $this->genId->encode([$user->id, $resource->id]);
-            $stream = $file ? fopen($file->getRealPath(), 'rb') : $data;
 
-            if (!Storage::put($code, $stream)) {
-                throw new RuntimeException('Failed to store the file.');
+            if ($file) {
+                $stream = fopen($file->getRealPath(), 'rb');
+                if (!Storage::put($code, $stream)) {
+                    throw new RuntimeException('Failed to store the file.');
+                }
             }
 
             $resource->update([
                 'code' => $code,
+                'fingerprint' => $file ? sha1_file($file->getRealPath()) : sha1($data),
                 'published_at' => now(),
             ]);
 
             return $resource;
         });
-
-        activity()
-            ->performedOn($resource)
-            ->causedBy($user)
-            ->log('resource.uploaded');
-
         return $resource;
     }
 

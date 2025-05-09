@@ -15,10 +15,16 @@
     <figure class="justify-center">
         @if($resource->is_dir ?? false)
             <x-icon name="o-folder" class="w-full h-32"></x-icon>
+        @elseif($resource->has_preview)
+
         @else
-            <img
-                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                alt="Shoes"/>
+            @switch($resource->type)
+                @case(\App\Models\Properties\ResourceType::IMAGE)
+                    img
+                    @break
+                @default
+                    <x-icon name="o-document" class="w-full h-32"></x-icon>
+            @endswitch
         @endif
     </figure>
     <div class="card-body justify-end">
