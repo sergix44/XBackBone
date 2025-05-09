@@ -33,6 +33,6 @@ Route::get('preview/{resource:code}', [ResourceController::class, 'preview'])->n
 Route::get('raw/{resource:code}.{ext}', [ResourceController::class, 'raw'])->name('raw.ext');
 Route::get('raw/{resource:code}', [ResourceController::class, 'raw'])->name('raw');
 Route::get('download/{resource:code}.{ext}', [ResourceController::class, 'download'])->name('download.ext');
-Route::get('download/{resource:code}/download', [ResourceController::class, 'download'])->name('download');
+Route::get('download/{resource:code}', [ResourceController::class, 'download'])->name('download');
 Route::get('{resource:code}.{ext}', Preview::class)->name('preview.ext');
 Route::get('{resource:code}', Preview::class)->name('preview');
