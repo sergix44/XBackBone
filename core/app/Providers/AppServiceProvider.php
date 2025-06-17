@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Pennant\Feature;
 use Sqids\Sqids;
 
@@ -28,6 +29,14 @@ class AppServiceProvider extends ServiceProvider
         Feature::resolveScopeUsing(static fn() => null);
 
         Gate::define('administrate', static fn (User $user) => $user->is_admin);
+
+        Password::defaults(function () {
+            $rule = Password::min(8);
+
+            return $this->app->isProduction()
+                ? $rule->mixedCase()->symbols()->numbers()->uncompromised()
+                : $rule;
+        });
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishes();

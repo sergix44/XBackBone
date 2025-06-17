@@ -20,15 +20,19 @@
                         <x-icon name="o-chat-bubble-left" label="45 comments"/>
                     </x-slot:subtitle>
                 </x-avatar>
+                <div class="divider mt-4">Profile</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-input placeholder="Username" label="Username" type="text" wire:model="user.name" inline />
+                    <x-input placeholder="E-mail" label="E-mail" type="email" wire:model="user.email" inline />
 
-            </div>
-        </div>
-
-        <div class="card bg-base-100">
-            <div class="card-body">
-                <h2 class="card-title">Theme</h2>
-                <div class="mt-2">
-                    <x-select wire:model="theme" icon="o-paint-brush" :options="$themes" inline/>
+                    <x-input placeholder="Password" label="Password" type="password"  inline />
+                    <x-input placeholder="Confirm password" label="Confirm password" type="password" inline />
+                </div>
+                <div class="divider mt-4">Theme</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-select wire:model="user.theme" icon="o-paint-brush" :options="$themes" inline/>
+                </div>
+                <div>
                     <x-button label="Save" class="btn-primary mt-4"/>
                 </div>
             </div>
