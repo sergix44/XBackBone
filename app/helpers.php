@@ -529,8 +529,63 @@ if (!function_exists('glue')) {
      * @param  mixed  ...$pieces
      * @return string
      */
-    function glue(...$pieces): string
+function glue(...$pieces): string
+{
+    return '/'.implode('/', $pieces);
+}
+}
+
+if (!function_exists('base32_decode')) {
+    function base32_decode(string $secret)
     {
-        return '/'.implode('/', $pieces);
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        $secret = strtoupper($secret);
+        $bits = '';
+        foreach (str_split($secret) as $c) {
+            $pos = strpos($alphabet, $c);
+            if ($pos !== false) {
+                $bits .= str_pad(decbin($pos), 5, '0', STR_PAD_LEFT);
+            }
+        }
+
+        $binary = '';
+        for ($i = 0; $i < strlen($bits); $i += 8) {
+            $byte = substr($bits, $i, 8);
+            if (strlen($byte) === 8) {
+                $binary .= chr(bindec($byte));
+            }
+        }
+
+        return $binary;
+    }
+}
+
+if (!function_exists('totp_generate_code')) {
+    function totp_generate_code(string $secret, int $timestamp = null): string
+    {
+        if ($timestamp === null) {
+            $timestamp = floor(time() / 30);
+        }
+        $key = base32_decode($secret);
+        $binaryTime = pack('N*', 0).pack('N*', $timestamp);
+        $hash = hash_hmac('sha1', $binaryTime, $key, true);
+        $offset = ord(substr($hash, -1)) & 0x0F;
+        $truncated = substr($hash, $offset, 4);
+        $value = unpack('N', $truncated)[1] & 0x7FFFFFFF;
+
+        return str_pad((string) ($value % 1000000), 6, '0', STR_PAD_LEFT);
+    }
+}
+
+if (!function_exists('verify_totp_code')) {
+    function verify_totp_code(string $secret, string $code, int $window = 1): bool
+    {
+        $time = floor(time() / 30);
+        for ($i = -$window; $i <= $window; $i++) {
+            if (hash_equals(totp_generate_code($secret, $time + $i), $code)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -161,5 +161,8 @@ return [
     'zip_ext_not_loaded' => 'The required "zip" extension is not loaded',
     'changelog' => 'Changelog',
     'show_changelog' => 'Show changelog',
-    'image_embeds' => 'Embed images'
+    'image_embeds' => 'Embed images',
+    '2fa_code' => 'Two Factor Code',
+    'enter_2fa_code' => 'Enter the authentication code',
+    '2fa_invalid' => 'Invalid authentication code.'
 ];

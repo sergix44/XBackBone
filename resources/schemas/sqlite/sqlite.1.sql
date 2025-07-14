@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `token`     VARCHAR(256),
   `active`    BOOLEAN           NOT NULL         DEFAULT 1,
   `is_admin`  BOOLEAN           NOT NULL         DEFAULT 0,
-  `registration_date` TIMESTAMP NOT NULL         DEFAULT CURRENT_TIMESTAMP
+  `registration_date` TIMESTAMP NOT NULL         DEFAULT CURRENT_TIMESTAMP,
+  `twofa_secret` VARCHAR(32)
 );
 
 CREATE TABLE IF NOT EXISTS `uploads` (

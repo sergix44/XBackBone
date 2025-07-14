@@ -1,0 +1,27 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ lang('2fa_code') }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form class="form-signin" method="post" action="{{ route('2fa.verify') }}">
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <h1 class="h3 mb-3 font-weight-normal">{{ config.app_name }}</h1>
+                    {% include 'comp/alert.twig' %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="code" class="sr-only">{{ lang('2fa_code') }}</label>
+                    <input type="text" id="code" class="form-control first last" placeholder="{{ lang('enter_2fa_code') }}" name="code" required autofocus>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ lang('confirm') }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
