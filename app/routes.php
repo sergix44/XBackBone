@@ -4,6 +4,7 @@ use App\Controllers\AdminController;
 use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\PasswordRecoveryController;
 use App\Controllers\Auth\RegisterController;
+use App\Controllers\Auth\TwoFactorController;
 use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
 use App\Controllers\ExportController;
@@ -81,6 +82,8 @@ $app->get('/recover/password/{resetToken}', [PasswordRecoveryController::class, 
 $app->post('/recover/password/{resetToken}', [PasswordRecoveryController::class, 'recoverPassword'])->setName('recover.password');
 $app->get('/login', [LoginController::class, 'show'])->setName('login.show');
 $app->post('/login', [LoginController::class, 'login'])->setName('login');
+$app->get('/2fa', [TwoFactorController::class, 'show'])->setName('2fa.show');
+$app->post('/2fa', [TwoFactorController::class, 'verify'])->setName('2fa.verify');
 $app->map(['GET', 'POST'], '/logout', [LoginController::class, 'logout'])->setName('logout');
 
 $app->post('/upload', [UploadController::class, 'uploadEndpoint'])->setName('upload');
