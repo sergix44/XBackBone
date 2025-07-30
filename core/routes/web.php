@@ -25,7 +25,8 @@ Route::group(['middleware' => ['auth', 'verified']], static function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('integrations', Integrations::class)->name('integrations');
     Route::get('settings', Settings::class)->name('admin.settings')->can('administrate');
-    Route::get('profile', Profile::class)->name('user.profile');
+    Route::get('profile/{tab?}', Profile::class)->name('user.profile')
+        ->whereIn('tab', ['profile', 'tokens', 'export', 'delete']);
 });
 
 Route::get('preview/{resource:code}.{ext}', [ResourceController::class, 'preview'])->name('preview.ext');
