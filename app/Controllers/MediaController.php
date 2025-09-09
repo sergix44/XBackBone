@@ -92,11 +92,14 @@ class MediaController extends Controller
             return $this->streamMedia($request, $response, $filesystem, $media);
         }
 
+        $url = route('public', ['userCode' => $media->user_code, 'mediaCode' => $media->code]);
         return view()->render($response, 'upload/public.twig', [
             'delete_token' => $token,
             'media' => $media,
             'type' => $type,
-            'url' => urlFor(glue($userCode, $mediaCode)),
+            'url' => $url,
+            'raw_url' => route('public.raw', ['userCode' => $media->user_code, 'mediaCode' => $media->code, 'ext' => $media->extension]),
+            'oembed' => route('oembed', [], '?url=' . urlencode($url)),
             'copy_raw' => $this->session->get('copy_raw', false),
         ]);
     }
@@ -363,40 +366,6 @@ class MediaController extends Controller
             $this->database->query('DELETE FROM `uploads` WHERE `id` = ?', $id);
             $this->database->query('DELETE FROM `tags` WHERE `tags`.`id` NOT IN (SELECT `uploads_tags`.`tag_id` FROM `uploads_tags`)');
         }
-    }
-
-    /**
-     * @param $userCode
-     * @param $mediaCode
-     *
-     * @param  bool  $withTags
-     * @return mixed
-     */
-    protected function getMedia($userCode, $mediaCode, $withTags = false)
-    {
-        $mediaCode = pathinfo($mediaCode)['filename'];
-
-        $media = $this->database->query(
-            'SELECT `uploads`.*, `users`.*, `users`.`id` AS `userId`, `uploads`.`id` AS `mediaId` FROM `uploads` INNER JOIN `users` ON `uploads`.`user_id` = `users`.`id` WHERE `user_code` = ? AND `uploads`.`code` = ? LIMIT 1',
-            [
-                $userCode,
-                $mediaCode,
-            ]
-        )->fetch();
-
-        if (!$withTags || !$media) {
-            return $media;
-        }
-
-        $media->tags = [];
-        foreach ($this->database->query(
-            'SELECT `tags`.`id`, `tags`.`name` FROM `uploads_tags` INNER JOIN `tags` ON `uploads_tags`.`tag_id` = `tags`.`id` WHERE `uploads_tags`.`upload_id` = ?',
-            $media->mediaId
-        ) as $tag) {
-            $media->tags[$tag->id] = $tag->name;
-        }
-
-        return $media;
     }
 
     /**
