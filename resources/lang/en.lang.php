@@ -104,6 +104,7 @@ return [
     'prerelease_channel' => 'Prerelease Channel',
     'no_upload_token' => 'You don\'t have a personal upload token. (Generate one and try again.)',
     'drop_to_upload' => 'Click or drop your files here to upload.',
+    'paste_to_upload_hint' => 'Tip: You can paste images or videos to upload them.',
     'donation' => 'Donation',
     'donate_text' => 'If you like XBackBone, consider a donation to support development!',
     'custom_head_html' => 'Custom HTML Head content',

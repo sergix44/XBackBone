@@ -23,6 +23,11 @@
                 </div>
                 <div class="row">
                     <div class="col">
+                        <div class="text-muted small mb-2"><i class="fas fa-lightbulb"></i> {{ lang('paste_to_upload_hint') }}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
                         <form action="{{ route('upload.web') }}" method="post" id="upload-dropzone" class="dropzone">
                             <div class="fallback">
                                 <input name="file" type="file" multiple>
