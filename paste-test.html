@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Paste-to-Upload Test</title>
+  <link rel="stylesheet" href="static/dropzone/dropzone.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 2rem; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .tip { margin-bottom: 1rem; padding: .75rem 1rem; background: #eef8ff; border: 1px solid #c9e7ff; border-radius: 6px; }
+    #previews { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Paste-to-Upload Test</h1>
+  <div class="tip">
+    Tip: Copy an image to your clipboard, then click on this page (not an input) and press Ctrl+V / Cmd+V. The file should appear below. This page will not actually upload files.
+  </div>
+
+  <form id="upload-dropzone" class="dropzone" action="#" method="post">
+    <div class="fallback">
+      <input name="file" type="file" multiple>
+    </div>
+  </form>
+
+  <div id="previews" class="dz-previews"></div>
+  <pre id="log" style="margin-top:1rem; background:#f7f7f7; padding: .75rem; border:1px solid #e3e3e3; border-radius:6px;"></pre>
+</div>
+
+<script src="static/jquery/jquery.min.js"></script>
+<script src="static/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="static/clipboardjs/clipboard.min.js"></script>
+<script src="static/plyr/plyr.min.js"></script>
+<script src="static/dropzone/dropzone.min.js"></script>
+<script>
+  // Minimal config required by src/js/app.js
+  window.AppConfig = {
+    base_url: '',
+    max_upload_size: 104857600, // 100MB
+    lang: { publish: 'Publish', hide: 'Hide', dropzone: 'Drop files here or paste from clipboard' }
+  };
+</script>
+<script src="static/app/app.js"></script>
+<script>
+  // Use our Dropzone options but keep uploads disabled for this test page
+  Dropzone.autoDiscover = false;
+  var options = Object.assign({}, Dropzone.options.uploadDropzone || {}, {
+    url: '#',
+    autoProcessQueue: false,
+    previewsContainer: '#previews'
+  });
+
+  var dz = new Dropzone('#upload-dropzone', options);
+  dz.on('addedfile', function(file) {
+    console.log('Added file from paste:', file);
+    var info = 'Added: ' + file.name + ' (' + (file.type || 'unknown') + '), size ' + file.size + ' bytes';
+    document.getElementById('log').textContent = info;
+  });
+</script>
+</body>
+</html>
