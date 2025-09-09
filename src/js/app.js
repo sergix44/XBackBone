@@ -258,17 +258,46 @@ var app = {
         });
     },
     initClipboardPasteToUpload: function() {
-      document.onpaste = function(event){
-        if (event.clipboardData || event.originalEvent.clipboardData) {
-            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-            items.forEach((item) => {
-                if (item.kind === 'file') {
-                    // Add the file to the dropzone instance.
-                    Dropzone.forElement('.dropzone').addFile(item.getAsFile());
-                }
-            });
+      // Attach a paste listener that uploads image/video files from the clipboard
+      document.addEventListener('paste', function (event) {
+        // Do not intercept paste if user is typing in an input/textarea/contenteditable
+        var ae = document.activeElement;
+        if (ae && ((ae.tagName && (ae.tagName.toLowerCase() === 'input' || ae.tagName.toLowerCase() === 'textarea')) || ae.isContentEditable)) {
+          return;
         }
-      };
+
+        var clipboard = event.clipboardData || (event.originalEvent && event.originalEvent.clipboardData);
+        if (!clipboard || !clipboard.items || clipboard.items.length === 0) {
+          return;
+        }
+
+        // Try to resolve the active Dropzone instance in a safe way
+        var dz = null;
+        try {
+          dz = Dropzone.forElement('#upload-dropzone');
+        } catch (e) {
+          if (Dropzone && Dropzone.instances && Dropzone.instances.length > 0) {
+            dz = Dropzone.instances[0];
+          }
+        }
+        if (!dz) {
+          return; // No Dropzone available; nothing to do
+        }
+
+        // Iterate items in a cross-browser way (DataTransferItemList may not support forEach)
+        for (var i = 0; i < clipboard.items.length; i++) {
+          var item = clipboard.items[i];
+          if (!item) continue;
+          if (item.kind === 'file') {
+            var file = item.getAsFile();
+            if (!file) continue;
+            // Only process images and videos to avoid surprising uploads
+            if ((file.type && file.type.indexOf('image/') === 0) || (file.type && file.type.indexOf('video/') === 0)) {
+              dz.addFile(file);
+            }
+          }
+        }
+      });
     },
 };
 
