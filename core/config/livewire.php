@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'layout' => 'components.layouts.app',
+    'layout' => 'layouts::app',
 
     /*
     |---------------------------------------------------------------------------
@@ -50,7 +50,7 @@ return [
     |
     */
 
-    'lazy_placeholder' => null,
+    'lazy_placeholder' => 'livewire.placeholder',
 
     /*
     |---------------------------------------------------------------------------
@@ -157,4 +157,13 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
+    'smart_wire_keys' => true,
+    'component_locations' => [
+        resource_path('views/components'),
+        resource_path('views/livewire'),
+    ],
+    'component_namespaces' => [
+        'layouts' => resource_path('views/layouts'),
+        'livewire' => resource_path('views/livewire'),
+    ],
 ];

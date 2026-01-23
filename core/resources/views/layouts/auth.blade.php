@@ -1,4 +1,4 @@
-@extends('components.layouts.base')
+@extends('layouts::base')
 
 @section('body')
     <div class="grid flex-grow place-items-center">
@@ -11,6 +11,6 @@
             </x-card>
         </div>
     </div>
-    <x-toast />
+    <x-toast/>
     <x-footer/>
 @endsection

@@ -14,8 +14,8 @@
         "laravel/pennant": "^1.11",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.5",
-        "robsontenorio/mary": "^2.0",
+        "livewire/livewire": "^4",
+        "robsontenorio/mary": "^2.6",
         "sergix44/imagezen": "^0.2.2",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-query-builder": "^6.3",
@@ -26,9 +26,9 @@
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
-        "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-laravel": "^3.2",
-        "pestphp/pest-plugin-livewire": "^3.0",
+        "pestphp/pest": "^v4.3.1",
+        "pestphp/pest-plugin-laravel": "^4",
+        "pestphp/pest-plugin-livewire": "^4",
         "predis/predis": "^2.2"
     },
     "autoload": {

@@ -22,10 +22,10 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/dashboard');
 
 Route::group(['middleware' => ['auth', 'verified']], static function () {
-    Route::get('dashboard', Dashboard::class)->name('dashboard');
-    Route::get('integrations', Integrations::class)->name('integrations');
-    Route::get('settings', Settings::class)->name('admin.settings')->can('administrate');
-    Route::get('profile/{tab?}', Profile::class)->name('user.profile')
+    Route::livewire('dashboard', Dashboard::class)->name('dashboard');
+    Route::livewire('integrations', Integrations::class)->name('integrations');
+    Route::livewire('settings', Settings::class)->name('admin.settings')->can('administrate');
+    Route::livewire('profile/{tab?}', Profile::class)->name('user.profile')
         ->whereIn('tab', ['profile', 'tokens', 'export', 'delete']);
 });
 
@@ -35,5 +35,5 @@ Route::get('raw/{resource:code}.{ext}', [ResourceController::class, 'raw'])->nam
 Route::get('raw/{resource:code}', [ResourceController::class, 'raw'])->name('raw');
 Route::get('download/{resource:code}.{ext}', [ResourceController::class, 'download'])->name('download.ext');
 Route::get('download/{resource:code}', [ResourceController::class, 'download'])->name('download');
-Route::get('{resource:code}.{ext}', Preview::class)->name('preview.ext');
-Route::get('{resource:code}', Preview::class)->name('preview');
+Route::livewire('{resource:code}.{ext}', Preview::class)->name('preview.ext');
+Route::livewire('{resource:code}', Preview::class)->name('preview');

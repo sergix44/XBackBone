@@ -1,4 +1,4 @@
-@extends('components.layouts.base')
+@extends('layouts::base')
 
 @section('body')
     <x-navbar.navbar/>
