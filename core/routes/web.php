@@ -29,8 +29,8 @@ Route::group(['middleware' => ['auth', 'verified']], static function () {
         ->whereIn('tab', ['profile', 'tokens', 'export', 'delete']);
 });
 
-Route::get('preview/{resource:code}.{ext}', [ResourceController::class, 'preview'])->name('preview.ext');
-Route::get('preview/{resource:code}', [ResourceController::class, 'preview'])->name('preview');
+//Route::get('preview/{resource:code}.{ext}', [ResourceController::class, 'preview'])->name('preview.ext');
+//Route::get('preview/{resource:code}', [ResourceController::class, 'preview'])->name('preview');
 Route::get('raw/{resource:code}.{ext}', [ResourceController::class, 'raw'])->name('raw.ext');
 Route::get('raw/{resource:code}', [ResourceController::class, 'raw'])->name('raw');
 Route::get('download/{resource:code}.{ext}', [ResourceController::class, 'download'])->name('download.ext');

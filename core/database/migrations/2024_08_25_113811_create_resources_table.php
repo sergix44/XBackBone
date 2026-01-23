@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('type')->comment('The type of resource.');
             $table->foreignIdFor(User::class)->constrained('users')->comment('The user that owns the resource.');
             $table->string('code')->unique()->nullable()->comment('The unique code of the resource.');
+            $table->string('name')->nullable()->comment('The name of the resource.');
             $table->boolean('is_private')->default(false)->comment('Whether the resource is hidden.');
             $table->longText('data')->nullable()->comment('The path, content, or URL of the resource.');
             $table->string('extension')->nullable()->comment('The extension of the resource, if any.');

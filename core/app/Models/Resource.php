@@ -90,4 +90,9 @@ class Resource extends Model
     {
         return Attribute::make(get: fn() => $this->preview_type !== null);
     }
+
+    public function isDisplayable(): Attribute
+    {
+        return Attribute::make(get: fn() => $this->type->isDisplayable($this->mime));
+    }
 }

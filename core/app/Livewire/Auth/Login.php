@@ -15,8 +15,7 @@ class Login extends Component
 
     public function authenticate()
     {
-        $this->validate();
-
+        $this->form->validate();
         $this->form->authenticate();
 
         return redirect()->intended(Fortify::redirects('dashboard'));
