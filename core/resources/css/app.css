@@ -15,6 +15,5 @@
 @source "../../storage/framework/views/*.php";
 @source "../**/*.blade.php";
 @source "../**/*.js";
-@source "../**/*.vue";
 
 /* Custom Styles */

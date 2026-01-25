@@ -66,6 +66,16 @@ class Resource extends Model
         return $this->hasMany(Resource::class, 'parent_id');
     }
 
+    public function rawUrl(): Attribute
+    {
+        return Attribute::make(get: fn() => $this->extension ? route('raw.ext', ['resource' => $this->code, 'ext' => $this->extension]) : route('raw', $this->code));
+    }
+
+    public function downloadUrl(): Attribute
+    {
+        return Attribute::make(get: fn() => $this->extension ? route('download.ext', ['resource' => $this->code, 'ext' => $this->extension]) : route('download', $this->code));
+    }
+
     public function previewUrl(): Attribute
     {
         return Attribute::make(get: fn() => route('preview', $this->code));
