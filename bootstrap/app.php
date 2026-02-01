@@ -48,6 +48,16 @@ $config = array_replace_recursive([
         'base_domain' => null,
         'user_domain' => null,
     ],
+    'mail' => [
+        'driver' => 'mail',
+        'host' => '',
+        'port' => 587,
+        'encryption' => 'tls',
+        'username' => '',
+        'password' => '',
+        'from' => '',
+        'from_name' => '',
+    ],
 ], require CONFIG_FILE);
 
 $builder = new ContainerBuilder();

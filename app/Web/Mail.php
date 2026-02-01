@@ -4,6 +4,8 @@
 namespace App\Web;
 
 use InvalidArgumentException;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class Mail
 {
@@ -60,7 +62,7 @@ class Mail
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Mail not valid.');
         }
-        $this->to = "<$mail>";
+        $this->to = $mail;
         return $this;
     }
 
@@ -138,15 +140,89 @@ class Mail
             throw new InvalidArgumentException('Message cannot be null.');
         }
 
-        $this->setHeaders();
-
-        $this->headers .= $this->additionalHeaders;
-        $message = html_entity_decode($this->message);
-
         if (self::$testing) {
             return 1;
         }
 
-        return (int) mail($this->to, $this->subject, "<html><body>$message</body></html>", $this->headers);
+        $config = resolve('config');
+        $mailConfig = $config['mail'] ?? [];
+        $driver = $mailConfig['driver'] ?? 'mail';
+
+        if ($driver === 'smtp') {
+            return $this->sendViaSMTP($mailConfig);
+        }
+
+        return $this->sendViaMail();
+    }
+
+    /**
+     * Send email using SMTP via PHPMailer
+     *
+     * @param array $config
+     * @return int
+     */
+    protected function sendViaSMTP(array $config)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = $config['host'] ?? '';
+            $mail->Port = $config['port'] ?? 587;
+
+            // Authentication
+            if (!empty($config['username'])) {
+                $mail->SMTPAuth = true;
+                $mail->Username = $config['username'];
+                $mail->Password = $config['password'] ?? '';
+            }
+
+            // Encryption
+            $encryption = $config['encryption'] ?? 'tls';
+            if ($encryption === 'tls') {
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            } elseif ($encryption === 'ssl') {
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            } else {
+                $mail->SMTPSecure = '';
+                $mail->SMTPAutoTLS = false;
+            }
+
+            // Sender
+            $fromMail = !empty($config['from']) ? $config['from'] : $this->fromMail;
+            $fromName = !empty($config['from_name']) ? $config['from_name'] : ($this->fromName ?? '');
+            $mail->setFrom($fromMail, $fromName);
+
+            // Recipient
+            $mail->addAddress($this->to);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = $this->subject;
+            $mail->Body = '<html><body>'.html_entity_decode($this->message).'</body></html>';
+            $mail->AltBody = strip_tags(html_entity_decode($this->message));
+
+            $mail->send();
+            return 1;
+        } catch (PHPMailerException $e) {
+            error_log('Mail sending failed: '.$mail->ErrorInfo);
+            return 0;
+        }
+    }
+
+    /**
+     * Send email using PHP's mail() function (legacy method)
+     *
+     * @return int
+     */
+    protected function sendViaMail()
+    {
+        $this->setHeaders();
+        $this->headers .= $this->additionalHeaders;
+        $message = html_entity_decode($this->message);
+
+        return (int) mail("<{$this->to}>", $this->subject, "<html><body>$message</body></html>", $this->headers);
     }
 }
