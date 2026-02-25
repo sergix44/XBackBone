@@ -17,4 +17,16 @@ If you use Cloudflare, check if the setting that blocks access to bots is active
 <hr>
 
 ### How to increase the upload max file size?
-Increase the `post_max_size` and `upload_max_filesize` in your `php.ini`.
+
+If uploads fail or stop part-way (especially for files around 1 GB or larger), it is usually due to PHP, web server, or reverse-proxy limits.
+
+1. **Update PHP limits (`php.ini`)**
+
+   Make sure these values are high enough for the files you want to upload:
+
+   ```ini
+   upload_max_filesize = 2G
+   post_max_size = 2G
+   max_execution_time = 600
+   max_input_time = 600
+
