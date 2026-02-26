@@ -49,7 +49,7 @@ class LoginController extends AuthController
 
         $username = param($request, 'username');
         $password = param($request, 'password');
-        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap`, `copy_raw` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
+        $user = $this->database->query('SELECT `id`, `email`, `username`, `password`,`is_admin`, `active`, `current_disk_quota`, `max_disk_quota`, `ldap`, `copy_raw`, `twofa_secret` FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1', [$username, $username])->fetch();
 
         if ($this->config['ldap']['enabled'] && (!$user || $user->ldap ?? true)) {
             $user = $this->ldapLogin($request, $username, param($request, 'password'), $user);
@@ -68,6 +68,12 @@ class LoginController extends AuthController
             }
             $this->logger->info("Login failed with username='{$username}', ip={$ip}.");
             return redirect($response, route('login'));
+        }
+
+        if (!empty($user->twofa_secret)) {
+            $this->session->set('twofa_user', $user)
+                ->set('twofa_remember', param($request, 'remember') === 'on');
+            return redirect($response, route('2fa.show'));
         }
 
         $this->session->set('logged', true)

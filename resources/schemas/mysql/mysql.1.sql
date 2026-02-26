@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `active`    BOOLEAN           NOT NULL         DEFAULT 1,
   `is_admin`  BOOLEAN           NOT NULL         DEFAULT 0,
   `registration_date` TIMESTAMP NOT NULL         DEFAULT CURRENT_TIMESTAMP,
+  `twofa_secret` VARCHAR(32) DEFAULT NULL,
   INDEX (`username`, `user_code`, `token`)
 );
 
