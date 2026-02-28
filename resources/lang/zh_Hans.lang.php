@@ -161,4 +161,6 @@ return [
     'recaptcha_secret_key' => 'reCAPTCHA 密钥',
     'prerelease_channel' => '预发布渠道',
     'recaptcha_keys_required' => '所有 reCAPTCHA 密钥都是必需的。',
+    'show_all_tags' => '显示所有标签',
+    'paste_to_upload_hint' => '提示：您可以粘贴图片或视频进行上传。',
 ];
